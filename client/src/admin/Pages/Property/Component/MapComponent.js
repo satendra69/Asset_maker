@@ -1,12 +1,29 @@
-import React, { useState } from "react";
-import { MapContainer, TileLayer } from "react-leaflet";
+import React, { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 
-function MapComponent({ onRowClick }) {
+// Define the marker icon
+const icon = new L.Icon({
+  iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+});
+
+const MapComponent = ({ onRowClick }) => {
   const [location, setLocation] = useState("");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [latitude, setLatitude] = useState("");
-  const [longitude, setLongitude] = useState("");
+  const [latitude, setLatitude] = useState(17.387140); // Default value for latitude
+  const [longitude, setLongitude] = useState(78.491684); // Default value for longitude
+  const [markerPosition, setMarkerPosition] = useState({ lat: 17.387140, lng: 78.491684 });
+
+  useEffect(() => {
+    if (markerPosition) {
+      setLatitude(markerPosition.lat);
+      setLongitude(markerPosition.lng);
+    }
+  }, [markerPosition]);
 
   const handleLocationChange = (e) => {
     const value = e.target.value;
@@ -33,27 +50,38 @@ function MapComponent({ onRowClick }) {
   };
 
   const handleLatitudeChange = (e) => {
-    const value = e.target.value;
+    const value = parseFloat(e.target.value);
     setLatitude(value); // Update latitude state
+    setMarkerPosition({ lat: value, lng: longitude });
     if (onRowClick) {
       onRowClick({ location, address, postalCode, latitude: value, longitude });
     }
   };
 
   const handleLongitudeChange = (e) => {
-    const value = e.target.value;
+    const value = parseFloat(e.target.value);
     setLongitude(value); // Update longitude state
+    setMarkerPosition({ lat: latitude, lng: value });
     if (onRowClick) {
       onRowClick({ location, address, postalCode, latitude, longitude: value });
     }
   };
 
+  const MapClickHandler = ({ setPosition }) => {
+    useMapEvents({
+      click(e) {
+        setPosition(e.latlng);
+      },
+    });
+    return null;
+  };
+
   return (
     <div>
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <div className="flex flex-wrap items-start mt-4">
         {/* Location Details */}
-        <div className="w-full sm:w-1/2 lg:w-1/2 pr-4">
+        <div className="w-full pr-4 sm:w-1/2 lg:w-1/2">
           {/* Location */}
           <h2 className="text-xl font-semibold mb-7">Location</h2>
           <div className="w-full pr-4 mb-7">
@@ -66,7 +94,7 @@ function MapComponent({ onRowClick }) {
               value={location}
               onChange={handleLocationChange}
               placeholder="Enter Location"
-              className="w-full mt-1 p-2 border rounded-md border-gray-300 focus:outline-none focus:border-indigo-500"
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
           {/* Address */}
@@ -80,7 +108,7 @@ function MapComponent({ onRowClick }) {
               value={address}
               onChange={handleAddressChange}
               placeholder="Enter Address"
-              className="w-full mt-1 p-2 border rounded-md border-gray-300 focus:outline-none focus:border-indigo-500"
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
           {/* Postal Code */}
@@ -94,11 +122,11 @@ function MapComponent({ onRowClick }) {
               value={postalCode}
               onChange={handlePostalCodeChange}
               placeholder="Enter Postal Code"
-              className="w-full mt-1 p-2 border rounded-md border-gray-300 focus:outline-none focus:border-indigo-500"
+              className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
           {/* Latitude and Longitude */}
-          <div className="w-full pr-4 mb-7 flex">
+          <div className="flex w-full pr-4 mb-7">
             {/* Latitude */}
             <div className="w-full pr-2">
               <label htmlFor="latitude" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -110,7 +138,7 @@ function MapComponent({ onRowClick }) {
                 value={latitude}
                 onChange={handleLatitudeChange}
                 placeholder="Enter Latitude"
-                className="w-full mt-1 p-2 border rounded-md border-gray-300 focus:outline-none"
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               />
             </div>
             {/* Longitude */}
@@ -124,27 +152,28 @@ function MapComponent({ onRowClick }) {
                 value={longitude}
                 onChange={handleLongitudeChange}
                 placeholder="Enter Longitude"
-                className="w-full mt-1 p-2 border rounded-md border-gray-300 focus:outline-none"
+                className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               />
             </div>
           </div>
         </div>
         {/* Map Container */}
-        <div className="w-full sm:w-1/2 lg:w-1/2 pr-4 z-10">
+        <div className="z-10 w-full pr-4 sm:w-1/2 lg:w-1/2">
           <div className="w-full mb-4 sm:mb-0">
             <MapContainer
-              center={[parseFloat(latitude) || 0, parseFloat(longitude) || 0]}
+              center={[latitude, longitude]}
               zoom={13}
               style={{ width: "100%", height: "420px" }}
-            // onClick={handleClick} // Remove if not needed for now
             >
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+              {markerPosition && <Marker position={markerPosition} icon={icon}></Marker>}
+              <MapClickHandler setPosition={setMarkerPosition} />
             </MapContainer>
           </div>
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default MapComponent;

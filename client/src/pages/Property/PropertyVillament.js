@@ -24,10 +24,10 @@ function PropertyVillament() {
 
   const fetchProperties = async (filterParams = {}) => {
     try {
-      const response = await httpCommon.get(`/list/Propperty/${type}`, {
+      const response = await httpCommon.get(`/list/listing/${type}`, {
         params: filterParams
       });
-      //console.log("response____Propperty", response);
+      //console.log("response____Property", response);
 
       if (response.data.status === "success") {
         setPropertiesVillament(response.data.data);
@@ -63,10 +63,10 @@ function PropertyVillament() {
   return (
     <>
       <Container>
-              <SearchForm onFilterChange={handleFilterChange} />
-              {propertiesVillament.map((item) => (
-                <Card key={item.id} item={item} />
-              ))}
+        <SearchForm onFilterChange={handleFilterChange} />
+        {propertiesVillament.map((item) => (
+          <Card key={item.id} item={item} />
+        ))}
       </Container>
       <section className="footerPatner  bg-[#1C1C1E] ">
         <Container
@@ -74,44 +74,44 @@ function PropertyVillament() {
             "md:py-20 flex flex-col md:flex-row items-center justify-between"
           }
         >
-          <div className="left md:w-1/2 w-full md:pr-10">
-            <h2 className="text-white font-bold text-4xl md:text-5xl mb-4">
+          <div className="w-full left md:w-1/2 md:pr-10">
+            <h2 className="mb-4 text-4xl font-bold text-white md:text-5xl">
               More than 10 Years of Experience
             </h2>
-            <hr className="w-20 h-1 bg-blue-800 mb-4" />
+            <hr className="w-20 h-1 mb-4 bg-blue-800" />
             <p className="text-white">
               It’s not what we do, but how we do it that sets us apart. Get in
               touch with us today to experience our holistic services that will
               put you a step closer to your dream home.
             </p>
           </div>
-          <div className="right md:w-1/2 w-full grid md:grid-cols-2 grid-cols-1 gap-7 mt-10 md:mt-0">
-            <div className="1 flex items-center gap-5">
+          <div className="grid w-full grid-cols-1 mt-10 right md:w-1/2 md:grid-cols-2 gap-7 md:mt-0">
+            <div className="flex items-center gap-5 1">
               <FaSellsy className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">2,000 +</h2>
-                <p className="description text-white">Properties Sold</p>
+                <h2 className="text-white price">2,000 +</h2>
+                <p className="text-white description">Properties Sold</p>
               </div>
             </div>
-            <div className="2 flex items-center gap-5">
+            <div className="flex items-center gap-5 2">
               <MdAddHome className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">80 +</h2>
-                <p className="description text-white">Projects Handled</p>
+                <h2 className="text-white price">80 +</h2>
+                <p className="text-white description">Projects Handled</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <IoMdHappy className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">400 +</h2>
-                <p className="description text-white">NRI Clientele Served</p>
+                <h2 className="text-white price">400 +</h2>
+                <p className="text-white description">NRI Clientele Served</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <FaRegHandshake className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">150 +</h2>
-                <p className="description text-white">Satisfied Builders</p>
+                <h2 className="text-white price">150 +</h2>
+                <p className="text-white description">Satisfied Builders</p>
               </div>
             </div>
           </div>

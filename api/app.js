@@ -6,6 +6,7 @@ const bodyParser = require('body-parser');
 var logger = require("morgan");
 require("dotenv").config();
 var listingsRouter = require("./routes/listings");
+var propertyRouter = require("./routes/property");
 var usersRouter = require("./routes/users");
 var authRouter = require("./routes/auth");
 var cityRouter = require("./routes/city");
@@ -30,7 +31,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 // Configure CORS
 const corsOptions = {
-  origin: ['http://142.93.213.221:8004','http://localhost:3000'], // Add your frontend URL here
+  origin: ['http://142.93.213.221:8004', 'http://localhost:3000'], // Add your frontend URL here
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true, // Enable to pass cookies
   optionsSuccessStatus: 204
@@ -39,11 +40,12 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use('/api/images', express.static(path.join(__dirname, 'public', 'images')));
 
-app.get("/api", function(req, res) {
+app.get("/api", function (req, res) {
   res.send("Hello");
 });
 // Routes
 app.use("/api/list", listingsRouter);
+app.use("/api/property", propertyRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/city", cityRouter);

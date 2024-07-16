@@ -9,7 +9,9 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import MapComponent from "./MapComponent";
 import draftToHtml from 'draftjs-to-html';
-import { toWords } from 'number-to-words';
+import inwords from './toIndianNumberingWords';
+import ImageModal from './ImageModal';
+import FileModal from './FileModal';
 
 function PentModule({ onDataUpdate }) {
   const [salePrice, setSalePrice] = useState("");
@@ -27,9 +29,10 @@ function PentModule({ onDataUpdate }) {
   const [MapRow, setMapRow] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("not_selected");
   const [selectedCarParking, setSelectedCarParking] = useState("not_selected");
-  const [images, setImages] = useState([]);
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [videoUrl, setVideoUrl] = useState("");
+  const [brochure, setBrochure] = useState([]);
+  const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
   const [selectedBedRooms, setSelectedBedRooms] = useState("");
   const [selectedBathRooms, setSelectedBathRooms] = useState("");
   const [yearBuilt, setYearBuilt] = useState("");
@@ -69,6 +72,9 @@ function PentModule({ onDataUpdate }) {
   const [galleryImages, setGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
+  const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
+  const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
+  const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const limit = 999999999999;
 
   // format number to en-IN
@@ -89,7 +95,7 @@ function PentModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSalePrice(value);
         setDisplaySalePrice(formatNumber(value));
-        setSalePriceWords(toWords(num) + ' Only');
+        setSalePriceWords(inwords(num) + ' Only');
         setIsSalePriceExceeded(false);
       } else {
         setSalePriceWords("");
@@ -110,7 +116,7 @@ function PentModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSuffixPrice(value);
         setDisplaySuffixPrice(formatNumber(value));
-        setSuffixPriceWords(toWords(num) + ' Only');
+        setSuffixPriceWords(inwords(num) + ' Only');
         setIsSuffixPriceExceeded(false);
       } else {
         setSuffixPriceWords("");
@@ -129,33 +135,83 @@ function PentModule({ onDataUpdate }) {
   }, [galleryImages, masterPlanImages, masterPlanImages]);
 
   // Function to handle image upload for each section
-  const handleImageUpload = (event, setImageFunction) => {
+  const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
-    setImageFunction((prevImages) => [...prevImages, ...files]);
+    setFunction(prevImages => [...prevImages, ...files]);
   };
 
-  const handleImageUpload2 = (event, setMasterPlanImages) => {
-    const files = Array.from(event.target.files);
-    setMasterPlanImages((prevImages) => [...prevImages, ...files]);
-    //setMasterPlanImages((prevImages) => [...prevImages, ...files]);
-  };
-  const handleImageUpload3 = (event, setFloorAreaPlanImages) => {
-    const files = Array.from(event.target.files);
-    setFloorAreaPlanImages((prevImages) => [...prevImages, ...files]);
-    //setFloorAreaPlanImages((prevImages) => [...prevImages, ...files]);
-  };
-  // Function to handle image deletion for each section
-  const handleImageDelete = (index, imageArray, setImageFunction) => {
-    setImageFunction((prevImages) => prevImages.filter((_, i) => i !== index));
+  const handleImageDelete = (index, images, setFunction) => {
+    const updatedImages = images.filter((_, i) => i !== index);
+    setFunction(updatedImages);
+
+    if (selectedGalleryImageIndex === index) {
+      setSelectedGalleryImageIndex(null);
+    } else if (selectedGalleryImageIndex > index) {
+      setSelectedGalleryImageIndex(selectedGalleryImageIndex - 1);
+    }
+
+    if (selectedMasterPlanImageIndex === index) {
+      setSelectedMasterPlanImageIndex(null);
+    } else if (selectedMasterPlanImageIndex > index) {
+      setSelectedMasterPlanImageIndex(selectedMasterPlanImageIndex - 1);
+    }
+
+    if (selectedFloorAreaPlanImageIndex === index) {
+      setSelectedFloorAreaPlanImageIndex(null);
+    } else if (selectedFloorAreaPlanImageIndex > index) {
+      setSelectedFloorAreaPlanImageIndex(selectedFloorAreaPlanImageIndex - 1);
+    }
+
   };
 
-  const handleImageDelete2 = (index, imageArray, setMasterPlanImages) => {
-    setMasterPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    // setMasterPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  // Function to open modal with selected image index
+  const openGalleryModal = (index) => {
+    setSelectedGalleryImageIndex(index);
   };
-  const handleImageDelete3 = (index, imageArray, setFloorAreaPlanImages) => {
-    setFloorAreaPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    // setFloorAreaPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
+
+  const openMasterPlanModal = (index) => {
+    setSelectedMasterPlanImageIndex(index);
+  };
+
+  const openFloorAreaPlanModal = (index) => {
+    setSelectedFloorAreaPlanImageIndex(index);
+  };
+
+  // Function to close modal
+  const closeImageModal = () => {
+    setSelectedGalleryImageIndex(null);
+    setSelectedMasterPlanImageIndex(null);
+    setSelectedFloorAreaPlanImageIndex(null);
+  };
+
+  // Function to handle drag over
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  // Function to handle drop
+  const handleDrop = (e, setFunction) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    setFunction(prevImages => [...prevImages, ...files]);
+  };
+
+  const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    setBrochure((prevBrochure) => [...prevBrochure, ...files]);
+  };
+
+  const handleFileDelete = (index) => {
+    const updatedBrochure = brochure.filter((_, i) => i !== index);
+    setBrochure(updatedBrochure);
+  };
+
+  const handleFileClick = (index) => {
+    setSelectedDocumentIndex(index);
+  };
+
+  const closeDocumentModal = () => {
+    setSelectedDocumentIndex(null);
   };
 
   const handleAdvantagesChange = (e) => {
@@ -173,24 +229,6 @@ function PentModule({ onDataUpdate }) {
   };
 
   const advantagesAsString = otherAdvantages.join(', ');
-
-  const handleSelectChange = (e) => {
-    const selectedValues = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedOptions(selectedValues);
-  };
-
-  const handleRemoveOption = (value) => {
-    const updatedOptions = selectedOptions.filter((option) => option !== value);
-    setSelectedOptions(updatedOptions);
-  };
-
-  // Function to handle input change
-  const handleInputChange = (e) => {
-    setVideoUrl(e.target.value);
-  };
 
   // List of amenities
   const amenities = [
@@ -318,9 +356,9 @@ function PentModule({ onDataUpdate }) {
       propertyAddressDetails,
       selectedStatus,
       selectedCarParking,
-      images,
       amenitiesAsString,
       videoUrl,
+      brochure,
       selectedBedRooms,
       selectedBathRooms,
       yearBuilt,
@@ -344,7 +382,8 @@ function PentModule({ onDataUpdate }) {
       totalPhases,
       selectedOptions,
       projectBuilderDetails,
-      combinedImages
+      combinedImages,
+      type: "PentHouses",
     };
     onDataUpdate(data);
   };
@@ -1118,59 +1157,104 @@ function PentModule({ onDataUpdate }) {
       </div>
 
       {/* Property Brochure Section */}
-      <hr className="border-gray-400 my-8" />
-      <h2 className="text-xl font-semibold">Property Brochure</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        <label htmlFor="brochure" className="mr-2">
-          <span className="text-gray-700">Upload Brochure:</span>
-          <input
-            type="file"
-            id="brochure"
-            name="brochure"
-            accept=".pdf,.doc,.docx"
-            className="hidden"
-          // Add onChange handler if you need to capture file selection
-          />
-        </label>
-        <label
-          htmlFor="brochure"
-          className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-        >
-          Browse
-        </label>
+      <div>
+        <hr className="border-gray-400 my-8" />
+        <h2 className="text-xl font-semibold">Property Brochure</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          <label htmlFor="brochure" className="mr-2">
+            <span className="text-gray-700">Upload Brochure:</span>
+            <input
+              type="file"
+              id="brochure"
+              name="brochure"
+              accept=".pdf,.doc,.docx"
+              className="hidden"
+              multiple
+              onChange={handleFileUpload}
+            />
+          </label>
+          <label
+            htmlFor="brochure"
+            className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
+          >
+            Browse
+          </label>
+        </div>
+        {brochure.length > 0 && (
+          <div className="mt-4">
+            {brochure.map((file, index) => (
+              <div key={index} className="flex items-center">
+                <button
+                  onClick={() => handleFileDelete(index)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full ml-2"
+                >
+                  X
+                </button>
+                <span
+                  className="ml-2 cursor-pointer text-blue-500"
+                  onClick={() => handleFileClick(index)}
+                >
+                  {file.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Modal for displaying documents */}
+      {selectedDocumentIndex !== null && (
+        <FileModal
+          documents={brochure}
+          currentIndex={selectedDocumentIndex}
+          onClose={closeDocumentModal}
+        />
+      )}
 
       {/* Gallery Section */}
       <div>
         <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Gallery</h2>
-        <div className="flex items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="gallery-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <h2 className="text-xl font-semibold mb-2">Gallery</h2>
+        <div className="bg-white shadow-md rounded-lg p-8 mb-4 items-center justify-center">
+          <div
+            className="w-full relative border-2 border-gray-300 border-dashed rounded-lg p-6 cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setGalleryImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="gallery-upload"
-            name="gallery-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload(e, setGalleryImages)}
-            onBlur={handleDataUpdate}
-          />
+            <input
+              type="file"
+              id="gallery-upload"
+              name="gallery-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 w-full h-full opacity-0 z-50"
+              onChange={(e) => handleImageUpload(e, setGalleryImages)}
+            />
+            <div className="text-center">
+              <img
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="mx-auto h-12 w-12"
+              />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="file-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+            </div>
+            {/* <img src="" className="mt-4 mx-auto max-h-40 hidden" id="preview" /> */}
+          </div>
         </div>
-        {/* Display Uploaded Images */}
         <div className="flex flex-wrap mt-4">
           {galleryImages.map((image, index) => (
             <div key={index} className="m-2 relative">
               <button
-                onClick={() =>
-                  handleImageDelete(index, galleryImages, setGalleryImages)
-                }
+                onClick={() => handleImageDelete(index, galleryImages, setGalleryImages)}
                 className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
               >
                 X
@@ -1178,126 +1262,168 @@ function PentModule({ onDataUpdate }) {
               <img
                 src={URL.createObjectURL(image)}
                 alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                className="w-32 h-32 object-cover rounded cursor-pointer"
+                onClick={() => openGalleryModal(index)}
               />
             </div>
           ))}
         </div>
+        {/* Modal for displaying images */}
+        {selectedGalleryImageIndex !== null && (
+          <ImageModal
+            images={galleryImages}
+            currentIndex={selectedGalleryImageIndex}
+            onClose={closeImageModal}
+          />
+        )}
       </div>
 
       {/* Property Video Section */}
-
-      <hr className="border-gray-400 my-8" />
-      <h2 className="text-xl font-semibold">Property Video</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        {/* Input field for video URL */}
-        <input
-          type="text"
-          placeholder="Enter the Property Video URL"
-          value={videoUrl}
-          onChange={handleInputChange}
-          onBlur={handleDataUpdate}
-          className="w-full border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-500"
-        />
+      <div>
+        <hr className="border-gray-400 my-8" />
+        <h2 className="text-xl font-semibold">Property Video</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          <input
+            type="text"
+            placeholder="Enter the Property Video URL"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            className="w-full border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-500"
+          />
+        </div>
       </div>
 
       {/* Master Plan Section */}
-
       <div>
         <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Master Plan</h2>
-        <div className="flex flex-wrap items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="masterPlan-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <h2 className="text-xl font-semibold mb-2">Master Plan</h2>
+        <div className="bg-white shadow-md rounded-lg p-8 mb-4 items-center justify-center">
+          <div
+            className="w-full relative border-2 border-gray-300 border-dashed rounded-lg p-6 cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setMasterPlanImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="masterPlan-upload"
-            name="masterPlan-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload2(e, setMasterPlanImages)}
-            onBlur={handleDataUpdate}
-          />
-        </div>
-        {/* Display Uploaded Images */}
-        <div className="flex flex-wrap mt-4">
-          {masterPlanImages.map((image, index) => (
-            <div key={index} className="m-2 relative">
-              <button
-                onClick={() =>
-                  handleImageDelete2(
-                    index,
-                    masterPlanImages,
-                    setMasterPlanImages
-                  )
-                }
-                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
-              >
-                X
-              </button>
+            <input
+              type="file"
+              id="masterPlan-upload"
+              name="masterPlan-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 w-full h-full opacity-0 z-50"
+              onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
+            />
+            <div className="text-center">
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="mx-auto h-12 w-12"
               />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="file-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-          ))}
+            {/* <img src="" className="mt-4 mx-auto max-h-40 hidden" id="preview" /> */}
+          </div>
+          <div className="flex flex-wrap mt-4">
+            {masterPlanImages.map((image, index) => (
+              <div key={index} className="m-2 relative">
+                <button
+                  onClick={() => handleImageDelete(index, masterPlanImages, setMasterPlanImages)}
+                  className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
+                >
+                  X
+                </button>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="w-32 h-32 object-cover rounded cursor-pointer"
+                  onClick={() => openMasterPlanModal(index)}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Modal for displaying images */}
+          {selectedMasterPlanImageIndex !== null && (
+            <ImageModal
+              images={masterPlanImages}
+              currentIndex={selectedMasterPlanImageIndex}
+              onClose={closeImageModal}
+            />
+          )}
         </div>
       </div>
 
       {/* Floor/Area Plan Section */}
-
       <div>
         <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Floor/Area Plan</h2>
-        <div className="flex flex-wrap items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="floorAreaPlan-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <h2 className="text-xl font-semibold mb-2">Floor/Area Plan</h2>
+        <div className="bg-white shadow-md rounded-lg p-8 mb-4 items-center justify-center">
+          <div
+            className="w-full relative border-2 border-gray-300 border-dashed rounded-lg p-6 cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setFloorAreaPlanImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="floorAreaPlan-upload"
-            name="floorAreaPlan-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload3(e, setFloorAreaPlanImages)}
-            onBlur={handleDataUpdate}
-          />
-        </div>
-        {/* Display Uploaded Images */}
-        <div className="flex flex-wrap mt-4">
-          {floorAreaPlanImages.map((image, index) => (
-            <div key={index} className="m-2 relative">
-              <button
-                onClick={() =>
-                  handleImageDelete3(
-                    index,
-                    floorAreaPlanImages,
-                    setFloorAreaPlanImages
-                  )
-                }
-                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
-              >
-                X
-              </button>
+            <input
+              type="file"
+              id="floorAreaPlan-upload"
+              name="floorAreaPlan-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 w-full h-full opacity-0 z-50"
+              onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}
+            />
+            <div className="text-center">
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="mx-auto h-12 w-12"
               />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="floorAreaPlan-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="floorAreaPlan-upload" name="floorAreaPlan-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-          ))}
+            {/* <img src="" className="mt-4 mx-auto max-h-40 hidden" id="preview" /> */}
+          </div>
+          <div className="flex flex-wrap mt-4">
+            {floorAreaPlanImages.map((image, index) => (
+              <div key={index} className="m-2 relative">
+                <button
+                  onClick={() => handleImageDelete(index, floorAreaPlanImages, setFloorAreaPlanImages)}
+                  className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
+                >
+                  X
+                </button>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="w-32 h-32 object-cover rounded cursor-pointer"
+                  onClick={() => openFloorAreaPlanModal(index)}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Modal for displaying images */}
+          {selectedFloorAreaPlanImageIndex !== null && (
+            <ImageModal
+              images={floorAreaPlanImages}
+              currentIndex={selectedFloorAreaPlanImageIndex}
+              onClose={closeImageModal}
+            />
+          )}
         </div>
       </div>
     </div>

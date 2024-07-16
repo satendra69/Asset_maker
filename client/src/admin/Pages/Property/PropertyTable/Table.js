@@ -217,19 +217,138 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         accessorKey: "prty_type",
         size: 100,
       },
-      // Add more columns as needed based data structure
+      {
+        id: 'attachment',
+        header: 'Name',
+        accessorKey: 'attachment',
+        size: 80,
+        Cell: ({ row }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1rem',
+            }}
+          >
+            {row.original.images && row.original.images[0] && (
+              <img
+                src={row.original.images[0].url}
+                alt={row.original.file_name}
+                loading="lazy"
+                style={{ borderRadius: '50%', height: '50px', width: '50px' }}
+              />
+            )}
+            <span>{row.original.file_name}</span>
+          </Box>
+        ),
+      },
+      {
+        id: 'prty_det_desc',
+        accessorKey: 'prty_det_desc',
+        enableClickToCopy: true,
+        filterVariant: 'autocomplete',
+        header: 'Description',
+        size: 300,
+        Cell: ({ row }) => (
+          <Box
+            sx={{
+              maxWidth: '300px',
+              whiteSpace: 'normal',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
+            <div
+              dangerouslySetInnerHTML={{ __html: row.original.prty_det_desc }}
+            />
+          </Box>
+        ),
+      },
+      {
+        id: "prty_det_sale_price",
+        accessorKey: "prty_det_sale_price",
+        // filterVariant: 'range', //if not using filter modes feature, use this instead of filterFn
+        filterFn: "between",
+        header: "Price",
+        size: 50,
+        //custom conditional format and styling
+        Cell: ({ cell }) => (
+          <Box
+            component="span"
+            sx={(theme) => ({
+              backgroundColor:
+                cell.getValue() < 50_000
+                  ? theme.palette.error.dark
+                  : cell.getValue() >= 50_000 && cell.getValue() < 75_000
+                    ? theme.palette.warning.dark
+                    : theme.palette.success.dark,
+              borderRadius: "0.25rem",
+              color: "#fff",
+              maxWidth: "9ch",
+              p: "0.25rem",
+            })}
+          >
+            {cell.getValue()?.toLocaleString?.("en-US", {
+              style: "currency",
+              currency: "INR",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            })}
+          </Box>
+        ),
+      },
       {
         id: "prty_categories",
         header: "Categories",
         accessorKey: "prty_categories",
-        size: 150,
+        size: 60,
+      },
+      {
+        accessorKey: "prty_det_address",
+        header: "Address",
+        size: 80,
+      },
+      {
+        accessorKey: "prty_regions",
+        header: "City",
+        size: 50,
+      },
+      {
+        accessorKey: "prty_det_pmts_area_dts",
+        header: "Size",
+        size: 50,
+        Cell: ({ renderedCellValue }) => <span>{renderedCellValue}sqrt</span>,
+      },
+      {
+        accessorKey: "prty_det_pmts_bth_rom",
+        header: "Bathrooms",
+        size: 50,
+      },
+      {
+        accessorKey: "prty_det_pmts_bed_rom",
+        header: "Bedrooms",
+        size: 50,
+      },
+      {
+        accessorKey: "prty_det_pmts_furnishing",
+        header: "Furnished",
+        size: 50,
+      },
+      {
+        accessorKey: "prty_det_pmts_car_park",
+        header: "Parking",
+        size: 50,
       },
       {
         id: "prty_det_create_date",
-        header: "Created Date",
         accessorKey: "prty_det_create_date",
-        size: 150,
+        header: "Added On",
+        filterVariant: "date",
+        filterFn: "lessThan",
+        sortingFn: "datetime",
+        Cell: ({ renderedCellValue }) => <span>{renderedCellValue}</span>, //render Date as a string
       },
+      // Add more columns as needed based data structure
     ],
     []
   );

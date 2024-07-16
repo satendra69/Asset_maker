@@ -67,48 +67,49 @@ function NewProperty() {
   const fetchProperty = async (propertyId) => {
     try {
       const response = await httpCommon.get(`/property/${propertyId}`);
-      const propertyData = response.data;
+      const propertyData = response.data.data[0];
+      console.log("propertyData", propertyData);
       // Update state with fetched data
-      setTitle(propertyData.title);
-      setPropertyType(propertyData.propertyType);
-      setFeatured(propertyData.featured);
-      setSelectedOwner(propertyData.selectedOwner);
-      setSelectedCategories(propertyData.selectedCategories);
-      setSelectedRegions(propertyData.selectedRegions);
-      setCustomLabel(propertyData.CustomLabel);
+      setTitle(propertyData.prty_title);
+      setPropertyType(propertyData.prty_type);
+      setFeatured(propertyData.prty_mark_as_featured === "true");
+      setSelectedOwner(propertyData.prty_owner);
+      setSelectedCategories(propertyData.prty_categories);
+      setSelectedRegions(propertyData.prty_regions);
+      setCustomLabel(JSON.parse(propertyData.prty_labels));
       // Update specific data based on propertyType
-      switch (propertyData.propertyType) {
-        case "Apartments":
-          setApartment(propertyData.PropertyData);
-          setApartmentGalleryData(propertyData.Property.combinedImages);
-          break;
-        case "Villas":
-          setVilla(propertyData.PropertyData);
-          setVillaGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "Plots":
-          setPlots(propertyData.PropertyData);
-          setPlotsGalleryData(propertyData.Property.combinedImages);
-          break;
-        case "RowHouses":
-          setRowHouse(propertyData.PropertyData);
-          setRowHouseGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "CommercialProperties":
-          setCommercial(propertyData.PropertyData);
-          setCommercialGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "Villaments":
-          setVillament(propertyData.PropertyData);
-          setVillamentGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "PentHouses":
-          setPentHouse(propertyData.PropertyData);
-          setPentHouseGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        default:
-          break;
-      }
+      // switch (propertyData.propertyType) {
+      //   case "Apartments":
+      //     setApartment(propertyData.PropertyData);
+      //     setApartmentGalleryData(propertyData.Property.combinedImages);
+      //     break;
+      //   case "Villas":
+      //     setVilla(propertyData.PropertyData);
+      //     setVillaGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "Plots":
+      //     setPlots(propertyData.PropertyData);
+      //     setPlotsGalleryData(propertyData.Property.combinedImages);
+      //     break;
+      //   case "RowHouses":
+      //     setRowHouse(propertyData.PropertyData);
+      //     setRowHouseGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "CommercialProperties":
+      //     setCommercial(propertyData.PropertyData);
+      //     setCommercialGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "Villaments":
+      //     setVillament(propertyData.PropertyData);
+      //     setVillamentGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "PentHouses":
+      //     setPentHouse(propertyData.PropertyData);
+      //     setPentHouseGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      // default:
+      //   break;
+      // }
     } catch (error) {
       console.error("Error fetching Property:", error);
     }
@@ -138,13 +139,7 @@ function NewProperty() {
     }
   };
 
-  const handleRowLabe = (data) => {
-    // Use the row data in the second component
-    setCustomLabel(data);
-  };
-  //console.log("PlotsGalleryData____",PlotsGalleryData);
   const publishBtn = async (e) => {
-
     e.preventDefault();
 
     const PropertyData = {
@@ -164,7 +159,7 @@ function NewProperty() {
       featured: featured,
       selectedRegions: selectedRegions,
       selectedCategories: selectedCategories,
-      CustomLabel: CustomLabel,
+      CustomLabel: JSON.stringify(CustomLabel),
       propertyData: PropertyData[propertyType],
       auditUser: 'admin',
     };
@@ -181,136 +176,14 @@ function NewProperty() {
         response = await httpCommon.post("/property", json_PropertyInsert);
       }
       const responseData = await response.data;
-      //  console.log("json_Asset Data___", responseData);
 
       if (responseData.status === "SUCCESS") {
         console.log("SUCCESS_____insert__");
         const auditUser = "admin";
-        if (propertyType === "Apartments") {
-          if (ApartmentGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < ApartmentGalleryData.galleryImages.length; i++) {
-              formData.append("images", ApartmentGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
+        const propertyID = responseData.RowID;
 
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
+        await uploadPropertyFiles(propertyType, propertyID, auditUser, PropertyData[propertyType]);
 
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        } else if (propertyType === "Villas") {
-          if (VillaGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < VillaGalleryData.galleryImages.length; i++) {
-              formData.append("images", VillaGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        } else if (propertyType === "Plots") {
-          if (PlotsGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < PlotsGalleryData.galleryImages.length; i++) {
-              formData.append("images", PlotsGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        } else if (propertyType === "RowHouses") {
-          if (RowHouseGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < RowHouseGalleryData.galleryImages.length; i++) {
-              formData.append("images", RowHouseGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        } else if (propertyType === "CommercialProperties") {
-
-          if (CommercialGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < CommercialGalleryData.galleryImages.length; i++) {
-              formData.append("images", CommercialGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        }
-        else if (propertyType === "Villaments") {
-          if (VillamentGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < VillamentGalleryData.galleryImages.length; i++) {
-              formData.append("images", VillamentGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        }
-        else if (propertyType === "PentHouses") {
-
-          if (PentHouseGalleryData.galleryImages.length > 0) {
-            const formData = new FormData();
-            const type = "Gallery";
-            for (let i = 0; i < PentHouseGalleryData.galleryImages.length; i++) {
-              formData.append("images", PentHouseGalleryData.galleryImages[i]);
-            }
-            formData.append("type", type);
-            formData.append("auditUser", auditUser);
-
-            const uploadResponse = await httpCommon.post(`/property/upload/${responseData.RowID}`, formData, {
-              headers: {
-                'Content-Type': 'multipart/form-data'
-              }
-            });
-            console.log("Upload Response:", uploadResponse.data);
-          }
-        }
         Swal.close();
         Swal.fire({
           icon: "success",
@@ -332,6 +205,53 @@ function NewProperty() {
       console.error("Error publishing property:", error);
     }
   };
+
+  const uploadPropertyFiles = async (propertyType, propertyID, auditUser, PropertyData) => {
+    const fileTypes = [
+      { key: 'combinedImages.galleryImages', type: 'Gallery' },
+      { key: 'combinedImages.masterPlanImages', type: 'MasterPlan' },
+      { key: 'combinedImages.floorAreaPlanImages', type: 'FloorAreaPlan' },
+      { key: 'brochure', type: 'Brochure' },
+    ];
+
+    console.log(`Starting file upload for propertyType: ${propertyType}, propertyID: ${propertyID}, auditUser: ${auditUser}`);
+
+    for (const fileType of fileTypes) {
+      const files = getFileFromPropertyData(PropertyData, fileType.key);
+      if (files && files.length > 0) {
+        console.log(`Uploading ${files.length} files for ${fileType.type}`);
+
+        const formData = new FormData();
+        formData.append("type", fileType.type); // Ensure type key matches server expectations
+        formData.append("auditUser", auditUser);
+
+        for (let i = 0; i < files.length; i++) {
+          formData.append("attachments", files[i]); // Ensure "images" matches server's field name for file uploads
+        }
+
+        try {
+          const uploadResponse = await httpCommon.post(`/property/upload/${propertyID}`, formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          });
+
+          console.log(`Upload Response (${fileType.type}):`, uploadResponse.data);
+        } catch (error) {
+          console.error(`Error uploading ${fileType.type} files:`, error);
+        }
+      }
+    }
+
+    console.log('File upload process completed.');
+  };
+
+  // Helper function to get nested property from object
+  function getFileFromPropertyData(data, key) {
+    const keys = key.split('.');
+    return keys.reduce((obj, k) => (obj && obj[k] !== 'undefined') ? obj[k] : undefined, data);
+  }
+
   const handleApartmentDataUpdate = (data) => {
     setApartment(data);
     setApartmentGalleryData(data.combinedImages);
@@ -381,14 +301,14 @@ function NewProperty() {
     <div className="w-full bg-[#f5f3f3]">
       <div className="h-[98vh] overflow-y-scroll px-10">
         <div className="py-2 sticky top-0 bg-[#f5f3f3] mb-5 z-40">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div>
               <h2>{property.title}</h2>
               <p>{property.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
             </div>
             <button
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-semibold py-2 px-4 rounded"
+              className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}
             >
               {property.button}
@@ -399,7 +319,7 @@ function NewProperty() {
           <h2 className="text-xl font-semibold">Property</h2>
           <div className="flex flex-wrap items-center">
             {/* Title */}
-            <div className="w-full sm:w-1/2 lg:w-2/3 mb-4 sm:mb-0 pr-4">
+            <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-2/3 sm:mb-0">
               <label
                 htmlFor="title"
                 className="block text-sm font-semibold leading-6 text-gray-900"
@@ -419,7 +339,7 @@ function NewProperty() {
             </div>
 
             {/* Property Owner select dropdown */}
-            <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+            <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
               <label
                 htmlFor="owner"
                 className="block text-sm font-semibold leading-6 text-gray-900"
@@ -447,7 +367,7 @@ function NewProperty() {
           {/* Property Type and Mark as Featured */}
           <div className="flex flex-wrap items-center mt-4">
             {/* Property Type */}
-            <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+            <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
               <label
                 htmlFor="propertyType"
                 className="block text-sm font-semibold leading-6 text-gray-900"
@@ -498,7 +418,7 @@ function NewProperty() {
               </Switch>
               <label
                 htmlFor="featured"
-                className="text-sm leading-6 text-gray-600 ml-2"
+                className="ml-2 text-sm leading-6 text-gray-600"
               >
                 {" "}
                 <a href="#" className="font-semibold text-indigo-600">
@@ -510,7 +430,7 @@ function NewProperty() {
 
           {/* Regions Section */}
           <div>
-            <hr className="border-gray-400 my-8" />
+            <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Regions</h2>
             <div className="flex items-center mt-4">
               {/* Checkboxes for regions */}
@@ -519,12 +439,12 @@ function NewProperty() {
                 {/* Bangalore */}
                 <label
                   htmlFor="bangalore"
-                  className="inline-flex items-center mr-6 mb-2"
+                  className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
                     type="checkbox"
                     id="bangalore"
-                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleRegionsCheckboxChange}
                     checked={selectedRegions.includes("bangalore")}
                   />
@@ -536,12 +456,12 @@ function NewProperty() {
                 {/* Hyderabad */}
                 <label
                   htmlFor="hyderabad"
-                  className="inline-flex items-center mr-6 mb-2"
+                  className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
                     type="checkbox"
                     id="hyderabad"
-                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleRegionsCheckboxChange}
                     checked={selectedRegions.includes("hyderabad")}
                   />
@@ -553,12 +473,12 @@ function NewProperty() {
                 {/* Tirupati */}
                 <label
                   htmlFor="tirupati"
-                  className="inline-flex items-center mr-6 mb-2"
+                  className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
                     type="checkbox"
                     id="tirupati"
-                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleRegionsCheckboxChange}
                     checked={selectedRegions.includes("tirupati")}
                   />
@@ -573,16 +493,16 @@ function NewProperty() {
 
           {/* Categories Section */}
           <div>
-            <hr className="border-gray-400 my-8" />
+            <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Categories</h2>
             <div className="flex items-center mt-4">
               {/* Checkboxes for categories */}
               <div className="flex flex-wrap items-center">
-                <label htmlFor="buy" className="inline-flex items-center mr-6 mb-2">
+                <label htmlFor="buy" className="inline-flex items-center mb-2 mr-6">
                   <input
                     type="checkbox"
                     id="buy"
-                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleCheckboxChange}
                     checked={selectedCategories.includes("buy")}
                   />
@@ -594,7 +514,7 @@ function NewProperty() {
                   <input
                     type="checkbox"
                     id="rent"
-                    className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleCheckboxChange}
                     checked={selectedCategories.includes("rent")}
                   />
@@ -607,7 +527,11 @@ function NewProperty() {
           </div>
 
           {/* Labels Section */}
-          <AddCustomLabel onRowClick={handleRowLabe} />
+          {/* <CustomLabel onRowClick={handleRowLabe} /> */}
+          <AddCustomLabel
+            initialLabels={CustomLabel}
+            onRowClick={(newLabels) => setCustomLabel(newLabels)}
+          />
 
           {/* Render different modules based on property type */}
           <div>

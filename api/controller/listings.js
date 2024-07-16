@@ -20,15 +20,15 @@ const addListings = async (req, res) => {
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-	
-		try {
-		const [results] = await db.query(q);
-		const lastInsertId = results.insertId;
 
-        // Insert Data ltg_det
-        if(req.body.listingType == "Apartments" || req.body.listingType == "Villas"){
-          const q_det =
-          `INSERT INTO ltg_det
+  try {
+    const [results] = await db.query(q);
+    const lastInsertId = results.insertId;
+
+    // Insert Data ltg_det
+    if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
+      const q_det =
+        `INSERT INTO ltg_det
             (ltg_det_mstRowID, 
             ltg_det_price, 
             ltg_det_sale_price, 
@@ -128,20 +128,20 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-			
-			try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-        }
-        else if(req.body.listingType == "Plots"){
-          console.log("ploats____");
-          const q_det =
-          `INSERT INTO ltg_det_plots
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "Plots") {
+      console.log("ploats____");
+      const q_det =
+        `INSERT INTO ltg_det_plots
             (ltg_det_mstRowID, 
             ltg_det_plot_price,  
             ltg_det_plot_sale_price, 
@@ -216,19 +216,19 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-      
-			try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-        }
-        else if(req.body.listingType == "RowHouses"){
-          const q_det =
-          `INSERT INTO ltg_det_row_houses
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "RowHouses") {
+      const q_det =
+        `INSERT INTO ltg_det_row_houses
             (ltg_det_mstRowID, 
               ltg_det_row_house_price,  
               ltg_det_row_house_sale_price, 
@@ -319,18 +319,18 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-			try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-        }
-        else if(req.body.listingType == "CommercialProperties"){
-          const q_det =
-          `INSERT INTO ltg_det_commercial_properties
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "CommercialProperties") {
+      const q_det =
+        `INSERT INTO ltg_det_commercial_properties
             (ltg_det_mstRowID, 
               ltg_det_comm_prop_price,  
               ltg_det_comm_prop_sale_price, 
@@ -404,18 +404,18 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-          try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-        }
-        else if(req.body.listingType == "Villaments"){
-          const q_det =
-          `INSERT INTO ltg_det_villaments
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "Villaments") {
+      const q_det =
+        `INSERT INTO ltg_det_villaments
             (	ltg_det_mstRowID, 
               ltg_det_villaments_price,  
               ltg_det_villaments_sale_price, 
@@ -507,18 +507,18 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-            try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-        }
-        else if(req.body.listingType == "PentHouses"){
-          const q_det =
-          `INSERT INTO ltg_det_penthouses
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "PentHouses") {
+      const q_det =
+        `INSERT INTO ltg_det_penthouses
             (ltg_det_mstRowID, 
               ltg_det_penthouses_price,  
               ltg_det_penthouses_sale_price, 
@@ -608,23 +608,23 @@ const addListings = async (req, res) => {
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-           try {
-				const [results_det] = await db.query(q_det);
-				console.log("Data inserted into ltg_det successfully");
-				res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
-			  } catch (error) {
-				console.error("Error inserting into ltg_det:", error.stack);
-				res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
-			  }
-			}
-		} catch (error) {
-			console.error("Error inserting property:", error.stack);
-			res.status(500).json({ message: "Error inserting property", status: "error" });
-		  }
-      
-      };
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing created successfully", status: "SUCCESS", RowID: lastInsertId });
+      } catch (error) {
+        console.error("Error inserting into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error inserting into ltg_det", status: "error" });
+      }
+    }
+  } catch (error) {
+    console.error("Error inserting listing:", error.stack);
+    res.status(500).json({ message: "Error inserting listing", status: "error" });
+  }
 
-const getListItem = async(req, res) => {
+};
+
+const getListItem = async (req, res) => {
 
   const query = `
     SELECT * FROM ltg_mst
@@ -632,7 +632,7 @@ const getListItem = async(req, res) => {
     LEFT JOIN ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
   `;
 
-    try {
+  try {
     const [results, fields] = await db.query(query);
     res.json({ data: results, message: "Properties fetched successfully", status: "success" });
   } catch (error) {
@@ -643,37 +643,37 @@ const getListItem = async(req, res) => {
 
 // get Apartment by type
 const getListingbyType = async (req, res) => {
-  
-   const { type } = req.params;
-   //console.log("type____",type);
-   let query = '';
-   if(type === "Plots"){
-     query = `
+
+  const { type } = req.params;
+  //console.log("type____",type);
+  let query = '';
+  if (type === "Plots") {
+    query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
   `;
-   }else if(type === "RowHouses"){
+  } else if (type === "RowHouses") {
     query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
  `;
-  }else if(type === "CommercialProperties"){
+  } else if (type === "CommercialProperties") {
     query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
  `;
-  }else if(type === "Villaments"){
+  } else if (type === "Villaments") {
     query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID   WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
  `;
-  }else if(type === "PentHouses"){
+  } else if (type === "PentHouses") {
     query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID   WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
  `;
-  }else{
-     query = `
+  } else {
+    query = `
     SELECT * FROM ltg_mst LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY 
     ltg_create_date DESC
   `;
-   }
- 
+  }
+
   try {
     const [results, fields] = await db.query(query, [type]);
     res.json({ data: results, message: "Properties fetched successfully", status: "success" });
@@ -681,43 +681,43 @@ const getListingbyType = async (req, res) => {
     console.error("Error fetching properties: " + error.stack);
     res.status(500).json({ message: "Error fetching properties", status: "error" });
   }
-  
+
 }
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
-  
-  const { id, type } = req.params; 
- 
+
+  const { listingID, type } = req.params;
+
   let query = '';
 
-  if(type === "Plots"){
+  if (type === "Plots") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID WHERE ltg_mst.RowID ='${id}'
+    SELECT * FROM ltg_mst LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
  `;
-  }else if(type === "RowHouses"){
+  } else if (type === "RowHouses") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${id}'
+    SELECT * FROM ltg_mst LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
  `;
-  }else if(type === "CommercialProperties"){
+  } else if (type === "CommercialProperties") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID WHERE ltg_mst.RowID ='${id}'
- `;
-  }
-  else if(type === "Villaments"){
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID WHERE ltg_mst.RowID ='${id}'
- `;
-  }else if(type === "PentHouses"){
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${id}'
+    SELECT * FROM ltg_mst LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
  `;
   }
-  else{
+  else if (type === "Villaments") {
     query = `
-  SELECT * FROM ltg_mst LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID  WHERE ltg_mst.RowID ='${id}'
+    SELECT * FROM ltg_mst LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
+ `;
+  } else if (type === "PentHouses") {
+    query = `
+    SELECT * FROM ltg_mst LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
+ `;
+  }
+  else {
+    query = `
+  SELECT * FROM ltg_mst LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID  WHERE ltg_mst.RowID ='${listingID}'
   `;
   }
-  
+
   try {
     const [results, fields] = await db.query(query);
     res.json({ data: results, message: "Properties fetched successfully", status: "success" });
@@ -730,14 +730,14 @@ const getListItemId = async (req, res) => {
 // get Single page img 
 
 const getsinglePageImg = async (req, res) => {
-  const { id } = req.params; 
+  const { listingID } = req.params;
 
   const query = `
     SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
   `;
 
   try {
-    const [results] = await db.query(query, [id]);
+    const [results] = await db.query(query, [listingID]);
 
     if (results.length === 0) {
       res.status(404).json({ message: "No properties found", status: "not_found" });
@@ -753,8 +753,8 @@ const getsinglePageImg = async (req, res) => {
 
 // update List
 const updateListItem = (req, res) => {
-  const propertyId = req.params.id;
-  console.log("propertyId", propertyId);
+  const listingID = req.params.listingID;
+  console.log("listingID", listingID);
   const {
     name,
     description,
@@ -777,7 +777,7 @@ const updateListItem = (req, res) => {
   const q =
     "UPDATE listings SET `name` = ?, `description` = ?, `address` = ?, `price` = ?, `bathrooms` = ?, `furnished` = ?, `parking` = ?, `type` = ?, `category` = ?, `restaurant` = ?, `bus` = ?, `school` = ?, `size` = ?, `flore` = ?, `cityId` = ?, `bedrooms` = ? WHERE `id` = ?";
 
-  const propertyValues = [
+  const listingValues = [
     name,
     description,
     address,
@@ -794,47 +794,47 @@ const updateListItem = (req, res) => {
     floore,
     city,
     bedrooms,
-    propertyId,
-    req.params.id,
+    listingID,
+    req.params.listingID,
   ];
 
   const duplicateQuery =
     "SELECT * FROM listings WHERE (name = ? OR address = ?) AND id != ?";
-  db.query(duplicateQuery, [name, address, propertyId], (error, results) => {
+  db.query(duplicateQuery, [name, address, listingID], (error, results) => {
     if (error) {
       console.error("Error checking for duplicate listings:", error.stack);
       return res.status(500).send("Internal Server Error");
     }
 
-    db.query(q, propertyValues, (error, results, fields) => {
+    db.query(q, listingValues, (error, results, fields) => {
       if (error) {
-        console.error("Error updating property: " + error.stack);
+        console.error("Error updating listing: " + error.stack);
         return res.status(400).send(error);
       }
 
       if (results.affectedRows === 0) {
-        // Property with the given ID not found
-        return res.status(404).send("Property not found.");
+        // Listing with the given ID not found
+        return res.status(404).send("Listing not found.");
       }
 
-      console.log("Updated property with id " + propertyId);
+      console.log("Updated listing with id " + listingID);
 
-      res.status(200).send("Property updated successfully");
+      res.status(200).send("Listing updated successfully");
     });
   });
 };
 
 const deleteListItem = (req, res) => {
-  const propertyId = req.params.id;
+  const listingID = req.params.listingID;
   const q = "SELECT userId FROM listings WHERE id = ?";
-  db.query(q, [propertyId], (error, results, fields) => {
+  db.query(q, [listingID], (error, results, fields) => {
     if (error) {
-      console.error("Error deleting property: " + error.stack);
-      res.status(500).json({ error: "Error deleting property" });
+      console.error("Error deleting listing: " + error.stack);
+      res.status(500).json({ error: "Error deleting listing" });
       return;
     }
     if (results.length === 0) {
-      res.status(404).json({ error: "Property not found or already deleted" });
+      res.status(404).json({ error: "Listing not found or already deleted" });
       return;
     }
     const userId = results[0].userId;
@@ -842,20 +842,20 @@ const deleteListItem = (req, res) => {
       return res.status(404).send("you must be an administrator");
 
     const query = "DELETE FROM listings WHERE id = ?";
-    db.query(query, [propertyId], (error, results, fields) => {
+    db.query(query, [listingID], (error, results, fields) => {
       if (error) {
-        console.error("Error deleting property: " + error.stack);
-        res.status(500).json({ error: "Error deleting property" });
+        console.error("Error deleting listing: " + error.stack);
+        res.status(500).json({ error: "Error deleting listing" });
         return;
       }
       // Check if any rows were affected
       if (results.affectedRows === 0) {
         res
           .status(404)
-          .json({ error: "Property not found or already deleted" });
+          .json({ error: "Listing not found or already deleted" });
         return;
       }
-      res.json({ message: "Property deleted successfully" });
+      res.json({ message: "Listing deleted successfully" });
     });
   });
 };
@@ -865,67 +865,69 @@ const deleteListItem = (req, res) => {
 // uploading multiple Image
 // const uploadListItem = async(req, res) => {
 // console.log("insert____");
-  // try {
-    // if (!req.files || req.files.length === 0) {
-      
-      // return res.status(400).send("No files were uploaded.");
-    // }
-    // console.log("insert____2");
-    // const insertQuery2 =
-                // "INSERT INTO ltg_ref (`ltg_mstRowID`,`file_name`,`attachment`,`type`,`audit_user`,`audit_date`) VALUES ?";
-    // const values = req.files.map((file) => {
-      // const url = file.path.replace("public", "");
-      // const now = new Date();
-      // const formattedDate = now.toISOString().slice(0, 10);
-     // // console.log("url", url);
-      
-      // return [
-        // req.params.id,                      
-        // file.originalname,                
-        // url,                              
-        // req.body.type,                              
-        // 'admin',                           
-        // formattedDate 
-    // ];
-    // });
+// try {
+// if (!req.files || req.files.length === 0) {
 
-    // // Check if URLs already exist in the database
-    // const existingUrlsQuery =
-      // "SELECT attachment FROM ltg_ref WHERE ltg_mstRowID = ?";
-    // db.query(existingUrlsQuery, [req.params.id], (err, results) => {
-     // console.log("results___",results);
-      // if (err) {
-        // console.error("Error retrieving existing URLs from database:", err);
-        // return res.status(500).send("Internal Server Error");
-      // }
+// return res.status(400).send("No files were uploaded.");
+// }
+// console.log("insert____2");
+// const insertQuery2 =
+// "INSERT INTO ltg_ref (`ltg_mstRowID`,`file_name`,`attachment`,`type`,`audit_user`,`audit_date`) VALUES ?";
+// const values = req.files.map((file) => {
+// const url = file.path.replace("public", "");
+// const now = new Date();
+// const formattedDate = now.toISOString().slice(0, 10);
+// // console.log("url", url);
 
-      // const existingUrls = results.map((row) => row.attachment);
-      // const uniqueValues = values.filter(
-        // (value) => !existingUrls.includes(value[2])
-      // );
+// return [
+// req.params.id,                      
+// file.originalname,                
+// url,                              
+// req.body.type,                              
+// 'admin',                           
+// formattedDate 
+// ];
+// });
 
-      // if (uniqueValues.length === 0) {
-       
-       // // return res.status(400).send("No new images to insert.");
-        // return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
-      // }
+// // Check if URLs already exist in the database
+// const existingUrlsQuery =
+// "SELECT attachment FROM ltg_ref WHERE ltg_mstRowID = ?";
+// db.query(existingUrlsQuery, [req.params.id], (err, results) => {
+// console.log("results___",results);
+// if (err) {
+// console.error("Error retrieving existing URLs from database:", err);
+// return res.status(500).send("Internal Server Error");
+// }
 
-      // db.query(insertQuery2, [uniqueValues], (err, results) => {
-        // console.log("results____");
-        // if (err) {
-          // console.error("Error inserting URLs into database:", err);
-        // //  return res.status(500).send("Internal Server Error");
-          // return res.status(500).json({ message: "Internal Server Error", status: "ERROR" });
-        // }
-       // // res.status(200).send("Images inserted successfully");
-        // res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
-      // });
-    // });
-  // } catch (error) {
-    // console.error("Error processing file uploads:", error);
-    // res.status(500).send("Internal Server Error");
-  // }
+// const existingUrls = results.map((row) => row.attachment);
+// const uniqueValues = values.filter(
+// (value) => !existingUrls.includes(value[2])
+// );
+
+// if (uniqueValues.length === 0) {
+
+// // return res.status(400).send("No new images to insert.");
+// return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
+// }
+
+// db.query(insertQuery2, [uniqueValues], (err, results) => {
+// console.log("results____");
+// if (err) {
+// console.error("Error inserting URLs into database:", err);
+// //  return res.status(500).send("Internal Server Error");
+// return res.status(500).json({ message: "Internal Server Error", status: "ERROR" });
+// }
+// // res.status(200).send("Images inserted successfully");
+// res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
+// });
+// });
+// } catch (error) {
+// console.error("Error processing file uploads:", error);
+// res.status(500).send("Internal Server Error");
+// }
 // };
+
+
 
 const uploadListItem = async (req, res) => {
   console.log("insert____");
@@ -938,14 +940,14 @@ const uploadListItem = async (req, res) => {
     console.log("insert____2");
     const insertQuery =
       "INSERT INTO ltg_ref (`ltg_mstRowID`, `file_name`, `attachment`, `type`, `audit_user`, `audit_date`) VALUES ?";
-    
+
     const values = req.files.map((file) => {
       const url = file.path.replace("public", "");
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
 
       return [
-        req.params.id,
+        req.params.listingID,
         file.originalname,
         url,
         req.body.type,
@@ -957,8 +959,8 @@ const uploadListItem = async (req, res) => {
     // Check if URLs already exist in the database
     const existingUrlsQuery =
       "SELECT attachment FROM ltg_ref WHERE ltg_mstRowID = ?";
-    
-    const [existingUrlsResults, _] = await db.query(existingUrlsQuery, [req.params.id]);
+
+    const [existingUrlsResults] = await db.query(existingUrlsQuery, [req.params.listingID]);
     const existingUrls = existingUrlsResults.map((row) => row.attachment);
 
     const uniqueValues = values.filter(
@@ -969,7 +971,7 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
     }
 
-    const [insertResults, __] = await db.query(insertQuery, [uniqueValues]);
+    const [insertResults] = await db.query(insertQuery, [uniqueValues]);
     console.log("insertResults:", insertResults);
 
     res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
@@ -980,15 +982,13 @@ const uploadListItem = async (req, res) => {
   }
 };
 
-module.exports = uploadListItem;
-
 // Delete Images
 const deleteListImage = (req, res) => {
-  const propertyId = req.params.id;
+  const listingID = req.params.listingID;
 
-  const deleteQuery = "DELETE FROM propertyimages WHERE id = ?";
+  const deleteQuery = "DELETE FROM listingimages WHERE id = ?";
 
-  db.query(deleteQuery, [propertyId], (err, results) => {
+  db.query(deleteQuery, [listingID], (err, results) => {
     if (err) {
       console.error("Error deleting images from database:", err);
       return res.status(500).send("Internal Server Error");
@@ -999,9 +999,9 @@ const deleteListImage = (req, res) => {
 
 // Update List Image
 const updateListImage = (req, res) => {
-  const imageId = req.params.id;
+  const imageId = req.params.listingID;
 
-  const updateQuery = "UPDATE propertyimages SET `imageUrl` = ? WHERE id = ?";
+  const updateQuery = "UPDATE listingimages SET `imageUrl` = ? WHERE id = ?";
 
   const imageUrl = `${process.env.apiUrl}${req.file.path.replace(
     "public",

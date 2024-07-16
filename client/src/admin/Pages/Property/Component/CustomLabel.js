@@ -1,9 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 
-const CustomLabel = ({ onRowClick }) => {
+const AddCustomLabel = ({ initialLabels, onRowClick }) => {
   const [labels, setLabels] = useState([]);
+
+  // Set the initial labels when the component mounts
+  useEffect(() => {
+    if (initialLabels) {
+      console.log("initialLabels received in CustomLabel:", initialLabels);
+      setLabels(initialLabels);
+    }
+  }, [initialLabels]);
 
   const handleAddLabel = () => {
     setLabels([...labels, { name: "", color: "blue" }]);
@@ -21,7 +29,7 @@ const CustomLabel = ({ onRowClick }) => {
     const newLabels = [...labels];
     newLabels.splice(index, 1);
     setLabels(newLabels);
-
+    onRowClick(newLabels);
   };
 
   return (
@@ -74,4 +82,4 @@ const CustomLabel = ({ onRowClick }) => {
   );
 };
 
-export default CustomLabel;
+export default AddCustomLabel;

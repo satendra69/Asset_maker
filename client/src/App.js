@@ -52,7 +52,7 @@ import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 import SingleProperty from "./admin/Pages/Property/SingleProperty/SingleProperty";
 import NewProperty from "./admin/Pages/Property/Property";
 import NewListingPage from "./admin/Pages/Listing/Listing";
-import AllListingList from "./admin/Pages/Listing/table/AllListingList";
+import AllListingList from "./admin/Pages/Listing/ListingTable/AllListingList";
 import Blog from "./admin/Pages/Blog/Blog";
 import NewBlog from "./admin/Pages/Blog/NewBlog";
 import CreateCategory from "./admin/Pages/Blog/CreateCategory";
@@ -201,6 +201,10 @@ const router = createBrowserRouter([
         element: <NewProperty />,
       },
       {
+        path: "/admin/property/edit/:propertyId",
+        element: <NewProperty />,
+      },
+      {
         path: "/admin/city",
         element: <City />,
       },
@@ -222,6 +226,10 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin/listing/new",
+        element: <NewListingPage />,
+      },
+      {
+        path: "/admin/listing/edit/:listingId",
         element: <NewListingPage />,
       },
       {

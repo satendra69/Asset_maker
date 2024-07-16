@@ -9,7 +9,9 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import MapComponent from "./MapComponent";
 import draftToHtml from 'draftjs-to-html';
-import { toWords } from 'number-to-words';
+import inwords from './toIndianNumberingWords';
+import ImageModal from './ImageModal';
+import FileModal from './FileModal';
 
 function PlotsModule({ onDataUpdate }) {
   const [salePrice, setSalePrice] = useState("");
@@ -29,6 +31,8 @@ function PlotsModule({ onDataUpdate }) {
   const [floorsAllowedForConstruction, setFloorsAllowedForConstruction] =
     useState("");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
+  const [brochure, setBrochure] = useState([]);
+  const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
   const [videoUrl, setVideoUrl] = useState("");
   const [cornerPlot, setCornerPlot] = useState("");
   const [yearBuilt, setYearBuilt] = useState("");
@@ -50,6 +54,9 @@ function PlotsModule({ onDataUpdate }) {
   const [galleryImages, setGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
+  const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
+  const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
+  const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const limit = 999999999999;
 
   // format number to en-IN
@@ -70,7 +77,7 @@ function PlotsModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSalePrice(value);
         setDisplaySalePrice(formatNumber(value));
-        setSalePriceWords(toWords(num) + ' Only');
+        setSalePriceWords(inwords(num) + ' Only');
         setIsSalePriceExceeded(false);
       } else {
         setSalePriceWords("");
@@ -91,7 +98,7 @@ function PlotsModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSuffixPrice(value);
         setDisplaySuffixPrice(formatNumber(value));
-        setSuffixPriceWords(toWords(num) + ' Only');
+        setSuffixPriceWords(inwords(num) + ' Only');
         setIsSuffixPriceExceeded(false);
       } else {
         setSuffixPriceWords("");
@@ -111,50 +118,83 @@ function PlotsModule({ onDataUpdate }) {
 
 
   // Function to handle image upload for each section
-  const handleImageUpload = (event, setImageFunction) => {
+  const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
-    setImageFunction((prevImages) => [...prevImages, ...files]);
+    setFunction(prevImages => [...prevImages, ...files]);
   };
-  const handleImageUpload2 = (event, setMasterPlanImages) => {
+
+  const handleImageDelete = (index, images, setFunction) => {
+    const updatedImages = images.filter((_, i) => i !== index);
+    setFunction(updatedImages);
+
+    if (selectedGalleryImageIndex === index) {
+      setSelectedGalleryImageIndex(null);
+    } else if (selectedGalleryImageIndex > index) {
+      setSelectedGalleryImageIndex(selectedGalleryImageIndex - 1);
+    }
+
+    if (selectedMasterPlanImageIndex === index) {
+      setSelectedMasterPlanImageIndex(null);
+    } else if (selectedMasterPlanImageIndex > index) {
+      setSelectedMasterPlanImageIndex(selectedMasterPlanImageIndex - 1);
+    }
+
+    if (selectedFloorAreaPlanImageIndex === index) {
+      setSelectedFloorAreaPlanImageIndex(null);
+    } else if (selectedFloorAreaPlanImageIndex > index) {
+      setSelectedFloorAreaPlanImageIndex(selectedFloorAreaPlanImageIndex - 1);
+    }
+
+  };
+
+  // Function to open modal with selected image index
+  const openGalleryModal = (index) => {
+    setSelectedGalleryImageIndex(index);
+  };
+
+  const openMasterPlanModal = (index) => {
+    setSelectedMasterPlanImageIndex(index);
+  };
+
+  const openFloorAreaPlanModal = (index) => {
+    setSelectedFloorAreaPlanImageIndex(index);
+  };
+
+  // Function to close modal
+  const closeImageModal = () => {
+    setSelectedGalleryImageIndex(null);
+    setSelectedMasterPlanImageIndex(null);
+    setSelectedFloorAreaPlanImageIndex(null);
+  };
+
+  // Function to handle drag over
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  // Function to handle drop
+  const handleDrop = (e, setFunction) => {
+    e.preventDefault();
+    const files = Array.from(e.dataTransfer.files);
+    setFunction(prevImages => [...prevImages, ...files]);
+  };
+
+  const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
-    setMasterPlanImages((prevImages) => [...prevImages, ...files]);
-    //setMasterPlanImages((prevImages) => [...prevImages, ...files]);
-  };
-  const handleImageUpload3 = (event, setFloorAreaPlanImages) => {
-    const files = Array.from(event.target.files);
-    setFloorAreaPlanImages((prevImages) => [...prevImages, ...files]);
-    //setFloorAreaPlanImages((prevImages) => [...prevImages, ...files]);
+    setBrochure((prevBrochure) => [...prevBrochure, ...files]);
   };
 
-  // Function to handle image deletion for each section
-  const handleImageDelete = (index, imageArray, setImageFunction) => {
-    setImageFunction((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
-  const handleImageDelete2 = (index, imageArray, setMasterPlanImages) => {
-    setMasterPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    // setMasterPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  };
-  const handleImageDelete3 = (index, imageArray, setFloorAreaPlanImages) => {
-    setFloorAreaPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
-    // setFloorAreaPlanImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  const handleFileDelete = (index) => {
+    const updatedBrochure = brochure.filter((_, i) => i !== index);
+    setBrochure(updatedBrochure);
   };
 
-  const handleSelectChange = (e) => {
-    const selectedValues = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setSelectedOptions(selectedValues);
+  const handleFileClick = (index) => {
+    setSelectedDocumentIndex(index);
   };
 
-  const handleRemoveOption = (value) => {
-    const updatedOptions = selectedOptions.filter((option) => option !== value);
-    setSelectedOptions(updatedOptions);
-  };
-
-  // Function to handle input change
-  const handleInputChange = (e) => {
-    setVideoUrl(e.target.value);
+  const closeDocumentModal = () => {
+    setSelectedDocumentIndex(null);
   };
 
   // List of amenities
@@ -302,7 +342,9 @@ function PlotsModule({ onDataUpdate }) {
       totalPhases,
       selectedOptions,
       projectBuilderDetails,
-      combinedImages
+      brochure,
+      combinedImages,
+      type: "Plots",
     };
     onDataUpdate(data);
   };
@@ -312,16 +354,16 @@ function PlotsModule({ onDataUpdate }) {
     <div>
       <div>
         {/* Price Section */}
-        <hr className="border-gray-400 my-8" />
+        <hr className="my-8 border-gray-400" />
         <h2 className="text-xl font-semibold">Price</h2>
         <div className="flex flex-wrap items-start mt-4"> {/* Use items-start to align items at the top */}
           {/* Sale Price */}
-          <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label htmlFor="salePrice" className="block text-sm font-semibold leading-6 text-gray-900">
               Sale Price
             </label>
             <div className="mt-2.5 relative">
-              {displaySalePrice && <span className="absolute left-2 top-2 text-gray-900">₹</span>}
+              {displaySalePrice && <span className="absolute text-gray-900 left-2 top-2">₹</span>}
               <input
                 type="text"
                 id="salePrice"
@@ -329,7 +371,7 @@ function PlotsModule({ onDataUpdate }) {
                 placeholder="Enter Sale Price"
                 onChange={handleSalePriceChange}
                 onBlur={handleDataUpdate}
-                className="block w-full rounded-md border-0 pl-6 pr-2 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {/* Conditional rendering of limit exceeded or salePriceWords */}
               <div className="mt-1 text-sm text-blue-500">
@@ -339,12 +381,12 @@ function PlotsModule({ onDataUpdate }) {
           </div>
 
           {/* Suffix Price */}
-          <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label htmlFor="suffixPrice" className="block text-sm font-semibold leading-6 text-gray-900">
               Suffix Price
             </label>
             <div className="mt-2.5 relative">
-              {displaySuffixPrice && <span className="absolute left-2 top-2 text-gray-900">₹</span>}
+              {displaySuffixPrice && <span className="absolute text-gray-900 left-2 top-2">₹</span>}
               <input
                 type="text"
                 id="suffixPrice"
@@ -352,7 +394,7 @@ function PlotsModule({ onDataUpdate }) {
                 placeholder="Enter Suffix Price"
                 onChange={handleSuffixPriceChange}
                 onBlur={handleDataUpdate}
-                className="block w-full rounded-md border-0 pl-6 pr-2 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {/* Conditional rendering of limit exceeded or suffixPriceWords */}
               <div className="mt-1 text-sm text-blue-500">
@@ -364,10 +406,10 @@ function PlotsModule({ onDataUpdate }) {
       </div>
 
       {/* Description Section */}
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <h2 className="text-xl font-semibold">Description</h2>
       <div className="flex flex-wrap items-center mt-4">
-        <div className="w-full border border-gray-450 p-4">
+        <div className="w-full p-4 border border-gray-450">
           <Editor
             placeholder="Enter Description"
             editorState={editorState}
@@ -386,7 +428,7 @@ function PlotsModule({ onDataUpdate }) {
 
       {/* Property Address (If any more detailed) Section */}
 
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <h2 className="text-xl font-semibold">
         Property Address (If any more detailed)
       </h2>
@@ -413,11 +455,11 @@ function PlotsModule({ onDataUpdate }) {
 
       {/* Parameters Section */}
 
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <h2 className="text-xl font-semibold">Parameters</h2>
       <div className="flex flex-wrap items-center mt-4">
         {/* Area Details */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="areaDetails"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -438,7 +480,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Rate Per Sq-Ft/Yrd */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="ratePerSqFt"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -459,7 +501,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Status */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="status"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -483,7 +525,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Plot Dimensions */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="plotDimensions"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -504,7 +546,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Floors Allowed For Construction */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="floorsAllowedForConstruction"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -531,7 +573,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* No Of Open Sides */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="noOfOpenSides"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -557,7 +599,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Plot Facing */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="plotFacing"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -586,7 +628,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Corner Plot */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="cornerPlot"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -613,7 +655,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Is In Gated Community */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="isInGatedCommunity"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -636,7 +678,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Boundary Wall Made */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="boundaryWallMade"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -659,7 +701,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Approaching Road Width */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="approachingRoadWidth"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -680,7 +722,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Transaction Type */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="transactionType"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -703,7 +745,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Stamp Duty & Registration Charges */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="stampDutyAndRegistrationCharges"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -728,7 +770,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Total Project Extent */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="totalProjectExtent"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -749,7 +791,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Plot Approval Authority */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="plotApprovalAuthority"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -770,7 +812,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Year Built */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="yearBuilt"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -791,7 +833,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Total Units */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0">
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="totalUnits"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -812,7 +854,7 @@ function PlotsModule({ onDataUpdate }) {
         </div>
 
         {/* Total Phases */}
-        <div className="w-full sm:w-1/2 lg:w-1/3 mb-4 sm:mb-0 pr-4">
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="totalPhases"
             className="block text-sm font-semibold leading-6 text-gray-900"
@@ -834,36 +876,68 @@ function PlotsModule({ onDataUpdate }) {
       </div>
 
       {/* Property Brochure Section */}
-      <hr className="border-gray-400 my-8" />
-      <h2 className="text-xl font-semibold">Property Brochure</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        <label htmlFor="brochure" className="mr-2">
-          <span className="text-gray-700">Upload Brochure:</span>
-          <input
-            type="file"
-            id="brochure"
-            name="brochure"
-            accept=".pdf,.doc,.docx"
-            className="hidden"
-          // Add onChange handler if you need to capture file selection
-          />
-        </label>
-        <label
-          htmlFor="brochure"
-          className="cursor-pointer bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-        >
-          Browse
-        </label>
+      <div>
+        <hr className="my-8 border-gray-400" />
+        <h2 className="text-xl font-semibold">Property Brochure</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          <label htmlFor="brochure" className="mr-2">
+            <span className="text-gray-700">Upload Brochure:</span>
+            <input
+              type="file"
+              id="brochure"
+              name="brochure"
+              accept=".pdf,.doc,.docx"
+              className="hidden"
+              multiple
+              onChange={handleFileUpload}
+            />
+          </label>
+          <label
+            htmlFor="brochure"
+            className="px-4 py-2 font-semibold text-white bg-blue-500 rounded cursor-pointer hover:bg-blue-600"
+          >
+            Browse
+          </label>
+        </div>
+        {brochure.length > 0 && (
+          <div className="mt-4">
+            {brochure.map((file, index) => (
+              <div key={index} className="flex items-center">
+                <button
+                  onClick={() => handleFileDelete(index)}
+                  className="px-2 py-1 ml-2 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                >
+                  X
+                </button>
+                <span
+                  className="ml-2 text-blue-500 cursor-pointer"
+                  onClick={() => handleFileClick(index)}
+                >
+                  {file.name}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      {/* Modal for displaying documents */}
+      {selectedDocumentIndex !== null && (
+        <FileModal
+          documents={brochure}
+          currentIndex={selectedDocumentIndex}
+          onClose={closeDocumentModal}
+        />
+      )}
 
       {/* Amenities Section */}
 
       <div>
-        <hr className="border-gray-400 my-8" />
+        <hr className="my-8 border-gray-400" />
         <h2 className="text-xl font-semibold">Amenities</h2>
         <div className="flex flex-wrap mt-4">
           {/* Checkboxes for Amenities */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
             {amenities.map((amenity, index) => (
               <label
                 key={index}
@@ -877,7 +951,7 @@ function PlotsModule({ onDataUpdate }) {
                   checked={selectedAmenities.includes(amenity)}
                   onChange={handleAmenitySelection}
                   onBlur={handleDataUpdate}
-                  className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out"
+                  className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                 />
                 <span className="ml-2 text-sm leading-6 text-gray-900">
                   {amenity}
@@ -890,7 +964,7 @@ function PlotsModule({ onDataUpdate }) {
 
       {/* About Project/Builder Section */}
 
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <h2 className="text-xl font-semibold">About Project/Builder</h2>
       <div className="flex flex-wrap items-center mt-4">
         <div className="w-full">
@@ -915,164 +989,220 @@ function PlotsModule({ onDataUpdate }) {
 
       {/* Gallery Section */}
       <div>
-        <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Gallery</h2>
-        <div className="flex items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="gallery-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <hr className="my-8 border-gray-400" />
+        <h2 className="mb-2 text-xl font-semibold">Gallery</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+          <div
+            className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setGalleryImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="gallery-upload"
-            name="gallery-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload(e, setGalleryImages)}
-            onBlur={handleDataUpdate}
-          />
+            <input
+              type="file"
+              id="gallery-upload"
+              name="gallery-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 z-50 w-full h-full opacity-0"
+              onChange={(e) => handleImageUpload(e, setGalleryImages)}
+            />
+            <div className="text-center">
+              <img
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="w-12 h-12 mx-auto"
+              />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="file-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+            </div>
+            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
+          </div>
         </div>
-        {/* Display Uploaded Images */}
         <div className="flex flex-wrap mt-4">
           {galleryImages.map((image, index) => (
-            <div key={index} className="m-2 relative">
+            <div key={index} className="relative m-2">
               <button
-                onClick={() =>
-                  handleImageDelete(index, galleryImages, setGalleryImages)
-                }
-                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
+                onClick={() => handleImageDelete(index, galleryImages, setGalleryImages)}
+                className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
               >
                 X
               </button>
               <img
                 src={URL.createObjectURL(image)}
                 alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                className="object-cover w-32 h-32 rounded cursor-pointer"
+                onClick={() => openGalleryModal(index)}
               />
             </div>
           ))}
         </div>
+        {/* Modal for displaying images */}
+        {selectedGalleryImageIndex !== null && (
+          <ImageModal
+            images={galleryImages}
+            currentIndex={selectedGalleryImageIndex}
+            onClose={closeImageModal}
+          />
+        )}
       </div>
 
       {/* Property Video Section */}
-
-      <hr className="border-gray-400 my-8" />
-      <h2 className="text-xl font-semibold">Property Video</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        {/* Input field for video URL */}
-        <input
-          type="text"
-          placeholder="Enter the Property Video URL"
-          value={videoUrl}
-          onChange={handleInputChange}
-          onBlur={handleDataUpdate}
-          className="w-full border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring focus:border-blue-500"
-        />
+      <div>
+        <hr className="my-8 border-gray-400" />
+        <h2 className="text-xl font-semibold">Property Video</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          <input
+            type="text"
+            placeholder="Enter the Property Video URL"
+            value={videoUrl}
+            onChange={(e) => setVideoUrl(e.target.value)}
+            className="w-full px-3 py-2 border-gray-300 rounded-md focus:outline-none focus:ring focus:border-blue-500"
+          />
+        </div>
       </div>
 
       {/* Master Plan Section */}
-
       <div>
-        <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Master Plan</h2>
-        <div className="flex flex-wrap items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="masterPlan-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <hr className="my-8 border-gray-400" />
+        <h2 className="mb-2 text-xl font-semibold">Master Plan</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+          <div
+            className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setMasterPlanImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="masterPlan-upload"
-            name="masterPlan-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload2(e, setMasterPlanImages)}
-            onBlur={handleDataUpdate}
-          />
-        </div>
-        {/* Display Uploaded Images */}
-        <div className="flex flex-wrap mt-4">
-          {masterPlanImages.map((image, index) => (
-            <div key={index} className="m-2 relative">
-              <button
-                onClick={() =>
-                  handleImageDelete2(
-                    index,
-                    masterPlanImages,
-                    setMasterPlanImages
-                  )
-                }
-                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
-              >
-                X
-              </button>
+            <input
+              type="file"
+              id="masterPlan-upload"
+              name="masterPlan-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 z-50 w-full h-full opacity-0"
+              onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
+            />
+            <div className="text-center">
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="w-12 h-12 mx-auto"
               />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="file-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-          ))}
+            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
+          </div>
+          <div className="flex flex-wrap mt-4">
+            {masterPlanImages.map((image, index) => (
+              <div key={index} className="relative m-2">
+                <button
+                  onClick={() => handleImageDelete(index, masterPlanImages, setMasterPlanImages)}
+                  className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                >
+                  X
+                </button>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="object-cover w-32 h-32 rounded cursor-pointer"
+                  onClick={() => openMasterPlanModal(index)}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Modal for displaying images */}
+          {selectedMasterPlanImageIndex !== null && (
+            <ImageModal
+              images={masterPlanImages}
+              currentIndex={selectedMasterPlanImageIndex}
+              onClose={closeImageModal}
+            />
+          )}
         </div>
       </div>
 
       {/* Floor/Area Plan Section */}
-
       <div>
-        <hr className="border-gray-400 my-8" />
-        <h2 className="text-xl font-semibold">Floor/Area Plan</h2>
-        <div className="flex flex-wrap items-center mt-4">
-          {/* Upload Button */}
-          <label
-            htmlFor="floorAreaPlan-upload"
-            className="cursor-pointer bg-transparent border border-blue-500 hover:bg-blue-500 text-blue-500 hover:text-white font-semibold py-3 px-6 rounded-full mr-4"
+        <hr className="my-8 border-gray-400" />
+        <h2 className="mb-2 text-xl font-semibold">Floor/Area Plan</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+          <div
+            className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setFloorAreaPlanImages)}
           >
-            + Add Images
-          </label>
-          <input
-            type="file"
-            id="floorAreaPlan-upload"
-            name="floorAreaPlan-upload"
-            accept="image/*"
-            multiple
-            className="hidden"
-            onChange={(e) => handleImageUpload3(e, setFloorAreaPlanImages)}
-            onBlur={handleDataUpdate}
-          />
-        </div>
-        {/* Display Uploaded Images */}
-        <div className="flex flex-wrap mt-4">
-          {floorAreaPlanImages.map((image, index) => (
-            <div key={index} className="m-2 relative">
-              <button
-                onClick={() =>
-                  handleImageDelete3(
-                    index,
-                    floorAreaPlanImages,
-                    setFloorAreaPlanImages
-                  )
-                }
-                className="absolute top-0 right-0 bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-2 rounded-full"
-              >
-                X
-              </button>
+            <input
+              type="file"
+              id="floorAreaPlan-upload"
+              name="floorAreaPlan-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 z-50 w-full h-full opacity-0"
+              onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}
+            />
+            <div className="text-center">
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
-                className="w-32 h-32 object-cover rounded"
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="w-12 h-12 mx-auto"
               />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="floorAreaPlan-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="floorAreaPlan-upload" name="floorAreaPlan-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-          ))}
+            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
+          </div>
+          <div className="flex flex-wrap mt-4">
+            {floorAreaPlanImages.map((image, index) => (
+              <div key={index} className="relative m-2">
+                <button
+                  onClick={() => handleImageDelete(index, floorAreaPlanImages, setFloorAreaPlanImages)}
+                  className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                >
+                  X
+                </button>
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Image ${index + 1}`}
+                  className="object-cover w-32 h-32 rounded cursor-pointer"
+                  onClick={() => openFloorAreaPlanModal(index)}
+                />
+              </div>
+            ))}
+          </div>
+          {/* Modal for displaying images */}
+          {selectedFloorAreaPlanImageIndex !== null && (
+            <ImageModal
+              images={floorAreaPlanImages}
+              currentIndex={selectedFloorAreaPlanImageIndex}
+              onClose={closeImageModal}
+            />
+          )}
         </div>
       </div>
+
     </div>
   );
 }

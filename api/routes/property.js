@@ -1,57 +1,57 @@
 var express = require("express");
 const {
-  addListings,
-  getListItem,
-  getListingbyType,
-  updateListItem,
-  deleteListItem,
-  uploadListItem,
-  getListItemId,
+  addProperty,
+  getPropertyItem,
+  getPropertybyType,
+  updatePropertyItem,
+  deletePropertyItem,
+  uploadPropertyItem,
+  getPropertyItemId,
   getsinglePageImg,
-} = require("../controller/listings");
-const verifyToken = require("../middleware/jwt");
+} = require("../controller/property.js");
+const verifyToken = require("../middleware/jwt.js");
 
 const { upload, addWatermark } = require("../middleware/multer.js");
 var router = express.Router();
 
 /* get lsiting */
-router.get("/", getListItem);
+router.get("/", getPropertyItem);
 
 /* get lsiting */
-router.get("/listing/:type", getListingbyType);
+router.get("/Property/:type", getPropertybyType);
 
 /* post lsiting */
-router.post("/", addListings);
+router.post("/", addProperty);
 
 // get All img
 router.get("/singlePageImg/:id", getsinglePageImg);
 
 /* get lsitItem */
-router.get("/:id", getListItemId);
-router.get("/:id/:type", getListItemId);//
+router.get("/:id", getPropertyItemId);
+router.get("/:id/:type", getPropertyItemId);//
 
 /* update lsitItem */
-router.patch("/:id", updateListItem);
+router.patch("/:id", updatePropertyItem);
 /* delete lsitItem */
-router.delete("/:id", verifyToken, deleteListItem);
+router.delete("/:id", verifyToken, deletePropertyItem);
 
-// Posting listing Images
+// Posting property Images
 // router.post(
 //   "/upload/:id",
 //   verifyToken,
 //   upload.array("images", 12),
-//   uploadListItem
+//   uploadPropertyItem
 // );
 
 // router.post(
 //   "/upload/:id",
 //   upload.array("images", 12),
-//   addWatermark, uploadListItem
+//   addWatermark, uploadPropertyItem
 // );
 
-router.post('/upload/:listingID', upload.array('attachments'), addWatermark, uploadListItem, async (req, res) => {
+router.post('/upload/:propertyID', upload.array('attachments'), addWatermark, uploadPropertyItem, async (req, res) => {
   try {
-    const { listingID } = req.params;
+    const { propertyID } = req.params;
     const { type, auditUser } = req.body;
     const files = req.files;
 
@@ -60,7 +60,7 @@ router.post('/upload/:listingID', upload.array('attachments'), addWatermark, upl
     }
 
     const attachments = files.map(file => ({
-      prty_mstRowID: listingID,
+      prty_mstRowID: propertyID,
       file_name: file.originalname,
       attachment: `/uploads/images/${file.filename}`,
       type: type,
@@ -68,7 +68,7 @@ router.post('/upload/:listingID', upload.array('attachments'), addWatermark, upl
       audit_date: new Date(),
     }));
 
-    await Listing.insertMany(attachments);
+    await Property.insertMany(attachments);
 
     res.status(200).json({ status: 'SUCCESS', message: 'Files uploaded successfully' });
   } catch (error) {
@@ -78,4 +78,3 @@ router.post('/upload/:listingID', upload.array('attachments'), addWatermark, upl
 });
 
 module.exports = router;
-

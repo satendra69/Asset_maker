@@ -21,7 +21,7 @@ const ExampleWithLocalizationProvider = ({ data }) => {
 
   const handleDelete = async (params) => {
     try {
-      const res = await httpCommon.delete(`/property/${params.id}`);
+      const res = await httpCommon.delete(`/list/${params.id}`);
 
       return res.data;
     } catch (error) {
