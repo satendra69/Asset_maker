@@ -1,0 +1,161 @@
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import "./card.scss";
+import { useState } from "react";
+import DialogProperty from "./DialogProperty";
+import { useMutation } from "@tanstack/react-query";
+import { toast, Toaster } from "sonner";
+import axios from "axios";
+import httpCommon from "../../http-common";
+import { queryClient } from "../..";
+
+function Card({ item }) {
+  console.log("item____", item);
+  const [open, setOpen] = useState(false);
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const navigate = useNavigate();
+
+  const sendMessage = async (data) => {
+    try {
+      const res = await axios.post(
+        `${process.env.REACT_APP_URL}/message/add`,
+        data
+      );
+      return res.data;
+    } catch (error) {
+      toast.error("Internal error at Sending Message");
+      console.error(error);
+    }
+  };
+
+  const mutation = useMutation({
+    mutationFn: sendMessage,
+    onSuccess: (success) => {
+      toast.success(success);
+      queryClient.invalidateQueries({ queryKey: "messages" });
+      setOpen(false);
+    },
+    onError: (error) => {
+      console.log(error);
+      toast.error("Internal error at Sending Message");
+    },
+  });
+
+  const priceMapping = {
+    Plots: item.ltg_det_plot_price,
+    Villa: item.villa_price,
+    Apartment: item.apartment_price,
+    RowHouses: item.ltg_det_row_house_price,
+    CommercialProperties: item.ltg_det_comm_prop_price,
+    Villaments: item.ltg_det_villaments_price,
+    PentHouses: item.ltg_det_penthouses_price,
+  };
+
+  const price = priceMapping[item.ltg_type] || item.ltg_det_price;
+  //const formattedPrice = price.toLocaleString('en-IN');
+  const formattedPrice = price != null ? price.toLocaleString('en-IN') : '0';
+
+  const bedroomMapping = {
+    Plots: item.ltg_det_pmts_bed_rom,
+    Villa: item.ltg_det_pmts_bed_rom,
+    Apartment: item.ltg_det_pmts_bed_rom,
+    RowHouses: item.ltg_det_row_house_pmts_bed_rooms,
+    Villaments: item.ltg_det_villaments_pmts_bed_rooms,
+    PentHouses: item.ltg_det_penthouses_pmts_bed_rooms,
+
+  };
+
+  // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
+  const bedrooms = bedroomMapping[item.ltg_type] || item.ltg_det_pmts_bed_rom;
+
+  const bathroomMapping = {
+    Plots: item.ltg_det_pmts_bth_rom,
+    Villa: item.ltg_det_pmts_bth_rom,
+    Apartment: item.ltg_det_pmts_bth_rom,
+    RowHouses: item.ltg_det_row_house_pmts_bath_rooms,
+    Villaments: item.ltg_det_villaments_pmts_bath_rooms,
+    PentHouses: item.ltg_det_penthouses_pmts_bath_rooms,
+  };
+
+  // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
+  const bathrooms = bathroomMapping[item.ltg_type] || item.ltg_det_pmts_bth_rom;
+
+  const handleImageClick = (id, type) => {
+    if (id !== '') {
+      console.log("id_____type___", type);
+      navigate(`/ListingPage`, {
+        state: {
+          RowID: id,
+          TypeGet: type,
+        },
+      });
+    }
+  };
+
+  return (
+    <>
+      <Toaster richColors />
+      <DialogProperty
+        open={open}
+        setOpen={setOpen}
+        item={item}
+        handleClose={handleClose}
+        mutation={mutation}
+      />
+
+      <div className="cardProperty">
+        <div className="cardImageContainer" onClick={() => handleImageClick(item.ltg_mstRowID, item.ltg_type)}>
+          <img src={httpCommon.defaults.baseURL + item.attachment} alt="" />
+        </div>
+        <div className="cardTextContainer">
+          <h2 className="cardTitle">
+            <Link to={`/${item.RowID}`}>{item.ltg_title}</Link>
+          </h2>
+          <p className="cardAddress">
+            <img src="/pin.png" alt="" />
+
+            <span>
+              {item.ltg_type === "Plots"
+                ? item.ltg_det_plot_address
+                : ["Villa", "Apartment"].includes(item.ltg_type)
+                  ? item.ltg_det_address
+                  : item.ltg_type === "RowHouses"
+                    ? item.ltg_det_row_house_address
+                    : item.ltg_type === "CommercialProperties"
+                      ? item.ltg_det_comm_prop_address
+                      : item.ltg_type === "Villaments"
+                        ? item.ltg_det_villaments_address
+                        : item.ltg_type === "PentHouses"
+                          ? item.ltg_det_penthouses_address
+                          : item.ltg_det_address}
+            </span>
+          </p>
+          <p className="price">₹{formattedPrice}</p>
+          <div className="bottom">
+            <div className="features">
+              <div className="feature">
+                <img src="/bed.png" alt="" />
+                <span>{bedrooms} bedroom</span>
+              </div>
+              <div className="feature">
+                <img src="/bath.png" alt="" />
+                <span>{bedrooms} bathrooms</span>
+              </div>
+            </div>
+            <div className="icons">
+              <Link to={"/saved-list"} className="icon">
+                <img src="/save.png" alt="" />
+              </Link>
+              <div className="icon" onClick={() => setOpen(true)}>
+                <img src="/chat.png" alt="" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Card;

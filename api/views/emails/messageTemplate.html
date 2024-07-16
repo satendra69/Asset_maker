@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Property Inquiry Message</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        color: #333;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f5f5f5;
+      }
+
+      h1 {
+        font-size: 24px;
+        margin-bottom: 10px;
+      }
+
+      p {
+        line-height: 1.5;
+      }
+
+      .details {
+        margin-top: 20px;
+      }
+
+      .details dt {
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Property Inquiry</h1>
+      <p>Dear {{name}},</p>
+      <p>
+        Thank you for your interest in our property! We have received your
+        message and will respond within 24 hours.
+      </p>
+      <p>
+        In the meantime, you can find more information about the property on our
+        website:
+      </p>
+      <a href="https://assetmakers.com/">https://assetmakers.com/</a>
+      <div class="details">
+        <dl>
+          <dt>Name:</dt>
+          <dd>{{name}}</dd>
+          <dt>Phone Number:</dt>
+          <dd>{{number}}</dd>
+          <dt>Email:</dt>
+          <dd>{{email}}</dd>
+          <dt>Purpose:</dt>
+          <dd>{{purpose}}</dd>
+        </dl>
+      </div>
+      <p>Sincerely,</p>
+      <p>Asset Makers</p>
+    </div>
+  </body>
+</html>

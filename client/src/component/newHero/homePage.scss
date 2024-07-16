@@ -1,0 +1,122 @@
+@import "../../responsive.scss";
+
+.homePage {
+  display: flex;
+  flex-direction: row;
+  height: 90vh;
+  align-items: center;
+
+  @include sm {
+    padding: 10px;
+    flex-direction: column;
+    margin-top: 10px;
+    height: 100%;
+  }
+  .textContainer {
+    flex: 3;
+    padding: 25px 40px 20px 40px;
+    @include sm {
+      flex: 1;
+      padding: 0px;
+    }
+    .wrapper {
+      padding-right: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 40px;
+      height: 100%;
+
+      @include lg {
+        padding-right: 50px;
+      }
+
+      @include md {
+        padding: 0;
+      }
+
+      @include sm {
+        justify-content: flex-start;
+      }
+
+      .title {
+        font-size: 64px;
+        display: inline-block;
+        @include sm {
+          width: 100%;
+          display: flex;
+          flex-wrap: wrap;
+          font-size: 40px;
+        }
+        span {
+          opacity: 0;
+          margin-left: 8px;
+          animation: fadeIn 1s forwards;
+          &:nth-child(1) {
+            animation-delay: 0s;
+          }
+          &:nth-child(2) {
+            animation-delay: 0.3s;
+          }
+          &:nth-child(3) {
+            animation-delay: 0.6s;
+          }
+          &:nth-child(4) {
+            animation-delay: 0.9s;
+          }
+          &:nth-child(5) {
+            animation-delay: 1.2s;
+          }
+          &:nth-child(6) {
+            animation-delay: 1.5s;
+          }
+          &:nth-child(7) {
+            animation-delay: 1.8s;
+          }
+          &:nth-child(8) {
+            animation-delay: 2.1s;
+          }
+          &:nth-child(9) {
+            animation-delay: 2.4s;
+          }
+        }
+        @keyframes fadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+        @include lg {
+          font-size: 42px;
+        }
+        @include sm {
+          font-size: 36px;
+        }
+      }
+    }
+  }
+
+  .imgContainer {
+    flex: 1;
+    background-color: #fcf5f3;
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    @include md {
+      display: none;
+    }
+
+    img {
+      width: 115%;
+      position: absolute;
+      right: 0;
+
+      @include lg {
+        width: 105%;
+      }
+    }
+  }
+}
