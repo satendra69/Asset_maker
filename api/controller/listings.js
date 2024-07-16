@@ -685,47 +685,53 @@ const getListingbyType = async (req, res) => {
 }
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
-
   const { listingID, type } = req.params;
 
   let query = '';
 
   if (type === "Plots") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
- `;
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID 
+      WHERE ltg_mst.RowID = ?`;
   } else if (type === "RowHouses") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
- `;
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID 
+      WHERE ltg_mst.RowID = ?`;
   } else if (type === "CommercialProperties") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
- `;
-  }
-  else if (type === "Villaments") {
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID 
+      WHERE ltg_mst.RowID = ?`;
+  } else if (type === "Villaments") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
- `;
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID 
+      WHERE ltg_mst.RowID = ?`;
   } else if (type === "PentHouses") {
     query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID WHERE ltg_mst.RowID ='${listingID}'
- `;
-  }
-  else {
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID 
+      WHERE ltg_mst.RowID = ?`;
+  } else {
     query = `
-  SELECT * FROM ltg_mst LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID  WHERE ltg_mst.RowID ='${listingID}'
-  `;
+      SELECT * FROM ltg_mst 
+      LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID  
+      WHERE ltg_mst.RowID = ?`;
   }
 
   try {
-    const [results, fields] = await db.query(query);
-    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+    const [results, fields] = await db.query(query, [listingID]);
+    if (results.length > 0) {
+      res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+    } else {
+      res.status(404).json({ message: 'Listing not found' });
+    }
   } catch (error) {
     console.error("Error fetching properties: " + error.stack);
     res.status(500).json({ message: "Error fetching properties", status: "error" });
   }
-
 };
 // get Single page img 
 

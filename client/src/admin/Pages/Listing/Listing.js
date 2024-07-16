@@ -67,49 +67,49 @@ function NewListingPage() {
   const fetchProperty = async (listingId) => {
     try {
       const response = await httpCommon.get(`/list/${listingId}`);
-      const propertyData = response.data.data[0];
-      console.log("propertyData", propertyData);
+      const listingData = response.data.data[0];
+      console.log("listingData", listingData);
       // Update state with fetched data
-      setTitle(propertyData.title);
-      setListingType(propertyData.propertyType);
-      setFeatured(propertyData.featured);
-      setSelectedOwner(propertyData.selectedOwner);
-      setSelectedCategories(propertyData.selectedCategories);
-      setSelectedRegions(propertyData.selectedRegions);
-      setCustomLabel(propertyData.CustomLabel);
+      setTitle(listingData.ltg_title);
+      setListingType(listingData.ltg_type);
+      setFeatured(listingData.ltg_mark_as_featured === "true");
+      setSelectedOwner(listingData.ltg_owner);
+      setSelectedCategories(listingData.ltg_categories);
+      setSelectedRegions(listingData.ltg_regions);
+      setCustomLabel(JSON.parse(listingData.ltg_labels));
       // Update specific data based on propertyType
-      switch (propertyData.propertyType) {
-        case "Apartments":
-          setApartment(propertyData.PropertyData);
-          setApartmentGalleryData(propertyData.Property.combinedImages);
-          break;
-        case "Villas":
-          setVilla(propertyData.PropertyData);
-          setVillaGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "Plots":
-          setPlots(propertyData.PropertyData);
-          setPlotsGalleryData(propertyData.Property.combinedImages);
-          break;
-        case "RowHouses":
-          setRowHouse(propertyData.PropertyData);
-          setRowHouseGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "CommercialProperties":
-          setCommercial(propertyData.PropertyData);
-          setCommercialGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "Villaments":
-          setVillament(propertyData.PropertyData);
-          setVillamentGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        case "PentHouses":
-          setPentHouse(propertyData.PropertyData);
-          setPentHouseGalleryData(propertyData.PropertyData.combinedImages);
-          break;
-        default:
-          break;
-      }
+      // switch (listingData.propertyType) {
+      //   case "Apartments":
+      //     setApartment(propertyData.PropertyData);
+      //     setApartmentGalleryData(propertyData.Property.combinedImages);
+      //     break;
+      //   case "Villas":
+      //     setVilla(propertyData.PropertyData);
+      //     setVillaGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "Plots":
+      //     setPlots(propertyData.PropertyData);
+      //     setPlotsGalleryData(propertyData.Property.combinedImages);
+      //     break;
+      //   case "RowHouses":
+      //     setRowHouse(propertyData.PropertyData);
+      //     setRowHouseGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "CommercialProperties":
+      //     setCommercial(propertyData.PropertyData);
+      //     setCommercialGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "Villaments":
+      //     setVillament(propertyData.PropertyData);
+      //     setVillamentGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   case "PentHouses":
+      //     setPentHouse(propertyData.PropertyData);
+      //     setPentHouseGalleryData(propertyData.PropertyData.combinedImages);
+      //     break;
+      //   default:
+      //     break;
+      // }
     } catch (error) {
       console.error("Error fetching Property:", error);
     }
@@ -534,7 +534,11 @@ function NewListingPage() {
           </div>
 
           {/* Labels Section */}
-          <AddCustomLabel onRowClick={handleRowLabe} />
+          {/* <CustomLabel onRowClick={handleRowLabe} /> */}
+          <AddCustomLabel
+            initialLabels={CustomLabel}
+            onRowClick={(newLabels) => setCustomLabel(newLabels)}
+          />
 
           {/* Render different modules based on listing type */}
           <div>

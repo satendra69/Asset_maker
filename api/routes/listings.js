@@ -24,27 +24,27 @@ router.get("/listing/:type", getListingbyType);
 router.post("/", addListings);
 
 // get All img
-router.get("/singlePageImg/:id", getsinglePageImg);
+router.get("/singlePageImg/:listingID", getsinglePageImg);
 
 /* get lsitItem */
-router.get("/:id", getListItemId);
-router.get("/:id/:type", getListItemId);//
+router.get("/:listingID", getListItemId);
+router.get("/:listingID/:type", getListItemId);//
 
 /* update lsitItem */
-router.patch("/:id", updateListItem);
+router.patch("/:listingID", updateListItem);
 /* delete lsitItem */
-router.delete("/:id", verifyToken, deleteListItem);
+router.delete("/:listingID", verifyToken, deleteListItem);
 
 // Posting listing Images
 // router.post(
-//   "/upload/:id",
+//   "/upload/:listingID",
 //   verifyToken,
 //   upload.array("images", 12),
 //   uploadListItem
 // );
 
 // router.post(
-//   "/upload/:id",
+//   "/upload/:listingID",
 //   upload.array("images", 12),
 //   addWatermark, uploadListItem
 // );

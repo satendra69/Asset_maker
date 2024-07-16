@@ -693,55 +693,56 @@ ORDER BY prty_create_date DESC;
   });
 }
 // get SingleLsit Item
-const getPropertyItemId = (req, res) => {
-  //console.log("body__",req.body);
+const getPropertyItemId = async (req, res) => {
+  const { propertyID, type } = req.params;
 
-  const { propertyID, type } = req.params; // Assuming 'itemId' is the parameter name
-  console.log("id___", propertyID);
-  console.log("id___111", type);
   let query = '';
 
   if (type === "Plots") {
     query = `
-    SELECT * FROM prty_mst LEFT JOIN prty_det_plots ON prty_mst.RowID = prty_det_plots.prty_det_mstRowID WHERE prty_mst.RowID ='${propertyID}'
- `;
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_plots ON prty_mst.RowID = prty_det_plots.prty_det_mstRowID 
+      WHERE prty_mst.RowID = ?`;
   } else if (type === "RowHouses") {
     query = `
-    SELECT * FROM prty_mst LEFT JOIN prty_det_row_houses ON prty_mst.RowID = prty_det_row_houses.prty_det_mstRowID WHERE prty_mst.RowID ='${propertyID}'
- `;
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_row_houses ON prty_mst.RowID = prty_det_row_houses.prty_det_mstRowID 
+      WHERE prty_mst.RowID = ?`;
   } else if (type === "CommercialProperties") {
     query = `
-    SELECT * FROM prty_mst LEFT JOIN prty_det_commercial_properties ON prty_mst.RowID = prty_det_commercial_properties.prty_det_mstRowID WHERE prty_mst.RowID ='${propertyID}'
- `;
-  }
-  else if (type === "Villaments") {
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_commercial_properties ON prty_mst.RowID = prty_det_commercial_properties.prty_det_mstRowID 
+      WHERE prty_mst.RowID = ?`;
+  } else if (type === "Villaments") {
     query = `
-    SELECT * FROM prty_mst LEFT JOIN prty_det_villaments ON prty_mst.RowID = prty_det_villaments.prty_det_mstRowID WHERE prty_mst.RowID ='${propertyID}'
- `;
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_villaments ON prty_mst.RowID = prty_det_villaments.prty_det_mstRowID 
+      WHERE prty_mst.RowID = ?`;
   } else if (type === "PentHouses") {
     query = `
-    SELECT * FROM prty_mst LEFT JOIN prty_det_penthouses ON prty_mst.RowID = prty_det_penthouses.prty_det_mstRowID WHERE prty_mst.RowID ='${propertyID}'
- `;
-  }
-  else {
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_penthouses ON prty_mst.RowID = prty_det_penthouses.prty_det_mstRowID 
+      WHERE prty_mst.RowID = ?`;
+  } else {
     query = `
-  SELECT * FROM prty_mst LEFT JOIN prty_det_apartment ON prty_mst.RowID = prty_det_apartment.prty_det_mstRowID  WHERE prty_mst.RowID ='${propertyID}'
-  `;
+      SELECT * FROM prty_mst 
+      LEFT JOIN prty_det_apartment ON prty_mst.RowID = prty_det_apartment.prty_det_mstRowID  
+      WHERE prty_mst.RowID = ?`;
   }
 
-
-  db.query(query, (error, results, fields) => {
-    //  console.log("data___",results);
-    if (error) {
-      console.error("Error fetching properties: " + error.stack);
-      res.status(500).json({ message: "Error fetching properties", status: "error" });
-      return;
+  try {
+    const [results, fields] = await db.query(query, [propertyID]);
+    if (results.length > 0) {
+      res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+    } else {
+      res.status(404).json({ message: 'Property not found' });
     }
-
-    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
-  });
-
+  } catch (error) {
+    console.error("Error fetching properties: " + error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
 };
+
 // get Single page img 
 const getsinglePageImg = (req, res) => {
   const { propertyID } = req.params; // Assuming 'itemId' is the parameter name

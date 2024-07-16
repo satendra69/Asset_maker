@@ -24,27 +24,27 @@ router.get("/Property/:type", getPropertybyType);
 router.post("/", addProperty);
 
 // get All img
-router.get("/singlePageImg/:id", getsinglePageImg);
+router.get("/singlePageImg/:propertyID", getsinglePageImg);
 
 /* get lsitItem */
-router.get("/:id", getPropertyItemId);
-router.get("/:id/:type", getPropertyItemId);//
+router.get("/:propertyID", getPropertyItemId);
+router.get("/:propertyID/:type", getPropertyItemId);
 
 /* update lsitItem */
-router.patch("/:id", updatePropertyItem);
+router.patch("/:propertyID", updatePropertyItem);
 /* delete lsitItem */
-router.delete("/:id", verifyToken, deletePropertyItem);
+router.delete("/:propertyID", verifyToken, deletePropertyItem);
 
 // Posting property Images
 // router.post(
-//   "/upload/:id",
+//   "/upload/:propertyID",
 //   verifyToken,
 //   upload.array("images", 12),
 //   uploadPropertyItem
 // );
 
 // router.post(
-//   "/upload/:id",
+//   "/upload/:propertyID",
 //   upload.array("images", 12),
 //   addWatermark, uploadPropertyItem
 // );
