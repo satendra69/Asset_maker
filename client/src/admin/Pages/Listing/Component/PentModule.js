@@ -332,12 +332,8 @@ function PentModule({ onDataUpdate }) {
   };
 
   const handleRowMap = (dataMap) => {
-    // Use the row data in the second component
     setMapRow(dataMap);
-    const data = {
-      MapRow,
-    };
-    onDataUpdate(data);
+    onDataUpdate(dataMap);
   };
 
   const handleDataUpdate = () => {
@@ -462,7 +458,7 @@ function PentModule({ onDataUpdate }) {
       </div>
 
       {/* Location Section */}
-      <MapComponent onRowClick={handleRowMap} />
+      <MapComponent onPositionChange={handleRowMap} />
 
       {/* Property Address (If any more detailed) Section */}
 

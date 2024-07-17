@@ -10,7 +10,7 @@ const icon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
-const MapComponent = ({ onRowClick }) => {
+const MapComponent = ({ onPositionChange }) => {
   const [location, setLocation] = useState("");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
@@ -22,48 +22,57 @@ const MapComponent = ({ onRowClick }) => {
     if (markerPosition) {
       setLatitude(markerPosition.lat);
       setLongitude(markerPosition.lng);
+      if (onPositionChange) {
+        onPositionChange({
+          location,
+          address,
+          postalCode,
+          latitude: markerPosition.lat,
+          longitude: markerPosition.lng
+        });
+      }
     }
   }, [markerPosition]);
 
   const handleLocationChange = (e) => {
     const value = e.target.value;
     setLocation(value);
-    if (onRowClick) {
-      onRowClick({ location: value, address, postalCode, latitude, longitude });
+    if (onPositionChange) {
+      onPositionChange({ location: value, address, postalCode, latitude, longitude });
     }
   };
 
   const handleAddressChange = (e) => {
     const value = e.target.value;
     setAddress(value);
-    if (onRowClick) {
-      onRowClick({ location, address: value, postalCode, latitude, longitude });
+    if (onPositionChange) {
+      onPositionChange({ location, address: value, postalCode, latitude, longitude });
     }
   };
 
   const handlePostalCodeChange = (e) => {
     const value = e.target.value;
     setPostalCode(value);
-    if (onRowClick) {
-      onRowClick({ location, address, postalCode: value, latitude, longitude });
+    if (onPositionChange) {
+      onPositionChange({ location, address, postalCode: value, latitude, longitude });
     }
   };
 
   const handleLatitudeChange = (e) => {
     const value = parseFloat(e.target.value);
-    setLatitude(value); // Update latitude state
+    setLatitude(value);
     setMarkerPosition({ lat: value, lng: longitude });
-    if (onRowClick) {
-      onRowClick({ location, address, postalCode, latitude: value, longitude });
+    if (onPositionChange) {
+      onPositionChange({ location, address, postalCode, latitude: value, longitude });
     }
   };
 
   const handleLongitudeChange = (e) => {
     const value = parseFloat(e.target.value);
-    setLongitude(value); // Update longitude state
+    setLongitude(value);
     setMarkerPosition({ lat: latitude, lng: value });
-    if (onRowClick) {
-      onRowClick({ location, address, postalCode, latitude, longitude: value });
+    if (onPositionChange) {
+      onPositionChange({ location, address, postalCode, latitude, longitude: value });
     }
   };
 
@@ -82,7 +91,6 @@ const MapComponent = ({ onRowClick }) => {
       <div className="flex flex-wrap items-start mt-4">
         {/* Location Details */}
         <div className="w-full pr-4 sm:w-1/2 lg:w-1/2">
-          {/* Location */}
           <h2 className="text-xl font-semibold mb-7">Location</h2>
           <div className="w-full pr-4 mb-7">
             <label htmlFor="location" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -97,7 +105,6 @@ const MapComponent = ({ onRowClick }) => {
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
-          {/* Address */}
           <div className="w-full pr-4 mb-7">
             <label htmlFor="address" className="block text-sm font-semibold leading-6 text-gray-900">
               Address
@@ -111,7 +118,6 @@ const MapComponent = ({ onRowClick }) => {
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
-          {/* Postal Code */}
           <div className="w-full pr-4 mb-7">
             <label htmlFor="postalCode" className="block text-sm font-semibold leading-6 text-gray-900">
               Postal Code
@@ -125,9 +131,7 @@ const MapComponent = ({ onRowClick }) => {
               className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
             />
           </div>
-          {/* Latitude and Longitude */}
           <div className="flex w-full pr-4 mb-7">
-            {/* Latitude */}
             <div className="w-full pr-2">
               <label htmlFor="latitude" className="block text-sm font-semibold leading-6 text-gray-900">
                 Latitude
@@ -141,7 +145,6 @@ const MapComponent = ({ onRowClick }) => {
                 className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none"
               />
             </div>
-            {/* Longitude */}
             <div className="w-full pl-2">
               <label htmlFor="longitude" className="block text-sm font-semibold leading-6 text-gray-900">
                 Longitude

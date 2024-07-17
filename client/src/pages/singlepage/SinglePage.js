@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import httpCommon from "../../http-common";
 import "./singlePage.scss";
@@ -9,13 +9,10 @@ import { singlePostData, userData } from "../../dummy/dummy";
 import Container from "../../component/Container";
 import DialogProperty from "../../component/card/DialogProperty";
 import Social from "../../component/Social";
-import PropertyDetail from "../../component/propertyDetail/PropertyDetail";
-import { properties } from "../../component/propertyDetail/test";
+import PropertyDetails from "../../component/propertyDetail/PropertyDetail";
 
 function SinglePage() {
-  const location = useLocation();
-  const state = location.state || {};
-  const { RowID, TypeGet } = state || {};
+  const { id: RowID, type: TypeGet } = useParams();
   const [open, setOpen] = useState(false);
 
   const [singlePageData, setsinglePageData] = useState([]);
@@ -24,18 +21,18 @@ function SinglePage() {
   const handleClose = () => {
     setOpen(false);
   };
-  console.log("RowID___", RowID);
-  console.log("TypeGet___", TypeGet);
+
   useEffect(() => {
     getSinglepropertiesData();
     singlePageImg();
   }, []);
+
   // get properties Listing data by id
   const getSinglepropertiesData = async () => {
     try {
       //const response = await httpCommon.get(`/list/${RowID}`);
       const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
-      console.log("response____getLabel", response);
+      // console.log("response____getLabel", response);
 
       if (response.data.status === "success") {
         setsinglePageData(response.data.data);
@@ -44,6 +41,8 @@ function SinglePage() {
       console.error("Error fetching data:", error);
     }
   };
+
+  console.log(singlePageData);
 
   const singlePageImg = async () => {
     try {
@@ -58,6 +57,7 @@ function SinglePage() {
     }
   }
 
+  // console.log(singlePageImgData)
   return (
     <Container className={"py-20"}>
       <DialogProperty
@@ -98,13 +98,13 @@ function SinglePage() {
                     ₹
                     {singlePageData && singlePageData.length > 0 && (
                       <span>
-                        {singlePageData[0].ltg_type === 'Plots' && singlePageData[0].ltg_det_plot_price}
-                        {singlePageData[0].ltg_type === 'Villas' && singlePageData[0].ltg_det_price}
-                        {singlePageData[0].ltg_type === 'Apartments' && singlePageData[0].ltg_det_price}
-                        {singlePageData[0].ltg_type === 'RowHouses' && singlePageData[0].ltg_det_row_house_price}
-                        {singlePageData[0].ltg_type === 'CommercialProperties' && singlePageData[0].ltg_det_comm_prop_price}
-                        {singlePageData[0].ltg_type === 'Villaments' && singlePageData[0].ltg_det_villaments_price}
-                        {singlePageData[0].ltg_type === 'PentHouses' && singlePageData[0].ltg_det_penthouses_price}
+                        {singlePageData[0].ltg_type === 'Plots' && singlePageData[0].ltg_det_plot_sale_price}
+                        {singlePageData[0].ltg_type === 'Villas' && singlePageData[0].ltg_det_sale_price}
+                        {singlePageData[0].ltg_type === 'Apartments' && singlePageData[0].ltg_det_sale_price}
+                        {singlePageData[0].ltg_type === 'RowHouses' && singlePageData[0].ltg_det_row_house_sale_price}
+                        {singlePageData[0].ltg_type === 'CommercialProperties' && singlePageData[0].ltg_det_comm_prop_sale_price}
+                        {singlePageData[0].ltg_type === 'Villaments' && singlePageData[0].ltg_det_villaments_sale_price}
+                        {singlePageData[0].ltg_type === 'PentHouses' && singlePageData[0].ltg_det_penthouses_sale_price}
                       </span>
                     )}
 
@@ -236,7 +236,6 @@ function SinglePage() {
 
                 {singlePageData && singlePageData.length > 0 && (
                   <span>
-
                     {singlePageData[0].ltg_type === 'Villas' && singlePageData[0].ltg_det_pmts_bth_rom}
                     {singlePageData[0].ltg_type === 'Apartments' && singlePageData[0].ltg_det_pmts_bth_rom}
                     {singlePageData[0].ltg_type === 'RowHouses' && singlePageData[0].ltg_det_row_house_pmts_bath_rooms}
@@ -272,7 +271,29 @@ function SinglePage() {
             </div>
             <p className="title">Location</p>
             <div className="mapContainer">
-              <Map items={[singlePostData]} />
+              {singlePageData && singlePageData.length > 0 && (
+                <Map
+                  lat={
+                    singlePageData[0].ltg_type === 'Plots' ? singlePageData[0].ltg_det_plot_latitude :
+                      singlePageData[0].ltg_type === 'Villas' || singlePageData[0].ltg_type === 'Apartments' ? singlePageData[0].ltg_det_latitude :
+                        singlePageData[0].ltg_type === 'RowHouses' ? singlePageData[0].ltg_det_row_house_latitude :
+                          singlePageData[0].ltg_type === 'CommercialProperties' ? singlePageData[0].ltg_det_comm_prop_latitude :
+                            singlePageData[0].ltg_type === 'Villaments' ? singlePageData[0].ltg_det_villaments_latitude :
+                              singlePageData[0].ltg_type === 'PentHouses' ? singlePageData[0].ltg_det_penthouses_latitude :
+                                null
+                  }
+                  lng={
+                    singlePageData[0].ltg_type === 'Plots' ? singlePageData[0].ltg_det_plot_longitude :
+                      singlePageData[0].ltg_type === 'Villas' || singlePageData[0].ltg_type === 'Apartments' ? singlePageData[0].ltg_det_longitude :
+                        singlePageData[0].ltg_type === 'RowHouses' ? singlePageData[0].ltg_det_row_house_longitude :
+                          singlePageData[0].ltg_type === 'CommercialProperties' ? singlePageData[0].ltg_det_comm_prop_longitude :
+                            singlePageData[0].ltg_type === 'Villaments' ? singlePageData[0].ltg_det_villaments_longitude :
+                              singlePageData[0].ltg_type === 'PentHouses' ? singlePageData[0].ltg_det_penthouses_longitude :
+                                null
+                  }
+                />
+              )}
+
             </div>
             <div className="buttons">
               <button onClick={() => setOpen(true)}>
@@ -287,7 +308,7 @@ function SinglePage() {
           </div>
         </div>
       </div>
-      <PropertyDetail properties={properties} />
+      <PropertyDetails property={singlePageData} images={singlePageImgData} />
       <Social />
     </Container>
   );

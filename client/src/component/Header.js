@@ -132,7 +132,7 @@ function Header() {
           } fixed top-0 left-0 right-0  transition-all  duration-1000 ease-in-out px-4 md:px-0 `}
         style={{ zIndex: 100 }}
       >
-        <div className="flex justify-between items-center max-w-7xl mx-auto p-3 md:px-6">
+        <div className="flex items-center justify-between p-3 mx-auto max-w-7xl md:px-6">
           {/* LOGO */}
           <Link to="/">
             <img
@@ -142,7 +142,7 @@ function Header() {
                   : "https://assetmakers.com/wp-content/uploads/2019/07/Asset-Makers-Logo-Brightest.png"
               }
               alt="logo"
-              className="h-12 object-contain"
+              className="object-contain h-12"
             />
           </Link>
 
@@ -151,15 +151,15 @@ function Header() {
             <li className="hidden sm:inline">
               <Link to={"/"}>HOME</Link>
             </li>
-            <li className="relative md:block hidden"></li>
+            <li className="relative hidden md:block"></li>
 
             {/* CITIES */}
             <button
-              className="relative md:block hidden"
+              className="relative hidden md:block"
               onMouseEnter={() => setOpenCities(true)}
               onMouseLeave={() => setOpenCities(false)}
             >
-              <li className="hidden items-center md:flex gap-2">
+              <li className="items-center hidden gap-2 md:flex">
                 <span> CITIES</span> <AiFillCaretDown />
               </li>
               <div
@@ -168,19 +168,19 @@ function Header() {
                 onMouseEnter={() => setOpenCities(true)}
                 onMouseLeave={() => setOpenCities(false)}
               >
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
               </div>
             </button>
 
             {/* PROPERTIES Dropdown */}
-            <li className="relative md:block hidden">
+            <li className="relative hidden md:block">
               <button
                 onMouseEnter={() => setOpenProp(true)}
                 onMouseLeave={() => setOpenProp(false)}
               >
-                <li className="hidden sm:flex items-center relative gap-2">
+                <li className="relative items-center hidden gap-2 sm:flex">
                   <span> PROPERTIES </span> <AiFillCaretDown />
                   <div
                     className={`${propOpen ? "block" : "hidden"} transition-all text-left duration-1000 absolute top-full left-0 shadow-md bg-white space-y-2 py-2 px-7 w-56 rounded-md `}
@@ -188,13 +188,13 @@ function Header() {
                     onMouseEnter={() => setOpenProp(true)}
                     onMouseLeave={() => setOpenProp(false)}
                   >
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Apartments")}>Apartments</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Villas")}>Villas</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Plots")}>Plots</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Row")}>Row Houses</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Villaments")}>Villaments</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Commercial")}>Commercial Properties</p>
-                    <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Pent")}>Pent Houses</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Apartments")}>Apartments</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villas")}>Villas</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Plots")}>Plots</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("RowHouses")}>Row Houses</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villaments")}>Villaments</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("CommercialProperties")}>Commercial Properties</p>
+                    <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("PentHouses")}>Pent Houses</p>
                   </div>
                 </li>
               </button>
@@ -212,10 +212,10 @@ function Header() {
           {currentUser ? (
             <button
               onClick={() => setProfile(!profile)}
-              className="hidden sm:inline relative"
+              className="relative hidden sm:inline"
             >
               <div className="flex items-center gap-2">
-                <button className="flex items-center gap-2 bg-red-700 text-white rounded-lg px-3 py-2">
+                <button className="flex items-center gap-2 px-3 py-2 text-white bg-red-700 rounded-lg">
                   <span>Sell Property</span>
                   <motion.div animate="swing" variants={pendulumVariants}>
                     <FaHome size={26} />
@@ -228,10 +228,10 @@ function Header() {
                 />
               </div>
               {profile && (
-                <motion.div className="absolute shadow-md rounded-lg p-5 space-y-3 bg-white right-0 ">
+                <motion.div className="absolute right-0 p-5 space-y-3 bg-white rounded-lg shadow-md ">
                   {currentUser.admin === 1 && (
                     <Link
-                      className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                      className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                       to={"/admin"}
                     >
                       {" "}
@@ -240,20 +240,20 @@ function Header() {
                     </Link>
                   )}
                   <Link
-                    className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                     to={"/saved-list"}
                   >
                     <CiSaveDown2 size={32} /> Saved List
                   </Link>
                   <Link
-                    className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                     to={"/my-list"}
                   >
                     <IoCreateOutline size={32} /> My List
                   </Link>
 
                   <button
-                    className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                     onClick={handleLogout}
                   >
                     {" "}
@@ -264,12 +264,12 @@ function Header() {
               )}
             </button>
           ) : (
-            <div className="hidden sm:flex justify-center items-center gap-3">
+            <div className="items-center justify-center hidden gap-3 sm:flex">
               <Link to={"/sign-in"} className="flex items-center gap-1">
                 <CiLogin size={22} />
                 Login/Register
               </Link>
-              <button className="flex items-center gap-2 bg-red-700 text-white rounded-lg px-3 py-2">
+              <button className="flex items-center gap-2 px-3 py-2 text-white bg-red-700 rounded-lg">
                 <span>Sell Property</span>
                 <motion.div animate="swing" variants={pendulumVariants}>
                   <FaHome size={26} />
@@ -320,9 +320,9 @@ function Header() {
                 className={`${cityOpenMobile ? "block" : "hidden"
                   } transition-all text-left duration-1000 mt-2`}
               >
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
               </div>
             </li>
             <li>
@@ -336,13 +336,13 @@ function Header() {
                 className={`${propOpenMobile ? "block" : "hidden"
                   } transition-all text-left duration-1000 mt-2`}
               >
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Apartments")}>Apartments</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Villas")}>Villas</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Plots")}>Plots</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Row")}>Row Houses</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Villaments")}>Villaments</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Commercial")}>Commercial Properties</p>
-                <p className="hover:font-bold hover:text-black cursor-pointer" onClick={() => handleCategoryClick("Pent")}>Pent Houses</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Apartments")}>Apartments</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villas")}>Villas</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Plots")}>Plots</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("RowHouses")}>Row Houses</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villaments")}>Villaments</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("CommercialProperties")}>Commercial Properties</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("PentHouses")}>Pent Houses</p>
               </div>
             </li>
             {currentUser ? (
@@ -360,7 +360,7 @@ function Header() {
                     >
                       {currentUser.admin === 1 && (
                         <Link
-                          className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                          className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                           to={"/admin"}
                         >
                           <MdOutlineAdminPanelSettings size={32} />
@@ -368,14 +368,14 @@ function Header() {
                         </Link>
                       )}
                       <Link
-                        className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                         to={"/saved-list"}
                       >
                         <CiSaveDown2 size={32} />
                         Saved List
                       </Link>
                       <Link
-                        className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                         to={"/my-list"}
                       >
                         <IoCreateOutline size={32} />
@@ -383,7 +383,7 @@ function Header() {
                       </Link>
                       <button
                         onClick={handleLogout}
-                        className="flex items-center text-slate-900 gap-2 whitespace-nowrap"
+                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                       >
                         <IoMdLogOut size={32} />
                         Logout
@@ -411,7 +411,7 @@ function Header() {
             variants={variants2}
           >
             {/* hr */}
-            <hr className=" w-full bg-slate-900" />
+            <hr className="w-full  bg-slate-900" />
             <Container className={"flex items-center justify-between"}>
               <Link to={"/Property/Apartments"} className="flex items-center gap-1 text-slate-900">
                 <MdApartment size={25} />
@@ -424,7 +424,7 @@ function Header() {
               <Link to={"/Property/Plots"} className="flex items-center gap-1 text-slate-900">
                 <MdGrass size={25} /> Plots
               </Link>
-              <Link to={"/Property/Row"} className="flex items-center gap-1 text-slate-900">
+              <Link to={"/Property/RowHouses"} className="flex items-center gap-1 text-slate-900">
                 <MdHouseSiding size={25} />
                 Row Houses
               </Link>
@@ -432,11 +432,11 @@ function Header() {
                 <FaBuilding size={22} />
                 Villaments
               </Link>
-              <Link to={"/Property/Commercial"} className="flex items-center gap-1 ">
+              <Link to={"/Property/CommercialProperties"} className="flex items-center gap-1 ">
                 <AiFillPropertySafety size={25} />
                 <span className="text-slate-900">Commercial Properties</span>
               </Link>
-              <Link to={"/Property/Pent"} className="flex items-center gap-1 text-slate-900">
+              <Link to={"/Property/PentHouses"} className="flex items-center gap-1 text-slate-900">
                 <GiVikingLonghouse size={25} /> Pent Houses
               </Link>
             </Container>

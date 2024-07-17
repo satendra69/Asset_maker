@@ -128,12 +128,16 @@ const router = createBrowserRouter([
       //   path: "/list",
       //   element: <List />,
       // },
+      // {
+      // path: "/list/:filters?",
+      // element: <List />,
+      // },
+      // {
+      //   path: "/ListingPage",
+      //   element: <SinglePage />,
+      // },
       {
-        // path: "/list/:filters?",
-        // element: <List />,
-      },
-      {
-        path: "/ListingPage",
+        path: "/Property/listing/:id/:type",
         element: <SinglePage />,
       },
       {
@@ -153,11 +157,11 @@ const router = createBrowserRouter([
         element: <PropertyAparment />,
       },
       {
-        path: "/Property/Commercial",
+        path: "/Property/CommercialProperties",
         element: <PropertyCommercial />,
       },
       {
-        path: "/Property/Pent",
+        path: "/Property/PentHouses",
         element: <PropertyPent />,
       },
       {
@@ -165,7 +169,7 @@ const router = createBrowserRouter([
         element: <PropertyPlot />,
       },
       {
-        path: "/Property/Row",
+        path: "/Property/RowHouses",
         element: <PropertyRow />,
       },
       {

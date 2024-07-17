@@ -12,7 +12,6 @@ import { FaRegHandshake } from "react-icons/fa";
 
 function PropertyApartment() {
   const [properties, setProperties] = useState([]);
-  const { filters } = useParams();
   const type = "Apartments";
 
   useEffect(() => {

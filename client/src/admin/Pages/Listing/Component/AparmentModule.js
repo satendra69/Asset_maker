@@ -377,7 +377,7 @@ function AparmentModule({ onDataUpdate }) {
       videoUrl,
       brochure,
       combinedImages,
-      type: "Aparment",
+      type: "Apartments",
     };
     onDataUpdate(data);
   };

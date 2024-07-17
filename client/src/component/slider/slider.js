@@ -30,7 +30,7 @@ function Slider({ images }) {
             <img src="/arrow.png" alt="" />
           </div>
           <div className="imgContainer">
-          <img src={httpCommon.defaults.baseURL + images[imageIndex].attachment} alt="" />
+            <img src={httpCommon.defaults.baseURL + images[imageIndex].attachment} alt="" />
           </div>
           <div className="arrow" onClick={() => changeSlide("right")}>
             <img src="/arrow.png" className="right" alt="" />
@@ -41,10 +41,9 @@ function Slider({ images }) {
         </div>
       )}
       <div className="bigImage">
-        
         {images && images.length > 0 && images[0].attachment &&
-                      <img src={httpCommon.defaults.baseURL + images[0].attachment} alt="" onClick={() => setImageIndex(0)} />
-                    }
+          <img src={httpCommon.defaults.baseURL + images[0].attachment} alt="" onClick={() => setImageIndex(0)} />
+        }
       </div>
       <div className="smallImages">
         {images.slice(1).map((image, index) => (

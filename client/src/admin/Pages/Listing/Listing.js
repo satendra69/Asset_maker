@@ -259,10 +259,9 @@ function NewListingPage() {
   }
 
   const handleApartmentDataUpdate = (data) => {
-    // console.log("dataee___",dataee);
+    // console.log("dataee___",data);
     setApartment(data);
     setApartmentGalleryData(data.combinedImages);
-
   };
 
   const handleVillaDataUpdate = (data) => {

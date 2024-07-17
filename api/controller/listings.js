@@ -24,7 +24,6 @@ const addListings = async (req, res) => {
   try {
     const [results] = await db.query(q);
     const lastInsertId = results.insertId;
-
     // Insert Data ltg_det
     if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
       const q_det =
@@ -120,9 +119,9 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.totalPhases}', 
             '${req.body.ListingData.approvalAuthority}', 
             '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.otherAdvantages}', 
+            '${req.body.ListingData.advantagesAsString}', 
             '${req.body.ListingData.projectBuilderDetails}', 
-            '${req.body.ListingData.selectedAmenities}', 
+            '${req.body.ListingData.amenitiesAsString}', 
             '${req.body.ListingData.videoUrl}', 
             '${req.body.auditUser}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
@@ -175,8 +174,8 @@ const addListings = async (req, res) => {
             ltg_det_plot_about_project_builder,
             ltg_det_plot_property_video_url,
             ltg_det_audit_user,
-            ltg_det_ploat_create_date,
-            ltg_det_ploat_update_date
+            ltg_det_create_date,
+            ltg_det_update_date
             )
             VALUES
             (
@@ -209,7 +208,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.yearBuilt}', 
             '${req.body.ListingData.totalUnits}', 
             '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.selectedAmenities}', 
+            '${req.body.ListingData.amenitiesAsString}', 
             '${req.body.ListingData.projectBuilderDetails}', 
             '${req.body.ListingData.videoUrl}', 
             '${req.body.auditUser}',
@@ -270,8 +269,8 @@ const addListings = async (req, res) => {
               ltg_det_row_house_about_project_builder,
               ltg_det_row_house_property_video_url,
               ltg_det_audit_user,
-              ltg_det_row_house_create_date,
-              ltg_det_row_house_update_date
+              ltg_det_create_date,
+              ltg_det_update_date
             )
             VALUES
             (
@@ -300,7 +299,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.isCornerRowhouse}',
             '${req.body.ListingData.isInGatedCommunity}', 
             '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.otherAdvantages}',
+            '${req.body.ListingData.advantagesAsString}',
             '${req.body.ListingData.approachingRoadWidth}',
             '${req.body.ListingData.furnishing}',
             '${req.body.ListingData.propertyFlooring}',
@@ -312,7 +311,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.approvalAuthority}',
             '${req.body.ListingData.totalUnits}', 
             '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.selectedAmenities}', 
+            '${req.body.ListingData.amenitiesAsString}', 
             '${req.body.ListingData.projectBuilderDetails}', 
             '${req.body.ListingData.videoUrl}', 
             '${req.body.auditUser}',
@@ -363,8 +362,8 @@ const addListings = async (req, res) => {
               ltg_det_comm_prop_about_project_builder,
               ltg_det_comm_prop_property_video_url,
             	ltg_det_audit_user,
-              ltg_det_comm_prop_create_date,
-              ltg_det_comm_prop_update_date
+              ltg_det_create_date,
+              ltg_det_update_date
               
             )
             VALUES
@@ -384,7 +383,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.selectedStatus}',
             '${req.body.ListingData.yearBuilt}',
             '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.otherAdvantages}',
+            '${req.body.ListingData.advantagesAsString}',
             '${req.body.ListingData.furnishing}',
             '${req.body.ListingData.selectedCarParking}',
             '${req.body.ListingData.totalFloors}',
@@ -397,7 +396,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.totalProjectExtent}',
             '${req.body.ListingData.stampDutyAndRegistrationCharges}',
             '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.selectedAmenities}', 
+            '${req.body.ListingData.amenitiesAsString}', 
             '${req.body.ListingData.projectBuilderDetails}',
             '${req.body.ListingData.videoUrl}',  
             '${req.body.auditUser}',
@@ -457,8 +456,8 @@ const addListings = async (req, res) => {
               ltg_det_villaments_about_project_builder,
               ltg_det_villaments_property_video_url,
             	ltg_det_audit_user,
-              ltg_det_villaments_property_create_date,
-              ltg_det_villaments_property_update_date
+              ltg_det_create_date,
+              ltg_det_update_date
               
             )
             VALUES
@@ -492,7 +491,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.overLooking}',
             '${req.body.ListingData.furnishing}',
             '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.otherAdvantages}',
+            '${req.body.ListingData.advantagesAsString}',
             '${req.body.ListingData.availableFrom}',
             '${req.body.ListingData.totalProjectExtent}',
             '${req.body.ListingData.transactionType}',
@@ -501,7 +500,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.totalUnits}', 
             '${req.body.ListingData.totalPhases}', 
             '${req.body.ListingData.projectBuilderDetails}',
-            '${req.body.ListingData.selectedAmenities}',
+            '${req.body.ListingData.amenitiesAsString}',
             '${req.body.ListingData.videoUrl}', 
             '${req.body.auditUser}',
             '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
@@ -559,8 +558,8 @@ const addListings = async (req, res) => {
               ltg_det_penthouses_about_project_builder,
               ltg_det_penthouses_property_video_url,
               ltg_det_audit_user,
-              ltg_det_penthouses_create_date,
-              ltg_det_penthouses_update_date
+              ltg_det_create_date,
+              ltg_det_update_date
               
             )
             VALUES
@@ -592,7 +591,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.overLooking}',
             '${req.body.ListingData.transactionType}',
             '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.otherAdvantages}',
+            '${req.body.ListingData.advantagesAsString}',
             '${req.body.ListingData.noOfOpenSides}',
             '${req.body.ListingData.approachingRoadWidth}',
             '${req.body.ListingData.availableFrom}',
@@ -601,7 +600,7 @@ const addListings = async (req, res) => {
             '${req.body.ListingData.stampDutyAndRegistrationCharges}',
             '${req.body.ListingData.totalPhases}', 
             '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.selectedAmenities}', 
+            '${req.body.ListingData.amenitiesAsString}', 
             '${req.body.ListingData.projectBuilderDetails}',
             '${req.body.ListingData.videoUrl}', 
             '${req.body.auditUser}',
@@ -673,9 +672,7 @@ const getListingbyType = async (req, res) => {
   let query = baseQuery;
   let detailsTable = '';
 
-  if (type === "Villas") {
-    detailsTable = "ltg_det_villas";
-  } else if (type === "Plots") {
+  if (type === "Plots") {
     detailsTable = "ltg_det_plots";
   } else if (type === "RowHouses") {
     detailsTable = "ltg_det_row_houses";
@@ -707,44 +704,45 @@ const getListingbyType = async (req, res) => {
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
   const { listingID, type } = req.params;
-
+  console.log("type", type);
   let query = '';
 
   if (type === "Plots") {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID 
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   } else if (type === "RowHouses") {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID 
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   } else if (type === "CommercialProperties") {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID 
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   } else if (type === "Villaments") {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID 
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   } else if (type === "PentHouses") {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID 
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   } else {
     query = `
-      SELECT * FROM ltg_mst 
-      LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID  
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
       WHERE ltg_mst.RowID = ?`;
   }
 
   try {
     const [results, fields] = await db.query(query, [listingID]);
     if (results.length > 0) {
+      console.log("query", query, listingID);
       res.json({ data: results, message: "Properties fetched successfully", status: "success" });
     } else {
       res.status(404).json({ message: 'Listing not found' });

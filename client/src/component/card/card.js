@@ -43,23 +43,23 @@ function Card({ item }) {
   });
 
   const priceMapping = {
-    Plots: item.ltg_det_plot_price,
-    Villa: item.villa_price,
-    Apartment: item.apartment_price,
-    RowHouses: item.ltg_det_row_house_price,
-    CommercialProperties: item.ltg_det_comm_prop_price,
-    Villaments: item.ltg_det_villaments_price,
-    PentHouses: item.ltg_det_penthouses_price,
+    Plots: item.ltg_det_plot_sale_price,
+    Villas: item.ltg_det_sale_price,
+    Apartments: item.ltg_det_sale_price,
+    RowHouses: item.ltg_det_row_house_sale_price,
+    CommercialProperties: item.ltg_det_comm_prop_sale_price,
+    Villaments: item.ltg_det_villaments_sale_price,
+    PentHouses: item.ltg_det_penthouses_sale_price,
   };
 
-  const price = priceMapping[item.ltg_type] || item.ltg_det_price;
+  const price = priceMapping[item.ltg_type] || item.ltg_det_sale_price;
   //const formattedPrice = price.toLocaleString('en-IN');
   const formattedPrice = price != null ? price.toLocaleString('en-IN') : '0';
 
   const bedroomMapping = {
     Plots: item.ltg_det_pmts_bed_rom,
-    Villa: item.ltg_det_pmts_bed_rom,
-    Apartment: item.ltg_det_pmts_bed_rom,
+    Villas: item.ltg_det_pmts_bed_rom,
+    Apartments: item.ltg_det_pmts_bed_rom,
     RowHouses: item.ltg_det_row_house_pmts_bed_rooms,
     Villaments: item.ltg_det_villaments_pmts_bed_rooms,
     PentHouses: item.ltg_det_penthouses_pmts_bed_rooms,
@@ -71,8 +71,8 @@ function Card({ item }) {
 
   const bathroomMapping = {
     Plots: item.ltg_det_pmts_bth_rom,
-    Villa: item.ltg_det_pmts_bth_rom,
-    Apartment: item.ltg_det_pmts_bth_rom,
+    Villas: item.ltg_det_pmts_bth_rom,
+    Apartments: item.ltg_det_pmts_bth_rom,
     RowHouses: item.ltg_det_row_house_pmts_bath_rooms,
     Villaments: item.ltg_det_villaments_pmts_bath_rooms,
     PentHouses: item.ltg_det_penthouses_pmts_bath_rooms,
@@ -80,18 +80,6 @@ function Card({ item }) {
 
   // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
   const bathrooms = bathroomMapping[item.ltg_type] || item.ltg_det_pmts_bth_rom;
-
-  const handleImageClick = (id, type) => {
-    if (id !== '') {
-      console.log("id_____type___", type);
-      navigate(`/ListingPage`, {
-        state: {
-          RowID: id,
-          TypeGet: type,
-        },
-      });
-    }
-  };
 
   return (
     <>
@@ -105,12 +93,16 @@ function Card({ item }) {
       />
 
       <div className="cardProperty">
-        <div className="cardImageContainer" onClick={() => handleImageClick(item.ltg_mstRowID, item.ltg_type)}>
-          <img src={httpCommon.defaults.baseURL + item.attachment} alt="" />
+        <div className="cardImageContainer">
+          <Link to={`/Property/listing/${item.RowID}/${item.ltg_type}`}>
+            <img src={httpCommon.defaults.baseURL + item.attachment} alt="" />
+          </Link>
         </div>
         <div className="cardTextContainer">
           <h2 className="cardTitle">
-            <Link to={`/${item.RowID}`}>{item.ltg_title}</Link>
+            <Link to={`/Property/listing/${item.RowID}/${item.ltg_type}`}>
+              {item.ltg_title}
+            </Link>
           </h2>
           <p className="cardAddress">
             <img src="/pin.png" alt="" />
@@ -140,7 +132,7 @@ function Card({ item }) {
               </div>
               <div className="feature">
                 <img src="/bath.png" alt="" />
-                <span>{bedrooms} bathrooms</span>
+                <span>{bathrooms} bathrooms</span>
               </div>
             </div>
             <div className="icons">
