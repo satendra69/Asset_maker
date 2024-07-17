@@ -641,38 +641,57 @@ const getListItem = async (req, res) => {
   }
 };
 
-// get Apartment by type
+// get Property by type
 const getListingbyType = async (req, res) => {
-
   const { type } = req.params;
-  //console.log("type____",type);
-  let query = '';
-  if (type === "Plots") {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
+
+  const baseQuery = `
+    SELECT 
+      ltg_mst.*, 
+      detailsTable.*, 
+      IFNULL(ltg_ref.file_names, '') AS file_names, 
+      IFNULL(ltg_ref.attachments, '') AS attachments 
+    FROM 
+      ltg_mst 
+    LEFT JOIN 
+      detailsTable ON ltg_mst.RowID = detailsTable.ltg_det_mstRowID 
+    LEFT JOIN 
+      (SELECT 
+           ltg_mstRowID, 
+           GROUP_CONCAT(file_name) AS file_names, 
+           GROUP_CONCAT(attachment) AS attachments 
+       FROM 
+           ltg_ref 
+       GROUP BY 
+           ltg_mstRowID) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID 
+    WHERE 
+      ltg_mst.ltg_type = ? 
+    ORDER BY 
+      ltg_mst.ltg_create_date DESC;
   `;
+
+  let query = baseQuery;
+  let detailsTable = '';
+
+  if (type === "Villas") {
+    detailsTable = "ltg_det_villas";
+  } else if (type === "Plots") {
+    detailsTable = "ltg_det_plots";
   } else if (type === "RowHouses") {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
- `;
-  } else if (type === "CommercialProperties") {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
- `;
+    detailsTable = "ltg_det_row_houses";
   } else if (type === "Villaments") {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID   WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
- `;
+    detailsTable = "ltg_det_villaments";
+  } else if (type === "CommercialProperties") {
+    detailsTable = "ltg_det_commercial_properties";
   } else if (type === "PentHouses") {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID   WHERE ltg_mst.ltg_type = ? ORDER BY ltg_create_date DESC
- `;
+    detailsTable = "ltg_det_penthouses";
   } else {
-    query = `
-    SELECT * FROM ltg_mst LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID LEFT JOIN ( SELECT * FROM ltg_ref GROUP BY ltg_mstRowID ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID WHERE ltg_mst.ltg_type = ? ORDER BY 
-    ltg_create_date DESC
-  `;
+    detailsTable = "ltg_det";
   }
+
+  // Replace the placeholder with the actual table name
+  query = query.replace(/detailsTable/g, detailsTable);
+  console.log(query);
 
   try {
     const [results, fields] = await db.query(query, [type]);
@@ -681,8 +700,10 @@ const getListingbyType = async (req, res) => {
     console.error("Error fetching properties: " + error.stack);
     res.status(500).json({ message: "Error fetching properties", status: "error" });
   }
+};
 
-}
+
+
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
   const { listingID, type } = req.params;

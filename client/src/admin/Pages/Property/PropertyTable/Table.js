@@ -1,4 +1,5 @@
 import { useMemo, useState } from "react";
+import dayjs from 'dayjs';
 //MRT Imports
 import {
   MaterialReactTable,
@@ -346,9 +347,15 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         filterVariant: "date",
         filterFn: "lessThan",
         sortingFn: "datetime",
-        Cell: ({ renderedCellValue }) => <span>{renderedCellValue}</span>, //render Date as a string
+        Cell: ({ cell }) => {
+          const dateValue = cell.getValue();
+          return (
+            <span>
+              {dateValue ? dayjs(dateValue).format('YYYY-MM-DD HH:mm') : ''}
+            </span>
+          );
+        },
       },
-      // Add more columns as needed based data structure
     ],
     []
   );
@@ -366,7 +373,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     enableColumnFilterModes: true,
     enableColumnOrdering: true,
     enableGrouping: true,
-
+    enableDensityToggle: true,
     enableColumnPinning: true,
     enableFacetedValues: true,
     enableRowActions: true,
@@ -374,7 +381,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
 
     initialState: {
       // showColumnFilters: true,
-      pagination: { pageSize: 5 },
+      density: 'compact',
+      pagination: { pageSize: 8 },
       showGlobalFilter: true,
       columnPinning: {
         left: ["mrt-row-expand", "mrt-row-select"],
@@ -392,6 +400,12 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       rowsPerPageOptions: [2, 5, 10],
       shape: "rounded",
       variant: "outlined",
+    },
+    muiTableBodyCellProps: {
+      sx: { fontSize: '1rem' },
+    },
+    muiTableHeadCellProps: {
+      sx: { fontSize: '1rem' },
     },
 
     // // row action
@@ -430,20 +444,20 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   });
 
   return (
-    <div className="bg-black w-full mx-auto">
+    <div className="w-full mx-auto bg-black">
       <Dialog onClose={handleClose} open={open}>
-        <div className="p-4  space-y-5">
+        <div className="p-4 space-y-5">
           <h2>Are you sure want to delete</h2>
-          <div className="button flex items-center gap-5 justify-end">
+          <div className="flex items-center justify-end gap-5 button">
             <button
-              className="px-3 py-2 border shadow-sm rounded-md"
+              className="px-3 py-2 border rounded-md shadow-sm"
               onClick={() => setOpen(false)}
             >
               Cancel
             </button>
             <button
               onClick={() => mutation.mutate({ id })}
-              className="px-3 py-2 border shadow-sm rounded-md bg-red-600 text-white"
+              className="px-3 py-2 text-white bg-red-600 border rounded-md shadow-sm"
             >
               Delete
             </button>

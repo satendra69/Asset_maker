@@ -42,14 +42,14 @@ function AllListingList() {
 
   return (
     <div className="h-[98vh] overflow-y-scroll">
-      <Container className={"space-y-5"}>
+      <div className={`px-8 space-y-5`}>
         <div>
           <h2>Listing DashBoard</h2>
           <p>Manage Your Data Here</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
         </div>
         <ExampleWithLocalizationProvider data={isError ? [] : data.data} />
-      </Container>
+      </div>
     </div>
   );
 }

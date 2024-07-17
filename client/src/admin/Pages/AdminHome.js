@@ -17,7 +17,7 @@ function AdminHome() {
 
   const getProperty = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/property`);
+      const res = await axios.get(`http://localhost:8000/api/property/`);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -49,15 +49,15 @@ function AdminHome() {
   if (isError) return "Failed to fetch data";
 
   return (
-    <div>
-      <Container className={"space-y-5"}>
+    <div className="h-[98vh] overflow-y-scroll">
+      <div className={`px-8 space-y-5`}>
         <div>
           <h2>Admin DashBoard</h2>
-          <p>manage your data here</p>
+          <p>Manage Your Data Here</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
         </div>
         <ExampleWithLocalizationProvider data={isError ? [] : data.data} />
-      </Container>
+      </div>
     </div>
   );
 }
