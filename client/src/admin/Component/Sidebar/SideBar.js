@@ -25,7 +25,12 @@ const SideBar = ({ children }) => {
       {
         path: "/admin",
         name: "Property",
-        icon: <GiVillage size={24} />,
+        icon: (
+          <div style={{ position: 'relative', display: 'inline-block', fontSize: '2rem', marginBottom: '-2px' }}>
+            <FaFileAlt size={24} style={{ color: '#dfe5e6' }} />
+            <FaHome size={18} style={{ position: 'absolute', top: '12px', left: '10px', zIndex: 1 }} />
+          </div>
+        ),
         exact: true,
         subRoutes: [
           {
@@ -40,29 +45,29 @@ const SideBar = ({ children }) => {
           },
         ],
       },
-      {
-        path: "/admin/listing",
-        name: "Listing",
-        icon: (
-          <div style={{ position: 'relative', display: 'inline-block', fontSize: '2rem', marginBottom: '-2px' }}>
-            <FaFileAlt size={24} style={{ color: '#dfe5e6' }} />
-            <FaHome size={18} style={{ position: 'absolute', top: '12px', left: '10px', zIndex: 1 }} />
-          </div>
-        ),
-        exact: true,
-        subRoutes: [
-          {
-            path: "/admin/listing/list",
-            name: "Listing List",
-            icon: <FaListAlt size={15} />,
-          },
-          {
-            path: "/admin/listing/new",
-            name: "Add Listing",
-            icon: <FaFileCirclePlus size={15} />,
-          },
-        ],
-      },
+      // {
+      //   path: "/admin/listing",
+      //   name: "Listing",
+      //   icon: (
+      //     <div style={{ position: 'relative', display: 'inline-block', fontSize: '2rem', marginBottom: '-2px' }}>
+      //       <FaFileAlt size={24} style={{ color: '#dfe5e6' }} />
+      //       <FaHome size={18} style={{ position: 'absolute', top: '12px', left: '10px', zIndex: 1 }} />
+      //     </div>
+      //   ),
+      //   exact: true,
+      //   subRoutes: [
+      //     {
+      //       path: "/admin/listing/list",
+      //       name: "Listing List",
+      //       icon: <FaListAlt size={15} />,
+      //     },
+      //     {
+      //       path: "/admin/listing/new",
+      //       name: "Add Listing",
+      //       icon: <FaFileCirclePlus size={15} />,
+      //     },
+      //   ],
+      // },
       {
         path: "/admin/city",
         name: "City",

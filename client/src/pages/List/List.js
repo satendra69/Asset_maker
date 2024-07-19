@@ -1,4 +1,4 @@
-import { listData } from "../../dummy/dummy";
+
 import "./list.scss";
 import Filter from "../../component/filter/filter";
 import Card from "../../component/card/card";
@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 
 function List() {
-  const data = listData;
+  const data = []
   const { filters } = useParams();
   // useEffect(() => {
   //   fetchData(JSON.parse(filters));
@@ -40,7 +40,7 @@ function List() {
         {data.map((item) => (
           <Card key={item.id} item={item} />
         ))}
-        <div className="mapContainer h-full ">
+        <div className="h-full mapContainer ">
           <Map items={data} />
         </div>
       </Container>

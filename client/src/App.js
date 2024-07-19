@@ -49,10 +49,7 @@ import AdminUsers from "./admin/Pages/users/AdminUsers";
 import AdminMessages from "./admin/Pages/Message/AdminMessages";
 import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
-import SingleProperty from "./admin/Pages/Property/SingleProperty/SingleProperty";
-import NewProperty from "./admin/Pages/Property/Property";
 import NewListingPage from "./admin/Pages/Listing/Listing";
-import AllListingList from "./admin/Pages/Listing/ListingTable/AllListingList";
 import Blog from "./admin/Pages/Blog/Blog";
 import NewBlog from "./admin/Pages/Blog/NewBlog";
 import CreateCategory from "./admin/Pages/Blog/CreateCategory";
@@ -124,20 +121,8 @@ const router = createBrowserRouter([
         path: "/saved-list",
         element: <SavedList />,
       },
-      // {
-      //   path: "/list",
-      //   element: <List />,
-      // },
-      // {
-      // path: "/list/:filters?",
-      // element: <List />,
-      // },
-      // {
-      //   path: "/ListingPage",
-      //   element: <SinglePage />,
-      // },
       {
-        path: "/Property/listing/:id/:type",
+        path: "/Property/property/:id/:type",
         element: <SinglePage />,
       },
       {
@@ -195,19 +180,6 @@ const router = createBrowserRouter([
         path: "/admin",
         element: <AdminHome />,
       },
-
-      {
-        path: "/admin/list/:id",
-        element: <SingleProperty />,
-      },
-      {
-        path: "/admin/property/new",
-        element: <NewProperty />,
-      },
-      {
-        path: "/admin/property/edit/:propertyId",
-        element: <NewProperty />,
-      },
       {
         path: "/admin/city",
         element: <City />,
@@ -229,16 +201,12 @@ const router = createBrowserRouter([
         element: <SingleUserMessages />,
       },
       {
-        path: "/admin/listing/new",
+        path: "/admin/property/new",
         element: <NewListingPage />,
       },
       {
-        path: "/admin/listing/edit/:listingId",
+        path: "/admin/property/edit/:listingId",
         element: <NewListingPage />,
-      },
-      {
-        path: "/admin/listing/list",
-        element: <AllListingList />,
       },
       {
         path: "/admin/blog/new",

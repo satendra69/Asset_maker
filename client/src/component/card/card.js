@@ -42,6 +42,20 @@ function Card({ item }) {
     },
   });
 
+  const getImageAttachments = (attachments) => {
+    // Define allowed image file extensions
+    const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+    return attachments
+      .split(',')
+      .filter(file => {
+        const extension = file.split('.').pop().toLowerCase();
+        return allowedExtensions.includes(extension);
+      });
+  };
+
+  // Filter attachments
+  const imageAttachments = getImageAttachments(item.attachments);
+
   const priceMapping = {
     Plots: item.ltg_det_plot_sale_price,
     Villas: item.ltg_det_sale_price,
@@ -94,13 +108,20 @@ function Card({ item }) {
 
       <div className="cardProperty">
         <div className="cardImageContainer">
-          <Link to={`/Property/listing/${item.RowID}/${item.ltg_type}`}>
-            <img src={httpCommon.defaults.baseURL + item.attachment} alt="" />
+          <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}>
+            {imageAttachments.length > 0 ? (
+              <img
+                src={httpCommon.defaults.baseURL + imageAttachments[0]}
+                alt="attachment"
+              />
+            ) : (
+              <p>No images available</p>
+            )}
           </Link>
         </div>
         <div className="cardTextContainer">
           <h2 className="cardTitle">
-            <Link to={`/Property/listing/${item.RowID}/${item.ltg_type}`}>
+            <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}>
               {item.ltg_title}
             </Link>
           </h2>

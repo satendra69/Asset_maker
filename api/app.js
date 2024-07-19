@@ -6,7 +6,6 @@ const bodyParser = require('body-parser');
 var logger = require("morgan");
 require("dotenv").config();
 var listingsRouter = require("./routes/listings");
-var propertyRouter = require("./routes/property");
 var usersRouter = require("./routes/users");
 var authRouter = require("./routes/auth");
 var cityRouter = require("./routes/city");
@@ -45,7 +44,6 @@ app.get("/api", function (req, res) {
 });
 // Routes
 app.use("/api/list", listingsRouter);
-app.use("/api/property", propertyRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/city", cityRouter);

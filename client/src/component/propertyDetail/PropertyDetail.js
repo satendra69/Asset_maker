@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import httpCommon from "../../http-common";
 import { useParams } from "react-router-dom";
 import {
@@ -44,56 +44,7 @@ import {
   LocationCityOutlined as CornerVillaIcon,
   LandscapeOutlined as PlotAreaIcon,
 } from "@mui/icons-material";
-
-
-const transformData = (propertyData, propertyImages) => {
-  if (!propertyData) return {}; // Handle if propertyData is undefined
-  if (!propertyImages || !Array.isArray(propertyImages)) propertyImages = []; // Ensure propertyImages is an array
-
-  const amenities = propertyData.ltg_det_amenities ?
-    propertyData.ltg_det_amenities.split(',').map(amenity => ({
-      icon: 'tickmark-icon',
-      label: amenity.trim(),
-    })) : [];
-
-  const otherAdvantages = propertyData.ltg_det_pmts_other_advtages ?
-    propertyData.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
-      icon: 'tickmark-icon',
-      label: advantage.trim(),
-    })) : [];
-
-  const mappedProperty = {
-    id: propertyData.RowID,
-    price: propertyData.ltg_det_sale_price,
-    title: propertyData.ltg_title,
-    description: propertyData.ltg_det_desc,
-    details: {
-      otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: propertyData.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: propertyData.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: propertyData.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: propertyData.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: propertyData.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: propertyData.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: propertyData.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REGISTRATION CHARGES', value: propertyData.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: propertyData.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: propertyData.ltg_det_pmts_approval_authority },
-        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: propertyData.ltg_det_pmts_approaching_road_width },
-        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: propertyData.ltg_det_pmts_total_phases },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: propertyData.ltg_det_pmts_transaction_typ },
-      ],
-      otherAdvantages: otherAdvantages,
-      amenities: amenities,
-      aboutProject: propertyData.ltg_det_about_project_buder,
-      propertyVideo: propertyData.ltg_det_property_video_url,
-    },
-  };
-
-  return mappedProperty;
-};
-
-
+import FileModal from '../../admin/Pages/Listing/Component/FileModal';
 
 const getIcon = (label) => {
   switch (label) {
@@ -354,19 +305,64 @@ const getIcon = (label) => {
   }
 };
 
-const PropertyDetails = ({ property, images }) => {
-  console.log(property);
+const transformData = (propertyData, propertyImages) => {
+  if (!propertyData) return {}; // Handle if propertyData is undefined
+  if (!propertyImages || !Array.isArray(propertyImages)) propertyImages = []; // Ensure propertyImages is an array
+
+  const amenities = propertyData.ltg_det_amenities ?
+    propertyData.ltg_det_amenities.split(',').map(amenity => ({
+      icon: 'tickmark-icon',
+      label: amenity.trim(),
+    })) : [];
+
+  const otherAdvantages = propertyData.ltg_det_pmts_other_advtages ?
+    propertyData.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+      icon: 'tickmark-icon',
+      label: advantage.trim(),
+    })) : [];
+
+  const mappedProperty = {
+    id: propertyData.RowID,
+    type: propertyData.ltg_type,
+    price: propertyData.ltg_det_sale_price,
+    title: propertyData.ltg_title,
+    description: propertyData.ltg_det_desc,
+    details: {
+      otherFacts: [
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: propertyData.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: propertyData.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: propertyData.ltg_det_pmts_flat_on_flr },
+        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: propertyData.ltg_det_pmts_lfts_in_tower },
+        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: propertyData.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: propertyData.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: propertyData.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REGISTRATION CHARGES', value: propertyData.ltg_det_pmts_stamp_duty },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: propertyData.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: propertyData.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: propertyData.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: propertyData.ltg_det_pmts_total_phases },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: propertyData.ltg_det_pmts_transaction_typ },
+      ],
+      otherAdvantages: otherAdvantages,
+      amenities: amenities,
+      aboutProject: propertyData.ltg_det_about_project_buder,
+      propertyVideo: propertyData.ltg_det_property_video_url,
+    },
+  };
+
+  return mappedProperty;
+};
+
+const PropertyDetails = ({ property, images, brochure }) => {
+
+  console.log(images, "brochure");
 
   if (property === null || !Array.isArray(property) || property.length === 0) {
     console.log("no data found");
     return <div className="mt-10 text-xl text-center">Property not found</div>;
-  } else {
-    console.log(property);
-    console.log(property[0].ltg_det_gated_community, "gated community status");
   }
 
   const transformedProperty = transformData(property[0]);
-  console.log("images", images[6]);
 
   return (
     <div className="container p-4 mx-auto">
@@ -426,6 +422,8 @@ const PropertyDetails = ({ property, images }) => {
               <span>{amenity.label}</span>
             </div>
           ))}
+
+          <MortgageCalculator />
         </div>
 
         <div>
@@ -465,8 +463,35 @@ const PropertyDetails = ({ property, images }) => {
             ))}
           </div>
 
+          <div className="flex flex-wrap gap-2 mb-4">
+            {images.filter(image => image.type === 'FloorAreaPlan').map((image, index) => (
+              <img
+                key={index}
+                src={httpCommon.defaults.baseURL + image.attachment}
+                alt={image.file_name}
+                className="w-1/2 rounded-lg md:w-1/3 lg:w-1/4"
+              />
+            ))}
+          </div>
 
-          <MortgageCalculator />
+          <h2 className="mb-2 text-2xl font-bold">Brochure</h2>
+          <div className="mt-4">
+            {brochure.length > 0 && (
+              <div className="flex flex-col">
+                {brochure.map((file, index) => (
+                  <a
+                    key={index}
+                    href={httpCommon.defaults.baseURL + file.attachment.replace('\\', '/')}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-500 hover:underline"
+                  >
+                    {file.file_name}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -474,10 +499,10 @@ const PropertyDetails = ({ property, images }) => {
 };
 
 const MortgageCalculator = () => {
-  const [principal, setPrincipal] = React.useState(100000);
-  const [interestRate, setInterestRate] = React.useState(12);
-  const [years, setYears] = React.useState(10);
-  const [monthlyPayment, setMonthlyPayment] = React.useState(0);
+  const [principal, setPrincipal] = useState(100000);
+  const [interestRate, setInterestRate] = useState(12);
+  const [years, setYears] = useState(10);
+  const [monthlyPayment, setMonthlyPayment] = useState(0);
 
   const calculateMortgage = () => {
     const monthlyRate = interestRate / 100 / 12;

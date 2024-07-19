@@ -1,36 +1,44 @@
 var double_digit_names = {
-  10: "ten",
-  11: "eleven",
-  12: "twelve",
-  13: "thirteen",
-  14: "fourteen",
-  15: "fifteen",
-  16: "sixteen",
-  17: "seventeen",
-  18: "eighteen",
-  19: "nineteen",
+  10: "Ten",
+  11: "Eleven",
+  12: "Twelve",
+  13: "Thirteen",
+  14: "Fourteen",
+  15: "Fifteen",
+  16: "Sixteen",
+  17: "Seventeen",
+  18: "Eighteen",
+  19: "Nineteen",
 };
 var single_digit_names = {
-  1: "one",
-  2: "two",
-  3: "three",
-  4: "four",
-  5: "five",
-  6: "six",
-  7: "seven",
-  8: "eight",
-  9: "nine",
+  1: "One",
+  2: "Two",
+  3: "Three",
+  4: "Four",
+  5: "Five",
+  6: "Six",
+  7: "Seven",
+  8: "Eight",
+  9: "Nine",
 };
 var tens_names = {
-  2: "twenty",
-  3: "thirty",
-  4: "forty",
-  5: "fifty",
-  6: "sixty",
-  7: "seventy",
-  8: "eighty",
-  9: "ninety",
+  2: "Twenty",
+  3: "Thirty",
+  4: "Forty",
+  5: "Fifty",
+  6: "Sixty",
+  7: "Seventy",
+  8: "Eighty",
+  9: "Ninety",
 };
+
+function capitalizeWords(str) {
+  return str
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
 function twoDigits(n) {
   let [a, b] = ("" + n).split("");
   if (!b) {
@@ -58,7 +66,7 @@ function threeDigits(n) {
   } else {
     let twoDigit_str = twoDigits(b + c);
     if (twoDigit_str.length > 1) { twoDigit_str = `and ${twoDigit_str}` }
-    return `${single_digit_names[a]} hundred ${twoDigit_str}`;
+    return `${single_digit_names[a]} Hundred ${twoDigit_str}`;
   }
 }
 
@@ -75,8 +83,8 @@ function higherDigits(str_num) {
 
   let hundreds_str = hundreds != 0 ? threeDigits(hundreds) : "";
   let thousands_str =
-    num_len > 3 && thousands != 0 ? twoDigits(thousands) + " thousand" : "";
-  let lakhs_str = num_len > 5 && lakhs != 0 ? twoDigits(lakhs) + " lakhs" : "";
+    num_len > 3 && thousands != 0 ? twoDigits(thousands) + " Thousand" : "";
+  let lakhs_str = num_len > 5 && lakhs != 0 ? twoDigits(lakhs) + " Lakhs" : "";
 
   return `${lakhs_str} ${thousands_str} ${hundreds_str}`;
 }
@@ -86,7 +94,7 @@ function decimal_part(str_num) {
     if (decimal_num == 0) {
       return "";
     }
-    return twoDigits(decimal_num) + " paise";
+    return twoDigits(decimal_num) + " Paise";
   }
   return "";
 }
@@ -135,9 +143,11 @@ function inwords(num) {
   }
   let whole_str = whole_part(str_num);
   if (whole_str == "one") {
-    return "one Rupee";
+    return "One Rupee";
   }
-  return `${whole_str} Rupees ${decimal_str}`;
+  let result = `${whole_str} Rupees ${decimal_str}`;
+  let capitalWords = capitalizeWords(result) + " Only";
+  return capitalWords;
 }
 
 export default inwords;

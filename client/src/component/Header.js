@@ -115,6 +115,14 @@ function Header() {
     setOpenPropMobile(!propOpenMobile);
   };
 
+  const handleCityDropdownClick = () => {
+    setOpenCities(!citieOpen);
+  };
+
+  const handlePropDropdownClick = () => {
+    setOpenProp(!propOpen);
+  };
+
   // Logout
   const handleLogout = () => {
     dispatch(signOutUserSuccess());
@@ -156,6 +164,7 @@ function Header() {
             {/* CITIES */}
             <button
               className="relative hidden md:block"
+              onClick={handleCityDropdownClick}
               onMouseEnter={() => setOpenCities(true)}
               onMouseLeave={() => setOpenCities(false)}
             >
@@ -177,6 +186,7 @@ function Header() {
             {/* PROPERTIES Dropdown */}
             <li className="relative hidden md:block">
               <button
+                onClick={handlePropDropdownClick}
                 onMouseEnter={() => setOpenProp(true)}
                 onMouseLeave={() => setOpenProp(false)}
               >
@@ -411,7 +421,7 @@ function Header() {
             variants={variants2}
           >
             {/* hr */}
-            <hr className="w-full  bg-slate-900" />
+            <hr className="w-full bg-slate-900" />
             <Container className={"flex items-center justify-between"}>
               <Link to={"/Property/Apartments"} className="flex items-center gap-1 text-slate-900">
                 <MdApartment size={25} />

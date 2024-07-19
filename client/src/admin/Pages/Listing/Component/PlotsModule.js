@@ -77,7 +77,7 @@ function PlotsModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSalePrice(value);
         setDisplaySalePrice(formatNumber(value));
-        setSalePriceWords(inwords(num) + ' Only');
+        setSalePriceWords(inwords(num));
         setIsSalePriceExceeded(false);
       } else {
         setSalePriceWords("");
@@ -98,7 +98,7 @@ function PlotsModule({ onDataUpdate }) {
       if (num <= limit && isFinite(num)) {
         setSuffixPrice(value);
         setDisplaySuffixPrice(formatNumber(value));
-        setSuffixPriceWords(inwords(num) + ' Only');
+        setSuffixPriceWords(inwords(num));
         setIsSuffixPriceExceeded(false);
       } else {
         setSuffixPriceWords("");
@@ -107,10 +107,6 @@ function PlotsModule({ onDataUpdate }) {
     }
   };
 
-  const toSentenceCase = (str) => {
-    if (!str) return ''; // Handle empty or undefined case
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  };
 
   useEffect(() => {
     handleDataUpdate();
@@ -300,12 +296,8 @@ function PlotsModule({ onDataUpdate }) {
 
 
   const handleRowMap = (dataMap) => {
-    // Use the row data in the second component
     setMapRow(dataMap);
-    const data = {
-      MapRow,
-    };
-    onDataUpdate(data);
+    onDataUpdate(dataMap);
   };
 
   const handleDataUpdate = () => {
@@ -375,7 +367,7 @@ function PlotsModule({ onDataUpdate }) {
               />
               {/* Conditional rendering of limit exceeded or salePriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSalePriceExceeded ? "Limit exceeded" : toSentenceCase(salePriceWords)}
+                {isSalePriceExceeded ? "Limit exceeded" : (salePriceWords)}
               </div>
             </div>
           </div>
@@ -398,7 +390,7 @@ function PlotsModule({ onDataUpdate }) {
               />
               {/* Conditional rendering of limit exceeded or suffixPriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSuffixPriceExceeded ? "Limit exceeded" : toSentenceCase(suffixPriceWords)}
+                {isSuffixPriceExceeded ? "Limit exceeded" : (suffixPriceWords)}
               </div>
             </div>
           </div>
@@ -424,7 +416,7 @@ function PlotsModule({ onDataUpdate }) {
       </div>
 
       {/* Location Section */}
-      <MapComponent onRowClick={handleRowMap} />
+      <MapComponent onPositionChange={handleRowMap} />
 
       {/* Property Address (If any more detailed) Section */}
 

@@ -1,11 +1,9 @@
-//Date Picker Imports - these should just be in your Context Provider
+// ExampleWithLocalizationProvider.js
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-
-
 import Table from "./Table";
 import { useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
 import axios from "axios";
 import { queryClient } from "../../../../index";
@@ -14,15 +12,13 @@ import httpCommon from "../../../../http-common";
 const ExampleWithLocalizationProvider = ({ data }) => {
   const [open, setOpen] = useState(false);
 
-  //App.tsx or AppProviders file
   const handleClose = () => {
     setOpen(false);
   };
 
-  const handleDelete = async (params) => {
+  const handleDelete = async (id) => {
     try {
-      const res = await httpCommon.delete(`/list/${params.id}`);
-
+      const res = await httpCommon.delete(`/list/delete/${id}`);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -35,19 +31,13 @@ const ExampleWithLocalizationProvider = ({ data }) => {
     onSuccess: async (data) => {
       toast.success(data.message);
       handleClose();
-
-      return queryClient.invalidateQueries({ queryKey: ["propertylist"] });
+      queryClient.invalidateQueries({ queryKey: ["propertylist"] });
     },
     onError: (error) => {
       toast.error(error.message || "Failed to delete property");
       console.log(error);
     },
   });
-
-  console.log(
-    "queryclient",
-    queryClient.getQueryCache().find(["propertylist"])
-  );
 
   return (
     <div>

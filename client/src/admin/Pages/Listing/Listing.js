@@ -196,7 +196,7 @@ function NewListingPage() {
           title: responseData.status,
           text: responseData.message,
         }).then(() => {
-          navigate(`/admin/listing/new`);
+          navigate(`/admin`);
         });
 
       } else {
@@ -297,10 +297,10 @@ function NewListingPage() {
 
   const listing = {
     button: listingId ? "Update" : "Create",
-    title: listingId ? "Update Listing" : "Create New Listing",
+    title: listingId ? "Update Property" : "Create New Property",
     description: listingId
-      ? "You can update your listing here"
-      : "You can add a new listing here",
+      ? "You can update your property here"
+      : "You can add a new property here",
   };
 
   return (
@@ -322,7 +322,7 @@ function NewListingPage() {
           </div>
         </div>
         <div className="full-data">
-          <h2 className="text-xl font-semibold">Listing</h2>
+          <h2 className="text-xl font-semibold">Property</h2>
           <div className="flex flex-wrap items-center">
             {/* Title */}
             <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-2/3 sm:mb-0">
@@ -350,7 +350,7 @@ function NewListingPage() {
                 htmlFor="owner"
                 className="block text-sm font-semibold leading-6 text-gray-900"
               >
-                Listing Owner
+                Property Owner
               </label>
               <div className="mt-1">
                 <select
@@ -360,7 +360,7 @@ function NewListingPage() {
                   className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
                   <option value="" disabled>
-                    Select Listing Owner
+                    Select Property Owner
                   </option>
                   <option value="type1">Not Selected</option>
                   <option value="Master">Master</option>
@@ -378,7 +378,7 @@ function NewListingPage() {
                 htmlFor="listingType"
                 className="block text-sm font-semibold leading-6 text-gray-900"
               >
-                Listing Type
+                Property Type
               </label>
               <div className="mt-1">
                 <select
@@ -388,7 +388,7 @@ function NewListingPage() {
                   className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 >
                   <option value="" disabled>
-                    Select Listing Type
+                    Select Property Type
                   </option>
 
                   <option value="Apartments">Apartments</option>

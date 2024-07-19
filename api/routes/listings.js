@@ -2,6 +2,8 @@ var express = require("express");
 const {
   addListings,
   getListItem,
+  getTableData,
+  getTableById,
   getListingbyType,
   updateListItem,
   deleteListItem,
@@ -14,8 +16,12 @@ const verifyToken = require("../middleware/jwt");
 const { upload, addWatermark } = require("../middleware/multer.js");
 var router = express.Router();
 
-/* get lsiting */
+/* get listing */
 router.get("/", getListItem);
+
+/* get listing table data*/
+router.get("/table", getTableData);
+router.get("/table/:listingID", getTableById);
 
 /* get lsiting */
 router.get("/listing/:type", getListingbyType);
@@ -28,12 +34,12 @@ router.get("/singlePageImg/:listingID", getsinglePageImg);
 
 /* get lsitItem */
 router.get("/:listingID", getListItemId);
-router.get("/:listingID/:type", getListItemId);//
+router.get("/:listingID/:type", getListItemId);
 
 /* update lsitItem */
 router.patch("/:listingID", updateListItem);
 /* delete lsitItem */
-router.delete("/:listingID", verifyToken, deleteListItem);
+router.delete("/delete/:listingID", verifyToken, deleteListItem);
 
 // Posting listing Images
 // router.post(

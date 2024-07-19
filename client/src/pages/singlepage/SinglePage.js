@@ -4,8 +4,6 @@ import httpCommon from "../../http-common";
 import "./singlePage.scss";
 import Slider from "../../component/slider/slider";
 import Map from "../../component/map/map";
-
-import { singlePostData, userData } from "../../dummy/dummy";
 import Container from "../../component/Container";
 import DialogProperty from "../../component/card/DialogProperty";
 import Social from "../../component/Social";
@@ -17,6 +15,7 @@ function SinglePage() {
 
   const [singlePageData, setsinglePageData] = useState([]);
   const [singlePageImgData, setsinglePageImgData] = useState([]);
+  const [brochureData, setBrochureData] = useState([]);
 
   const handleClose = () => {
     setOpen(false);
@@ -25,6 +24,7 @@ function SinglePage() {
   useEffect(() => {
     getSinglepropertiesData();
     singlePageImg();
+    getBrochureData();
   }, []);
 
   // get properties Listing data by id
@@ -47,15 +47,27 @@ function SinglePage() {
   const singlePageImg = async () => {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
-      //  console.log("response____img", response);
-
+      const filteredData = response.data.data.filter(item => item.type !== 'Brochure');
       if (response.data.status === "success") {
-        setsinglePageImgData(response.data.data);
+        setsinglePageImgData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  }
+  };
+
+  const getBrochureData = async () => {
+    try {
+      const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
+      const brochureData = response.data.data.filter(item => item.type === 'Brochure');
+      if (response.data.status === "success") {
+        setBrochureData(brochureData);
+      }
+    } catch (error) {
+      console.error("Error fetching brochure data:", error);
+    }
+  };
+
 
   // console.log(singlePageImgData)
   return (
@@ -308,7 +320,7 @@ function SinglePage() {
           </div>
         </div>
       </div>
-      <PropertyDetails property={singlePageData} images={singlePageImgData} />
+      <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />
       <Social />
     </Container>
   );

@@ -14,7 +14,7 @@ function Map({ lat, lng }) {
   return (
     <MapContainer
       center={[centerLat, centerLng]}
-      zoom={20}
+      zoom={12}
       scrollWheelZoom={false}
       className="map"
     >

@@ -1,23 +1,16 @@
 import React from "react";
-import ExampleWithLocalizationProvider from "../Pages/Property/PropertyTable/Provider";
-import Container from "../../component/Container";
+import ExampleWithLocalizationProvider from "./Listing/ListingTable/Provider";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import axios from "axios";
 import { useSelector } from "react-redux";
+import httpCommon from "../../http-common";
+
 function AdminHome() {
   const { currentUser } = useSelector((state) => state.user);
-  // const currentUser = {
-  //   id: 17,
-  //   username: 'dev',
-  //   email: 'dev1@mail.com',
-  //   avatar: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-  //   admin: 1
-  // };
 
   const getProperty = async () => {
     try {
-      const res = await axios.get(`http://localhost:8000/api/property/`);
+      const res = await httpCommon.get(`/list/table`);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -27,9 +20,7 @@ function AdminHome() {
   };
   const getSingleProperty = async () => {
     try {
-      const res = await axios.get(
-        `http://localhost:8000/api/property/${currentUser.id}`
-      );
+      const res = await httpCommon.get(`/list/table/${currentUser.id}`);
       return res.data;
     } catch (error) {
       console.log(error);

@@ -18,16 +18,63 @@ import {
   Typography,
   lighten,
 } from "@mui/material";
-
+import { Edit, Delete, AccountCircle, Send } from "@mui/icons-material";
 //Icons Imports
-import { AccountCircle, Edit, Send } from "@mui/icons-material";
 import { FaTrash } from "react-icons/fa";
-
-//Mock Data
-// import { data } from "./data";
+import httpCommon from "../../../../http-common";
+import { toast, Toaster } from "sonner";
 
 function Table({ data, handleClose, open, setOpen, mutation }) {
-  const [id, setId] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const navigate = useNavigate();
+
+  const getDynamicFields = (type) => {
+    switch (type) {
+      case 'CommercialProperties':
+        return {
+          desc: 'ltg_det_comm_prop_desc',
+          salePrice: 'ltg_det_comm_prop_sale_price',
+          area: 'ltg_det_comm_prop_pmts_area_dts',
+          address: 'ltg_det_comm_prop_address',
+
+        };
+      case 'PentHouses':
+        return {
+          desc: 'ltg_det_penthouses_desc',
+          salePrice: 'ltg_det_penthouses_sale_price',
+          area: 'ltg_det_penthouses_pmts_area_dts',
+          address: 'ltg_det_penthouses_address',
+        };
+      case 'Plots':
+        return {
+          desc: 'ltg_det_plot_desc',
+          salePrice: 'ltg_det_plot_sale_price',
+          area: 'ltg_det_plot_pmts_area_dts',
+          address: 'ltg_det_plot_address',
+        };
+      case 'RowHouses':
+        return {
+          desc: 'ltg_det_row_house_desc',
+          salePrice: 'ltg_det_row_house_sale_price',
+          area: 'ltg_det_row_house_pmts_area_dts',
+          address: 'ltg_det_row_house_address',
+        };
+      case 'Villaments':
+        return {
+          desc: 'ltg_det_villaments_desc',
+          salePrice: 'ltg_det_villaments_sale_price',
+          area: 'ltg_det_villaments_pmts_area_dts',
+          address: 'ltg_det_villaments_address',
+        };
+      default:
+        return {
+          desc: 'ltg_det_desc',
+          salePrice: 'ltg_det_sale_price',
+          area: 'ltg_det_pmts_area_dts',
+          address: 'ltg_det_address',
+        };
+    }
+  };
 
   const columns = useMemo(
     () => [
@@ -50,33 +97,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         size: 150,
       },
       {
-        id: 'attachment',
-        header: 'Name',
-        accessorKey: 'attachment',
-        size: 80,
-        Cell: ({ row }) => (
-          <Box
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '1rem',
-            }}
-          >
-            {row.original.images && row.original.images[0] && (
-              <img
-                src={row.original.images[0].url}
-                alt={row.original.file_name}
-                loading="lazy"
-                style={{ borderRadius: '50%', height: '50px', width: '50px' }}
-              />
-            )}
-            <span>{row.original.file_name}</span>
-          </Box>
-        ),
-      },
-      {
-        id: 'ltg_det_desc',
-        accessorKey: 'ltg_det_desc',
+        id: 'description',
+        accessorFn: (row) => row[getDynamicFields(row.ltg_type).desc],
         enableClickToCopy: true,
         filterVariant: 'autocomplete',
         header: 'Description',
@@ -92,19 +114,17 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             }}
           >
             <div
-              dangerouslySetInnerHTML={{ __html: row.original.ltg_det_desc }}
+              dangerouslySetInnerHTML={{ __html: row.original[getDynamicFields(row.original.ltg_type).desc] }}
             />
           </Box>
         ),
       },
       {
-        id: "ltg_det_sale_price",
-        accessorKey: "ltg_det_sale_price",
-        // filterVariant: 'range', //if not using filter modes feature, use this instead of filterFn
+        id: "salePrice",
+        accessorFn: (row) => row[getDynamicFields(row.ltg_type).salePrice],
         filterFn: "between",
         header: "Price",
         size: 50,
-        //custom conditional format and styling
         Cell: ({ cell }) => (
           <Box
             component="span"
@@ -131,12 +151,13 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         ),
       },
       {
-        accessorKey: "ltg_categories", //hey a simple column for once
+        accessorKey: "ltg_categories",
         header: "Category",
         size: 60,
       },
       {
-        accessorKey: "ltg_det_address", //hey a simple column for once
+        // accessorKey: "ltg_det_address",
+        accessorFn: (row) => row[getDynamicFields(row.ltg_type).address],
         header: "Address",
         size: 80,
       },
@@ -145,32 +166,32 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "City",
         size: 50,
       },
-      {
-        accessorKey: "ltg_det_pmts_area_dts", //hey a simple column for once
-        header: "Size",
-        size: 50,
-        Cell: ({ renderedCellValue }) => <span>{renderedCellValue}sqrt</span>,
-      },
-      {
-        accessorKey: "ltg_det_pmts_bth_rom", //hey a simple column for once
-        header: "Bathrooms",
-        size: 50,
-      },
-      {
-        accessorKey: "ltg_det_pmts_bed_rom", //hey a simple column for once
-        header: "Bedrooms",
-        size: 50,
-      },
-      {
-        accessorKey: "ltg_det_pmts_furnishing", //hey a simple column for once
-        header: "Furnished",
-        size: 50,
-      },
-      {
-        accessorKey: "ltg_det_pmts_car_park", //hey a simple column for once
-        header: "Parking",
-        size: 50,
-      },
+      // {
+      //   accessorKey: "ltg_det_pmts_area_dts", //hey a simple column for once
+      //   header: "Size",
+      //   size: 50,
+      //   Cell: ({ renderedCellValue }) => <span>{renderedCellValue}sqrt</span>,
+      // },
+      // {
+      //   accessorKey: "ltg_det_pmts_bth_rom", //hey a simple column for once
+      //   header: "Bathrooms",
+      //   size: 50,
+      // },
+      // {
+      //   accessorKey: "ltg_det_pmts_bed_rom", //hey a simple column for once
+      //   header: "Bedrooms",
+      //   size: 50,
+      // },
+      // {
+      //   accessorKey: "ltg_det_pmts_furnishing", //hey a simple column for once
+      //   header: "Furnished",
+      //   size: 50,
+      // },
+      // {
+      //   accessorKey: "ltg_det_pmts_car_park", //hey a simple column for once
+      //   header: "Parking",
+      //   size: 50,
+      // },
       {
         id: "ltg_create_date",
         accessorKey: "ltg_create_date",
@@ -186,12 +207,37 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             </span>
           );
         },
-      }
-    ],
-    []
-  );
-
-  const navigate = useNavigate();
+      },
+      {
+        id: "actions",
+        header: "Actions",
+        size: 150,
+        Cell: ({ row }) => (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => navigate(`/admin/property/edit/${row.original.RowID}`)}
+              startIcon={<Edit />}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              onClick={() => {
+                setSelectedId(row.original.RowID);
+                console.log("original", row.original.RowID);
+                setOpen(true);
+              }}
+              startIcon={<Delete />}
+            >
+              Delete
+            </Button>
+          </Box>
+        ),
+      },
+    ], [navigate, setOpen]);
 
   const tableData = useMemo(() => data.map((item, index) => ({
     ...item,
@@ -207,7 +253,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     enableDensityToggle: true,
     enableColumnPinning: true,
     enableFacetedValues: true,
-    enableRowActions: true,
     enableRowSelection: true,
 
     initialState: {
@@ -233,7 +278,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       variant: "outlined",
     },
     muiTableBodyCellProps: {
-      sx: { fontSize: '1rem' },
+      sx: { fontSize: '0.9rem' },
     },
     muiTableHeadCellProps: {
       sx: { fontSize: '1rem' },
@@ -253,7 +298,13 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               Cancel
             </button>
             <button
-              onClick={() => mutation.mutate({ id })}
+              onClick={() => {
+                console.log("selectedId", selectedId);
+                if (selectedId !== null) {
+                  mutation.mutate(selectedId);
+                }
+                setOpen(false);
+              }}
               className="px-3 py-2 text-white bg-red-600 border rounded-md shadow-sm"
             >
               Delete
@@ -261,7 +312,9 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           </div>
         </div>
       </Dialog>
-      <MaterialReactTable table={table} />
+      <MaterialReactTable
+        table={table}
+      />
     </div>
   );
 }
