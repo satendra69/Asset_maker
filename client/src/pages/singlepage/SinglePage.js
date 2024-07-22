@@ -68,6 +68,18 @@ function SinglePage() {
     }
   };
 
+  function formatIndianNumber(num) {
+    // Convert the number to a string
+    let str = num.toString();
+    // Split the number into integer and decimal parts (if any)
+    let [intPart, decimalPart] = str.split('.');
+
+    // Format the integer part using a regular expression
+    intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
+
+    // Combine the formatted integer part and the decimal part (if any)
+    return decimalPart ? `${intPart}.${decimalPart}` : intPart;
+  }
 
   // console.log(singlePageImgData)
   return (
@@ -110,13 +122,13 @@ function SinglePage() {
                     ₹
                     {singlePageData && singlePageData.length > 0 && (
                       <span>
-                        {singlePageData[0].ltg_type === 'Plots' && singlePageData[0].ltg_det_plot_sale_price}
-                        {singlePageData[0].ltg_type === 'Villas' && singlePageData[0].ltg_det_sale_price}
-                        {singlePageData[0].ltg_type === 'Apartments' && singlePageData[0].ltg_det_sale_price}
-                        {singlePageData[0].ltg_type === 'RowHouses' && singlePageData[0].ltg_det_row_house_sale_price}
-                        {singlePageData[0].ltg_type === 'CommercialProperties' && singlePageData[0].ltg_det_comm_prop_sale_price}
-                        {singlePageData[0].ltg_type === 'Villaments' && singlePageData[0].ltg_det_villaments_sale_price}
-                        {singlePageData[0].ltg_type === 'PentHouses' && singlePageData[0].ltg_det_penthouses_sale_price}
+                        {singlePageData[0].ltg_type === 'Plots' && formatIndianNumber(singlePageData[0].ltg_det_plot_sale_price)}
+                        {singlePageData[0].ltg_type === 'Villas' && formatIndianNumber(singlePageData[0].ltg_det_sale_price)}
+                        {singlePageData[0].ltg_type === 'Apartments' && formatIndianNumber(singlePageData[0].ltg_det_sale_price)}
+                        {singlePageData[0].ltg_type === 'RowHouses' && formatIndianNumber(singlePageData[0].ltg_det_row_house_sale_price)}
+                        {singlePageData[0].ltg_type === 'CommercialProperties' && formatIndianNumber(singlePageData[0].ltg_det_comm_prop_sale_price)}
+                        {singlePageData[0].ltg_type === 'Villaments' && formatIndianNumber(singlePageData[0].ltg_det_villaments_sale_price)}
+                        {singlePageData[0].ltg_type === 'PentHouses' && formatIndianNumber(singlePageData[0].ltg_det_penthouses_sale_price)}
                       </span>
                     )}
 

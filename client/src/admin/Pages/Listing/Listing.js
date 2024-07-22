@@ -32,6 +32,7 @@ function NewListingPage() {
   const [CustomLabel, setCustomLabel] = useState([]);
   const [ApartmentData, setApartment] = useState([]);
   const [ApartmentGalleryData, setApartmentGalleryData] = useState([]);
+  const [ApartmentBrochureData, setApartmentBrochureData] = useState([]);
 
   // for villa
   const [VillaData, setVilla] = useState([]);
@@ -262,6 +263,7 @@ function NewListingPage() {
     // console.log("dataee___",data);
     setApartment(data);
     setApartmentGalleryData(data.combinedImages);
+    setApartmentBrochureData(data.brochure);
   };
 
   const handleVillaDataUpdate = (data) => {

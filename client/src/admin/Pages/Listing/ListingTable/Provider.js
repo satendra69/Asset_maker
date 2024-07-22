@@ -16,18 +16,26 @@ const ExampleWithLocalizationProvider = ({ data }) => {
     setOpen(false);
   };
 
-  const handleDelete = async (id) => {
+  const handleDelete = async ({ id, type }) => {
+    const token = localStorage.getItem("token");
     try {
-      const res = await httpCommon.delete(`/list/delete/${id}`);
+      const res = await httpCommon.delete(`/list/delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        },
+        data: { type } // Including type in the request body
+      });
+      console.log("Delete response: ", res);
       return res.data;
     } catch (error) {
-      console.log(error);
+      console.log("Error: ", error);
       throw new Error("Failed to delete property");
     }
   };
 
+
   const mutation = useMutation({
-    mutationFn: handleDelete,
+    mutationFn: ({ id, type }) => handleDelete({ id, type }),
     onSuccess: async (data) => {
       toast.success(data.message);
       handleClose();

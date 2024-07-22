@@ -68,7 +68,7 @@ function Card({ item }) {
 
   const price = priceMapping[item.ltg_type] || item.ltg_det_sale_price;
   //const formattedPrice = price.toLocaleString('en-IN');
-  const formattedPrice = price != null ? price.toLocaleString('en-IN') : '0';
+  const formattedPrice = formatIndianNumber(price != null ? price.toLocaleString('en-IN') : '0');
 
   const bedroomMapping = {
     Plots: item.ltg_det_pmts_bed_rom,
@@ -94,6 +94,19 @@ function Card({ item }) {
 
   // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
   const bathrooms = bathroomMapping[item.ltg_type] || item.ltg_det_pmts_bth_rom;
+
+  function formatIndianNumber(num) {
+    // Convert the number to a string
+    let str = num.toString();
+    // Split the number into integer and decimal parts (if any)
+    let [intPart, decimalPart] = str.split('.');
+
+    // Format the integer part using a regular expression
+    intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
+
+    // Combine the formatted integer part and the decimal part (if any)
+    return decimalPart ? `${intPart}.${decimalPart}` : intPart;
+  }
 
   return (
     <>

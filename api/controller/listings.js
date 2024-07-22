@@ -1009,40 +1009,77 @@ const updateListItem = (req, res) => {
   });
 };
 
-const deleteListItem = (req, res) => {
+const deleteListItem = async (req, res) => {
   const listingID = req.params.listingID;
-  const q = "SELECT userId FROM listings WHERE id = ?";
-  db.query(q, [listingID], (error, results, fields) => {
-    if (error) {
-      console.error("Error deleting listing: " + error.stack);
-      res.status(500).json({ error: "Error deleting listing" });
-      return;
-    }
-    if (results.length === 0) {
-      res.status(404).json({ error: "Listing not found or already deleted" });
-      return;
-    }
-    const userId = results[0].userId;
-    if (req.userId !== userId || !req.isAdmin)
-      return res.status(404).send("you must be an administrator");
+  const { type } = req.body;
 
-    const query = "DELETE FROM listings WHERE id = ?";
-    db.query(query, [listingID], (error, results, fields) => {
-      if (error) {
-        console.error("Error deleting listing: " + error.stack);
-        res.status(500).json({ error: "Error deleting listing" });
-        return;
-      }
-      // Check if any rows were affected
-      if (results.affectedRows === 0) {
-        res
-          .status(404)
-          .json({ error: "Listing not found or already deleted" });
-        return;
-      }
-      res.json({ message: "Listing deleted successfully" });
-    });
-  });
+  console.log("ID: ", listingID);
+  console.log("Type: ", type);
+
+  let connection;
+
+  try {
+    // Determine the details table based on type
+    let detailsTable;
+    switch (type) {
+      case 'Plots':
+        detailsTable = 'ltg_det_plots';
+        break;
+      case 'RowHouses':
+        detailsTable = 'ltg_det_row_houses';
+        break;
+      case 'Villaments':
+        detailsTable = 'ltg_det_villaments';
+        break;
+      case 'CommercialProperties':
+        detailsTable = 'ltg_det_commercial_properties';
+        break;
+      case 'PentHouses':
+        detailsTable = 'ltg_det_penthouses';
+        break;
+      default:
+        detailsTable = 'ltg_det';
+    }
+
+    // Get a connection from the pool
+    connection = await db.getConnection();
+
+    // Start a transaction
+    await connection.beginTransaction();
+
+    // Delete from the details table
+    const deleteDetailQuery = `
+      DELETE FROM ${detailsTable}
+      WHERE ltg_det_mstRowID = ?;
+    `;
+    await connection.query(deleteDetailQuery, [listingID]);
+
+    // Delete from the master table
+    const deleteMasterQuery = `
+      DELETE FROM ltg_mst
+      WHERE RowID = ?;
+    `;
+    await connection.query(deleteMasterQuery, [listingID]);
+
+    // Delete all rows from the reference table with the same ltg_mstRowID
+    const deleteRefQuery = `
+      DELETE FROM ltg_ref
+      WHERE ltg_mstRowID = ?;
+    `;
+    await connection.query(deleteRefQuery, [listingID]);
+
+    // Commit the transaction
+    await connection.commit();
+
+    res.status(200).json({ message: 'Property deleted successfully', status: 'success' });
+  } catch (error) {
+    // Rollback the transaction in case of an error
+    if (connection) await connection.rollback();
+    console.error("Error deleting property: " + error.stack);
+    res.status(500).json({ message: "Error deleting property", status: "error" });
+  } finally {
+    if (connection) connection.release(); // Release the connection back to the pool
+  }
 };
 
 // Images Section
@@ -1114,15 +1151,13 @@ const deleteListItem = (req, res) => {
 
 
 
+// upload files to images folder and db
 const uploadListItem = async (req, res) => {
-  console.log("insert____");
-
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).send("No files were uploaded.");
     }
 
-    console.log("insert____2");
     const insertQuery =
       "INSERT INTO ltg_ref (`ltg_mstRowID`, `file_name`, `attachment`, `type`, `audit_user`, `audit_date`) VALUES ?";
 
@@ -1156,16 +1191,34 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
     }
 
+    // Insert the PDF files
     const [insertResults] = await db.query(insertQuery, [uniqueValues]);
-    console.log("insertResults:", insertResults);
+
+    // Save the PDF thumbnail data
+    const thumbnailValues = req.files
+      .filter(file => file.thumbnail) // Only include files with a thumbnail
+      .map(file => [
+        req.params.listingID,
+        file.originalname.replace(/\.pdf$/, '-thumbnail.png'), // Thumbnail file name
+        file.thumbnail,
+        req.body.type,
+        'admin',
+        new Date().toISOString().slice(0, 10)
+      ]);
+
+    if (thumbnailValues.length > 0) {
+      const thumbnailInsertQuery =
+        "INSERT INTO ltg_ref (`ltg_mstRowID`, `file_name`, `attachment`, `type`, `audit_user`, `audit_date`) VALUES ?";
+      await db.query(thumbnailInsertQuery, [thumbnailValues]);
+    }
 
     res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
-
   } catch (error) {
     console.error("Error processing file uploads:", error);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 // Delete Images
 const deleteListImage = (req, res) => {

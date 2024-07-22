@@ -3,7 +3,7 @@ const createError = require("./creatError");
 
 const verifyToken = (req, res, next) => {
   const authHeader = req.header("Authorization");
-  console.log("authHeader", authHeader);
+
   if (!authHeader)
     return next(createError(401, "Authorization header is missing!"));
 

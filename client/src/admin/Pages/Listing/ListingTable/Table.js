@@ -26,6 +26,7 @@ import { toast, Toaster } from "sonner";
 
 function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
   const navigate = useNavigate();
 
   const getDynamicFields = (type) => {
@@ -83,12 +84,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "Property Title",
         accessorKey: "ltg_title",
         size: 200,
-      },
-      {
-        id: "ltg_type",
-        header: "Type",
-        accessorKey: "ltg_type",
-        size: 100,
       },
       {
         id: "ltg_owner",
@@ -227,7 +222,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               color="error"
               onClick={() => {
                 setSelectedId(row.original.RowID);
-                console.log("original", row.original.RowID);
+                setSelectedType(row.original.ltg_type);
                 setOpen(true);
               }}
               startIcon={<Delete />}
@@ -299,9 +294,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             </button>
             <button
               onClick={() => {
-                console.log("selectedId", selectedId);
-                if (selectedId !== null) {
-                  mutation.mutate(selectedId);
+                if (selectedId !== null && selectedType !== null) {
+                  mutation.mutate({ id: selectedId, type: selectedType });
                 }
                 setOpen(false);
               }}
