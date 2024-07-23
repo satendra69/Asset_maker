@@ -168,6 +168,7 @@ function NewListingPage() {
       CustomLabel: JSON.stringify(CustomLabel),
       ListingData: listingData[listingType],
       auditUser: 'admin',
+      update: Boolean(listingId),
     };
 
     console.log("json_ListingInsert_____", json_ListingInsert);
@@ -176,7 +177,7 @@ function NewListingPage() {
       let response;
       if (listingId) {
         // Update existing listing
-        response = await httpCommon.put(`/list/${listingId}`, json_ListingInsert);
+        response = await httpCommon.patch(`/list/${listingId}`, json_ListingInsert);
       } else {
         // Create new listing
         response = await httpCommon.post("/list", json_ListingInsert);
@@ -188,16 +189,17 @@ function NewListingPage() {
         console.log("SUCCESS_____insert__");
         const auditUser = "admin";
         const listingId = responseData.RowID;
+        const update = json_ListingInsert.update;
 
-        await uploadListingFiles(listingType, listingId, auditUser, listingData[listingType]);
+        await uploadListingFiles(listingType, listingId, auditUser, listingData[listingType], update);
 
         Swal.close();
         Swal.fire({
           icon: "success",
           title: responseData.status,
           text: responseData.message,
-        }).then(() => {
-          navigate(`/admin`);
+          // }).then(() => {
+          //   navigate(`/admin`);
         });
 
       } else {
@@ -213,7 +215,7 @@ function NewListingPage() {
     }
   };
 
-  const uploadListingFiles = async (listingType, listingID, auditUser, ListingData) => {
+  const uploadListingFiles = async (listingType, listingID, auditUser, ListingData, update) => {
     const fileTypes = [
       { key: 'combinedImages.galleryImages', type: 'Gallery' },
       { key: 'combinedImages.masterPlanImages', type: 'MasterPlan' },
@@ -231,6 +233,7 @@ function NewListingPage() {
         const formData = new FormData();
         formData.append("type", fileType.type); // Ensure type key matches server expectations
         formData.append("auditUser", auditUser);
+        formData.append("update", update);
 
         for (let i = 0; i < files.length; i++) {
           formData.append("attachments", files[i]); // Ensure "images" matches server's field name for file uploads

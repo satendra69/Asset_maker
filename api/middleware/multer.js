@@ -1,12 +1,12 @@
-const multer = require("multer");
-const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
-const poppler = require("pdf-poppler");
+const multer = require('multer');
+const sharp = require('sharp');
+const path = require('path');
+const fs = require('fs');
+const poppler = require('pdf-poppler');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "./public/images"); // Directory where files will be saved
+    cb(null, './public/images'); // Directory where files will be saved
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname); // Original file name
@@ -18,13 +18,13 @@ const upload = multer({ storage: storage });
 const addWatermark = async (req, res, next) => {
   try {
     if (req.files && req.files.length > 0) {
-      const watermarkPath = path.resolve(__dirname, "../public/images/watermark.png");
+      const watermarkPath = path.resolve(__dirname, '../public/images/watermark.png');
 
       for (const file of req.files) {
         const inputPath = file.path;
         const outputPath = path.join(path.dirname(inputPath), `watermarked-${path.basename(inputPath)}`);
 
-        if (file.mimetype.startsWith("image")) {
+        if (file.mimetype.startsWith('image')) {
           // Process image files
           const inputImage = sharp(inputPath);
           const { width, height } = await inputImage.metadata();
@@ -33,7 +33,7 @@ const addWatermark = async (req, res, next) => {
             .resize({
               width: Math.floor(width / 4),
               height: Math.floor(height / 4),
-              fit: 'inside'
+              fit: 'inside',
             })
             .png()
             .toBuffer();
@@ -44,7 +44,7 @@ const addWatermark = async (req, res, next) => {
 
           file.path = outputPath;
           file.filename = `watermarked-${file.originalname}`;
-        } else if (file.mimetype === "application/pdf") {
+        } else if (file.mimetype === 'application/pdf') {
           const baseFileName = path.basename(file.originalname, path.extname(file.originalname));
           const pdfOutputPath = path.join(path.dirname(inputPath), `processed-${file.originalname}`);
           const thumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-thumbnail.png`);
@@ -57,17 +57,26 @@ const addWatermark = async (req, res, next) => {
             format: 'png',
             out_dir: path.dirname(pdfOutputPath),
             out_prefix: baseFileName,
-            page: 1
+            page: 1,
           };
           await poppler.convert(pdfOutputPath, opts);
 
-          // Rename the generated thumbnail to include '-thumbnail.png'
-          const generatedThumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-01.png`);
-          if (fs.existsSync(generatedThumbnailPath)) {
-            fs.renameSync(generatedThumbnailPath, thumbnailPath);
+          // Check for both naming conventions
+          const generatedThumbnailPath1 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-1.png`);
+          const generatedThumbnailPath2 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-01.png`);
+
+          let actualThumbnailPath;
+          if (fs.existsSync(generatedThumbnailPath1)) {
+            actualThumbnailPath = generatedThumbnailPath1;
+          } else if (fs.existsSync(generatedThumbnailPath2)) {
+            actualThumbnailPath = generatedThumbnailPath2;
+          }
+
+          if (actualThumbnailPath) {
+            fs.renameSync(actualThumbnailPath, thumbnailPath);
             file.thumbnail = `/images/${path.basename(thumbnailPath)}`;
           } else {
-            console.error(`Thumbnail file not found: ${generatedThumbnailPath}`);
+            console.error(`Thumbnail file not found: ${generatedThumbnailPath1} or ${generatedThumbnailPath2}`);
           }
 
           // Update file information
@@ -80,10 +89,9 @@ const addWatermark = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.error("Error processing files:", error);
-    res.status(500).send("Internal Server Error");
+    console.error('Error processing files:', error);
+    res.status(500).send('Internal Server Error');
   }
 };
-
 
 module.exports = { upload, addWatermark };

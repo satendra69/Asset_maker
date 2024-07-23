@@ -5,6 +5,7 @@ const moment = require("moment");
 const addListings = async (req, res) => {
 
   const customLabels = JSON.stringify(req.body.CustomLabel);
+
   const q =
     `INSERT INTO ltg_mst
     (ltg_title, ltg_owner, ltg_type, ltg_mark_as_featured, ltg_regions, ltg_categories, ltg_labels, ltg_audit_user, ltg_create_date, ltg_update_date)
@@ -20,7 +21,6 @@ const addListings = async (req, res) => {
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
 
-
   try {
     const [results] = await db.query(q);
     const lastInsertId = results.insertId;
@@ -28,106 +28,56 @@ const addListings = async (req, res) => {
     if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
       const q_det =
         `INSERT INTO ltg_det
-            (ltg_det_mstRowID, 
-            ltg_det_price, 
-            ltg_det_sale_price, 
-            ltg_det_suffix_price,
-            ltg_det_desc, 
-            ltg_det_location,
-            ltg_det_address, 
-            ltg_det_postal_code,
-            ltg_det_latitude, 
-            ltg_det_longitude,
-            ltg_det_property_address_details,
-            ltg_det_pmts_area_dts,
-            ltg_det_pmts_rate_per_sq,
-            ltg_det_pmts_status,
-            ltg_det_pmts_bed_rom,
-            ltg_det_pmts_bth_rom,
-            ltg_det_pmts_car_park,
-            ltg_det_pmts_year_build,
-            ltg_det_plot_dimensions,
-            ltg_det_open_sides,
-            ltg_det_corner_villa,
-            ltg_det_plot_area,
-            ltg_det_gated_community,
-            ltg_det_over_looking,
-            ltg_det_totl_project_extent,
-            ltg_det_pmts_total_flrs,
-            ltg_det_pmts_flat_on_flr,
-            ltg_det_pmts_lfts_in_tower,
-            ltg_det_pmts_main_dor_facing,
-            ltg_det_pmts_property_flrg,
-            ltg_det_pmts_balconies,
-            ltg_det_pmts_approaching_road_width,
-            ltg_det_pmts_furnishing,
-            ltg_det_pmts_stamp_duty,
-            ltg_det_pmts_tproject_evnt,
-            ltg_det_pmts_totl_block,
-            ltg_det_pmts_transaction_typ,
-            ltg_det_pmts_total_towrs,
-            ltg_det_pmts_total_phases,
-            ltg_det_pmts_approval_authority,
-            ltg_det_pmts_totalunits,
-            ltg_det_pmts_other_advtages,
-            ltg_det_about_project_buder,
-            ltg_det_amenities,
-            ltg_det_property_video_url,
-            ltg_det_audit_user,
-            ltg_det_create_date,
-            ltg_det_update_date)
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.propertyAddressDetails}', 
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}', 
-            '${req.body.ListingData.selectedBedRooms}', 
-            '${req.body.ListingData.selectedBathRooms}', 
-            '${req.body.ListingData.selectedCarParking}', 
-            '${req.body.ListingData.yearBuilt}', 
-            '${req.body.ListingData.plotDimensions}',
-            '${req.body.ListingData.noOfOpenSides}', 
-            '${req.body.ListingData.isCornerVilla}', 
-            '${req.body.ListingData.plotArea}', 
-            '${req.body.ListingData.isInGatedCommunity}', 
-            '${req.body.ListingData.overLooking}', 
-            '${req.body.ListingData.totalProjectExtent}',  
-            '${req.body.ListingData.totalFloors}', 
-            '${req.body.ListingData.flatOnFloor}', 
-            '${req.body.ListingData.liftsInTheTower}', 
-            '${req.body.ListingData.mainDoorFacing}', 
-            '${req.body.ListingData.propertyFlooring}', 
-            '${req.body.ListingData.balconies}', 
-            '${req.body.ListingData.approachingRoadWidth}', 
-            '${req.body.ListingData.furnishing}', 
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
-            '${req.body.ListingData.totalProjectExtent}', 
-            '${req.body.ListingData.totalBlocks}', 
-            '${req.body.ListingData.transactionType}', 
-            '${req.body.ListingData.totalTowers}', 
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.approvalAuthority}', 
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.advantagesAsString}', 
-            '${req.body.ListingData.projectBuilderDetails}', 
-            '${req.body.ListingData.amenitiesAsString}', 
-            '${req.body.ListingData.videoUrl}', 
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
-
-
+	   SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_price = '${req.body.ListingData.price}', 
+    ltg_det_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_desc = '${req.body.ListingData.content}', 
+    ltg_det_location = '${req.body.ListingData.MapRow.location}',
+    ltg_det_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_pmts_bed_rom = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_pmts_bth_rom = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_pmts_car_park = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_pmts_year_build = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_plot_dimensions = '${req.body.ListingData.plotDimensions}', 
+    ltg_det_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_corner_villa = '${req.body.ListingData.isCornerVilla}', 
+    ltg_det_plot_area = '${req.body.ListingData.plotArea}', 
+    ltg_det_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_totl_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_pmts_total_flrs = '${req.body.ListingData.totalFloors}', 
+    ltg_det_pmts_flat_on_flr = '${req.body.ListingData.flatOnFloor}', 
+    ltg_det_pmts_lfts_in_tower = '${req.body.ListingData.liftsInTheTower}', 
+    ltg_det_pmts_main_dor_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_pmts_property_flrg = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_pmts_stamp_duty = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_pmts_tproject_evnt = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_pmts_totl_block = '${req.body.ListingData.totalBlocks}', 
+    ltg_det_pmts_transaction_typ = '${req.body.ListingData.transactionType}', 
+    ltg_det_pmts_total_towrs = '${req.body.ListingData.totalTowers}', 
+    ltg_det_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_pmts_totalunits = '${req.body.ListingData.totalUnits}', 
+    ltg_det_pmts_other_advtages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_about_project_buder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}',
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det successfully");
@@ -138,82 +88,46 @@ const addListings = async (req, res) => {
       }
     }
     else if (req.body.listingType == "Plots") {
-      console.log("ploats____");
+      console.log("plots____");
       const q_det =
         `INSERT INTO ltg_det_plots
-            (ltg_det_mstRowID, 
-            ltg_det_plot_price,  
-            ltg_det_plot_sale_price, 
-            ltg_det_plot_suffix_price,
-            ltg_det_plot_desc, 
-            ltg_det_plot_location, 
-            ltg_det_plot_address, 
-            ltg_det_plot_postal_code,
-            ltg_det_plot_latitude, 
-            ltg_det_plot_longitude,
-            ltg_det_plot_property_address_details,
-            ltg_det_plot_pmts_area_dts,
-            ltg_det_plot_pmts_rate_per_sq,
-            ltg_det_plot_pmts_status,
-            ltg_det_plot_pmts_plot_dimensions,
-            ltg_det_plot_pmts_floors_allowed_for_construction,
-            ltg_det_plot_pmts_no_of_open_sides,
-            ltg_det_plot_pmts_plot_facing,
-            ltg_det_plot_pmts_corner_plot,
-            ltg_det_plot_pmts_gated_community,
-            ltg_det_plot_pmts_boundary_wall_made,
-            ltg_det_plot_pmts_approaching_road_width,
-            ltg_det_plot_pmts_transaction_type,
-            ltg_det_plot_pmts_stamp_duty_registration_charges,
-            ltg_det_plot_pmts_total_project_extent,
-            ltg_det_plot_pmts_plot_approval_authority,
-            ltg_det_plot_pmts_year_built,
-            ltg_det_plot_pmts_total_units,
-            ltg_det_plot_pmts_total_phases,
-            ltg_det_plot_amenities,
-            ltg_det_plot_about_project_builder,
-            ltg_det_plot_property_video_url,
-            ltg_det_audit_user,
-            ltg_det_create_date,
-            ltg_det_update_date
-            )
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.propertyAddressDetails}', 
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}', 
-            '${req.body.ListingData.plotDimensions}', 
-            '${req.body.ListingData.floorsAllowedForConstruction}', 
-            '${req.body.ListingData.noOfOpenSides}', 
-            '${req.body.ListingData.plotFacing}', 
-            '${req.body.ListingData.cornerPlot}', 
-            '${req.body.ListingData.isInGatedCommunity}', 
-            '${req.body.ListingData.boundaryWallMade}', 
-            '${req.body.ListingData.approachingRoadWidth}',
-            '${req.body.ListingData.transactionType}',
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}',
-            '${req.body.ListingData.totalProjectExtent}',
-            '${req.body.ListingData.plotApprovalAuthority}', 
-            '${req.body.ListingData.yearBuilt}', 
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.amenitiesAsString}', 
-            '${req.body.ListingData.projectBuilderDetails}', 
-            '${req.body.ListingData.videoUrl}', 
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
+SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_plot_price = '${req.body.ListingData.price}',  
+    ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_plot_desc = '${req.body.ListingData.content}', 
+    ltg_det_plot_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_plot_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_plot_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_plot_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_plot_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_plot_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_plot_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_plot_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_plot_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_plot_pmts_plot_dimensions = '${req.body.ListingData.plotDimensions}', 
+    ltg_det_plot_pmts_floors_allowed_for_construction = '${req.body.ListingData.floorsAllowedForConstruction}', 
+    ltg_det_plot_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_plot_pmts_plot_facing = '${req.body.ListingData.plotFacing}', 
+    ltg_det_plot_pmts_corner_plot = '${req.body.ListingData.cornerPlot}', 
+    ltg_det_plot_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_plot_pmts_boundary_wall_made = '${req.body.ListingData.boundaryWallMade}', 
+    ltg_det_plot_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_plot_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_plot_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_plot_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_plot_pmts_plot_approval_authority = '${req.body.ListingData.plotApprovalAuthority}', 
+    ltg_det_plot_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_plot_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_plot_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_plot_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_plot_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_plot_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}', 
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
 
 
       try {
@@ -228,95 +142,52 @@ const addListings = async (req, res) => {
     else if (req.body.listingType == "RowHouses") {
       const q_det =
         `INSERT INTO ltg_det_row_houses
-            (ltg_det_mstRowID, 
-              ltg_det_row_house_price,  
-              ltg_det_row_house_sale_price, 
-              ltg_det_row_house_suffix_price,
-              ltg_det_row_house_desc, 
-              ltg_det_row_house_location, 
-              ltg_det_row_house_address, 
-              ltg_det_row_house_postal_code,
-              ltg_det_row_house_latitude, 
-              ltg_det_row_house_longitude,
-            	ltg_det_row_house_property_address_details,
-              ltg_det_row_house_pmts_area_dts,
-            	ltg_det_row_house_pmts_rate_per_sq,
-              ltg_det_row_house_pmts_status,
-              ltg_det_row_house_pmts_bed_rooms,
-            	ltg_det_row_house_pmts_bath_rooms,
-              ltg_det_row_house_pmts_car_parking,
-              ltg_det_row_house_pmts_year_built,
-              ltg_det_row_house_pmts_plot_dimensions,
-              ltg_det_row_house_pmts_land_uds_area,
-              ltg_det_row_house_pmts_over_looking,
-              ltg_det_row_house_pmts_main_door_facing,
-            	ltg_det_row_house_pmts_corner_rowhouse,
-              ltg_det_row_house_pmts_gated_community,
-              ltg_det_row_house_pmts_balconies,
-              ltg_det_row_house_pmts_other_advantages,
-              ltg_det_row_house_pmts_approaching_road_width,
-              ltg_det_row_house_pmts_furnishing,
-              ltg_det_row_house_pmts_property_flooring,
-              ltg_det_row_house_pmts_no_of_open_sides,
-              ltg_det_row_house_pmts_total_project_extent,
-            	ltg_det_row_house_pmts_available_from,
-              ltg_det_row_house_pmts_stamp_duty_registration_charges,
-              ltg_det_row_house_pmts_transaction_type,
-              ltg_det_row_house_pmts_approval_authority,
-              ltg_det_row_house_pmts_total_units,
-              ltg_det_row_house_pmts_total_phases,
-              ltg_det_row_house_amenities,
-              ltg_det_row_house_about_project_builder,
-              ltg_det_row_house_property_video_url,
-              ltg_det_audit_user,
-              ltg_det_create_date,
-              ltg_det_update_date
-            )
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.propertyAddressDetails}', 
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}',
-            '${req.body.ListingData.selectedBedRooms}',
-            '${req.body.ListingData.selectedBathRooms}',
-            '${req.body.ListingData.selectedCarParking}',
-            '${req.body.ListingData.yearBuilt}', 
-            '${req.body.ListingData.plotDimensions}',
-            '${req.body.ListingData.landUDSArea}',
-            '${req.body.ListingData.overLooking}',
-            '${req.body.ListingData.mainDoorFacing}',
-            '${req.body.ListingData.isCornerRowhouse}',
-            '${req.body.ListingData.isInGatedCommunity}', 
-            '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.advantagesAsString}',
-            '${req.body.ListingData.approachingRoadWidth}',
-            '${req.body.ListingData.furnishing}',
-            '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.noOfOpenSides}', 
-            '${req.body.ListingData.totalProjectExtent}',
-            '${req.body.ListingData.availableFrom}',
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}',
-            '${req.body.ListingData.transactionType}',
-            '${req.body.ListingData.approvalAuthority}',
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.amenitiesAsString}', 
-            '${req.body.ListingData.projectBuilderDetails}', 
-            '${req.body.ListingData.videoUrl}', 
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
+SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_row_house_price = '${req.body.ListingData.price}',  
+    ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_row_house_desc = '${req.body.ListingData.content}', 
+    ltg_det_row_house_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_row_house_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_row_house_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_row_house_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_row_house_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_row_house_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_row_house_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_row_house_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_row_house_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_row_house_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_row_house_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_row_house_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_row_house_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_row_house_pmts_plot_dimensions = '${req.body.ListingData.plotDimensions}', 
+    ltg_det_row_house_pmts_land_uds_area = '${req.body.ListingData.landUDSArea}', 
+    ltg_det_row_house_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_row_house_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_row_house_pmts_corner_rowhouse = '${req.body.ListingData.isCornerRowhouse}', 
+    ltg_det_row_house_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_row_house_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_row_house_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_row_house_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_row_house_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_row_house_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_row_house_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_row_house_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_row_house_pmts_available_from = '${req.body.ListingData.availableFrom}', 
+    ltg_det_row_house_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_row_house_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_row_house_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_row_house_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_row_house_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_row_house_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_row_house_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_row_house_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}', 
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
+
 
       try {
         const [results_det] = await db.query(q_det);
@@ -330,78 +201,43 @@ const addListings = async (req, res) => {
     else if (req.body.listingType == "CommercialProperties") {
       const q_det =
         `INSERT INTO ltg_det_commercial_properties
-            (ltg_det_mstRowID, 
-              ltg_det_comm_prop_price,  
-              ltg_det_comm_prop_sale_price, 
-              ltg_det_comm_prop_suffix_price,
-              ltg_det_comm_prop_desc, 
-              ltg_det_comm_prop_location, 
-              ltg_det_comm_prop_address, 
-              ltg_det_comm_prop_postal_code,
-              ltg_det_comm_prop_latitude, 
-              ltg_det_comm_prop_longitude,
-              ltg_det_comm_prop_pmts_area_dts,
-              ltg_det_comm_prop_pmts_rate_per_sq,
-            	ltg_det_comm_prop_pmts_status,
-              ltg_det_comm_prop_pmts_year_built,
-              ltg_det_comm_prop_pmts_balconies,
-              ltg_det_comm_prop_pmts_other_advantages,
-              ltg_det_comm_prop_pmts_furnishing,
-              ltg_det_comm_prop_pmts_car_parking,
-              ltg_det_comm_prop_pmts_total_floors,
-              ltg_det_comm_prop_pmts_property_on_floor,
-              ltg_det_comm_prop_pmts_total_units,
-              ltg_det_comm_prop_pmts_transaction_type,
-              ltg_det_comm_prop_pmts_approaching_road_width,
-              ltg_det_comm_prop_pmts_approval_authority,
-              ltg_det_comm_prop_pmts_total_phases,
-              ltg_det_comm_prop_pmts_total_project_extent,
-              ltg_det_comm_prop_pmts_stamp_duty_registration_charges,
-              ltg_det_comm_prop_pmts_property_flooring,
-              ltg_det_comm_prop_amenities,
-              ltg_det_comm_prop_about_project_builder,
-              ltg_det_comm_prop_property_video_url,
-            	ltg_det_audit_user,
-              ltg_det_create_date,
-              ltg_det_update_date
-              
-            )
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}',
-            '${req.body.ListingData.yearBuilt}',
-            '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.advantagesAsString}',
-            '${req.body.ListingData.furnishing}',
-            '${req.body.ListingData.selectedCarParking}',
-            '${req.body.ListingData.totalFloors}',
-            '${req.body.ListingData.propertyOnFloor}',
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.transactionType}',
-            '${req.body.ListingData.approachingRoadWidth}',
-            '${req.body.ListingData.approvalAuthority}',
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.totalProjectExtent}',
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}',
-            '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.amenitiesAsString}', 
-            '${req.body.ListingData.projectBuilderDetails}',
-            '${req.body.ListingData.videoUrl}',  
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
+SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_comm_prop_price = '${req.body.ListingData.price}',  
+    ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
+    ltg_det_comm_prop_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_comm_prop_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_comm_prop_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_comm_prop_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_comm_prop_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_comm_prop_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_comm_prop_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_comm_prop_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_comm_prop_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_comm_prop_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_comm_prop_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_comm_prop_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_comm_prop_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_comm_prop_pmts_total_floors = '${req.body.ListingData.totalFloors}', 
+    ltg_det_comm_prop_pmts_property_on_floor = '${req.body.ListingData.propertyOnFloor}', 
+    ltg_det_comm_prop_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_comm_prop_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_comm_prop_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_comm_prop_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_comm_prop_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_comm_prop_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_comm_prop_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_comm_prop_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_comm_prop_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_comm_prop_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_comm_prop_property_video_url = '${req.body.ListingData.videoUrl}',  
+    ltg_det_audit_user = '${req.body.auditUser}', 
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
+
 
       try {
         const [results_det] = await db.query(q_det);
@@ -415,96 +251,51 @@ const addListings = async (req, res) => {
     else if (req.body.listingType == "Villaments") {
       const q_det =
         `INSERT INTO ltg_det_villaments
-            (	ltg_det_mstRowID, 
-              ltg_det_villaments_price,  
-              ltg_det_villaments_sale_price, 
-              ltg_det_villaments_suffix_price,
-              ltg_det_villaments_desc, 
-              ltg_det_villaments_location, 
-              ltg_det_villaments_address, 
-              ltg_det_villaments_postal_code,
-              ltg_det_villaments_latitude, 
-              ltg_det_villaments_longitude,
-              ltg_det_villaments_property_address_details,
-              ltg_det_villaments_pmts_area_dts,
-            	ltg_det_villaments_pmts_rate_per_sq,
-              ltg_det_villaments_pmts_status,
-              ltg_det_villaments_pmts_bed_rooms,
-              ltg_det_villaments_pmts_bath_rooms,
-              ltg_det_villaments_pmts_car_parking,
-              ltg_det_villaments_pmts_year_built,
-              ltg_det_villaments_pmts_land_uds_area,
-              ltg_det_villaments_pmts_duplex,
-              ltg_det_villaments_pmts_no_of_open_sides,
-              ltg_det_villaments_pmts_main_door_facing,
-              ltg_det_villaments_pmts_corner_villament,
-              ltg_det_villaments_pmts_gated_community,
-              ltg_det_villaments_pmts_balconies,
-              ltg_det_villaments_pmts_approaching_road_width,
-              ltg_det_villaments_pmts_over_looking,
-              ltg_det_villaments_pmts_furnishing,
-              ltg_det_villaments_pmts_property_flooring,
-              ltg_det_villaments_pmts_other_advantages,
-              ltg_det_villaments_pmts_available_from,
-              ltg_det_villaments_pmts_total_project_extent,
-              ltg_det_villaments_pmts_transaction_type,
-              ltg_det_villaments_pmts_stamp_duty_registration_charges,
-              ltg_det_villaments_pmts_approval_authority,
-              ltg_det_villaments_pmts_total_units,
-              ltg_det_villaments_pmts_total_phases,
-              ltg_det_villaments_amenities,
-              ltg_det_villaments_about_project_builder,
-              ltg_det_villaments_property_video_url,
-            	ltg_det_audit_user,
-              ltg_det_create_date,
-              ltg_det_update_date
-              
-            )
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.propertyAddressDetails}',
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}',
-            '${req.body.ListingData.selectedBedRooms}',
-            '${req.body.ListingData.selectedBathRooms}',
-            '${req.body.ListingData.selectedCarParking}',
-            '${req.body.ListingData.yearBuilt}',
-            '${req.body.ListingData.landUDSArea}',
-            '${req.body.ListingData.selectedDuplex}',
-            '${req.body.ListingData.noOfOpenSides}',
-            '${req.body.ListingData.mainDoorFacing}',
-            '${req.body.ListingData.isCornerVillament}',
-            '${req.body.ListingData.isInGatedCommunity}',
-            '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.approachingRoadWidth}',
-            '${req.body.ListingData.overLooking}',
-            '${req.body.ListingData.furnishing}',
-            '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.advantagesAsString}',
-            '${req.body.ListingData.availableFrom}',
-            '${req.body.ListingData.totalProjectExtent}',
-            '${req.body.ListingData.transactionType}',
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}',
-            '${req.body.ListingData.approvalAuthority}',
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.projectBuilderDetails}',
-            '${req.body.ListingData.amenitiesAsString}',
-            '${req.body.ListingData.videoUrl}', 
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
+SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_villaments_price = '${req.body.ListingData.price}',  
+    ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_villaments_desc = '${req.body.ListingData.content}', 
+    ltg_det_villaments_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_villaments_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_villaments_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_villaments_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_villaments_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_villaments_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_villaments_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_villaments_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_villaments_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_villaments_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_villaments_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_villaments_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_villaments_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_villaments_pmts_land_uds_area = '${req.body.ListingData.landUDSArea}', 
+    ltg_det_villaments_pmts_duplex = '${req.body.ListingData.selectedDuplex}', 
+    ltg_det_villaments_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_villaments_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_villaments_pmts_corner_villament = '${req.body.ListingData.isCornerVillament}', 
+    ltg_det_villaments_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_villaments_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_villaments_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_villaments_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_villaments_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_villaments_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_villaments_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_villaments_pmts_available_from = '${req.body.ListingData.availableFrom}', 
+    ltg_det_villaments_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_villaments_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_villaments_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_villaments_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_villaments_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_villaments_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_villaments_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_villaments_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_villaments_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}', 
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
 
       try {
         const [results_det] = await db.query(q_det);
@@ -518,94 +309,51 @@ const addListings = async (req, res) => {
     else if (req.body.listingType == "PentHouses") {
       const q_det =
         `INSERT INTO ltg_det_penthouses
-            (ltg_det_mstRowID, 
-              ltg_det_penthouses_price,  
-              ltg_det_penthouses_sale_price, 
-              ltg_det_penthouses_suffix_price,
-              ltg_det_penthouses_desc, 
-              ltg_det_penthouses_location, 
-              ltg_det_penthouses_address, 
-              ltg_det_penthouses_postal_code,
-              ltg_det_penthouses_latitude, 
-              ltg_det_penthouses_longitude,
-              ltg_det_penthouses_property_address_details,
-              ltg_det_penthouses_pmts_area_dts,
-            	ltg_det_penthouses_pmts_rate_per_sq,
-              ltg_det_penthouses_pmts_status,
-              ltg_det_penthouses_pmts_bed_rooms,
-              ltg_det_penthouses_pmts_bath_rooms,
-              ltg_det_penthouses_pmts_car_parking,
-              ltg_det_penthouses_pmts_year_built,
-              ltg_det_penthouses_pmts_duplex,
-              ltg_det_penthouses_pmts_main_door_facing,
-              ltg_det_penthouses_pmts_gated_community,
-              ltg_det_penthouses_pmts_corner_penthouse,
-              ltg_det_penthouses_pmts_balconies,
-              ltg_det_penthouses_pmts_furnishing,
-              ltg_det_penthouses_pmts_over_looking,
-              ltg_det_penthouses_pmts_transaction_type,
-              ltg_det_penthouses_pmts_property_flooring,
-              ltg_det_penthouses_pmts_other_advantages,
-              ltg_det_penthouses_pmts_no_of_open_sides,
-              ltg_det_penthouses_pmts_approaching_road_width,
-              ltg_det_penthouses_pmts_available_form,
-              ltg_det_penthouses_pmts_approval_authority,
-              ltg_det_penthouses_pmts_total_project_extent,
-              ltg_det_penthouses_pmts_stamp_duty_registration_charges,
-              ltg_det_penthouses_pmts_total_phases,
-              ltg_det_penthouses_pmts_total_units,
-              ltg_det_penthouses_amenities,
-              ltg_det_penthouses_about_project_builder,
-              ltg_det_penthouses_property_video_url,
-              ltg_det_audit_user,
-              ltg_det_create_date,
-              ltg_det_update_date
-              
-            )
-            VALUES
-            (
-            '${lastInsertId}', 
-            '${req.body.ListingData.price}', 
-            '${req.body.ListingData.salePrice}', 
-            '${req.body.ListingData.suffixPrice}', 
-            '${req.body.ListingData.content}',
-            '${req.body.ListingData.MapRow.location}',
-            '${req.body.ListingData.MapRow.address}',
-            '${req.body.ListingData.MapRow.postalCode}',
-            '${req.body.ListingData.MapRow.latitude}',
-            '${req.body.ListingData.MapRow.longitude}',
-            '${req.body.ListingData.propertyAddressDetails}',
-            '${req.body.ListingData.areaDetails}', 
-            '${req.body.ListingData.ratePerSqFt}', 
-            '${req.body.ListingData.selectedStatus}',
-            '${req.body.ListingData.selectedBedRooms}',
-            '${req.body.ListingData.selectedBathRooms}',
-            '${req.body.ListingData.selectedCarParking}',
-            '${req.body.ListingData.yearBuilt}',
-            '${req.body.ListingData.selectedDuplex}',
-            '${req.body.ListingData.mainDoorFacing}',
-            '${req.body.ListingData.isInGatedCommunity}',
-            '${req.body.ListingData.isCornerPenthouse}',
-            '${req.body.ListingData.balconies}',
-            '${req.body.ListingData.furnishing}',
-            '${req.body.ListingData.overLooking}',
-            '${req.body.ListingData.transactionType}',
-            '${req.body.ListingData.propertyFlooring}',
-            '${req.body.ListingData.advantagesAsString}',
-            '${req.body.ListingData.noOfOpenSides}',
-            '${req.body.ListingData.approachingRoadWidth}',
-            '${req.body.ListingData.availableFrom}',
-            '${req.body.ListingData.approvalAuthority}',
-            '${req.body.ListingData.totalProjectExtent}',
-            '${req.body.ListingData.stampDutyAndRegistrationCharges}',
-            '${req.body.ListingData.totalPhases}', 
-            '${req.body.ListingData.totalUnits}', 
-            '${req.body.ListingData.amenitiesAsString}', 
-            '${req.body.ListingData.projectBuilderDetails}',
-            '${req.body.ListingData.videoUrl}', 
-            '${req.body.auditUser}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
-            '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
+SET
+    ltg_det_mstRowID = '${lastInsertId}', 
+    ltg_det_penthouses_price = '${req.body.ListingData.price}',  
+    ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
+    ltg_det_penthouses_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_penthouses_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_penthouses_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_penthouses_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_penthouses_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_penthouses_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_penthouses_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_penthouses_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_penthouses_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_penthouses_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_penthouses_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_penthouses_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_penthouses_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_penthouses_pmts_duplex = '${req.body.ListingData.selectedDuplex}', 
+    ltg_det_penthouses_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_penthouses_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_penthouses_pmts_corner_penthouse = '${req.body.ListingData.isCornerPenthouse}', 
+    ltg_det_penthouses_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_penthouses_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_penthouses_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_penthouses_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_penthouses_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_penthouses_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_penthouses_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_penthouses_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_penthouses_pmts_available_form = '${req.body.ListingData.availableFrom}', 
+    ltg_det_penthouses_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_penthouses_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_penthouses_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_penthouses_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_penthouses_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_penthouses_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_penthouses_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_penthouses_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}', 
+    ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+`;
+
 
       try {
         const [results_det] = await db.query(q_det);
@@ -937,77 +685,360 @@ const getsinglePageImg = async (req, res) => {
 };
 
 // update List
-const updateListItem = (req, res) => {
+const updateListItem = async (req, res) => {
   const listingID = req.params.listingID;
-  console.log("listingID", listingID);
-  const {
-    name,
-    description,
-    address,
-    price,
-    bathrooms,
-    furnished,
-    parking,
-    type,
-    category,
-    restaurant,
-    bus,
-    school,
-    size,
-    floore,
-    city,
-    bedrooms,
-  } = req.body;
+  const customLabels = JSON.stringify(req.body.CustomLabel);
 
   const q =
-    "UPDATE listings SET `name` = ?, `description` = ?, `address` = ?, `price` = ?, `bathrooms` = ?, `furnished` = ?, `parking` = ?, `type` = ?, `category` = ?, `restaurant` = ?, `bus` = ?, `school` = ?, `size` = ?, `flore` = ?, `cityId` = ?, `bedrooms` = ? WHERE `id` = ?";
+    `UPDATE ltg_mst 
+    SET
+      ltg_title = '${req.body.title}',
+      ltg_owner = '${req.body.selectedOwner}',
+      ltg_type = '${req.body.listingType}',
+      ltg_mark_as_featured = '${req.body.featured}',
+      ltg_regions = '${req.body.selectedRegions}',
+      ltg_categories = '${req.body.selectedCategories}',
+      ltg_labels = '${customLabels}',
+      ltg_audit_user = '${req.body.auditUser}',
+      ltg_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+    WHERE RowID = '${listingID}'`;
 
-  const listingValues = [
-    name,
-    description,
-    address,
-    price,
-    bathrooms,
-    furnished,
-    parking,
-    type,
-    category,
-    restaurant,
-    bus,
-    school,
-    size,
-    floore,
-    city,
-    bedrooms,
-    listingID,
-    req.params.listingID,
-  ];
+  try {
+    await db.query(q);
 
-  const duplicateQuery =
-    "SELECT * FROM listings WHERE (name = ? OR address = ?) AND id != ?";
-  db.query(duplicateQuery, [name, address, listingID], (error, results) => {
-    if (error) {
-      console.error("Error checking for duplicate listings:", error.stack);
-      return res.status(500).send("Internal Server Error");
+    // Update Data ltg_det based on listingType
+    if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
+      const q_det =
+        `UPDATE ltg_det 
+        SET
+          ltg_det_price = '${req.body.ListingData.price}',
+          ltg_det_sale_price = '${req.body.ListingData.salePrice}',
+          ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}',
+          ltg_det_desc = '${req.body.ListingData.content}',
+          ltg_det_location = '${req.body.ListingData.MapRow.location}',
+          ltg_det_address = '${req.body.ListingData.MapRow.address}',
+          ltg_det_postal_code = '${req.body.ListingData.MapRow.postalCode}',
+          ltg_det_latitude = '${req.body.ListingData.MapRow.latitude}',
+          ltg_det_longitude = '${req.body.ListingData.MapRow.longitude}',
+          ltg_det_property_address_details = '${req.body.ListingData.propertyAddressDetails}',
+          ltg_det_pmts_area_dts = '${req.body.ListingData.areaDetails}',
+          ltg_det_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}',
+          ltg_det_pmts_status = '${req.body.ListingData.selectedStatus}',
+          ltg_det_pmts_bed_rom = '${req.body.ListingData.selectedBedRooms}',
+          ltg_det_pmts_bth_rom = '${req.body.ListingData.selectedBathRooms}',
+          ltg_det_pmts_car_park = '${req.body.ListingData.selectedCarParking}',
+          ltg_det_pmts_year_build = '${req.body.ListingData.yearBuilt}',
+          ltg_det_plot_dimensions = '${req.body.ListingData.plotDimensions}',
+          ltg_det_open_sides = '${req.body.ListingData.noOfOpenSides}',
+          ltg_det_corner_villa = '${req.body.ListingData.isCornerVilla}',
+          ltg_det_plot_area = '${req.body.ListingData.plotArea}',
+          ltg_det_gated_community = '${req.body.ListingData.isInGatedCommunity}',
+          ltg_det_over_looking = '${req.body.ListingData.overLooking}',
+          ltg_det_totl_project_extent = '${req.body.ListingData.totalProjectExtent}',
+          ltg_det_pmts_total_flrs = '${req.body.ListingData.totalFloors}',
+          ltg_det_pmts_flat_on_flr = '${req.body.ListingData.flatOnFloor}',
+          ltg_det_pmts_lfts_in_tower = '${req.body.ListingData.liftsInTheTower}',
+          ltg_det_pmts_main_dor_facing = '${req.body.ListingData.mainDoorFacing}',
+          ltg_det_pmts_property_flrg = '${req.body.ListingData.propertyFlooring}',
+          ltg_det_pmts_balconies = '${req.body.ListingData.balconies}',
+          ltg_det_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}',
+          ltg_det_pmts_furnishing = '${req.body.ListingData.furnishing}',
+          ltg_det_pmts_stamp_duty = '${req.body.ListingData.stampDutyAndRegistrationCharges}',
+          ltg_det_pmts_tproject_evnt = '${req.body.ListingData.totalProjectExtent}',
+          ltg_det_pmts_totl_block = '${req.body.ListingData.totalBlocks}',
+          ltg_det_pmts_transaction_typ = '${req.body.ListingData.transactionType}',
+          ltg_det_pmts_total_towrs = '${req.body.ListingData.totalTowers}',
+          ltg_det_pmts_total_phases = '${req.body.ListingData.totalPhases}',
+          ltg_det_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}',
+          ltg_det_pmts_totalunits = '${req.body.ListingData.totalUnits}',
+          ltg_det_pmts_other_advtages = '${req.body.ListingData.advantagesAsString}',
+          ltg_det_about_project_buder = '${req.body.ListingData.projectBuilderDetails}',
+          ltg_det_amenities = '${req.body.ListingData.amenitiesAsString}',
+          ltg_det_property_video_url = '${req.body.ListingData.videoUrl}',
+          ltg_det_audit_user = '${req.body.auditUser}',
+          ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+        WHERE ltg_det_mstRowID = '${listingID}'`;
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det", status: "error" });
+      }
+    } else if (req.body.listingType == "Plots") {
+      const q_det =
+        `UPDATE ltg_det_plots 
+        SET
+            ltg_det_plot_price = '${req.body.ListingData.price}',  
+            ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
+            ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}',
+            ltg_det_plot_desc = '${req.body.ListingData.content}', 
+            ltg_det_plot_location = '${req.body.ListingData.MapRow.location}''${req.body.ListingData.MapRow.location}', 
+            ltg_det_plot_address = '${req.body.ListingData.MapRow.address}', 
+            ltg_det_plot_postal_code = '${req.body.ListingData.MapRow.postalCode}',
+            ltg_det_plot_latitude = '${req.body.ListingData.MapRow.latitude}', 
+            ltg_det_plot_longitude = '${req.body.ListingData.MapRow.longitude}',
+            ltg_det_plot_property_address_details = '${req.body.ListingData.propertyAddressDetails}',
+            ltg_det_plot_pmts_area_dts = '${req.body.ListingData.areaDetails}',
+            ltg_det_plot_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}',
+            ltg_det_plot_pmts_status = '${req.body.ListingData.selectedStatus}',
+            ltg_det_plot_pmts_plot_dimensions = '${req.body.ListingData.plotDimensions}',
+            ltg_det_plot_pmts_floors_allowed_for_construction = '${req.body.ListingData.floorsAllowedForConstruction}',
+            ltg_det_plot_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}',
+            ltg_det_plot_pmts_plot_facing = '${req.body.ListingData.plotFacing}',
+            ltg_det_plot_pmts_corner_plot = '${req.body.ListingData.cornerPlot}',
+            ltg_det_plot_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}',
+            ltg_det_plot_pmts_boundary_wall_made = '${req.body.ListingData.boundaryWallMade}',
+            ltg_det_plot_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}',
+            ltg_det_plot_pmts_transaction_type = '${req.body.ListingData.transactionType}',
+            ltg_det_plot_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}',
+            ltg_det_plot_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}',
+            ltg_det_plot_pmts_plot_approval_authority = '${req.body.ListingData.plotApprovalAuthority}',
+            ltg_det_plot_pmts_year_built = '${req.body.ListingData.yearBuilt}',
+            ltg_det_plot_pmts_total_units = '${req.body.ListingData.totalUnits}',
+            ltg_det_plot_pmts_total_phases = '${req.body.ListingData.totalPhases}',
+            ltg_det_plot_amenities = '${req.body.ListingData.amenitiesAsString}',
+            ltg_det_plot_about_project_builder = '${req.body.ListingData.projectBuilderDetails}',
+            ltg_det_plot_property_video_url = '${req.body.ListingData.videoUrl}',
+            ltg_det_audit_user = '${req.body.auditUser}',
+            ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+			WHERE ltg_det_mstRowID = '${listingID}'`;
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det_plot successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det_plot:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det_plot", status: "error" });
+      }
     }
 
-    db.query(q, listingValues, (error, results, fields) => {
-      if (error) {
-        console.error("Error updating listing: " + error.stack);
-        return res.status(400).send(error);
+    else if (req.body.listingType == "RowHouses") {
+      const q_det =
+        `UPDATE ltg_det_row_houses
+SET
+    ltg_det_row_house_price = '${req.body.ListingData.price}',  
+    ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_row_house_desc = '${req.body.ListingData.content}', 
+    ltg_det_row_house_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_row_house_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_row_house_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_row_house_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_row_house_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_row_house_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_row_house_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_row_house_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_row_house_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_row_house_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_row_house_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_row_house_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_row_house_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_row_house_pmts_plot_dimensions = '${req.body.ListingData.plotDimensions}', 
+    ltg_det_row_house_pmts_land_uds_area = '${req.body.ListingData.landUDSArea}', 
+    ltg_det_row_house_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_row_house_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_row_house_pmts_corner_rowhouse = '${req.body.ListingData.isCornerRowhouse}', 
+    ltg_det_row_house_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_row_house_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_row_house_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_row_house_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_row_house_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_row_house_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_row_house_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_row_house_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_row_house_pmts_available_from = '${req.body.ListingData.availableFrom}', 
+    ltg_det_row_house_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_row_house_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_row_house_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_row_house_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_row_house_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_row_house_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_row_house_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_row_house_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}',  
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+	WHERE ltg_det_mstRowID = '${listingID}'`;
+
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det_row_house successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det_row_house:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det_row_house", status: "error" });
       }
+    }
+    else if (req.body.listingType == "CommercialProperties") {
+      const q_det =
+        `UPDATE ltg_det_commercial_properties
+SET 
+    ltg_det_comm_prop_price = '${req.body.ListingData.price}',  
+    ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
+    ltg_det_comm_prop_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_comm_prop_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_comm_prop_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_comm_prop_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_comm_prop_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_comm_prop_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_comm_prop_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_comm_prop_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_comm_prop_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_comm_prop_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_comm_prop_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_comm_prop_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_comm_prop_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_comm_prop_pmts_total_floors = '${req.body.ListingData.totalFloors}', 
+    ltg_det_comm_prop_pmts_property_on_floor = '${req.body.ListingData.propertyOnFloor}', 
+    ltg_det_comm_prop_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_comm_prop_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_comm_prop_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_comm_prop_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_comm_prop_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_comm_prop_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_comm_prop_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_comm_prop_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_comm_prop_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_comm_prop_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_comm_prop_property_video_url = '${req.body.ListingData.videoUrl}',  
+    ltg_det_audit_user = '${req.body.auditUser}',  
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-      if (results.affectedRows === 0) {
-        // Listing with the given ID not found
-        return res.status(404).send("Listing not found.");
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det_comm_prop_property successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det_comm_prop_property:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det_comm_prop_property", status: "error" });
       }
+    }
+    else if (req.body.listingType == "Villaments") {
+      const q_det =
+        `UPDATE ltg_det_villaments
+SET 
+    ltg_det_villaments_price = '${req.body.ListingData.price}',  
+    ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_villaments_desc = '${req.body.ListingData.content}', 
+    ltg_det_villaments_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_villaments_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_villaments_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_villaments_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_villaments_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_villaments_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_villaments_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_villaments_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_villaments_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_villaments_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_villaments_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_villaments_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_villaments_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_villaments_pmts_land_uds_area = '${req.body.ListingData.landUDSArea}', 
+    ltg_det_villaments_pmts_duplex = '${req.body.ListingData.selectedDuplex}', 
+    ltg_det_villaments_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_villaments_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_villaments_pmts_corner_villament = '${req.body.ListingData.isCornerVillament}', 
+    ltg_det_villaments_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_villaments_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_villaments_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_villaments_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_villaments_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_villaments_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_villaments_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_villaments_pmts_available_from = '${req.body.ListingData.availableFrom}', 
+    ltg_det_villaments_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_villaments_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_villaments_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}', 
+    ltg_det_villaments_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_villaments_pmts_total_units = '${req.body.ListingData.totalUnits}', 
+    ltg_det_villaments_pmts_total_phases = '${req.body.ListingData.totalPhases}', 
+    ltg_det_villaments_amenities = '${req.body.ListingData.amenitiesAsString}', 
+    ltg_det_villaments_about_project_builder = '${req.body.ListingData.projectBuilderDetails}', 
+    ltg_det_villaments_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_audit_user = '${req.body.auditUser}',
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-      console.log("Updated listing with id " + listingID);
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det_villaments successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det_villaments:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det_villaments", status: "error" });
+      }
+    }
+    else if (req.body.listingType == "PentHouses") {
+      const q_det =
+        `UPDATE ltg_det_penthouses
+SET
+    ltg_det_penthouses_price = '${req.body.ListingData.price}',
+    ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
+    ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
+    ltg_det_penthouses_location = '${req.body.ListingData.MapRow.location}', 
+    ltg_det_penthouses_address = '${req.body.ListingData.MapRow.address}', 
+    ltg_det_penthouses_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
+    ltg_det_penthouses_latitude = '${req.body.ListingData.MapRow.latitude}', 
+    ltg_det_penthouses_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_penthouses_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
+    ltg_det_penthouses_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
+    ltg_det_penthouses_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
+    ltg_det_penthouses_pmts_status = '${req.body.ListingData.selectedStatus}', 
+    ltg_det_penthouses_pmts_bed_rooms = '${req.body.ListingData.selectedBedRooms}', 
+    ltg_det_penthouses_pmts_bath_rooms = '${req.body.ListingData.selectedBathRooms}', 
+    ltg_det_penthouses_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
+    ltg_det_penthouses_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
+    ltg_det_penthouses_pmts_duplex = '${req.body.ListingData.selectedDuplex}', 
+    ltg_det_penthouses_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
+    ltg_det_penthouses_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
+    ltg_det_penthouses_pmts_corner_penthouse = '${req.body.ListingData.isCornerPenthouse}', 
+    ltg_det_penthouses_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_penthouses_pmts_furnishing = '${req.body.ListingData.furnishing}', 
+    ltg_det_penthouses_pmts_over_looking = '${req.body.ListingData.overLooking}', 
+    ltg_det_penthouses_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
+    ltg_det_penthouses_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
+    ltg_det_penthouses_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_penthouses_pmts_no_of_open_sides = '${req.body.ListingData.noOfOpenSides}', 
+    ltg_det_penthouses_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
+    ltg_det_penthouses_pmts_available_form = '${req.body.ListingData.availableFrom}', 
+    ltg_det_penthouses_pmts_approval_authority = '${req.body.ListingData.approvalAuthority}', 
+    ltg_det_penthouses_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
+    ltg_det_penthouses_pmts_stamp_duty_registration_charges = '${req.body.ListingData.stampDutyAndRegistrationCharges}',
+    ltg_det_penthouses_pmts_total_phases = '${req.body.ListingData.totalPhases}',
+    ltg_det_penthouses_pmts_total_units = '${req.body.ListingData.totalUnits}',
+    ltg_det_penthouses_amenities = '${req.body.ListingData.amenitiesAsString}',
+    ltg_det_penthouses_about_project_builder = '${req.body.ListingData.projectBuilderDetails}',
+    ltg_det_penthouses_property_video_url = '${req.body.ListingData.videoUrl}',
+    ltg_det_audit_user = '${req.body.auditUser}',
+    ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
+	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-      res.status(200).send("Listing updated successfully");
-    });
-  });
+
+      try {
+        const [results_det] = await db.query(q_det);
+        console.log("Data inserted into ltg_det_penthouses successfully");
+        res.status(200).json({ message: "Listing updated successfully", status: "SUCCESS", RowID: listingID });
+      } catch (error) {
+        console.error("Error updating into ltg_det_penthouses:", error.stack);
+        res.status(500).json({ error: "Error updating into ltg_det_penthouses", status: "error" });
+      }
+    }
+  } catch (error) {
+    console.error("Error updating listing:", error.stack);
+    res.status(500).json({ message: "Error updating listing", status: "error" });
+  }
+
 };
+
 
 const deleteListItem = async (req, res) => {
   const listingID = req.params.listingID;
@@ -1082,140 +1113,85 @@ const deleteListItem = async (req, res) => {
   }
 };
 
-// Images Section
-
-// uploading multiple Image
-// const uploadListItem = async(req, res) => {
-// console.log("insert____");
-// try {
-// if (!req.files || req.files.length === 0) {
-
-// return res.status(400).send("No files were uploaded.");
-// }
-// console.log("insert____2");
-// const insertQuery2 =
-// "INSERT INTO ltg_ref (`ltg_mstRowID`,`file_name`,`attachment`,`type`,`audit_user`,`audit_date`) VALUES ?";
-// const values = req.files.map((file) => {
-// const url = file.path.replace("public", "");
-// const now = new Date();
-// const formattedDate = now.toISOString().slice(0, 10);
-// // console.log("url", url);
-
-// return [
-// req.params.id,                      
-// file.originalname,                
-// url,                              
-// req.body.type,                              
-// 'admin',                           
-// formattedDate 
-// ];
-// });
-
-// // Check if URLs already exist in the database
-// const existingUrlsQuery =
-// "SELECT attachment FROM ltg_ref WHERE ltg_mstRowID = ?";
-// db.query(existingUrlsQuery, [req.params.id], (err, results) => {
-// console.log("results___",results);
-// if (err) {
-// console.error("Error retrieving existing URLs from database:", err);
-// return res.status(500).send("Internal Server Error");
-// }
-
-// const existingUrls = results.map((row) => row.attachment);
-// const uniqueValues = values.filter(
-// (value) => !existingUrls.includes(value[2])
-// );
-
-// if (uniqueValues.length === 0) {
-
-// // return res.status(400).send("No new images to insert.");
-// return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
-// }
-
-// db.query(insertQuery2, [uniqueValues], (err, results) => {
-// console.log("results____");
-// if (err) {
-// console.error("Error inserting URLs into database:", err);
-// //  return res.status(500).send("Internal Server Error");
-// return res.status(500).json({ message: "Internal Server Error", status: "ERROR" });
-// }
-// // res.status(200).send("Images inserted successfully");
-// res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
-// });
-// });
-// } catch (error) {
-// console.error("Error processing file uploads:", error);
-// res.status(500).send("Internal Server Error");
-// }
-// };
-
-
-
 // upload files to images folder and db
 const uploadListItem = async (req, res) => {
+  const connection = await db.getConnection(); // Get a connection from the pool
   try {
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).send("No files were uploaded.");
+    const { listingID } = req.params;
+    const { type, auditUser, update } = req.body;
+    const files = req.files;
+
+    if (!files || files.length === 0) {
+      return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded' });
     }
 
-    const insertQuery =
-      "INSERT INTO ltg_ref (`ltg_mstRowID`, `file_name`, `attachment`, `type`, `audit_user`, `audit_date`) VALUES ?";
+    // Begin transaction
+    await connection.beginTransaction();
 
-    const values = req.files.map((file) => {
-      const url = file.path.replace("public", "");
+    console.log(update, "update");
+
+    if (update) {
+      // Delete existing file records from the database
+      const deleteQuery = 'DELETE FROM ltg_ref WHERE ltg_mstRowID = ? AND type = ?';
+      await connection.query(deleteQuery, [listingID, type]);
+      console.log("data deleted");
+    }
+
+    // Prepare SQL query for inserting file details
+    const insertQuery = `
+      INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
+      VALUES ?
+    `;
+
+    const values = files.map(file => {
+      const url = file.path.replace('public', '');
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
 
-      return [
-        req.params.listingID,
-        file.originalname,
-        url,
-        req.body.type,
-        'admin',
-        formattedDate
-      ];
+      return [listingID, file.originalname, url, type, auditUser, formattedDate];
     });
 
-    // Check if URLs already exist in the database
-    const existingUrlsQuery =
-      "SELECT attachment FROM ltg_ref WHERE ltg_mstRowID = ?";
-
-    const [existingUrlsResults] = await db.query(existingUrlsQuery, [req.params.listingID]);
-    const existingUrls = existingUrlsResults.map((row) => row.attachment);
-
-    const uniqueValues = values.filter(
-      (value) => !existingUrls.includes(value[2])
-    );
-
-    if (uniqueValues.length === 0) {
-      return res.status(400).json({ message: "No new images to insert", status: "ERROR" });
-    }
-
-    // Insert the PDF files
-    const [insertResults] = await db.query(insertQuery, [uniqueValues]);
+    // Insert the new file entries
+    await connection.query(insertQuery, [values]);
 
     // Save the PDF thumbnail data
-    const thumbnailValues = req.files
+    const thumbnailValues = files
       .filter(file => file.thumbnail) // Only include files with a thumbnail
       .map(file => [
-        req.params.listingID,
+        listingID,
         file.originalname.replace(/\.pdf$/, '-thumbnail.png'), // Thumbnail file name
         file.thumbnail,
-        req.body.type,
-        'admin',
-        new Date().toISOString().slice(0, 10)
+        type,
+        auditUser,
+        new Date().toISOString().slice(0, 10),
       ]);
 
     if (thumbnailValues.length > 0) {
-      const thumbnailInsertQuery =
-        "INSERT INTO ltg_ref (`ltg_mstRowID`, `file_name`, `attachment`, `type`, `audit_user`, `audit_date`) VALUES ?";
-      await db.query(thumbnailInsertQuery, [thumbnailValues]);
+      const thumbnailInsertQuery = `
+        INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
+        VALUES ?
+      `;
+      await connection.query(thumbnailInsertQuery, [thumbnailValues]);
     }
 
-    res.status(200).json({ message: "Listing Img upload successfully", status: "SUCCESS" });
+    // Commit transaction
+    await connection.commit();
+
+    res.status(200).json({
+      message: 'Files uploaded successfully',
+      status: 'SUCCESS',
+      listingID: listingID,
+      type: type,
+      auditUser: auditUser
+    });
   } catch (error) {
-    console.error("Error processing file uploads:", error);
-    res.status(500).send("Internal Server Error");
+    // Rollback transaction in case of error
+    await connection.rollback();
+    console.error('Error uploading files:', error);
+    res.status(500).json({ status: 'FAILURE', message: 'Error uploading files' });
+  } finally {
+    // Release the connection back to the pool
+    connection.release();
   }
 };
 

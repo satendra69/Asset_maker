@@ -221,7 +221,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               variant="contained"
               color="error"
               onClick={() => {
-                setSelectedId(row.original.RowID);
+                setSelectedId(row.original.ltg_det_mstRowID);
                 setSelectedType(row.original.ltg_type);
                 setOpen(true);
               }}
