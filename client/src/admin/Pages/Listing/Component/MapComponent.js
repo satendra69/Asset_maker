@@ -10,13 +10,30 @@ const icon = new L.Icon({
   iconAnchor: [12, 41],
 });
 
-const MapComponent = ({ onPositionChange }) => {
-  const [location, setLocation] = useState("");
-  const [address, setAddress] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [latitude, setLatitude] = useState(17.387140); // Default value for latitude
-  const [longitude, setLongitude] = useState(78.491684); // Default value for longitude
-  const [markerPosition, setMarkerPosition] = useState({ lat: 17.387140, lng: 78.491684 });
+const MapComponent = ({ onPositionChange, initialPosition }) => {
+  const [location, setLocation] = useState(initialPosition.location || "");
+  const [address, setAddress] = useState(initialPosition.address || "");
+  const [postalCode, setPostalCode] = useState(initialPosition.postalCode || "");
+  const [latitude, setLatitude] = useState(initialPosition.latitude || 17.387140);
+  const [longitude, setLongitude] = useState(initialPosition.longitude || 78.491684);
+  const [markerPosition, setMarkerPosition] = useState({
+    lat: initialPosition.latitude || 17.387140,
+    lng: initialPosition.longitude || 78.491684,
+  });
+
+  useEffect(() => {
+    if (initialPosition) {
+      setLocation(initialPosition.location);
+      setAddress(initialPosition.address);
+      setPostalCode(initialPosition.postalCode);
+      setLatitude(initialPosition.latitude);
+      setLongitude(initialPosition.longitude);
+      setMarkerPosition({
+        lat: initialPosition.latitude,
+        lng: initialPosition.longitude,
+      });
+    }
+  }, [initialPosition]);
 
   useEffect(() => {
     if (markerPosition) {
@@ -28,7 +45,7 @@ const MapComponent = ({ onPositionChange }) => {
           address,
           postalCode,
           latitude: markerPosition.lat,
-          longitude: markerPosition.lng
+          longitude: markerPosition.lng,
         });
       }
     }

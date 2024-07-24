@@ -76,9 +76,7 @@ function NewListingPage() {
     try {
       const response = await httpCommon.get(`/list/${listingId}`);
       const listingData = response.data.data[0];
-      console.log("listingData", listingData);
-
-
+      // console.log("listingData", listingData);
 
       // Update state with fetched data
       setTitle(listingData.ltg_title);
@@ -90,40 +88,6 @@ function NewListingPage() {
       // Clean up the JSON string if it has extra quotes
       const cleanedLabels = listingData.ltg_labels.replace(/^"|"$/g, '');
       setCustomLabel(JSON.parse(cleanedLabels));
-      // setCustomLabel(JSON.parse(listingData.ltg_labels));
-      // Update specific data based on propertyType
-      // switch (listingData.propertyType) {
-      //   case "Apartments":
-      //     setApartment(propertyData.PropertyData);
-      //     setApartmentGalleryData(propertyData.Property.combinedImages);
-      //     break;
-      //   case "Villas":
-      //     setVilla(propertyData.PropertyData);
-      //     setVillaGalleryData(propertyData.PropertyData.combinedImages);
-      //     break;
-      //   case "Plots":
-      //     setPlots(propertyData.PropertyData);
-      //     setPlotsGalleryData(propertyData.Property.combinedImages);
-      //     break;
-      //   case "RowHouses":
-      //     setRowHouse(propertyData.PropertyData);
-      //     setRowHouseGalleryData(propertyData.PropertyData.combinedImages);
-      //     break;
-      //   case "CommercialProperties":
-      //     setCommercial(propertyData.PropertyData);
-      //     setCommercialGalleryData(propertyData.PropertyData.combinedImages);
-      //     break;
-      //   case "Villaments":
-      //     setVillament(propertyData.PropertyData);
-      //     setVillamentGalleryData(propertyData.PropertyData.combinedImages);
-      //     break;
-      //   case "PentHouses":
-      //     setPentHouse(propertyData.PropertyData);
-      //     setPentHouseGalleryData(propertyData.PropertyData.combinedImages);
-      //     break;
-      //   default:
-      //     break;
-      // }
     } catch (error) {
       if (error.response && error.response.status === 404) {
         toast.error('Property not found');

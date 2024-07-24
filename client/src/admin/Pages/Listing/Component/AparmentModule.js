@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-  convertFromRaw,
-} from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
+import { useNavigate, useParams } from "react-router-dom";
+import { EditorState, convertFromRaw, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
+import { stateFromHTML } from 'draft-js-import-html';
+import { toast } from 'sonner';
 import MapComponent from "./MapComponent";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
+import httpCommon from "../../../../http-common";
 
-function AparmentModule({ onDataUpdate }) {
+function ApartmentModule({ onDataUpdate }) {
+
+  const { listingId } = useParams();
+  const navigate = useNavigate();
+
   const [salePrice, setSalePrice] = useState("");
   const [displaySalePrice, setDisplaySalePrice] = useState("");
   const [salePriceWords, setSalePriceWords] = useState("");
@@ -72,6 +75,106 @@ function AparmentModule({ onDataUpdate }) {
   const [MapRow, setMapRow] = useState([]);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const limit = 999999999999;
+  const [initialPosition, setInitialPosition] = useState({
+    location: "",
+    address: "",
+    postalCode: "",
+    latitude: 17.387140,
+    longitude: 78.491684,
+  });
+  const [locationData, setLocationData] = useState({});
+
+
+  // fetch property
+  useEffect(() => {
+    if (listingId) {
+      const fetchProperty = async (listingId) => {
+        try {
+          const response = await httpCommon.get(`/list/${listingId}`);
+          const listingData = response.data.data[0];
+          console.log("listingData", listingData);
+
+          // Fetch images and brochures
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          const imageData = imgResponse.data.data;
+
+          // Separate gallery and brochure data
+          const galleryData = imageData.filter(item => item.type === "Gallery");
+          const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
+          const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
+          // const brochureData = imageData.filter(item => item.type === "Brochure");
+          const brochureData = (imageData.filter(item => item.type === "Brochure")).filter(item => {
+            const fileName = item.file_name.toLowerCase();
+            return fileName.endsWith('.pdf') || fileName.endsWith('.doc');
+          });
+
+          console.log(galleryData, "galleryData");
+          console.log(masterPlanData, "masterPlanData");
+          console.log(floorAreaPlanData, "floorAreaPlanData");
+          console.log(brochureData, "brochureData");
+
+          // Update state with fetched data
+          setDisplaySalePrice(listingData.ltg_det_sale_price);
+          setDisplaySuffixPrice(listingData.ltg_det_suffix_price);
+
+          // content update
+          setContent(listingData.ltg_det_desc);
+          const blocksFromHTML = convertFromHTML(listingData.ltg_det_desc || ''); const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+          setEditorState(EditorState.createWithContent(contentState));
+
+          setAreaDetails(listingData.ltg_det_pmts_area_dts);
+          setRatePerSqFt(listingData.ltg_det_pmts_rate_per_sq);
+          setSelectedStatus(listingData.ltg_det_pmts_status);
+          setSelectedBedRooms(listingData.ltg_det_pmts_bed_rom);
+          setSelectedBathRooms(listingData.ltg_det_pmts_bth_rom);
+          setSelectedCarParking(listingData.ltg_det_pmts_car_park);
+          setYearBuilt(listingData.ltg_det_pmts_year_build);
+          setTotalFloors(listingData.ltg_det_pmts_total_flrs);
+          setFlatOnFloor(listingData.ltg_det_pmts_flat_on_flr);
+          setLiftsInTheTower(listingData.ltg_det_pmts_lfts_in_tower);
+          setMainDoorFacing(listingData.ltg_det_pmts_main_dor_facing);
+          setPropertyFlooring(listingData.ltg_det_pmts_property_flrg);
+          setBalconies(listingData.ltg_det_pmts_balconies);
+          setApproachingRoadWidth(listingData.ltg_det_pmts_approaching_road_width);
+          setFurnishing(listingData.ltg_det_pmts_furnishing);
+          setStampDutyAndRegistrationCharges(listingData.ltg_det_pmts_stamp_duty);
+          setTotalProjectExtent(listingData.ltg_det_pmts_tproject_evnt);
+          setTotalBlocks(listingData.ltg_det_pmts_totl_block);
+          setTransactionType(listingData.ltg_det_pmts_transaction_typ);
+          setTotalTowers(listingData.ltg_det_pmts_total_towrs);
+          setTotalPhases(listingData.ltg_det_pmts_total_phases);
+          setApprovalAuthority(listingData.ltg_det_pmts_approval_authority);
+          setTotalUnits(listingData.ltg_det_pmts_totalunits);
+          setProjectBuilderDetails(listingData.ltg_det_about_project_buder);
+          setVideoUrl(listingData.ltg_det_property_video_url);
+          setOtherAdvantages(listingData.ltg_det_pmts_other_advtages.split(", "));
+          setSelectedAmenities(listingData.ltg_det_amenities.split(", "));
+          setInitialPosition({
+            location: listingData.ltg_det_location || "",
+            address: listingData.ltg_det_address || "",
+            postalCode: listingData.ltg_det_postal_code || "",
+            latitude: listingData.ltg_det_latitude || 17.387140,
+            longitude: listingData.ltg_det_longitude || 78.491684,
+          });
+
+          // Set images and brochures
+          setGalleryImages(galleryData.map((img, index) => ({ ...img, id: index + 1 })));
+          setMasterPlanImages(masterPlanData.map((img, index) => ({ ...img, id: index + 1 })));
+          setFloorAreaPlanImages(floorAreaPlanData.map((img, index) => ({ ...img, id: index + 1 })));
+          setBrochure(brochureData.map((bro, index) => ({ ...bro, id: index + 1 })));
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            toast.error('Property not found');
+            navigate('/admin/property/new');
+          } else {
+            console.error('Error fetching Property:', error);
+            toast.error('An error occurred while fetching the property');
+          }
+        }
+      };
+      fetchProperty(listingId);
+    }
+  }, [listingId]);
 
   // format number to en-IN
   const formatNumber = (number) => {
@@ -317,11 +420,14 @@ function AparmentModule({ onDataUpdate }) {
     setContent(html);
   };
 
-  const handleRowMap = (dataMap) => {
-    setMapRow(dataMap);
-    onDataUpdate(dataMap);
+  const handleLocationChange = (updatedLocationData) => {
+    if (updatedLocationData.latitude && updatedLocationData.longitude) {
+      setLocationData(updatedLocationData);
+      onDataUpdate(updatedLocationData);
+    } else {
+      console.error("Invalid location data:", updatedLocationData);
+    }
   };
-
 
   const handleDataUpdate = () => {
     const combinedImages = {
@@ -333,7 +439,8 @@ function AparmentModule({ onDataUpdate }) {
       salePrice,
       suffixPrice,
       content,
-      MapRow,
+      locationData,
+      initialPosition,
       areaDetails,
       ratePerSqFt,
       selectedStatus,
@@ -447,8 +554,8 @@ function AparmentModule({ onDataUpdate }) {
         </div>
       </div>
 
-      {/* Location Section */}
-      <MapComponent onPositionChange={handleRowMap} />
+      {/* Location Details */}
+      <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
 
       {/* Parameters Section */}
       <div>
@@ -1044,6 +1151,7 @@ function AparmentModule({ onDataUpdate }) {
               <textarea
                 id="projectBuilderDetails"
                 rows={7}
+                value={projectBuilderDetails}
                 onChange={(e) => setProjectBuilderDetails(e.target.value)}
                 onBlur={handleDataUpdate}
                 placeholder="Enter details about the project/builder"
@@ -1361,4 +1469,4 @@ function AparmentModule({ onDataUpdate }) {
   );
 }
 
-export default AparmentModule;
+export default ApartmentModule;
