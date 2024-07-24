@@ -51,8 +51,7 @@ function AparmentModule({ onDataUpdate }) {
   ];
   const [totalFloors, setTotalFloors] = useState("");
   const [transactionType, setTransactionType] = useState("");
-  const [stampDutyAndRegistrationCharges, setStampDutyAndRegistrationCharges] =
-    useState("");
+  const [stampDutyAndRegistrationCharges, setStampDutyAndRegistrationCharges] = useState("");
   const [approvalAuthority, setApprovalAuthority] = useState("");
   const [totalProjectExtent, setTotalProjectExtent] = useState("");
   const [totalUnits, setTotalUnits] = useState("");
@@ -121,10 +120,6 @@ function AparmentModule({ onDataUpdate }) {
       }
     }
   };
-
-  useEffect(() => {
-    handleDataUpdate();
-  }, [galleryImages, masterPlanImages, floorAreaPlanImages]);
 
   const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
@@ -372,6 +367,11 @@ function AparmentModule({ onDataUpdate }) {
     };
     onDataUpdate(data);
   };
+
+  useEffect(() => {
+    handleDataUpdate();
+  }, [galleryImages, masterPlanImages, floorAreaPlanImages, brochure]);
+
   return (
     <div>
       <div>
@@ -1214,6 +1214,7 @@ function AparmentModule({ onDataUpdate }) {
         <h2 className="text-xl font-semibold">Property Video</h2>
         <div className="flex flex-wrap items-center mt-4">
           <input
+            id="videoUrl"
             type="text"
             placeholder="Enter the Property Video URL"
             value={videoUrl}

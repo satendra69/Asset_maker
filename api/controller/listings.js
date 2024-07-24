@@ -4,7 +4,7 @@ const moment = require("moment");
 
 const addListings = async (req, res) => {
 
-  const customLabels = JSON.stringify(req.body.CustomLabel);
+  // const customLabels = JSON.stringify(req.body.CustomLabel);
 
   const q =
     `INSERT INTO ltg_mst
@@ -16,7 +16,7 @@ const addListings = async (req, res) => {
     '${req.body.featured}', 
     '${req.body.selectedRegions}',
     '${req.body.selectedCategories}',
-    '${customLabels}', 
+    '${req.body.CustomLabel}', 
     '${req.body.auditUser}',
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}',
     '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}')`;
@@ -30,7 +30,6 @@ const addListings = async (req, res) => {
         `INSERT INTO ltg_det
 	   SET
     ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_price = '${req.body.ListingData.price}', 
     ltg_det_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_desc = '${req.body.ListingData.content}', 
@@ -92,8 +91,7 @@ const addListings = async (req, res) => {
       const q_det =
         `INSERT INTO ltg_det_plots
 SET
-    ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_plot_price = '${req.body.ListingData.price}',  
+    ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_plot_desc = '${req.body.ListingData.content}', 
@@ -143,8 +141,7 @@ SET
       const q_det =
         `INSERT INTO ltg_det_row_houses
 SET
-    ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_row_house_price = '${req.body.ListingData.price}',  
+    ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
@@ -202,8 +199,7 @@ SET
       const q_det =
         `INSERT INTO ltg_det_commercial_properties
 SET
-    ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_comm_prop_price = '${req.body.ListingData.price}',  
+    ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
@@ -252,8 +248,7 @@ SET
       const q_det =
         `INSERT INTO ltg_det_villaments
 SET
-    ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_villaments_price = '${req.body.ListingData.price}',  
+    ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
@@ -310,8 +305,7 @@ SET
       const q_det =
         `INSERT INTO ltg_det_penthouses
 SET
-    ltg_det_mstRowID = '${lastInsertId}', 
-    ltg_det_penthouses_price = '${req.body.ListingData.price}',  
+    ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
@@ -400,7 +394,7 @@ const getTableData = async (req, res) => {
     const [mstResults] = await db.query(mstQuery);
 
     if (mstResults.length === 0) {
-      return res.status(404).json({ message: 'No records found', status: 'error' });
+      return res.status(200).json({ message: 'No records found', status: 'success', data: [] });
     }
 
     const detailPromises = mstResults.map(async (record) => {
@@ -455,6 +449,7 @@ const getTableData = async (req, res) => {
           ltg_mst.RowID = ?;
       `;
       const [detailResults] = await db.query(detailQuery, [RowID]);
+      console.log('detailQuery:', detailQuery, 'RowID:', RowID);
       return detailResults[0];
     });
 
@@ -613,7 +608,6 @@ const getTableById = async (req, res) => {
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
   const { listingID, type } = req.params;
-  console.log("type", type);
   let query = '';
 
   if (type === "Plots") {
@@ -711,7 +705,6 @@ const updateListItem = async (req, res) => {
       const q_det =
         `UPDATE ltg_det 
         SET
-          ltg_det_price = '${req.body.ListingData.price}',
           ltg_det_sale_price = '${req.body.ListingData.salePrice}',
           ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}',
           ltg_det_desc = '${req.body.ListingData.content}',
@@ -771,11 +764,10 @@ const updateListItem = async (req, res) => {
       const q_det =
         `UPDATE ltg_det_plots 
         SET
-            ltg_det_plot_price = '${req.body.ListingData.price}',  
             ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
             ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}',
             ltg_det_plot_desc = '${req.body.ListingData.content}', 
-            ltg_det_plot_location = '${req.body.ListingData.MapRow.location}''${req.body.ListingData.MapRow.location}', 
+            ltg_det_plot_location = '${req.body.ListingData.MapRow.location}', 
             ltg_det_plot_address = '${req.body.ListingData.MapRow.address}', 
             ltg_det_plot_postal_code = '${req.body.ListingData.MapRow.postalCode}',
             ltg_det_plot_latitude = '${req.body.ListingData.MapRow.latitude}', 
@@ -819,7 +811,6 @@ const updateListItem = async (req, res) => {
       const q_det =
         `UPDATE ltg_det_row_houses
 SET
-    ltg_det_row_house_price = '${req.body.ListingData.price}',  
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
@@ -875,8 +866,7 @@ SET
     else if (req.body.listingType == "CommercialProperties") {
       const q_det =
         `UPDATE ltg_det_commercial_properties
-SET 
-    ltg_det_comm_prop_price = '${req.body.ListingData.price}',  
+SET
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
@@ -924,7 +914,6 @@ SET
       const q_det =
         `UPDATE ltg_det_villaments
 SET 
-    ltg_det_villaments_price = '${req.body.ListingData.price}',  
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
@@ -980,7 +969,6 @@ SET
       const q_det =
         `UPDATE ltg_det_penthouses
 SET
-    ltg_det_penthouses_price = '${req.body.ListingData.price}',
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
@@ -1113,31 +1101,30 @@ const deleteListItem = async (req, res) => {
   }
 };
 
-// upload files to images folder and db
+// upload files
 const uploadListItem = async (req, res) => {
-  const connection = await db.getConnection(); // Get a connection from the pool
+  const connection = await db.getConnection();
   try {
     const { listingID } = req.params;
     const { type, auditUser, update } = req.body;
     const files = req.files;
 
+    console.log('Received request to upload files:', { listingID, type, auditUser, update });
+    console.log('Received files:', files);
+
     if (!files || files.length === 0) {
       return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded' });
     }
 
-    // Begin transaction
     await connection.beginTransaction();
-
     console.log(update, "update");
 
-    if (update) {
-      // Delete existing file records from the database
+    if (update === true) {
       const deleteQuery = 'DELETE FROM ltg_ref WHERE ltg_mstRowID = ? AND type = ?';
       await connection.query(deleteQuery, [listingID, type]);
-      console.log("data deleted");
+      console.log("Existing data deleted");
     }
 
-    // Prepare SQL query for inserting file details
     const insertQuery = `
       INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
       VALUES ?
@@ -1151,15 +1138,13 @@ const uploadListItem = async (req, res) => {
       return [listingID, file.originalname, url, type, auditUser, formattedDate];
     });
 
-    // Insert the new file entries
     await connection.query(insertQuery, [values]);
 
-    // Save the PDF thumbnail data
     const thumbnailValues = files
-      .filter(file => file.thumbnail) // Only include files with a thumbnail
+      .filter(file => file.thumbnail)
       .map(file => [
         listingID,
-        file.originalname.replace(/\.pdf$/, '-thumbnail.png'), // Thumbnail file name
+        file.originalname.replace(/\.pdf$/, '-thumbnail.png'),
         file.thumbnail,
         type,
         auditUser,
@@ -1174,7 +1159,6 @@ const uploadListItem = async (req, res) => {
       await connection.query(thumbnailInsertQuery, [thumbnailValues]);
     }
 
-    // Commit transaction
     await connection.commit();
 
     res.status(200).json({
@@ -1185,12 +1169,10 @@ const uploadListItem = async (req, res) => {
       auditUser: auditUser
     });
   } catch (error) {
-    // Rollback transaction in case of error
     await connection.rollback();
     console.error('Error uploading files:', error);
-    res.status(500).json({ status: 'FAILURE', message: 'Error uploading files' });
+    res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
-    // Release the connection back to the pool
     connection.release();
   }
 };

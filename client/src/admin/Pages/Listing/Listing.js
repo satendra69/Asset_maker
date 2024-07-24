@@ -11,6 +11,7 @@ import VillamentModule from "./Component/VillamentModule";
 import PentModule from "./Component/PentModule";
 import httpCommon from "../../../http-common";
 import Swal from "sweetalert2";
+import { toast } from 'sonner';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -37,26 +38,32 @@ function NewListingPage() {
   // for villa
   const [VillaData, setVilla] = useState([]);
   const [VillaGalleryData, setVillaGalleryData] = useState([]);
+  const [VillaBrochureData, setVillaBrochureData] = useState([]);
 
   // for Plots
   const [PlotsData, setPlots] = useState({});
   const [PlotsGalleryData, setPlotsGalleryData] = useState([]);
+  const [PlotsBrochureData, setPlotsBrochureData] = useState([]);
 
   // for Row House
   const [RowHouseData, setRowHouse] = useState({});
   const [RowHouseGalleryData, setRowHouseGalleryData] = useState([]);
+  const [RowHouseBrochureData, setRowHouseBrochureData] = useState([]);
 
   // for Commercial Properties
   const [CommercialData, setCommercial] = useState({});
   const [CommercialGalleryData, setCommercialGalleryData] = useState([]);
+  const [CommercialBrochureData, setCommercialBrochureData] = useState([]);
 
   // for Villament
   const [VillamentData, setVillament] = useState({});
   const [VillamentGalleryData, setVillamentGalleryData] = useState([]);
+  const [VillamentBrochureData, setVillamentBrochureData] = useState([]);
 
   // for Pent House
   const [PentHouseData, setPentHouse] = useState({});
   const [PentHouseGalleryData, setPentHouseGalleryData] = useState([]);
+  const [PentHouseBrochureData, setPentHouseBrochureData] = useState([]);
 
   // Fetch property details if in update mode
   useEffect(() => {
@@ -70,6 +77,9 @@ function NewListingPage() {
       const response = await httpCommon.get(`/list/${listingId}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
+
+
+
       // Update state with fetched data
       setTitle(listingData.ltg_title);
       setListingType(listingData.ltg_type);
@@ -77,7 +87,10 @@ function NewListingPage() {
       setSelectedOwner(listingData.ltg_owner);
       setSelectedCategories(listingData.ltg_categories);
       setSelectedRegions(listingData.ltg_regions);
-      setCustomLabel(JSON.parse(listingData.ltg_labels));
+      // Clean up the JSON string if it has extra quotes
+      const cleanedLabels = listingData.ltg_labels.replace(/^"|"$/g, '');
+      setCustomLabel(JSON.parse(cleanedLabels));
+      // setCustomLabel(JSON.parse(listingData.ltg_labels));
       // Update specific data based on propertyType
       // switch (listingData.propertyType) {
       //   case "Apartments":
@@ -112,7 +125,13 @@ function NewListingPage() {
       //     break;
       // }
     } catch (error) {
-      console.error("Error fetching Property:", error);
+      if (error.response && error.response.status === 404) {
+        toast.error('Property not found');
+        navigate('/admin/property/new');
+      } else {
+        console.error('Error fetching Property:', error);
+        toast.error('An error occurred while fetching the property');
+      }
     }
   };
 
@@ -138,11 +157,6 @@ function NewListingPage() {
       // Remove from selected categories if unchecked
       setSelectedCategories(selectedCategories.filter(category => category !== id));
     }
-  };
-
-  const handleRowLabe = (data) => {
-    // Use the row data in the second component
-    setCustomLabel(data);
   };
 
   const publishBtn = async (e) => {
@@ -198,8 +212,8 @@ function NewListingPage() {
           icon: "success",
           title: responseData.status,
           text: responseData.message,
-          // }).then(() => {
-          //   navigate(`/admin`);
+        }).then(() => {
+          navigate(`/admin`);
         });
 
       } else {
@@ -273,31 +287,37 @@ function NewListingPage() {
     // console.log("data_____",data);
     setVilla(data);
     setVillaGalleryData(data.combinedImages);
+    setVillaBrochureData(data.brochure);
   };
 
   const handlePlotsDataUpdate = (data) => {
     setPlots(data);
     setPlotsGalleryData(data.combinedImages);
+    setPlotsBrochureData(data.brochure);
   };
 
   const handleRowHouseDataUpdate = (data) => {
     setRowHouse(data);
     setRowHouseGalleryData(data.combinedImages);
+    setRowHouseBrochureData(data.brochure);
   };
 
   const handleCommercialDataUpdate = (data) => {
     setCommercial(data);
     setCommercialGalleryData(data.combinedImages);
+    setCommercialBrochureData(data.brochure);
   };
 
   const handleVillamentDataUpdate = (data) => {
     setVillament(data);
     setVillamentGalleryData(data.combinedImages);
+    setVillamentBrochureData(data.brochure);
   };
 
   const handlePentHouseDataUpdate = (data) => {
     setPentHouse(data);
     setPentHouseGalleryData(data.combinedImages);
+    setPentHouseBrochureData(data.brochure);
   };
 
   const listing = {

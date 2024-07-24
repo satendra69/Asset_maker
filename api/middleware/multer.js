@@ -25,7 +25,6 @@ const addWatermark = async (req, res, next) => {
         const outputPath = path.join(path.dirname(inputPath), `watermarked-${path.basename(inputPath)}`);
 
         if (file.mimetype.startsWith('image')) {
-          // Process image files
           const inputImage = sharp(inputPath);
           const { width, height } = await inputImage.metadata();
 
@@ -49,10 +48,8 @@ const addWatermark = async (req, res, next) => {
           const pdfOutputPath = path.join(path.dirname(inputPath), `processed-${file.originalname}`);
           const thumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-thumbnail.png`);
 
-          // Rename the PDF file
           fs.renameSync(inputPath, pdfOutputPath);
 
-          // Use pdf-poppler to generate the thumbnail
           const opts = {
             format: 'png',
             out_dir: path.dirname(pdfOutputPath),
@@ -61,7 +58,6 @@ const addWatermark = async (req, res, next) => {
           };
           await poppler.convert(pdfOutputPath, opts);
 
-          // Check for both naming conventions
           const generatedThumbnailPath1 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-1.png`);
           const generatedThumbnailPath2 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-01.png`);
 
@@ -79,7 +75,6 @@ const addWatermark = async (req, res, next) => {
             console.error(`Thumbnail file not found: ${generatedThumbnailPath1} or ${generatedThumbnailPath2}`);
           }
 
-          // Update file information
           file.path = pdfOutputPath;
           file.filename = `processed-${file.originalname}`;
         } else {

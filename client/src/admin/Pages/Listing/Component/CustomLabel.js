@@ -8,7 +8,6 @@ const AddCustomLabel = ({ initialLabels, onRowClick }) => {
   // Set the initial labels when the component mounts
   useEffect(() => {
     if (initialLabels) {
-      console.log("initialLabels received in CustomLabel:", initialLabels);
       setLabels(initialLabels);
     }
   }, [initialLabels]);
@@ -34,7 +33,7 @@ const AddCustomLabel = ({ initialLabels, onRowClick }) => {
 
   return (
     <div>
-      <hr className="border-gray-400 my-8" />
+      <hr className="my-8 border-gray-400" />
       <h2 className="text-xl font-semibold">Labels</h2>
       <br />
       <div className="mb-7">
@@ -73,7 +72,7 @@ const AddCustomLabel = ({ initialLabels, onRowClick }) => {
       <div className="flex items-center mt-4">
         <button
           onClick={handleAddLabel}
-          className="bg-green-500 px-4 py-2 rounded-md text-white font-semibold"
+          className="px-4 py-2 font-semibold text-white bg-green-500 rounded-md"
         >
           + Add Custom Label
         </button>

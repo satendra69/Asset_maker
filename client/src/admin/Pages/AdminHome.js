@@ -18,6 +18,7 @@ function AdminHome() {
       throw new Error("Failed to fetch properties");
     }
   };
+
   const getSingleProperty = async () => {
     try {
       const res = await httpCommon.get(`/list/table/${currentUser.id}`);
@@ -34,10 +35,13 @@ function AdminHome() {
     queryFn: currentUser.admin ? getProperty : getSingleProperty,
   });
 
-  console.log(data);
-
   if (isLoading) return "Loading...";
   if (isError) return "Failed to fetch data";
+
+  // Check if not isError and data is defined and has a data property
+  const propertiesData = !isError && data && data.data ? data.data : [];
+
+  console.log(propertiesData);
 
   return (
     <div className="h-[98vh] overflow-y-scroll">
@@ -47,7 +51,7 @@ function AdminHome() {
           <p>Manage Your Data Here</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
         </div>
-        <ExampleWithLocalizationProvider data={isError ? [] : data.data} />
+        <ExampleWithLocalizationProvider data={propertiesData} />
       </div>
     </div>
   );

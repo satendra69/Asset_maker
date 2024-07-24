@@ -126,10 +126,6 @@ function RowModule({ onDataUpdate }) {
     }
   };
 
-  useEffect(() => {
-    handleDataUpdate();
-  }, [galleryImages, masterPlanImages, masterPlanImages]);
-
   // Function to handle image upload for each section
   const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
@@ -381,6 +377,9 @@ function RowModule({ onDataUpdate }) {
     onDataUpdate(data);
   };
 
+  useEffect(() => {
+    handleDataUpdate();
+  }, [galleryImages, masterPlanImages, floorAreaPlanImages, brochure]);
 
   return (
     <div>
@@ -1293,6 +1292,7 @@ function RowModule({ onDataUpdate }) {
         <h2 className="text-xl font-semibold">Property Video</h2>
         <div className="flex flex-wrap items-center mt-4">
           <input
+            id="videoUrl"
             type="text"
             placeholder="Enter the Property Video URL"
             value={videoUrl}

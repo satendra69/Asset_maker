@@ -7,8 +7,8 @@ import {
 } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import MapComponent from "./MapComponent";
 import draftToHtml from 'draftjs-to-html';
+import MapComponent from "./MapComponent";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
@@ -25,7 +25,6 @@ function CommercialModule({ onDataUpdate }) {
   const [areaDetails, setAreaDetails] = useState("");
   const [ratePerSqFt, setRatePerSqFt] = useState("");
   const [content, setContent] = useState('');
-  const [MapRow, setMapRow] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("not_selected");
   const [selectedCarParking, setSelectedCarParking] = useState("not_selected");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
@@ -50,23 +49,22 @@ function CommercialModule({ onDataUpdate }) {
   ];
   const [totalFloors, setTotalFloors] = useState("");
   const [transactionType, setTransactionType] = useState("");
-  const [stampDutyAndRegistrationCharges, setStampDutyAndRegistrationCharges] =
-    useState("");
+  const [stampDutyAndRegistrationCharges, setStampDutyAndRegistrationCharges] = useState("");
   const [approvalAuthority, setApprovalAuthority] = useState("");
   const [totalProjectExtent, setTotalProjectExtent] = useState("");
   const [totalUnits, setTotalUnits] = useState("");
   const [totalPhases, setTotalPhases] = useState("");
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
+  const [brochure, setBrochure] = useState([]);
+  const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
+  const [videoUrl, setVideoUrl] = useState("");
   const [galleryImages, setGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
   const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
-  const [brochure, setBrochure] = useState([]);
-  const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
-  const [videoUrl, setVideoUrl] = useState("");
+  const [MapRow, setMapRow] = useState([]);
+  const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const limit = 999999999999;
 
   // format number to en-IN
@@ -116,11 +114,6 @@ function CommercialModule({ onDataUpdate }) {
       }
     }
   };
-
-  useEffect(() => {
-    handleDataUpdate();
-  }, [galleryImages, masterPlanImages, masterPlanImages]);
-
 
   const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
@@ -332,21 +325,18 @@ function CommercialModule({ onDataUpdate }) {
     const data = {
       salePrice,
       suffixPrice,
-      areaDetails,
-      ratePerSqFt,
       content,
       MapRow,
+      areaDetails,
+      ratePerSqFt,
       selectedStatus,
       selectedCarParking,
-      amenitiesAsString,
-      videoUrl,
       yearBuilt,
       balconies,
       furnishing,
       propertyFlooring,
       approachingRoadWidth,
       propertyOnFloor,
-      advantagesAsString,
       totalFloors,
       transactionType,
       stampDutyAndRegistrationCharges,
@@ -354,14 +344,20 @@ function CommercialModule({ onDataUpdate }) {
       totalProjectExtent,
       totalUnits,
       totalPhases,
-      selectedOptions,
+      advantagesAsString,
       projectBuilderDetails,
+      amenitiesAsString,
+      videoUrl,
       brochure,
       combinedImages,
       type: "CommercialProperties",
     };
     onDataUpdate(data);
   };
+
+  useEffect(() => {
+    handleDataUpdate();
+  }, [galleryImages, masterPlanImages, floorAreaPlanImages, brochure]);
 
   return (
     <div>
@@ -419,20 +415,22 @@ function CommercialModule({ onDataUpdate }) {
       </div>
 
       {/* Description Section */}
-      <hr className="my-8 border-gray-400" />
-      <h2 className="text-xl font-semibold">Description</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        <div className="w-full p-4 border border-gray-450">
-          <Editor
-            placeholder="Enter Description"
-            editorState={editorState}
-            toolbarClassName="toolbar-class"
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class"
-            onEditorStateChange={handleEditorChange}
-            onBlur={handleDataUpdate}
-            wrapperStyle={{ minHeight: "20em" }}
-          />
+      <div>
+        <hr className="my-8 border-gray-400" />
+        <h2 className="text-xl font-semibold">Description</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          <div className="w-full p-4 border border-gray-450">
+            <Editor
+              placeholder="Enter Description"
+              editorState={editorState}
+              toolbarClassName="toolbar-class"
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class"
+              onEditorStateChange={handleEditorChange}
+              onBlur={handleDataUpdate}
+              wrapperStyle={{ minHeight: "20em" }}
+            />
+          </div>
         </div>
       </div>
 
@@ -508,428 +506,430 @@ function CommercialModule({ onDataUpdate }) {
 
       {/* Parameters Section */}
 
-      <hr className="my-8 border-gray-400" />
-      <h2 className="text-xl font-semibold">Parameters</h2>
-      <div className="flex flex-wrap items-center mt-4">
-        {/* Area Details */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="areaDetails"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Area Details
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="areaDetails"
-              value={areaDetails}
-              placeholder="Enter Area Details"
-              onChange={(e) => setAreaDetails(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Rate Per Sq-Ft/Yrd */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="ratePerSqFt"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Rate Per Sq-Ft/Yrd
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="ratePerSqFt"
-              value={ratePerSqFt}
-              placeholder="Enter Rate per Sq-Ft/Yrd"
-              onChange={(e) => setRatePerSqFt(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Status */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="status"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Status
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="status"
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+      <div>
+        <hr className="my-8 border-gray-400" />
+        <h2 className="text-xl font-semibold">Parameters</h2>
+        <div className="flex flex-wrap items-center mt-4">
+          {/* Area Details */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="areaDetails"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              <option value="">Not Selected</option>
-              <option value="ready_to_move">Ready to Move</option>
-              <option value="under_construction">Under Construction</option>
-              <option value="upcoming">Upcoming</option>
-            </select>
+              Area Details
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="areaDetails"
+                value={areaDetails}
+                placeholder="Enter Area Details"
+                onChange={(e) => setAreaDetails(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Year Built */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="yearBuilt"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Year Built
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="yearBuilt"
-              value={yearBuilt}
-              placeholder="Enter Year Built"
-              onChange={(e) => setYearBuilt(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Balconies */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="balconies"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Balconies
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="balconies"
-              value={balconies}
-              onChange={(e) => setBalconies(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          {/* Rate Per Sq-Ft/Yrd */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="ratePerSqFt"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              <option value="">Not Selected</option>
-              {[...Array(10).keys()].map((value) => (
-                <option key={value} value={value + 1}>
-                  {value + 1}
-                </option>
-              ))}
-            </select>
+              Rate Per Sq-Ft/Yrd
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="ratePerSqFt"
+                value={ratePerSqFt}
+                placeholder="Enter Rate per Sq-Ft/Yrd"
+                onChange={(e) => setRatePerSqFt(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
           </div>
-        </div>
 
-        {/* Other Advantages */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="otherAdvantages"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Other Advantages
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="otherAdvantages"
-              value={otherAdvantages}
-              onChange={handleAdvantagesChange}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-              multiple
+          {/* Status */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="status"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              {advantagesOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="flex flex-wrap items-center mt-2">
-            {otherAdvantages.map((advantage) => (
-              <div
-                key={advantage}
-                className="flex items-center px-2 py-1 mb-2 mr-2 bg-gray-100 rounded-md"
+              Status
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="status"
+                value={selectedStatus}
+                onChange={(e) => setSelectedStatus(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               >
-                <span className="text-gray-800">{advantage}</span>
-                <button
-                  type="button"
-                  className="ml-1 text-red-600 hover:text-red-800 focus:outline-none"
-                  onClick={() => removeAdvantage(advantage)}
+                <option value="">Not Selected</option>
+                <option value="ready_to_move">Ready to Move</option>
+                <option value="under_construction">Under Construction</option>
+                <option value="upcoming">Upcoming</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Year Built */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="yearBuilt"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Year Built
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="yearBuilt"
+                value={yearBuilt}
+                placeholder="Enter Year Built"
+                onChange={(e) => setYearBuilt(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Balconies */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="balconies"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Balconies
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="balconies"
+                value={balconies}
+                onChange={(e) => setBalconies(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                {[...Array(10).keys()].map((value) => (
+                  <option key={value} value={value + 1}>
+                    {value + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          {/* Other Advantages */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="otherAdvantages"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Other Advantages
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="otherAdvantages"
+                value={otherAdvantages}
+                onChange={handleAdvantagesChange}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                multiple
+              >
+                {advantagesOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="flex flex-wrap items-center mt-2">
+              {otherAdvantages.map((advantage) => (
+                <div
+                  key={advantage}
+                  className="flex items-center px-2 py-1 mb-2 mr-2 bg-gray-100 rounded-md"
                 >
-                  &#10005;
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Furnishing */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="furnishing"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Furnishing
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="furnishing"
-              value={furnishing}
-              onChange={(e) => setFurnishing(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >
-              <option value="">Not Selected</option>
-              <option value="fully-furnished">Fully Furnished</option>
-              <option value="semi-furnished">Semi Furnished</option>
-              <option value="un-furnished">Un-Furnished</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Car Parking */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="carParking"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Car Parking
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="carParking"
-              value={selectedCarParking}
-              onChange={(e) => setSelectedCarParking(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            >
-              <option value="">Not Selected</option>
-              {[...Array(25).keys()].map((value) => (
-                <option key={value} value={value + 1}>
-                  {value + 1}
-                </option>
+                  <span className="text-gray-800">{advantage}</span>
+                  <button
+                    type="button"
+                    className="ml-1 text-red-600 hover:text-red-800 focus:outline-none"
+                    onClick={() => removeAdvantage(advantage)}
+                  >
+                    &#10005;
+                  </button>
+                </div>
               ))}
-            </select>
+            </div>
           </div>
-        </div>
 
-        {/* Total Floors */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="totalFloors"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Total Floors
-          </label>
-          <div className="mt-2.5 mr-3 mb-7">
-            <input
-              type="text"
-              id="totalFloors"
-              value={totalFloors}
-              placeholder="Enter Total Floors"
-              onChange={(e) => setTotalFloors(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Property On Floor */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="propertyOnFloor"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Property On Floor
-          </label>
-          <div className="mt-2.5 mr-3 mb-7">
-            <input
-              type="text"
-              id="propertyOnFloor"
-              value={propertyOnFloor}
-              placeholder="Enter Property On Floor"
-              onChange={(e) => setPropertyOnFloor(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Total Units */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="totalUnits"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Total Units
-          </label>
-          <div className="mt-2.5 mr-3 mb-7">
-            <input
-              type="text"
-              id="totalUnits"
-              value={totalUnits}
-              placeholder="Enter Total Units"
-              onChange={(e) => setTotalUnits(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Transaction Type */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="transactionType"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Transaction Type
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <select
-              id="transactionType"
-              value={transactionType}
-              onChange={(e) => setTransactionType(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          {/* Furnishing */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="furnishing"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              <option value="">Not Selected</option>
-              <option value="new_property">New Property</option>
-              <option value="resale">Resale</option>
-            </select>
+              Furnishing
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="furnishing"
+                value={furnishing}
+                onChange={(e) => setFurnishing(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                <option value="fully-furnished">Fully Furnished</option>
+                <option value="semi-furnished">Semi Furnished</option>
+                <option value="un-furnished">Un-Furnished</option>
+              </select>
+            </div>
           </div>
-        </div>
 
-        {/* Approaching Road Width */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="approachingRoadWidth"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Approaching Road Width
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="approachingRoadWidth"
-              value={approachingRoadWidth}
-              placeholder="Enter Approaching Road Width"
-              onChange={(e) => setApproachingRoadWidth(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Approval Authority */}
-        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="approvalAuthority"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Approval Authority
-          </label>
-          <div className="mt-1 mr-3 mb-7">
-            <input
-              type="text"
-              id="approvalAuthority"
-              value={approvalAuthority}
-              placeholder="Enter Approval Authority"
-              onChange={(e) => setApprovalAuthority(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Total Phases */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="totalPhases"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Total Phases
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="totalPhases"
-              value={totalPhases}
-              placeholder="Enter Total Phases"
-              onChange={(e) => setTotalPhases(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Total Project Extent */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="totalProjectExtent"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Total Project Extent
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="totalProjectExtent"
-              value={totalProjectExtent}
-              placeholder="Enter Total Project Extent"
-              onChange={(e) => setTotalProjectExtent(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-          </div>
-        </div>
-
-        {/* Stamp Duty & Registration Charges */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="stampDutyAndRegistrationCharges"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Stamp Duty & Registration Charges
-          </label>
-          <div className="mt-2.5 mb-7">
-            <select
-              id="stampDutyAndRegistrationCharges"
-              value={stampDutyAndRegistrationCharges}
-              onChange={(e) =>
-                setStampDutyAndRegistrationCharges(e.target.value)
-              }
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+          {/* Car Parking */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="carParking"
+              className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              <option value="">Not Selected</option>
-              <option value="excluded">Excluded</option>
-              <option value="included">Included</option>
-            </select>
+              Car Parking
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="carParking"
+                value={selectedCarParking}
+                onChange={(e) => setSelectedCarParking(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                {[...Array(25).keys()].map((value) => (
+                  <option key={value} value={value + 1}>
+                    {value + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
 
-        {/* Property Flooring */}
-        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-          <label
-            htmlFor="propertyFlooring"
-            className="block text-sm font-semibold leading-6 text-gray-900"
-          >
-            Property Flooring
-          </label>
-          <div className="mt-2.5 mb-7">
-            <input
-              type="text"
-              id="propertyFlooring"
-              value={propertyFlooring}
-              placeholder="Enter Property Flooring"
-              onChange={(e) => setPropertyFlooring(e.target.value)}
-              onBlur={handleDataUpdate}
-              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
+          {/* Total Floors */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="totalFloors"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Total Floors
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="totalFloors"
+                value={totalFloors}
+                placeholder="Enter Total Floors"
+                onChange={(e) => setTotalFloors(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Property On Floor */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="propertyOnFloor"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Property On Floor
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="propertyOnFloor"
+                value={propertyOnFloor}
+                placeholder="Enter Property On Floor"
+                onChange={(e) => setPropertyOnFloor(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Total Units */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="totalUnits"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Total Units
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="totalUnits"
+                value={totalUnits}
+                placeholder="Enter Total Units"
+                onChange={(e) => setTotalUnits(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Transaction Type */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="transactionType"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Transaction Type
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="transactionType"
+                value={transactionType}
+                onChange={(e) => setTransactionType(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                <option value="new_property">New Property</option>
+                <option value="resale">Resale</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Approaching Road Width */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="approachingRoadWidth"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Approaching Road Width
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="approachingRoadWidth"
+                value={approachingRoadWidth}
+                placeholder="Enter Approaching Road Width"
+                onChange={(e) => setApproachingRoadWidth(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Approval Authority */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="approvalAuthority"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Approval Authority
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <input
+                type="text"
+                id="approvalAuthority"
+                value={approvalAuthority}
+                placeholder="Enter Approval Authority"
+                onChange={(e) => setApprovalAuthority(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Total Phases */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="totalPhases"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Total Phases
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="totalPhases"
+                value={totalPhases}
+                placeholder="Enter Total Phases"
+                onChange={(e) => setTotalPhases(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Total Project Extent */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="totalProjectExtent"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Total Project Extent
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="totalProjectExtent"
+                value={totalProjectExtent}
+                placeholder="Enter Total Project Extent"
+                onChange={(e) => setTotalProjectExtent(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Stamp Duty & Registration Charges */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="stampDutyAndRegistrationCharges"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Stamp Duty & Registration Charges
+            </label>
+            <div className="mt-2.5 mb-7">
+              <select
+                id="stampDutyAndRegistrationCharges"
+                value={stampDutyAndRegistrationCharges}
+                onChange={(e) =>
+                  setStampDutyAndRegistrationCharges(e.target.value)
+                }
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                <option value="excluded">Excluded</option>
+                <option value="included">Included</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Property Flooring */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="propertyFlooring"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Property Flooring
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="propertyFlooring"
+                value={propertyFlooring}
+                placeholder="Enter Property Flooring"
+                onChange={(e) => setPropertyFlooring(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -990,6 +990,7 @@ function CommercialModule({ onDataUpdate }) {
           </div>
         </div>
       </div>
+
       {/* Property Brochure Section */}
       <div>
         <hr className="my-8 border-gray-400" />
@@ -1051,6 +1052,7 @@ function CommercialModule({ onDataUpdate }) {
         <h2 className="text-xl font-semibold">Property Video</h2>
         <div className="flex flex-wrap items-center mt-4">
           <input
+            id="videoUrl"
             type="text"
             placeholder="Enter the Property Video URL"
             value={videoUrl}

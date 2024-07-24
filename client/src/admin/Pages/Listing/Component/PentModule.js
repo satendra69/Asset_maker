@@ -125,10 +125,6 @@ function PentModule({ onDataUpdate }) {
     }
   };
 
-  useEffect(() => {
-    handleDataUpdate();
-  }, [galleryImages, masterPlanImages, masterPlanImages]);
-
   // Function to handle image upload for each section
   const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
@@ -378,6 +374,10 @@ function PentModule({ onDataUpdate }) {
     };
     onDataUpdate(data);
   };
+
+  useEffect(() => {
+    handleDataUpdate();
+  }, [galleryImages, masterPlanImages, floorAreaPlanImages, brochure]);
 
   return (
     <div>
@@ -669,12 +669,8 @@ function PentModule({ onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              {[...Array(25).keys()].map((value) => (
-                <option key={value} value={value + 1}>
-                  {value + 1}
-                </option>
-              ))}
-              <option value="">More than 25</option>
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
             </select>
           </div>
         </div>
@@ -1275,6 +1271,7 @@ function PentModule({ onDataUpdate }) {
         <h2 className="text-xl font-semibold">Property Video</h2>
         <div className="flex flex-wrap items-center mt-4">
           <input
+            id="videoUrl"
             type="text"
             placeholder="Enter the Property Video URL"
             value={videoUrl}
