@@ -64,15 +64,19 @@ function ApartmentModule({ onDataUpdate }) {
   const [totalBlocks, setTotalBlocks] = useState("");
   const [totalTowers, setTotalTowers] = useState("");
   const [brochure, setBrochure] = useState([]);
+  const [storedBrochure, setStoredBrochure] = useState([]);
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
+  const [isStored, setIsStored] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
   const [galleryImages, setGalleryImages] = useState([]);
+  const [storedGalleryImages, setStoredGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
+  const [storedMasterPlanImages, setStoredMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
+  const [storedFloorAreaPlanImages, setStoredFloorAreaPlanImages] = useState([]);
   const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
-  const [MapRow, setMapRow] = useState([]);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const limit = 999999999999;
   const [initialPosition, setInitialPosition] = useState({
@@ -83,6 +87,8 @@ function ApartmentModule({ onDataUpdate }) {
     longitude: 78.491684,
   });
   const [locationData, setLocationData] = useState({});
+  const [modalPdfUrl, setModalPdfUrl] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
 
 
   // fetch property
@@ -102,16 +108,7 @@ function ApartmentModule({ onDataUpdate }) {
           const galleryData = imageData.filter(item => item.type === "Gallery");
           const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
           const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
-          // const brochureData = imageData.filter(item => item.type === "Brochure");
-          const brochureData = (imageData.filter(item => item.type === "Brochure")).filter(item => {
-            const fileName = item.file_name.toLowerCase();
-            return fileName.endsWith('.pdf') || fileName.endsWith('.doc');
-          });
-
-          console.log(galleryData, "galleryData");
-          console.log(masterPlanData, "masterPlanData");
-          console.log(floorAreaPlanData, "floorAreaPlanData");
-          console.log(brochureData, "brochureData");
+          const brochureData = (imageData.filter(item => item.type === "Brochure"));
 
           // Update state with fetched data
           setDisplaySalePrice(listingData.ltg_det_sale_price);
@@ -158,10 +155,22 @@ function ApartmentModule({ onDataUpdate }) {
           });
 
           // Set images and brochures
-          setGalleryImages(galleryData.map((img, index) => ({ ...img, id: index + 1 })));
-          setMasterPlanImages(masterPlanData.map((img, index) => ({ ...img, id: index + 1 })));
-          setFloorAreaPlanImages(floorAreaPlanData.map((img, index) => ({ ...img, id: index + 1 })));
-          setBrochure(brochureData.map((bro, index) => ({ ...bro, id: index + 1 })));
+          // setGalleryImages(galleryData.map((img, index) => ({ ...img, id: index + 1 })));
+          // setMasterPlanImages(masterPlanData.map((img, index) => ({ ...img, id: index + 1 })));
+          // setFloorAreaPlanImages(floorAreaPlanData.map((img, index) => ({ ...img, id: index + 1 })));
+          // setBrochure(brochureData.map((brochure, index) => ({ ...brochure, id: index + 1 })));
+
+          setStoredGalleryImages(galleryData);
+          setStoredMasterPlanImages(masterPlanData);
+          setStoredFloorAreaPlanImages(floorAreaPlanData);
+          setStoredBrochure(brochureData);
+
+          // console.log(storedGalleryImages, "galleryData");
+          // console.log(storedMasterPlanImages, "masterPlanData");
+          // console.log(storedFloorAreaPlanImages, "floorAreaPlanData");
+          console.log(storedBrochure, "storedBrochure");
+          // console.log(galleryData, "galleryData old");
+
         } catch (error) {
           if (error.response && error.response.status === 404) {
             toast.error('Property not found');
@@ -175,6 +184,8 @@ function ApartmentModule({ onDataUpdate }) {
       fetchProperty(listingId);
     }
   }, [listingId]);
+
+  console.log(galleryImages, "galleryImages");
 
   // format number to en-IN
   const formatNumber = (number) => {
@@ -250,7 +261,19 @@ function ApartmentModule({ onDataUpdate }) {
     } else if (selectedFloorAreaPlanImageIndex > index) {
       setSelectedFloorAreaPlanImageIndex(selectedFloorAreaPlanImageIndex - 1);
     }
+  };
 
+  const handleStoredImageDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/images/${RowID}`); // Adjust the endpoint as necessary
+      if (response.data.status === "success") {
+        setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+      } else {
+        console.error("Error deleting gallery image:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting gallery image:", error);
+    }
   };
 
   // Function to open modal with selected image index
@@ -295,12 +318,32 @@ function ApartmentModule({ onDataUpdate }) {
     setBrochure(updatedBrochure);
   };
 
-  const handleFileClick = (index) => {
+  const handleStoredFileDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/files/${RowID}`);
+      if (response.data.status === "success") {
+        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
+
+      } else {
+        console.error("Error deleting brochure:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting brochure:", error);
+    }
+  };
+
+  const handleFileClick = (index, pdfUrl = null, isStored = false) => {
     setSelectedDocumentIndex(index);
+    setModalPdfUrl(pdfUrl);
+    setIsStored(isStored);
+    setModalIsOpen(true);
   };
 
   const closeDocumentModal = () => {
+    setModalIsOpen(false);
+    setModalPdfUrl('');
     setSelectedDocumentIndex(null);
+    setIsStored(false);
   };
 
   const handleAdvantagesChange = (e) => {
@@ -1218,8 +1261,36 @@ function ApartmentModule({ onDataUpdate }) {
             Browse
           </label>
         </div>
-        {brochure.length > 0 && (
+
+        {/* Stored Brochure Section */}
+        {storedBrochure.length > 0 && (
           <div className="mt-4">
+            {storedBrochure
+              .filter(file =>
+                file.file_name.endsWith('.pdf') ||
+                file.file_name.endsWith('.doc') ||
+                file.file_name.endsWith('.docx')
+              ).map((file, index) => (
+                <div key={index} className="flex items-center">
+                  <button
+                    onClick={() => handleStoredFileDelete(file.RowID)}
+                    className="px-2 py-1 ml-2 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <span
+                    className="ml-2 text-blue-500 cursor-pointer"
+                    onClick={() => handleFileClick(index, httpCommon.defaults.baseURL + file.attachment, true)}
+                  >
+                    {file.file_name}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {brochure.length > 0 && (
+          <div className="">
             {brochure.map((file, index) => (
               <div key={index} className="flex items-center">
                 <button
@@ -1230,7 +1301,7 @@ function ApartmentModule({ onDataUpdate }) {
                 </button>
                 <span
                   className="ml-2 text-blue-500 cursor-pointer"
-                  onClick={() => handleFileClick(index)}
+                  onClick={() => handleFileClick(index, URL.createObjectURL(file), false)}
                 >
                   {file.name}
                 </span>
@@ -1238,16 +1309,18 @@ function ApartmentModule({ onDataUpdate }) {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Modal for displaying documents */}
-      {selectedDocumentIndex !== null && (
-        <FileModal
-          documents={brochure}
-          currentIndex={selectedDocumentIndex}
-          onClose={closeDocumentModal}
-        />
-      )}
+        {/* Modal for displaying documents */}
+        {modalIsOpen && (
+          <FileModal
+            documents={isStored ? storedBrochure : brochure}
+            currentIndex={selectedDocumentIndex}
+            isStored={isStored}
+            onClose={closeDocumentModal}
+            modalPdfUrl={modalPdfUrl}
+          />
+        )}
+      </div>
 
       {/* Gallery Section */}
       <div>
@@ -1288,7 +1361,32 @@ function ApartmentModule({ onDataUpdate }) {
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
+
+
         <div className="flex flex-wrap mt-4">
+
+          {/* Displaying Stored Gallery Images */}
+          {storedGalleryImages.length > 0 && (
+            <div className="flex flex-row">
+              {storedGalleryImages.map((file, index) => (
+                <div key={index} className="relative m-2">
+                  <button
+                    onClick={() => handleStoredImageDelete(file.RowID)} // Implement this function
+                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={httpCommon.defaults.baseURL + file.attachment} // Adjust URL for stored images
+                    alt={`Stored Image ${file.file_name}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => openGalleryModal(index)} // Implement modal opening for stored images
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           {galleryImages.map((image, index) => (
             <div key={index} className="relative m-2">
               <button
@@ -1305,7 +1403,9 @@ function ApartmentModule({ onDataUpdate }) {
               />
             </div>
           ))}
+
         </div>
+
         {/* Modal for displaying images */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
@@ -1370,7 +1470,31 @@ function ApartmentModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Master Plan Images */}
+            {storedMasterPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedMasterPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openMasterPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {masterPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1388,6 +1512,7 @@ function ApartmentModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedMasterPlanImageIndex !== null && (
             <ImageModal
@@ -1437,7 +1562,31 @@ function ApartmentModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Floor Area Plan Images */}
+            {storedFloorAreaPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedFloorAreaPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openFloorAreaPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {floorAreaPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1455,6 +1604,7 @@ function ApartmentModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedFloorAreaPlanImageIndex !== null && (
             <ImageModal

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import httpCommon from "../../http-common";
 import { useParams } from "react-router-dom";
 import {
@@ -358,6 +358,19 @@ const PropertyDetails = ({ property, images, brochure }) => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [modalPdfUrl, setModalPdfUrl] = useState('');
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (modalIsOpen && !event.target.closest('.modal-content')) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [modalIsOpen]);
+
   if (property === null || !Array.isArray(property) || property.length === 0) {
     console.log("no data found");
     return <div className="mt-10 text-xl text-center">Property not found</div>;
@@ -549,23 +562,25 @@ const PropertyDetails = ({ property, images, brochure }) => {
       {/* PDF Modal */}
       {modalIsOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="w-full max-w-4xl p-4 bg-white rounded-lg">
+          <div className="modal-content w-full max-w-4xl p-4 bg-white rounded-lg" style={{ height: '75%', marginTop: '150px' }}>
             <button
               onClick={closeModal}
-              className="absolute p-2 text-white bg-red-500 rounded-full top-2 right-2"
+              className="absolute p-2 text-white bg-red-600 rounded-full top-2 right-2 shadow-md"
             >
               ×
             </button>
             <iframe
               src={modalPdfUrl}
               width="100%"
-              height="600px"
+              height="100%"
               title="PDF Viewer"
               frameBorder="0"
             ></iframe>
           </div>
         </div>
       )}
+
+
     </div>
   );
 };

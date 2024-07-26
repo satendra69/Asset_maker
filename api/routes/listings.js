@@ -10,6 +10,8 @@ const {
   uploadListItem,
   getListItemId,
   getsinglePageImg,
+  deleteImagesByRowID,
+  deleteBrochureFile,
 } = require("../controller/listings");
 const verifyToken = require("../middleware/jwt");
 
@@ -31,6 +33,12 @@ router.post("/", addListings);
 
 // get All img
 router.get("/singlePageImg/:listingID", getsinglePageImg);
+
+/* delete images by RowID */
+router.delete("/images/:RowID", deleteImagesByRowID);
+
+/* delete files by RowID */
+router.delete("/files/:RowID", deleteBrochureFile);
 
 /* get listItem */
 router.get("/:listingID", getListItemId);

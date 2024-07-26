@@ -365,319 +365,6 @@ SET
 
 };
 
-const getListItem = async (req, res) => {
-
-  const query = `
-    SELECT * FROM ltg_mst
-    LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
-    LEFT JOIN ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
-  `;
-
-  try {
-    const [results, fields] = await db.query(query);
-    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
-  } catch (error) {
-    console.error("Error fetching properties: " + error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
-  }
-};
-
-
-// fetch All Tables
-const getTableData = async (req, res) => {
-  try {
-    // Fetch all records from ltg_mst
-    const mstQuery = `
-      SELECT RowID, ltg_type
-      FROM ltg_mst;
-    `;
-    const [mstResults] = await db.query(mstQuery);
-
-    if (mstResults.length === 0) {
-      return res.status(200).json({ message: 'No records found', status: 'success', data: [] });
-    }
-
-    const detailPromises = mstResults.map(async (record) => {
-      const { RowID, ltg_type } = record;
-
-      // Determine the details table based on type
-      let detailsTable;
-      switch (ltg_type) {
-        case 'Plots':
-          detailsTable = 'ltg_det_plots';
-          break;
-        case 'RowHouses':
-          detailsTable = 'ltg_det_row_houses';
-          break;
-        case 'Villaments':
-          detailsTable = 'ltg_det_villaments';
-          break;
-        case 'CommercialProperties':
-          detailsTable = 'ltg_det_commercial_properties';
-          break;
-        case 'PentHouses':
-          detailsTable = 'ltg_det_penthouses';
-          break;
-        default:
-          detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
-      }
-
-      // Construct the query to fetch detailed data
-      const detailQuery = `
-        SELECT
-          ltg_mst.*,
-          ltg_det.*,
-          ltg_ref.file_names,
-          ltg_ref.audit_user,
-          ltg_ref.audit_date
-        FROM
-          ltg_mst
-        LEFT JOIN
-          ${detailsTable} AS ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
-        LEFT JOIN (
-          SELECT
-            ltg_mstRowID,
-            GROUP_CONCAT(file_name ORDER BY file_name ASC SEPARATOR ', ') AS file_names,
-            audit_user,
-            MAX(audit_date) AS audit_date
-          FROM
-            asset_makers.ltg_ref
-          GROUP BY
-            ltg_mstRowID, audit_user
-        ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
-        WHERE
-          ltg_mst.RowID = ?;
-      `;
-      const [detailResults] = await db.query(detailQuery, [RowID]);
-      console.log('detailQuery:', detailQuery, 'RowID:', RowID);
-      return detailResults[0];
-    });
-
-    // Await all detail promises
-    const detailedRecords = await Promise.all(detailPromises);
-
-    res.json({ data: detailedRecords, message: "All tables fetched successfully", status: "success" });
-  } catch (error) {
-    console.error("Error fetching all tables: " + error.stack);
-    res.status(500).json({ message: "Error fetching all tables", status: "error" });
-  }
-};
-
-
-// get Property by type
-const getListingbyType = async (req, res) => {
-  const { type } = req.params;
-
-  const baseQuery = `
-    SELECT 
-      ltg_mst.*, 
-      detailsTable.*, 
-      IFNULL(ltg_ref.file_names, '') AS file_names, 
-      IFNULL(ltg_ref.attachments, '') AS attachments 
-    FROM 
-      ltg_mst 
-    LEFT JOIN 
-      detailsTable ON ltg_mst.RowID = detailsTable.ltg_det_mstRowID 
-    LEFT JOIN 
-      (SELECT 
-           ltg_mstRowID, 
-           GROUP_CONCAT(file_name) AS file_names, 
-           GROUP_CONCAT(attachment) AS attachments 
-       FROM 
-           ltg_ref 
-       GROUP BY 
-           ltg_mstRowID) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID 
-    WHERE 
-      ltg_mst.ltg_type = ? 
-    ORDER BY 
-      ltg_mst.ltg_create_date DESC;
-  `;
-
-  let query = baseQuery;
-  let detailsTable = '';
-
-  if (type === "Plots") {
-    detailsTable = "ltg_det_plots";
-  } else if (type === "RowHouses") {
-    detailsTable = "ltg_det_row_houses";
-  } else if (type === "Villaments") {
-    detailsTable = "ltg_det_villaments";
-  } else if (type === "CommercialProperties") {
-    detailsTable = "ltg_det_commercial_properties";
-  } else if (type === "PentHouses") {
-    detailsTable = "ltg_det_penthouses";
-  } else {
-    detailsTable = "ltg_det";
-  }
-
-  // Replace the placeholder with the actual table name
-  query = query.replace(/detailsTable/g, detailsTable);
-  console.log(query);
-
-  try {
-    const [results, fields] = await db.query(query, [type]);
-    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
-  } catch (error) {
-    console.error("Error fetching properties: " + error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
-  }
-};
-
-// fetch Table By Id
-const getTableById = async (req, res) => {
-  const { listingID } = req.params;
-
-  try {
-    // Step 1: Fetch the ltg_type from ltg_mst
-    const typeQuery = `
-      SELECT ltg_type
-      FROM ltg_mst
-      WHERE RowID = ?;
-    `;
-    const [typeResults] = await db.query(typeQuery, [listingID]);
-
-    if (typeResults.length === 0) {
-      return res.status(404).json({ message: 'Table ID not found', status: 'error' });
-    }
-
-    const type = typeResults[0].ltg_type;
-
-    // Determine the details table based on type
-    let detailsTable;
-    switch (type) {
-      case 'Plots':
-        detailsTable = 'ltg_det_plots';
-        break;
-      case 'RowHouses':
-        detailsTable = 'ltg_det_row_houses';
-        break;
-      case 'Villaments':
-        detailsTable = 'ltg_det_villaments';
-        break;
-      case 'CommercialProperties':
-        detailsTable = 'ltg_det_commercial_properties';
-        break;
-      case 'PentHouses':
-        detailsTable = 'ltg_det_penthouses';
-        break;
-      default:
-        detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
-    }
-
-    // Step 2: Construct the query to fetch detailed data
-    const detailQuery = `
-      SELECT
-        ltg_mst.*,
-        ltg_det.*,
-        ltg_ref.file_names,
-        ltg_ref.audit_user,
-        ltg_ref.audit_date
-      FROM
-        ltg_mst
-      LEFT JOIN
-        ${detailsTable} AS ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
-      LEFT JOIN (
-        SELECT
-          ltg_mstRowID,
-          GROUP_CONCAT(file_name ORDER BY file_name ASC SEPARATOR ', ') AS file_names,
-          audit_user,
-          MAX(audit_date) AS audit_date
-        FROM
-          asset_makers.ltg_ref
-        GROUP BY
-          ltg_mstRowID, audit_user
-      ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
-      WHERE
-        ltg_mst.RowID = ?;
-    `;
-    const [detailResults] = await db.query(detailQuery, [listingID]);
-
-    if (detailResults.length > 0) {
-      res.json({ data: detailResults, message: "Table By ID fetched successfully", status: "success" });
-    } else {
-      res.status(404).json({ message: 'Table ID not found', status: 'error' });
-    }
-  } catch (error) {
-    console.error("Error fetching Table ID: " + error.stack);
-    res.status(500).json({ message: "Error fetching Table ID", status: "error" });
-  }
-};
-
-
-
-// get SingleLsit Item
-const getListItemId = async (req, res) => {
-  const { listingID, type } = req.params;
-  let query = '';
-
-  if (type === "Plots") {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  } else if (type === "RowHouses") {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  } else if (type === "CommercialProperties") {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  } else if (type === "Villaments") {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  } else if (type === "PentHouses") {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  } else {
-    query = `
-      SELECT * FROM ltg_mst
-      LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
-      WHERE ltg_mst.RowID = ?`;
-  }
-
-  try {
-    const [results, fields] = await db.query(query, [listingID]);
-    if (results.length > 0) {
-      res.json({ data: results, message: "Properties fetched successfully", status: "success" });
-    } else {
-      res.status(404).json({ message: 'Listing not found' });
-    }
-  } catch (error) {
-    console.error("Error fetching properties: " + error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
-  }
-};
-// get Single page img 
-
-const getsinglePageImg = async (req, res) => {
-  const { listingID } = req.params;
-
-  const query = `
-    SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
-  `;
-
-  try {
-    const [results] = await db.query(query, [listingID]);
-
-    if (results.length === 0) {
-      res.status(404).json({ message: "No properties found", status: "not_found" });
-      return;
-    }
-
-    res.json({ data: results, message: "Properties Image fetched successfully", status: "success" });
-  } catch (error) {
-    console.error("Error fetching properties:", error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
-  }
-};
-
 // update List
 const updateListItem = async (req, res) => {
   const listingID = req.params.listingID;
@@ -1027,6 +714,398 @@ SET
 
 };
 
+const getListItem = async (req, res) => {
+
+  const query = `
+    SELECT * FROM ltg_mst
+    LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
+    LEFT JOIN ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
+  `;
+
+  try {
+    const [results, fields] = await db.query(query);
+    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+  } catch (error) {
+    console.error("Error fetching properties: " + error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
+};
+
+
+// fetch All Tables
+const getTableData = async (req, res) => {
+  try {
+    // Fetch all records from ltg_mst
+    const mstQuery = `
+      SELECT RowID, ltg_type
+      FROM ltg_mst;
+    `;
+    const [mstResults] = await db.query(mstQuery);
+
+    if (mstResults.length === 0) {
+      return res.status(200).json({ message: 'No records found', status: 'success', data: [] });
+    }
+
+    const detailPromises = mstResults.map(async (record) => {
+      const { RowID, ltg_type } = record;
+
+      // Determine the details table based on type
+      let detailsTable;
+      switch (ltg_type) {
+        case 'Plots':
+          detailsTable = 'ltg_det_plots';
+          break;
+        case 'RowHouses':
+          detailsTable = 'ltg_det_row_houses';
+          break;
+        case 'Villaments':
+          detailsTable = 'ltg_det_villaments';
+          break;
+        case 'CommercialProperties':
+          detailsTable = 'ltg_det_commercial_properties';
+          break;
+        case 'PentHouses':
+          detailsTable = 'ltg_det_penthouses';
+          break;
+        default:
+          detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+      }
+
+      // Construct the query to fetch detailed data
+      const detailQuery = `
+        SELECT
+          ltg_mst.*,
+          ltg_det.*,
+          ltg_ref.file_names,
+          ltg_ref.audit_user,
+          ltg_ref.audit_date
+        FROM
+          ltg_mst
+        LEFT JOIN
+          ${detailsTable} AS ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
+        LEFT JOIN (
+          SELECT
+            ltg_mstRowID,
+            GROUP_CONCAT(file_name ORDER BY file_name ASC SEPARATOR ', ') AS file_names,
+            audit_user,
+            MAX(audit_date) AS audit_date
+          FROM
+            asset_makers.ltg_ref
+          GROUP BY
+            ltg_mstRowID, audit_user
+        ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
+        WHERE
+          ltg_mst.RowID = ?;
+      `;
+      const [detailResults] = await db.query(detailQuery, [RowID]);
+      console.log('detailQuery:', detailQuery, 'RowID:', RowID);
+      return detailResults[0];
+    });
+
+    // Await all detail promises
+    const detailedRecords = await Promise.all(detailPromises);
+
+    res.json({ data: detailedRecords, message: "All tables fetched successfully", status: "success" });
+  } catch (error) {
+    console.error("Error fetching all tables: " + error.stack);
+    res.status(500).json({ message: "Error fetching all tables", status: "error" });
+  }
+};
+
+
+// get Property by type
+const getListingbyType = async (req, res) => {
+  const { type } = req.params;
+
+  const baseQuery = `
+    SELECT 
+      ltg_mst.*, 
+      detailsTable.*, 
+      IFNULL(ltg_ref.file_names, '') AS file_names, 
+      IFNULL(ltg_ref.attachments, '') AS attachments 
+    FROM 
+      ltg_mst 
+    LEFT JOIN 
+      detailsTable ON ltg_mst.RowID = detailsTable.ltg_det_mstRowID 
+    LEFT JOIN 
+      (SELECT 
+           ltg_mstRowID, 
+           GROUP_CONCAT(file_name) AS file_names, 
+           GROUP_CONCAT(attachment) AS attachments 
+       FROM 
+           ltg_ref 
+       GROUP BY 
+           ltg_mstRowID) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID 
+    WHERE 
+      ltg_mst.ltg_type = ? 
+    ORDER BY 
+      ltg_mst.ltg_create_date DESC;
+  `;
+
+  let query = baseQuery;
+  let detailsTable = '';
+
+  if (type === "Plots") {
+    detailsTable = "ltg_det_plots";
+  } else if (type === "RowHouses") {
+    detailsTable = "ltg_det_row_houses";
+  } else if (type === "Villaments") {
+    detailsTable = "ltg_det_villaments";
+  } else if (type === "CommercialProperties") {
+    detailsTable = "ltg_det_commercial_properties";
+  } else if (type === "PentHouses") {
+    detailsTable = "ltg_det_penthouses";
+  } else {
+    detailsTable = "ltg_det";
+  }
+
+  // Replace the placeholder with the actual table name
+  query = query.replace(/detailsTable/g, detailsTable);
+  console.log(query);
+
+  try {
+    const [results, fields] = await db.query(query, [type]);
+    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+  } catch (error) {
+    console.error("Error fetching properties: " + error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
+};
+
+// fetch Table By Id
+const getTableById = async (req, res) => {
+  const { listingID } = req.params;
+
+  try {
+    // Step 1: Fetch the ltg_type from ltg_mst
+    const typeQuery = `
+      SELECT ltg_type
+      FROM ltg_mst
+      WHERE RowID = ?;
+    `;
+    const [typeResults] = await db.query(typeQuery, [listingID]);
+
+    if (typeResults.length === 0) {
+      return res.status(404).json({ message: 'Table ID not found', status: 'error' });
+    }
+
+    const type = typeResults[0].ltg_type;
+
+    // Determine the details table based on type
+    let detailsTable;
+    switch (type) {
+      case 'Plots':
+        detailsTable = 'ltg_det_plots';
+        break;
+      case 'RowHouses':
+        detailsTable = 'ltg_det_row_houses';
+        break;
+      case 'Villaments':
+        detailsTable = 'ltg_det_villaments';
+        break;
+      case 'CommercialProperties':
+        detailsTable = 'ltg_det_commercial_properties';
+        break;
+      case 'PentHouses':
+        detailsTable = 'ltg_det_penthouses';
+        break;
+      default:
+        detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+    }
+
+    // Step 2: Construct the query to fetch detailed data
+    const detailQuery = `
+      SELECT
+        ltg_mst.*,
+        ltg_det.*,
+        ltg_ref.file_names,
+        ltg_ref.audit_user,
+        ltg_ref.audit_date
+      FROM
+        ltg_mst
+      LEFT JOIN
+        ${detailsTable} AS ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
+      LEFT JOIN (
+        SELECT
+          ltg_mstRowID,
+          GROUP_CONCAT(file_name ORDER BY file_name ASC SEPARATOR ', ') AS file_names,
+          audit_user,
+          MAX(audit_date) AS audit_date
+        FROM
+          asset_makers.ltg_ref
+        GROUP BY
+          ltg_mstRowID, audit_user
+      ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
+      WHERE
+        ltg_mst.RowID = ?;
+    `;
+    const [detailResults] = await db.query(detailQuery, [listingID]);
+
+    if (detailResults.length > 0) {
+      res.json({ data: detailResults, message: "Table By ID fetched successfully", status: "success" });
+    } else {
+      res.status(404).json({ message: 'Table ID not found', status: 'error' });
+    }
+  } catch (error) {
+    console.error("Error fetching Table ID: " + error.stack);
+    res.status(500).json({ message: "Error fetching Table ID", status: "error" });
+  }
+};
+
+
+
+// get SingleLsit Item
+const getListItemId = async (req, res) => {
+  const { listingID, type } = req.params;
+  let query = '';
+
+  if (type === "Plots") {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_plots ON ltg_mst.RowID = ltg_det_plots.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  } else if (type === "RowHouses") {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_row_houses ON ltg_mst.RowID = ltg_det_row_houses.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  } else if (type === "CommercialProperties") {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_commercial_properties ON ltg_mst.RowID = ltg_det_commercial_properties.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  } else if (type === "Villaments") {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_villaments ON ltg_mst.RowID = ltg_det_villaments.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  } else if (type === "PentHouses") {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det_penthouses ON ltg_mst.RowID = ltg_det_penthouses.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  } else {
+    query = `
+      SELECT * FROM ltg_mst
+      LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
+      WHERE ltg_mst.RowID = ?`;
+  }
+
+  try {
+    const [results, fields] = await db.query(query, [listingID]);
+    if (results.length > 0) {
+      res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+    } else {
+      res.status(404).json({ message: 'Listing not found' });
+    }
+  } catch (error) {
+    console.error("Error fetching properties: " + error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
+};
+// get Single page img 
+
+const getsinglePageImg = async (req, res) => {
+  const { listingID } = req.params;
+
+  const query = `
+    SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
+  `;
+
+  try {
+    const [results] = await db.query(query, [listingID]);
+
+    if (results.length === 0) {
+      res.status(404).json({ message: "No properties found", status: "not_found" });
+      return;
+    }
+
+    res.json({ data: results, message: "Properties Image fetched successfully", status: "success" });
+  } catch (error) {
+    console.error("Error fetching properties:", error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
+};
+
+const deleteImagesByRowID = async (req, res) => {
+  const { RowID } = req.params;
+
+  // Query to find the file_name for the given RowID
+  const findQuery = `
+    SELECT file_name FROM ltg_ref WHERE RowID = ?
+  `;
+
+  // Query to delete the image for the given RowID
+  const deleteQuery = `
+    DELETE FROM ltg_ref WHERE RowID = ?
+  `;
+
+  try {
+    // Find the file_name for the given RowID
+    const [findResults] = await db.query(findQuery, [RowID]);
+    if (findResults.length === 0) {
+      res.status(404).json({ message: "No image found to delete", status: "not_found" });
+      return;
+    }
+
+    const fileName = findResults[0].file_name;
+
+    // Delete the image
+    const [deleteResults] = await db.query(deleteQuery, [RowID]);
+
+    if (deleteResults.affectedRows === 0) {
+      res.status(404).json({ message: "No image found to delete", status: "not_found" });
+      return;
+    }
+
+    res.json({ message: `Image deleted successfully for RowID ${RowID}`, status: "success" });
+  } catch (error) {
+    console.error("Error deleting image:", error.stack);
+    res.status(500).json({ message: "Error deleting image", status: "error" });
+  }
+};
+
+
+/* delete image by RowID */
+const deleteBrochureFile = async (req, res) => {
+  const { RowID } = req.params;
+
+  // Query to find the file_name for the given RowID
+  const findQuery = `
+    SELECT file_name FROM ltg_ref WHERE RowID = ?
+  `;
+
+  // Query to delete both the PDF and its corresponding thumbnail
+  const deleteQuery = `
+    DELETE FROM ltg_ref WHERE RowID = ? OR (file_name = ? OR file_name = ?)
+  `;
+
+  try {
+    // Find the file_name for the given RowID
+    const [findResults] = await db.query(findQuery, [RowID]);
+    if (findResults.length === 0) {
+      res.status(404).json({ message: "No brochure found to delete", status: "not_found" });
+      return;
+    }
+
+    const fileName = findResults[0].file_name;
+    const thumbnailFileName = fileName.replace('.pdf', '-thumbnail.png');
+
+    // Delete both the PDF and its corresponding thumbnail
+    const [deleteResults] = await db.query(deleteQuery, [RowID, fileName, thumbnailFileName]);
+
+    if (deleteResults.affectedRows === 0) {
+      res.status(404).json({ message: "No brochure found to delete", status: "not_found" });
+      return;
+    }
+
+    res.json({ message: `File and thumbnail deleted successfully for RowID ${RowID}`, status: "success" });
+  } catch (error) {
+    console.error("Error deleting brochure:", error.stack);
+    res.status(500).json({ message: "Error deleting brochure", status: "error" });
+  }
+};
+
 
 const deleteListItem = async (req, res) => {
   const listingID = req.params.listingID;
@@ -1106,10 +1185,10 @@ const uploadListItem = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { listingID } = req.params;
-    const { type, auditUser, update } = req.body;
+    const { type, auditUser, update, deletedFiles } = req.body; // Added deletedFiles parameter
     const files = req.files;
 
-    console.log('Received request to upload files:', { listingID, type, auditUser, update });
+    console.log('Received request to upload files:', { listingID, type, auditUser, update, deletedFiles });
     console.log('Received files:', files);
 
     if (!files || files.length === 0) {
@@ -1117,12 +1196,12 @@ const uploadListItem = async (req, res) => {
     }
 
     await connection.beginTransaction();
-    console.log(update, "update");
 
-    if (update === true) {
-      const deleteQuery = 'DELETE FROM ltg_ref WHERE ltg_mstRowID = ? AND type = ?';
-      await connection.query(deleteQuery, [listingID, type]);
-      console.log("Existing data deleted");
+    // Delete specific images if update is true and deletedFiles are provided
+    if (update === true && deletedFiles && deletedFiles.length > 0) {
+      const deleteQuery = 'DELETE FROM ltg_ref WHERE ltg_mstRowID = ? AND type = ? AND file_name IN (?)';
+      await connection.query(deleteQuery, [listingID, type, deletedFiles]);
+      console.log("Selected existing data deleted");
     }
 
     const insertQuery = `
@@ -1177,7 +1256,6 @@ const uploadListItem = async (req, res) => {
   }
 };
 
-
 // Delete Images
 const deleteListImage = (req, res) => {
   const listingID = req.params.listingID;
@@ -1226,4 +1304,6 @@ module.exports = {
   getListItemId,
   getTableById,
   getsinglePageImg,
+  deleteImagesByRowID,
+  deleteBrochureFile,
 };
