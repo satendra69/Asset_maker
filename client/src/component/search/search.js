@@ -1,11 +1,11 @@
 import React, { useState, useRef } from "react";
 
-const SearchForm = ({ onFilterChange }) => {
+function SearchForm({ onFilterChange, defaultProperty }) {
   const initialState = {
     search: "",
     location: "",
     type: "any",
-    property: "any",
+    property: defaultProperty,
     price: {
       min: "",
       max: "",
@@ -24,6 +24,8 @@ const SearchForm = ({ onFilterChange }) => {
   const [showFields, setShowFields] = useState(false);
   const formRef = useRef(null);
 
+  console.log(formData, defaultProperty, "formData")
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
@@ -39,7 +41,7 @@ const SearchForm = ({ onFilterChange }) => {
         ...formData,
         area: {
           ...formData.area,
-          [name]: value !== "" ? parseInt(value) : "", // Ensure value is a number or empty string
+          [name]: value !== "" ? parseInt(value, 10) : "",
         },
       });
     } else if (name === "minPrice" || name === "maxPrice") {
@@ -47,7 +49,7 @@ const SearchForm = ({ onFilterChange }) => {
         ...formData,
         price: {
           ...formData.price,
-          [name]: value !== "" ? parseInt(value) : "", // Ensure value is a number or empty string
+          [name]: value !== "" ? parseInt(value, 10) : "",
         },
       });
     } else {
@@ -66,6 +68,7 @@ const SearchForm = ({ onFilterChange }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     onFilterChange(formData);
+    setShowFields(false);
   };
 
   const handleFocus = () => {
@@ -84,6 +87,11 @@ const SearchForm = ({ onFilterChange }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  React.useEffect(() => {
+    console.log("formData before filter change:", formData);
+    onFilterChange(formData);
+  }, [formData]);
 
   return (
     <div className="w-full mt-5 mb-5">
@@ -131,7 +139,7 @@ const SearchForm = ({ onFilterChange }) => {
 
 
             {showFields && (
-              <div className="grid grid-cols-1 gap-6">
+              <div className="grid grid-cols-1 gap-6 mt-5">
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                   <div className="flex flex-col">
                     <label
@@ -151,7 +159,6 @@ const SearchForm = ({ onFilterChange }) => {
                       <option value="Bangaluru">Bangaluru</option>
                       <option value="Hyderabad">Hyderabad</option>
                       <option value="Tirupati">Tirupati</option>
-                      <option value="Chennai">Chennai</option>
                     </select>
                   </div>
 
@@ -190,15 +197,13 @@ const SearchForm = ({ onFilterChange }) => {
                       className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="any">Any</option>
-                      <option value="Apartment">Apartment</option>
-                      <option value="Commercial Property">
-                        Commercial Property
-                      </option>
-                      <option value="Pent House">Pent House</option>
-                      <option value="Row House">Row House</option>
-                      <option value="Plot">Plot</option>
-                      <option value="Villa">Villa</option>
-                      <option value="Villament">Villament</option>
+                      <option value="Apartments">Apartment</option>
+                      <option value="CommercialProperties">Commercial Property</option>
+                      <option value="PentHouses">Pent House</option>
+                      <option value="RowHouses">Row House</option>
+                      <option value="Plots">Plot</option>
+                      <option value="Villas">Villa</option>
+                      <option value="Villaments">Villament</option>
                     </select>
                   </div>
 

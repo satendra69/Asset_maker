@@ -11,40 +11,135 @@ import { IoMdHappy } from "react-icons/io";
 import { FaRegHandshake } from "react-icons/fa";
 
 function PropertyApartment() {
-  const [properties, setProperties] = useState([]);
-  const type = "Apartments";
+  const [allProperties, setAllProperties] = useState([]);
+  const [originalProperties, setOriginalProperties] = useState([]);
+  const [defaultType] = useState("Apartments");
 
-  useEffect(() => {
-    fetchProperties();
-  }, []);
-
-  const fetchProperties = async (filterParams = {}) => {
+  const fetchAllProperties = async (filterParams = {}) => {
     try {
-      const response = await httpCommon.get(`/list/listing/${type}`, {
+      const response = await httpCommon.get(`/list`, {
         params: filterParams
       });
-      //console.log("response____Property", response);
+      console.log("response____AllProperties", response);
 
       if (response.data.status === "success") {
-        setProperties(response.data.data);
+        setAllProperties(response.data.data);
+        setOriginalProperties(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleFilterChange = (newFilters) => {
-    fetchProperties(newFilters);
+  const handleFilterChange = (formData) => {
+    let filteredProperties = originalProperties;
+
+    // Filter by search term
+    if (formData.search) {
+      filteredProperties = filteredProperties.filter((item) =>
+        item.ltg_title.toLowerCase().includes(formData.search.toLowerCase()) ||
+        item.ltg_det_location.toLowerCase().includes(formData.search.toLowerCase()) ||
+        item.ltg_det_about_project_buder.toLowerCase().includes(formData.search.toLowerCase())
+      );
+    }
+
+    // Filter by location (ltg_regions)
+    if (formData.location && formData.location !== 'any') {
+      filteredProperties = filteredProperties.filter((item) =>
+        item.ltg_regions.toLowerCase() === formData.location.toLowerCase()
+      );
+    }
+
+    // Filter by type (ltg_categories)
+    if (formData.type && formData.type !== 'any') {
+      filteredProperties = filteredProperties.filter((item) =>
+        item.ltg_categories === formData.type
+      );
+    }
+
+    // Always set property based on formData before filtering
+    const selectedProperty = formData.property || defaultType;
+
+    // Filter by property type (ltg_type)
+    if (formData.property && formData.property !== 'any') {
+      filteredProperties = filteredProperties.filter((item) =>
+        item.ltg_type === selectedProperty
+      );
+    }
+
+    // Filter by price range (ltg_det_sale_price)
+    if (formData.price && (formData.price.min || formData.price.max)) {
+      const minPrice = formData.price && formData.price.min !== undefined ? formData.price.min : "";
+      const maxPrice = formData.price && formData.price.max !== undefined ? formData.price.max : "";
+
+      filteredProperties = filteredProperties.filter((item) => {
+        const salePrice = parseInt(item.ltg_det_sale_price, 10);
+        return salePrice >= minPrice && salePrice <= maxPrice;
+      });
+    }
+
+    // Filter by area range (ltg_det_pmts_area_dts)
+    if (formData.area && (formData.area.min || formData.area.max)) {
+      const minArea = formData.area && formData.area.min !== undefined ? formData.area.min : "";
+      const maxArea = formData.area && formData.area.max !== undefined ? formData.area.max : "";
+
+      filteredProperties = filteredProperties.filter((item) => {
+        const areaMatch = item.ltg_det_pmts_area_dts.match(/(\d+)/); // Extract numeric value
+        const area = areaMatch ? parseInt(areaMatch[0], 10) : 0;
+        return area >= minArea && area <= maxArea;
+      });
+    }
+
+    // Filter by bedrooms (ltg_det_pmts_bed_rom)
+    if (formData.bedRooms) {
+      filteredProperties = filteredProperties.filter((item) =>
+        parseInt(item.ltg_det_pmts_bed_rom, 10) >= parseInt(formData.bedRooms, 10)
+      );
+    }
+
+    // Filter by bathrooms (ltg_det_pmts_bth_rom)
+    if (formData.bathRooms) {
+      filteredProperties = filteredProperties.filter((item) =>
+        parseInt(item.ltg_det_pmts_bth_rom, 10) >= parseInt(formData.bathRooms, 10)
+      );
+    }
+
+    // Filter by status (ltg_det_pmts_status)
+    if (formData.status && formData.status !== 'any') {
+      filteredProperties = filteredProperties.filter((item) =>
+        item.ltg_det_pmts_status === formData.status
+      );
+    }
+
+    // Filter by amenities (ltg_det_amenities)
+    if (formData.amenities && formData.amenities.length > 0) {
+      filteredProperties = filteredProperties.filter((item) => {
+        const amenities = item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim());
+        return formData.amenities.every((amenity) => amenities.includes(amenity));
+      });
+    }
+
+    // Update state with filtered properties
+    setAllProperties(filteredProperties);
   };
+
+  useEffect(() => {
+    fetchAllProperties({ property: defaultType });
+    handleFilterChange({ property: defaultType });
+  }, [defaultType]);
 
   return (
     <>
       <Container>
-        <SearchForm onFilterChange={handleFilterChange} />
-        {properties.map((item) => (
-          <Card key={item.id} item={item} />
+        <SearchForm
+          onFilterChange={handleFilterChange}
+          defaultProperty={defaultType}
+        />
+        {(allProperties).map((item) => (
+          <Card item={item} />
         ))}
       </Container>
+
       <section className="footerPatner  bg-[#1C1C1E] ">
         <Container
           className={

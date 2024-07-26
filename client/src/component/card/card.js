@@ -9,8 +9,9 @@ import httpCommon from "../../http-common";
 import { queryClient } from "../..";
 
 function Card({ item }) {
-  console.log("item____", item);
+
   const [open, setOpen] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -47,9 +48,10 @@ function Card({ item }) {
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     return attachments
       .split(',')
+      .map(file => file.trim())
       .filter(file => {
         const extension = file.split('.').pop().toLowerCase();
-        return allowedExtensions.includes(extension);
+        return allowedExtensions.includes(extension) && !file.endsWith('-thumbnail.png');
       });
   };
 

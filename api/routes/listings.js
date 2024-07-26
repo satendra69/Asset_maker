@@ -25,7 +25,7 @@ router.get("/", getListItem);
 router.get("/table", getTableData);
 router.get("/table/:listingID", getTableById);
 
-/* get listing */
+/* get listing by type */
 router.get("/listing/:type", getListingbyType);
 
 /* post listing */

@@ -97,14 +97,11 @@ function SinglePage() {
             <div className="info">
               <div className="top">
                 <div className="post">
-
-                  {singlePageData && singlePageData.length > 0 && singlePageData[0].ltg_title &&
+                  {singlePageData && singlePageData.length > 0 && singlePageData[0].ltg_title && (
                     <h1>{singlePageData[0].ltg_title}</h1>
-                  }
-
+                  )}
                   <div className="address">
                     <img src="/pin.png" alt="" />
-
                     {singlePageData && singlePageData.length > 0 && (
                       <span>
                         {singlePageData[0].ltg_type === 'Plots' && singlePageData[0].ltg_det_plot_address}
@@ -116,7 +113,6 @@ function SinglePage() {
                         {singlePageData[0].ltg_type === 'PentHouses' && singlePageData[0].ltg_det_penthouses_address}
                       </span>
                     )}
-
                   </div>
                   <div className="price">
                     ₹
@@ -131,69 +127,31 @@ function SinglePage() {
                         {singlePageData[0].ltg_type === 'PentHouses' && formatIndianNumber(singlePageData[0].ltg_det_penthouses_sale_price)}
                       </span>
                     )}
-
                   </div>
                 </div>
-                {/* <div className="user">
-                  <img src={userData.img} alt="" />
-                  <span>{userData.name}</span>
-                </div> */}
               </div>
-              <div className="bottom">
+              <div className="bottom mr-56">
                 {singlePageData && singlePageData.length > 0 && (
-                  singlePageData[0].ltg_type === 'Plots' ? (
-                    <>
-                      {singlePageData[0].ltg_det_plot_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_plot_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'Villas' ? (
-                    <>
-                      {singlePageData[0].ltg_det_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'Apartments' ? (
-                    <>
-                      {singlePageData[0].ltg_det_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'RowHouses' ? (
-                    <>
-                      {singlePageData[0].ltg_det_row_house_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_row_house_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'CommercialProperties' ? (
-                    <>
-                      {singlePageData[0].ltg_det_comm_prop_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_comm_prop_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'Villaments' ? (
-                    <>
-                      {singlePageData[0].ltg_det_comm_prop_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_villaments_desc }} />
-                      }
-                    </>
-                  ) : singlePageData[0].ltg_type === 'PentHouses' ? (
-                    <>
-                      {singlePageData[0].ltg_det_penthouses_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_penthouses_desc }} />
-                      }
-                    </>
-                  ) : (
-                    <>
-                      {singlePageData[0].ltg_det_desc &&
-                        <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
-                      }
-                    </>
-                  )
+                  <div className="description">
+                    {singlePageData[0].ltg_type === 'Plots' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_plot_desc }} />
+                    ) : singlePageData[0].ltg_type === 'Villas' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
+                    ) : singlePageData[0].ltg_type === 'Apartments' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
+                    ) : singlePageData[0].ltg_type === 'RowHouses' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_row_house_desc }} />
+                    ) : singlePageData[0].ltg_type === 'CommercialProperties' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_comm_prop_desc }} />
+                    ) : singlePageData[0].ltg_type === 'Villaments' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_villaments_desc }} />
+                    ) : singlePageData[0].ltg_type === 'PentHouses' ? (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_penthouses_desc }} />
+                    ) : (
+                      <div dangerouslySetInnerHTML={{ __html: singlePageData[0].ltg_det_desc }} />
+                    )}
+                  </div>
                 )}
-
-
-
               </div>
             </div>
           </div>

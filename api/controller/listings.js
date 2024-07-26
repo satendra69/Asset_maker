@@ -718,21 +718,87 @@ SET
 
 const getListItem = async (req, res) => {
 
-  const query = `
-    SELECT * FROM ltg_mst
-    LEFT JOIN ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
-    LEFT JOIN ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
-  `;
-
   try {
-    const [results, fields] = await db.query(query);
-    res.json({ data: results, message: "Properties fetched successfully", status: "success" });
+    // Fetch all records from ltg_mst
+    const mstQuery = `
+      SELECT RowID, ltg_type
+      FROM ltg_mst;
+    `;
+    const [mstResults] = await db.query(mstQuery);
+
+    if (mstResults.length === 0) {
+      return res.status(200).json({ message: 'No records found', status: 'success', data: [] });
+    }
+
+    // Prepare an array of promises to fetch details for each property type
+    const detailPromises = mstResults.map(async (record) => {
+      const { RowID, ltg_type } = record;
+
+      // Determine the details table based on type
+      let detailsTable;
+      switch (ltg_type) {
+        case 'Plots':
+          detailsTable = 'ltg_det_plots';
+          break;
+        case 'RowHouses':
+          detailsTable = 'ltg_det_row_houses';
+          break;
+        case 'Villaments':
+          detailsTable = 'ltg_det_villaments';
+          break;
+        case 'CommercialProperties':
+          detailsTable = 'ltg_det_commercial_properties';
+          break;
+        case 'PentHouses':
+          detailsTable = 'ltg_det_penthouses';
+          break;
+        case 'Apartment':
+          detailsTable = 'ltg_det'; // Specific for apartments
+          break;
+        default:
+          detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+      }
+
+      // Construct the query dynamically based on the determined details table
+      const detailQuery = `
+            SELECT 
+                mst.*,
+                det.*,
+                ref_agg.file_names,
+                ref_agg.attachments
+            FROM 
+                ltg_mst mst
+            JOIN 
+                ${detailsTable} det ON mst.RowID = det.ltg_det_mstRowID
+            LEFT JOIN (
+                SELECT 
+                    ltg_mstRowID,
+                    GROUP_CONCAT(file_name SEPARATOR ', ') AS file_names,
+                    GROUP_CONCAT(attachment SEPARATOR ', ') AS attachments
+                FROM 
+                    ltg_ref
+                GROUP BY 
+                    ltg_mstRowID
+            ) ref_agg ON mst.RowID = ref_agg.ltg_mstRowID
+            WHERE 
+                mst.RowID = ?;
+        `;
+
+      // Execute the detail query
+      const [detailResults] = await db.query(detailQuery, [RowID]);
+
+      return detailResults[0] || {}; // Return the first result or an empty object
+    });
+
+    // Wait for all detail queries to complete
+    const detailedResults = await Promise.all(detailPromises);
+
+    return res.status(200).json({ message: 'All listing records fetched successfully', status: 'success', data: detailedResults });
   } catch (error) {
-    console.error("Error fetching properties: " + error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
+    console.error('Error fetching all listing records:', error);
+    return res.status(500).json({ message: 'Internal server error, Error fetching all listing records', status: 'error' });
   }
 };
-
 
 // fetch All Tables
 const getTableData = async (req, res) => {
