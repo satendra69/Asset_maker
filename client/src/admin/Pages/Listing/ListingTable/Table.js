@@ -212,7 +212,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             <Button
               variant="contained"
               color="primary"
-              onClick={() => navigate(`/admin/property/edit/${row.original.RowID}`)}
+              onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
               startIcon={<Edit />}
             >
               Edit

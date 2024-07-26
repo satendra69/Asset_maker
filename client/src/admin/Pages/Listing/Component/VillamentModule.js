@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-  convertFromRaw,
-} from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
+import { useNavigate, useParams } from "react-router-dom";
+import { EditorState, convertFromRaw, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import MapComponent from "./MapComponent";
 import draftToHtml from 'draftjs-to-html';
+import { stateFromHTML } from 'draft-js-import-html';
+import { toast } from 'sonner';
+import MapComponent from "./MapComponent";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
+import httpCommon from "../../../../http-common";
 
 function VillamentModule({ onDataUpdate }) {
+
+  const { listingId } = useParams();
+  const navigate = useNavigate();
+
   const [salePrice, setSalePrice] = useState("");
   const [displaySalePrice, setDisplaySalePrice] = useState("");
   const [salePriceWords, setSalePriceWords] = useState("");
@@ -26,12 +29,13 @@ function VillamentModule({ onDataUpdate }) {
   const [propertyAddressDetails, setPropertyAddressDetails] = useState("");
   const [ratePerSqFt, setRatePerSqFt] = useState("");
   const [content, setContent] = useState('');
-  const [MapRow, setMapRow] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("not_selected");
   const [selectedCarParking, setSelectedCarParking] = useState("not_selected");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [brochure, setBrochure] = useState([]);
+  const [storedBrochure, setStoredBrochure] = useState([]);
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
+  const [isStored, setIsStored] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [selectedBedRooms, setSelectedBedRooms] = useState("");
   const [selectedBathRooms, setSelectedBathRooms] = useState("");
@@ -71,12 +75,120 @@ function VillamentModule({ onDataUpdate }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const [galleryImages, setGalleryImages] = useState([]);
+  const [storedGalleryImages, setStoredGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
+  const [storedMasterPlanImages, setStoredMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
+  const [storedFloorAreaPlanImages, setStoredFloorAreaPlanImages] = useState([]);
   const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const limit = 999999999999;
+
+  const [initialPosition, setInitialPosition] = useState({
+    location: "",
+    address: "",
+    postalCode: "",
+    latitude: 17.387140,
+    longitude: 78.491684,
+  });
+  const [locationData, setLocationData] = useState({});
+  const [modalPdfUrl, setModalPdfUrl] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const propertyType = "Villaments";
+
+  // fetch property
+  useEffect(() => {
+    if (listingId) {
+      const fetchProperty = async (listingId) => {
+        try {
+          const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
+          const listingData = response.data.data[0];
+          console.log("listingData", listingData);
+
+          // Fetch images and brochures
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          const imageData = imgResponse.data.data;
+
+          // Separate gallery and brochure data
+          const galleryData = imageData.filter(item => item.type === "Gallery");
+          const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
+          const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
+          const brochureData = (imageData.filter(item => item.type === "Brochure"));
+
+          // Update state with fetched data
+          setDisplaySalePrice(listingData.ltg_det_villaments_sale_price);
+          setDisplaySuffixPrice(listingData.ltg_det_villaments_suffix_price);
+
+          // content update
+          setContent(listingData.ltg_det_villaments_desc);
+          const blocksFromHTML = convertFromHTML(listingData.ltg_det_villaments_desc || '');
+          const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+          setEditorState(EditorState.createWithContent(contentState));
+
+          setAreaDetails(listingData.ltg_det_villaments_pmts_area_dts);
+          setRatePerSqFt(listingData.ltg_det_villaments_pmts_rate_per_sq);
+          setSelectedStatus(listingData.ltg_det_villaments_pmts_status);
+          setSelectedBedRooms(listingData.ltg_det_villaments_pmts_bed_rooms);
+          setSelectedBathRooms(listingData.ltg_det_villaments_pmts_bath_rooms);
+          setSelectedCarParking(listingData.ltg_det_villaments_pmts_car_parking);
+          setYearBuilt(listingData.ltg_det_villaments_pmts_year_built);
+          // setTotalFloors(listingData.ltg_det_pmts_total_flrs);
+          // setPlotDimensions(listingData.ltg_det_plot_dimensions);
+          setNoOfOpenSides(listingData.ltg_det_villaments_pmts_no_of_open_sides);
+          setMainDoorFacing(listingData.ltg_det_villaments_pmts_main_door_facing);
+          setPropertyFlooring(listingData.ltg_det_villaments_pmts_property_flooring);
+          setBalconies(listingData.ltg_det_villaments_pmts_balconies);
+          setApproachingRoadWidth(listingData.ltg_det_villaments_pmts_approaching_road_width);
+          setFurnishing(listingData.ltg_det_villaments_pmts_furnishing);
+          setStampDutyAndRegistrationCharges(listingData.ltg_det_villaments_pmts_stamp_duty_registration_charges);
+          setTotalProjectExtent(listingData.ltg_det_villaments_pmts_total_project_extent);
+          // setIsCornerVilla(listingData.ltg_det_corner_villa);
+          setTransactionType(listingData.ltg_det_villaments_pmts_transaction_type);
+          // setPlotArea(listingData.ltg_det_plot_area);
+          setTotalPhases(listingData.ltg_det_villaments_pmts_total_phases);
+          setApprovalAuthority(listingData.ltg_det_villaments_pmts_approval_authority);
+          setTotalUnits(listingData.ltg_det_villaments_pmts_total_units);
+          setProjectBuilderDetails(listingData.ltg_det_villaments_about_project_builder);
+          setVideoUrl(listingData.ltg_det_villaments_property_video_url);
+          setOtherAdvantages(listingData.ltg_det_villaments_pmts_other_advantages.split(", "));
+          setSelectedAmenities(listingData.ltg_det_villaments_amenities.split(", "));
+          setOverLooking(listingData.ltg_det_villaments_pmts_over_looking);
+          setIsInGatedCommunity(listingData.ltg_det_villaments_pmts_gated_community);
+          setAvailableFrom(listingData.ltg_det_villaments_pmts_available_from);
+          setPropertyAddressDetails(listingData.ltg_det_villaments_property_address_details);
+          setLandUDSArea(listingData.ltg_det_villaments_pmts_land_uds_area);
+          setSelectedDuplex(listingData.ltg_det_villaments_pmts_duplex);
+          setIsCornerVillament(listingData.ltg_det_villaments_pmts_corner_villament);
+
+
+          setInitialPosition({
+            location: listingData.ltg_det_villaments_location || "",
+            address: listingData.ltg_det_villaments_address || "",
+            postalCode: listingData.ltg_det_villaments_postal_code || "",
+            latitude: listingData.ltg_det_villaments_latitude || 17.387140,
+            longitude: listingData.ltg_det_villaments_longitude || 78.491684,
+          });
+
+          // Set images and brochures
+          setStoredGalleryImages(galleryData);
+          setStoredMasterPlanImages(masterPlanData);
+          setStoredFloorAreaPlanImages(floorAreaPlanData);
+          setStoredBrochure(brochureData);
+
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            toast.error('Property not found');
+            navigate('/admin/property/new');
+          } else {
+            console.error('Error fetching Property:', error);
+            toast.error('An error occurred while fetching the property');
+          }
+        }
+      };
+      fetchProperty(listingId);
+    }
+  }, [listingId, propertyType]);
 
   // format number to en-IN
   const formatNumber = (number) => {
@@ -153,7 +265,19 @@ function VillamentModule({ onDataUpdate }) {
     } else if (selectedFloorAreaPlanImageIndex > index) {
       setSelectedFloorAreaPlanImageIndex(selectedFloorAreaPlanImageIndex - 1);
     }
+  };
 
+  const handleStoredImageDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/images/${RowID}`); // Adjust the endpoint as necessary
+      if (response.data.status === "success") {
+        setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+      } else {
+        console.error("Error deleting gallery image:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting gallery image:", error);
+    }
   };
 
   // Function to open modal with selected image index
@@ -198,12 +322,32 @@ function VillamentModule({ onDataUpdate }) {
     setBrochure(updatedBrochure);
   };
 
-  const handleFileClick = (index) => {
+  const handleStoredFileDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/files/${RowID}`);
+      if (response.data.status === "success") {
+        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
+
+      } else {
+        console.error("Error deleting brochure:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting brochure:", error);
+    }
+  };
+
+  const handleFileClick = (index, pdfUrl = null, isStored = false) => {
     setSelectedDocumentIndex(index);
+    setModalPdfUrl(pdfUrl);
+    setIsStored(isStored);
+    setModalIsOpen(true);
   };
 
   const closeDocumentModal = () => {
+    setModalIsOpen(false);
+    setModalPdfUrl('');
     setSelectedDocumentIndex(null);
+    setIsStored(false);
   };
 
   const handleAdvantagesChange = (e) => {
@@ -323,9 +467,13 @@ function VillamentModule({ onDataUpdate }) {
     setContent(html);
   };
 
-  const handleRowMap = (dataMap) => {
-    setMapRow(dataMap);
-    onDataUpdate(dataMap);
+  const handleLocationChange = (updatedLocationData) => {
+    if (updatedLocationData.latitude && updatedLocationData.longitude) {
+      setLocationData(updatedLocationData);
+      onDataUpdate(updatedLocationData);
+    } else {
+      console.error("Invalid location data:", updatedLocationData);
+    }
   };
 
   const handleDataUpdate = () => {
@@ -340,7 +488,6 @@ function VillamentModule({ onDataUpdate }) {
       areaDetails,
       ratePerSqFt,
       content,
-      MapRow,
       propertyAddressDetails,
       selectedStatus,
       selectedCarParking,
@@ -372,7 +519,7 @@ function VillamentModule({ onDataUpdate }) {
       projectBuilderDetails,
       brochure,
       combinedImages,
-      type: "Villaments",
+      type: propertyType,
     };
     onDataUpdate(data);
   };
@@ -454,8 +601,8 @@ function VillamentModule({ onDataUpdate }) {
         </div>
       </div>
 
-      {/* Location Section */}
-      <MapComponent onPositionChange={handleRowMap} />
+      {/* Location Details */}
+      <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
 
       {/* Property Address (If any more detailed) Section */}
 
@@ -474,6 +621,7 @@ function VillamentModule({ onDataUpdate }) {
           <div className="mt-2.5">
             <textarea
               id="propertyAddressDetails"
+              value={propertyAddressDetails}
               rows={7}
               onChange={(e) => setPropertyAddressDetails(e.target.value)}
               onBlur={handleDataUpdate}
@@ -1128,6 +1276,7 @@ function VillamentModule({ onDataUpdate }) {
           <div className="mt-2.5">
             <textarea
               id="projectBuilderDetails"
+              value={projectBuilderDetails}
               rows={7}
               onChange={(e) => setProjectBuilderDetails(e.target.value)}
               onBlur={handleDataUpdate}
@@ -1194,8 +1343,36 @@ function VillamentModule({ onDataUpdate }) {
             Browse
           </label>
         </div>
-        {brochure.length > 0 && (
+
+        {/* Stored Brochure Section */}
+        {storedBrochure.length > 0 && (
           <div className="mt-4">
+            {storedBrochure
+              .filter(file =>
+                file.file_name.endsWith('.pdf') ||
+                file.file_name.endsWith('.doc') ||
+                file.file_name.endsWith('.docx')
+              ).map((file, index) => (
+                <div key={index} className="flex items-center">
+                  <button
+                    onClick={() => handleStoredFileDelete(file.RowID)}
+                    className="px-2 py-1 ml-2 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <span
+                    className="ml-2 text-blue-500 cursor-pointer"
+                    onClick={() => handleFileClick(index, httpCommon.defaults.baseURL + file.attachment, true)}
+                  >
+                    {file.file_name}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {brochure.length > 0 && (
+          <div className="">
             {brochure.map((file, index) => (
               <div key={index} className="flex items-center">
                 <button
@@ -1206,7 +1383,7 @@ function VillamentModule({ onDataUpdate }) {
                 </button>
                 <span
                   className="ml-2 text-blue-500 cursor-pointer"
-                  onClick={() => handleFileClick(index)}
+                  onClick={() => handleFileClick(index, URL.createObjectURL(file), false)}
                 >
                   {file.name}
                 </span>
@@ -1214,16 +1391,18 @@ function VillamentModule({ onDataUpdate }) {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Modal for displaying documents */}
-      {selectedDocumentIndex !== null && (
-        <FileModal
-          documents={brochure}
-          currentIndex={selectedDocumentIndex}
-          onClose={closeDocumentModal}
-        />
-      )}
+        {/* Modal for displaying documents */}
+        {modalIsOpen && (
+          <FileModal
+            documents={isStored ? storedBrochure : brochure}
+            currentIndex={selectedDocumentIndex}
+            isStored={isStored}
+            onClose={closeDocumentModal}
+            modalPdfUrl={modalPdfUrl}
+          />
+        )}
+      </div>
 
       {/* Gallery Section */}
       <div>
@@ -1264,7 +1443,32 @@ function VillamentModule({ onDataUpdate }) {
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
+
+
         <div className="flex flex-wrap mt-4">
+
+          {/* Displaying Stored Gallery Images */}
+          {storedGalleryImages.length > 0 && (
+            <div className="flex flex-row">
+              {storedGalleryImages.map((file, index) => (
+                <div key={index} className="relative m-2">
+                  <button
+                    onClick={() => handleStoredImageDelete(file.RowID)} // Implement this function
+                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={httpCommon.defaults.baseURL + file.attachment} // Adjust URL for stored images
+                    alt={`Stored Image ${file.file_name}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => openGalleryModal(index)} // Implement modal opening for stored images
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           {galleryImages.map((image, index) => (
             <div key={index} className="relative m-2">
               <button
@@ -1281,7 +1485,9 @@ function VillamentModule({ onDataUpdate }) {
               />
             </div>
           ))}
+
         </div>
+
         {/* Modal for displaying images */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
@@ -1346,7 +1552,31 @@ function VillamentModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Master Plan Images */}
+            {storedMasterPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedMasterPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openMasterPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {masterPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1364,6 +1594,7 @@ function VillamentModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedMasterPlanImageIndex !== null && (
             <ImageModal
@@ -1413,7 +1644,31 @@ function VillamentModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Floor Area Plan Images */}
+            {storedFloorAreaPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedFloorAreaPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openFloorAreaPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {floorAreaPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1431,6 +1686,7 @@ function VillamentModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedFloorAreaPlanImageIndex !== null && (
             <ImageModal

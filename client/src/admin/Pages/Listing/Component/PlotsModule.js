@@ -1,19 +1,22 @@
 import { useEffect, useState } from "react";
-import {
-  EditorState,
-  convertToRaw,
-  ContentState,
-  convertFromRaw,
-} from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
+import { useNavigate, useParams } from "react-router-dom";
+import { EditorState, convertFromRaw, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import MapComponent from "./MapComponent";
 import draftToHtml from 'draftjs-to-html';
+import { stateFromHTML } from 'draft-js-import-html';
+import { toast } from 'sonner';
+import MapComponent from "./MapComponent";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
+import httpCommon from "../../../../http-common";
 
 function PlotsModule({ onDataUpdate }) {
+
+  const { listingId } = useParams();
+  const navigate = useNavigate();
+
   const [salePrice, setSalePrice] = useState("");
   const [displaySalePrice, setDisplaySalePrice] = useState("");
   const [salePriceWords, setSalePriceWords] = useState("");
@@ -26,13 +29,14 @@ function PlotsModule({ onDataUpdate }) {
   const [areaDetails, setAreaDetails] = useState("");
   const [ratePerSqFt, setRatePerSqFt] = useState("");
   const [content, setContent] = useState('');
-  const [MapRow, setMapRow] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("not_selected");
   const [floorsAllowedForConstruction, setFloorsAllowedForConstruction] =
     useState("");
   const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [brochure, setBrochure] = useState([]);
+  const [storedBrochure, setStoredBrochure] = useState([]);
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
+  const [isStored, setIsStored] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
   const [cornerPlot, setCornerPlot] = useState("");
   const [yearBuilt, setYearBuilt] = useState("");
@@ -52,12 +56,122 @@ function PlotsModule({ onDataUpdate }) {
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const [galleryImages, setGalleryImages] = useState([]);
+  const [storedGalleryImages, setStoredGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
+  const [storedMasterPlanImages, setStoredMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
+  const [storedFloorAreaPlanImages, setStoredFloorAreaPlanImages] = useState([]);
   const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const limit = 999999999999;
+
+  const [initialPosition, setInitialPosition] = useState({
+    location: "",
+    address: "",
+    postalCode: "",
+    latitude: 17.387140,
+    longitude: 78.491684,
+  });
+  const [locationData, setLocationData] = useState({});
+  const [modalPdfUrl, setModalPdfUrl] = useState('');
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const propertyType = "Plots";
+
+  // fetch property
+  useEffect(() => {
+    if (listingId) {
+      const fetchProperty = async (listingId) => {
+        try {
+          const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
+          const listingData = response.data.data[0];
+          console.log("listingData", listingData);
+
+          // Fetch images and brochures
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          const imageData = imgResponse.data.data;
+
+          // Separate gallery and brochure data
+          const galleryData = imageData.filter(item => item.type === "Gallery");
+          const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
+          const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
+          const brochureData = (imageData.filter(item => item.type === "Brochure"));
+
+          // Update state with fetched data
+          setDisplaySalePrice(listingData.ltg_det_plot_sale_price);
+          setDisplaySuffixPrice(listingData.ltg_det_plot_suffix_price);
+
+          // content update
+          setContent(listingData.ltg_det_plot_desc);
+          const blocksFromHTML = convertFromHTML(listingData.ltg_det_plot_desc || '');
+          const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+          setEditorState(EditorState.createWithContent(contentState));
+
+          setAreaDetails(listingData.ltg_det_plot_pmts_area_dts);
+          setRatePerSqFt(listingData.ltg_det_plot_pmts_rate_per_sq);
+          setSelectedStatus(listingData.ltg_det_plot_pmts_status);
+          // setSelectedBedRooms(listingData.ltg_det_pmts_bed_rom);
+          // setSelectedBathRooms(listingData.ltg_det_pmts_bth_rom);
+          // setSelectedCarParking(listingData.ltg_det_pmts_car_park);
+          setYearBuilt(listingData.ltg_det_plot_pmts_year_built);
+          // setTotalFloors(listingData.ltg_det_pmts_total_flrs);
+          setPlotDimensions(listingData.ltg_det_plot_pmts_plot_dimensions);
+          setNoOfOpenSides(listingData.ltg_det_plot_pmts_no_of_open_sides);
+          // setMainDoorFacing(listingData.ltg_det_pmts_main_dor_facing);
+          // setPropertyFlooring(listingData.ltg_det_pmts_property_flrg);
+          // setBalconies(listingData.ltg_det_pmts_balconies);
+          setApproachingRoadWidth(listingData.ltg_det_plot_pmts_approaching_road_width);
+          // setFurnishing(listingData.ltg_det_pmts_furnishing);
+          setStampDutyAndRegistrationCharges(listingData.ltg_det_plot_pmts_stamp_duty_registration_charges);
+          setTotalProjectExtent(listingData.ltg_det_plot_pmts_total_project_extent);
+          // setIsCornerVilla(listingData.ltg_det_corner_villa);
+          setTransactionType(listingData.ltg_det_plot_pmts_transaction_type);
+          // setPlotArea(listingData.ltg_det_plot_area);
+          setTotalPhases(listingData.ltg_det_plot_pmts_total_phases);
+          // setApprovalAuthority(listingData.ltg_det_pmts_approval_authority);
+          setTotalUnits(listingData.ltg_det_plot_pmts_total_units);
+          setProjectBuilderDetails(listingData.ltg_det_plot_about_project_builder);
+          setVideoUrl(listingData.ltg_det_plot_property_video_url);
+          // setOtherAdvantages(listingData.ltg_det_pmts_other_advtages.split(", "));
+          setSelectedAmenities(listingData.ltg_det_plot_amenities.split(", "));
+          // setOverLooking(listingData.ltg_det_over_looking);
+          // setIsInGatedCommunity(listingData.ltg_det_gated_community);
+          // setAvailableFrom(listingData.ltg_det_available_from);
+          setPropertyAddressDetails(listingData.ltg_det_plot_property_address_details);
+          setFloorsAllowedForConstruction(listingData.ltg_det_plot_pmts_floors_allowed_for_construction);
+          setPlotFacing(listingData.ltg_det_plot_pmts_plot_facing);
+          setCornerPlot(listingData.ltg_det_plot_pmts_corner_plot);
+          setIsInGatedCommunity(listingData.ltg_det_plot_pmts_gated_community);
+          setBoundaryWallMade(listingData.ltg_det_plot_pmts_boundary_wall_made);
+          setPlotApprovalAuthority(listingData.ltg_det_plot_pmts_plot_approval_authority);
+
+          setInitialPosition({
+            location: listingData.ltg_det_plot_location || "",
+            address: listingData.ltg_det_plot_address || "",
+            postalCode: listingData.ltg_det_plot_postal_code || "",
+            latitude: listingData.ltg_det_plot_latitude || 17.387140,
+            longitude: listingData.ltg_det_plot_longitude || 78.491684,
+          });
+
+          // Set images and brochures
+          setStoredGalleryImages(galleryData);
+          setStoredMasterPlanImages(masterPlanData);
+          setStoredFloorAreaPlanImages(floorAreaPlanData);
+          setStoredBrochure(brochureData);
+
+        } catch (error) {
+          if (error.response && error.response.status === 404) {
+            toast.error('Property not found');
+            navigate('/admin/property/new');
+          } else {
+            console.error('Error fetching Property:', error);
+            toast.error('An error occurred while fetching the property');
+          }
+        }
+      };
+      fetchProperty(listingId);
+    }
+  }, [listingId, propertyType]);
 
   // format number to en-IN
   const formatNumber = (number) => {
@@ -137,6 +251,19 @@ function PlotsModule({ onDataUpdate }) {
 
   };
 
+  const handleStoredImageDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/images/${RowID}`); // Adjust the endpoint as necessary
+      if (response.data.status === "success") {
+        setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+      } else {
+        console.error("Error deleting gallery image:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting gallery image:", error);
+    }
+  };
+
   // Function to open modal with selected image index
   const openGalleryModal = (index) => {
     setSelectedGalleryImageIndex(index);
@@ -179,12 +306,32 @@ function PlotsModule({ onDataUpdate }) {
     setBrochure(updatedBrochure);
   };
 
-  const handleFileClick = (index) => {
+  const handleStoredFileDelete = async (RowID) => {
+    try {
+      const response = await httpCommon.delete(`/list/files/${RowID}`);
+      if (response.data.status === "success") {
+        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
+
+      } else {
+        console.error("Error deleting brochure:", response.data.message);
+      }
+    } catch (error) {
+      console.error("Error deleting brochure:", error);
+    }
+  };
+
+  const handleFileClick = (index, pdfUrl = null, isStored = false) => {
     setSelectedDocumentIndex(index);
+    setModalPdfUrl(pdfUrl);
+    setIsStored(isStored);
+    setModalIsOpen(true);
   };
 
   const closeDocumentModal = () => {
+    setModalIsOpen(false);
+    setModalPdfUrl('');
     setSelectedDocumentIndex(null);
+    setIsStored(false);
   };
 
   // List of amenities
@@ -289,9 +436,13 @@ function PlotsModule({ onDataUpdate }) {
   };
 
 
-  const handleRowMap = (dataMap) => {
-    setMapRow(dataMap);
-    onDataUpdate(dataMap);
+  const handleLocationChange = (updatedLocationData) => {
+    if (updatedLocationData.latitude && updatedLocationData.longitude) {
+      setLocationData(updatedLocationData);
+      onDataUpdate(updatedLocationData);
+    } else {
+      console.error("Invalid location data:", updatedLocationData);
+    }
   };
 
   const handleDataUpdate = () => {
@@ -306,7 +457,6 @@ function PlotsModule({ onDataUpdate }) {
       areaDetails,
       ratePerSqFt,
       content,
-      MapRow,
       selectedStatus,
       propertyAddressDetails,
       floorsAllowedForConstruction,
@@ -330,7 +480,7 @@ function PlotsModule({ onDataUpdate }) {
       projectBuilderDetails,
       brochure,
       combinedImages,
-      type: "Plots",
+      type: propertyType,
     };
     onDataUpdate(data);
   };
@@ -412,8 +562,9 @@ function PlotsModule({ onDataUpdate }) {
         </div>
       </div>
 
-      {/* Location Section */}
-      <MapComponent onPositionChange={handleRowMap} />
+      {/* Location Details */}
+      <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
+
 
       {/* Property Address (If any more detailed) Section */}
 
@@ -432,6 +583,7 @@ function PlotsModule({ onDataUpdate }) {
           <div className="mt-2.5">
             <textarea
               id="propertyAddressDetails"
+              value={propertyAddressDetails}
               rows={7}
               placeholder="Enter more detailed property address if necessary"
               onChange={(e) => setPropertyAddressDetails(e.target.value)}
@@ -884,8 +1036,36 @@ function PlotsModule({ onDataUpdate }) {
             Browse
           </label>
         </div>
-        {brochure.length > 0 && (
+
+        {/* Stored Brochure Section */}
+        {storedBrochure.length > 0 && (
           <div className="mt-4">
+            {storedBrochure
+              .filter(file =>
+                file.file_name.endsWith('.pdf') ||
+                file.file_name.endsWith('.doc') ||
+                file.file_name.endsWith('.docx')
+              ).map((file, index) => (
+                <div key={index} className="flex items-center">
+                  <button
+                    onClick={() => handleStoredFileDelete(file.RowID)}
+                    className="px-2 py-1 ml-2 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <span
+                    className="ml-2 text-blue-500 cursor-pointer"
+                    onClick={() => handleFileClick(index, httpCommon.defaults.baseURL + file.attachment, true)}
+                  >
+                    {file.file_name}
+                  </span>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {brochure.length > 0 && (
+          <div className="">
             {brochure.map((file, index) => (
               <div key={index} className="flex items-center">
                 <button
@@ -896,7 +1076,7 @@ function PlotsModule({ onDataUpdate }) {
                 </button>
                 <span
                   className="ml-2 text-blue-500 cursor-pointer"
-                  onClick={() => handleFileClick(index)}
+                  onClick={() => handleFileClick(index, URL.createObjectURL(file), false)}
                 >
                   {file.name}
                 </span>
@@ -904,16 +1084,18 @@ function PlotsModule({ onDataUpdate }) {
             ))}
           </div>
         )}
-      </div>
 
-      {/* Modal for displaying documents */}
-      {selectedDocumentIndex !== null && (
-        <FileModal
-          documents={brochure}
-          currentIndex={selectedDocumentIndex}
-          onClose={closeDocumentModal}
-        />
-      )}
+        {/* Modal for displaying documents */}
+        {modalIsOpen && (
+          <FileModal
+            documents={isStored ? storedBrochure : brochure}
+            currentIndex={selectedDocumentIndex}
+            isStored={isStored}
+            onClose={closeDocumentModal}
+            modalPdfUrl={modalPdfUrl}
+          />
+        )}
+      </div>
 
 
       {/* Amenities Section */}
@@ -963,6 +1145,7 @@ function PlotsModule({ onDataUpdate }) {
           <div className="mt-2.5">
             <textarea
               id="projectBuilderDetails"
+              value={projectBuilderDetails}
               rows={7}
               onChange={(e) => setProjectBuilderDetails(e.target.value)}
               onBlur={handleDataUpdate}
@@ -1012,7 +1195,32 @@ function PlotsModule({ onDataUpdate }) {
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
+
+
         <div className="flex flex-wrap mt-4">
+
+          {/* Displaying Stored Gallery Images */}
+          {storedGalleryImages.length > 0 && (
+            <div className="flex flex-row">
+              {storedGalleryImages.map((file, index) => (
+                <div key={index} className="relative m-2">
+                  <button
+                    onClick={() => handleStoredImageDelete(file.RowID)} // Implement this function
+                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={httpCommon.defaults.baseURL + file.attachment} // Adjust URL for stored images
+                    alt={`Stored Image ${file.file_name}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => openGalleryModal(index)} // Implement modal opening for stored images
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
           {galleryImages.map((image, index) => (
             <div key={index} className="relative m-2">
               <button
@@ -1029,7 +1237,9 @@ function PlotsModule({ onDataUpdate }) {
               />
             </div>
           ))}
+
         </div>
+
         {/* Modal for displaying images */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
@@ -1046,6 +1256,7 @@ function PlotsModule({ onDataUpdate }) {
         <h2 className="text-xl font-semibold">Property Video</h2>
         <div className="flex flex-wrap items-center mt-4">
           <input
+            id="videoUrl"
             type="text"
             placeholder="Enter the Property Video URL"
             value={videoUrl}
@@ -1093,7 +1304,31 @@ function PlotsModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Master Plan Images */}
+            {storedMasterPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedMasterPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openMasterPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {masterPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1111,6 +1346,7 @@ function PlotsModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedMasterPlanImageIndex !== null && (
             <ImageModal
@@ -1160,7 +1396,31 @@ function PlotsModule({ onDataUpdate }) {
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+
           <div className="flex flex-wrap mt-4">
+
+            {/* Displaying Stored Floor Area Plan Images */}
+            {storedFloorAreaPlanImages.length > 0 && (
+              <div className="flex flex-row">
+                {storedFloorAreaPlanImages.map((file, index) => (
+                  <div key={index} className="relative m-2">
+                    <button
+                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                    >
+                      X
+                    </button>
+                    <img
+                      src={httpCommon.defaults.baseURL + file.attachment}
+                      alt={`Stored Image ${file.file_name}`}
+                      className="object-cover w-32 h-32 rounded cursor-pointer"
+                      onClick={() => openFloorAreaPlanModal(index)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+
             {floorAreaPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1178,6 +1438,7 @@ function PlotsModule({ onDataUpdate }) {
               </div>
             ))}
           </div>
+
           {/* Modal for displaying images */}
           {selectedFloorAreaPlanImageIndex !== null && (
             <ImageModal
@@ -1188,7 +1449,6 @@ function PlotsModule({ onDataUpdate }) {
           )}
         </div>
       </div>
-
     </div>
   );
 }

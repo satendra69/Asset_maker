@@ -116,7 +116,8 @@ function ApartmentModule({ onDataUpdate }) {
 
           // content update
           setContent(listingData.ltg_det_desc);
-          const blocksFromHTML = convertFromHTML(listingData.ltg_det_desc || ''); const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+          const blocksFromHTML = convertFromHTML(listingData.ltg_det_desc || '');
+          const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
           setEditorState(EditorState.createWithContent(contentState));
 
           setAreaDetails(listingData.ltg_det_pmts_area_dts);
@@ -184,8 +185,6 @@ function ApartmentModule({ onDataUpdate }) {
       fetchProperty(listingId);
     }
   }, [listingId]);
-
-  console.log(galleryImages, "galleryImages");
 
   // format number to en-IN
   const formatNumber = (number) => {
