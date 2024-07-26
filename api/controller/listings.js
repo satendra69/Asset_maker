@@ -33,11 +33,11 @@ const addListings = async (req, res) => {
     ltg_det_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_desc = '${req.body.ListingData.content}', 
-    ltg_det_location = '${req.body.ListingData.MapRow.location}',
-    ltg_det_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_location = '${req.body.ListingData.locationData.location}',
+    ltg_det_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -96,11 +96,11 @@ SET
     ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_plot_desc = '${req.body.ListingData.content}', 
-    ltg_det_plot_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_plot_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_plot_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_plot_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_plot_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_plot_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_plot_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_plot_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_plot_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_plot_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_plot_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_plot_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_plot_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -146,11 +146,11 @@ SET
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
-    ltg_det_row_house_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_row_house_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_row_house_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_row_house_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_row_house_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_row_house_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_row_house_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_row_house_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_row_house_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_row_house_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_row_house_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_row_house_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_row_house_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -204,11 +204,11 @@ SET
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
-    ltg_det_comm_prop_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_comm_prop_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_comm_prop_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_comm_prop_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_comm_prop_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_comm_prop_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_comm_prop_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_comm_prop_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_comm_prop_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_comm_prop_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_comm_prop_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_comm_prop_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
     ltg_det_comm_prop_pmts_status = '${req.body.ListingData.selectedStatus}', 
@@ -253,11 +253,11 @@ SET
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
-    ltg_det_villaments_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_villaments_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_villaments_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_villaments_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_villaments_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_villaments_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_villaments_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_villaments_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_villaments_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_villaments_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_villaments_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_villaments_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_villaments_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -310,11 +310,11 @@ SET
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
-    ltg_det_penthouses_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_penthouses_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_penthouses_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_penthouses_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_penthouses_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_penthouses_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_penthouses_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_penthouses_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_penthouses_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_penthouses_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_penthouses_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_penthouses_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_penthouses_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -396,11 +396,11 @@ const updateListItem = async (req, res) => {
           ltg_det_sale_price = '${req.body.ListingData.salePrice}',
           ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}',
           ltg_det_desc = '${req.body.ListingData.content}',
-          ltg_det_location = '${req.body.ListingData.MapRow.location}',
-          ltg_det_address = '${req.body.ListingData.MapRow.address}',
-          ltg_det_postal_code = '${req.body.ListingData.MapRow.postalCode}',
-          ltg_det_latitude = '${req.body.ListingData.MapRow.latitude}',
-          ltg_det_longitude = '${req.body.ListingData.MapRow.longitude}',
+          ltg_det_location = '${req.body.ListingData.locationData.location}',
+          ltg_det_address = '${req.body.ListingData.locationData.address}',
+          ltg_det_postal_code = '${req.body.ListingData.locationData.postalCode}',
+          ltg_det_latitude = '${req.body.ListingData.locationData.latitude}',
+          ltg_det_longitude = '${req.body.ListingData.locationData.longitude}',
           ltg_det_property_address_details = '${req.body.ListingData.propertyAddressDetails}',
           ltg_det_pmts_area_dts = '${req.body.ListingData.areaDetails}',
           ltg_det_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}',
@@ -456,11 +456,11 @@ const updateListItem = async (req, res) => {
             ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
             ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}',
             ltg_det_plot_desc = '${req.body.ListingData.content}', 
-            ltg_det_plot_location = '${req.body.ListingData.MapRow.location}', 
-            ltg_det_plot_address = '${req.body.ListingData.MapRow.address}', 
-            ltg_det_plot_postal_code = '${req.body.ListingData.MapRow.postalCode}',
-            ltg_det_plot_latitude = '${req.body.ListingData.MapRow.latitude}', 
-            ltg_det_plot_longitude = '${req.body.ListingData.MapRow.longitude}',
+            ltg_det_plot_location = '${req.body.ListingData.locationData.location}', 
+            ltg_det_plot_address = '${req.body.ListingData.locationData.address}', 
+            ltg_det_plot_postal_code = '${req.body.ListingData.locationData.postalCode}',
+            ltg_det_plot_latitude = '${req.body.ListingData.locationData.latitude}', 
+            ltg_det_plot_longitude = '${req.body.ListingData.locationData.longitude}',
             ltg_det_plot_property_address_details = '${req.body.ListingData.propertyAddressDetails}',
             ltg_det_plot_pmts_area_dts = '${req.body.ListingData.areaDetails}',
             ltg_det_plot_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}',
@@ -503,11 +503,11 @@ SET
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
-    ltg_det_row_house_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_row_house_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_row_house_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_row_house_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_row_house_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_row_house_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_row_house_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_row_house_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_row_house_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_row_house_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_row_house_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_row_house_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_row_house_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -559,11 +559,11 @@ SET
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
-    ltg_det_comm_prop_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_comm_prop_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_comm_prop_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_comm_prop_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_comm_prop_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_comm_prop_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_comm_prop_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_comm_prop_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_comm_prop_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_comm_prop_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_comm_prop_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_comm_prop_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
     ltg_det_comm_prop_pmts_status = '${req.body.ListingData.selectedStatus}', 
@@ -606,11 +606,11 @@ SET
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
-    ltg_det_villaments_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_villaments_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_villaments_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_villaments_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_villaments_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_villaments_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_villaments_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_villaments_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_villaments_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_villaments_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_villaments_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_villaments_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_villaments_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -661,11 +661,11 @@ SET
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
-    ltg_det_penthouses_location = '${req.body.ListingData.MapRow.location}', 
-    ltg_det_penthouses_address = '${req.body.ListingData.MapRow.address}', 
-    ltg_det_penthouses_postal_code = '${req.body.ListingData.MapRow.postalCode}', 
-    ltg_det_penthouses_latitude = '${req.body.ListingData.MapRow.latitude}', 
-    ltg_det_penthouses_longitude = '${req.body.ListingData.MapRow.longitude}', 
+    ltg_det_penthouses_location = '${req.body.ListingData.locationData.location}', 
+    ltg_det_penthouses_address = '${req.body.ListingData.locationData.address}', 
+    ltg_det_penthouses_postal_code = '${req.body.ListingData.locationData.postalCode}', 
+    ltg_det_penthouses_latitude = '${req.body.ListingData.locationData.latitude}', 
+    ltg_det_penthouses_longitude = '${req.body.ListingData.locationData.longitude}', 
     ltg_det_penthouses_property_address_details = '${req.body.ListingData.propertyAddressDetails}', 
     ltg_det_penthouses_pmts_area_dts = '${req.body.ListingData.areaDetails}', 
     ltg_det_penthouses_pmts_rate_per_sq = '${req.body.ListingData.ratePerSqFt}', 
@@ -863,7 +863,7 @@ const getListingbyType = async (req, res) => {
 
   // Replace the placeholder with the actual table name
   query = query.replace(/detailsTable/g, detailsTable);
-  console.log(query);
+  // console.log(query);
 
   try {
     const [results, fields] = await db.query(query, [type]);
@@ -959,7 +959,7 @@ const getTableById = async (req, res) => {
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
   const { listingID, type } = req.params;
-  console.log(type, listingID);
+  // console.log(type, listingID);
   let query = '';
 
   if (type === "Plots") {
@@ -1114,8 +1114,8 @@ const deleteListItem = async (req, res) => {
   const listingID = req.params.listingID;
   const { type } = req.body;
 
-  console.log("ID: ", listingID);
-  console.log("Type: ", type);
+  // console.log("ID: ", listingID);
+  // console.log("Type: ", type);
 
   let connection;
 
@@ -1188,11 +1188,8 @@ const uploadListItem = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { listingID } = req.params;
-    const { type, auditUser, update } = req.body;
+    const { type, auditUser } = req.body;
     const files = req.files;
-
-    console.log('Received request to upload files:', { listingID, type, auditUser, update });
-    console.log('Received files:', files);
 
     if (!files || files.length === 0) {
       return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded' });
@@ -1205,26 +1202,44 @@ const uploadListItem = async (req, res) => {
       VALUES ?
     `;
 
+    // Get current timestamp for unique file naming
+    const timestamp = Date.now();
+
     const values = files.map(file => {
       const url = file.path.replace('public', '');
+      const originalName = file.originalname;
+      const extension = path.extname(originalName);
+      const baseName = path.basename(originalName, extension);
+      const uniqueFileName = `${baseName}-${timestamp}${extension}`; // Append timestamp to filename
+
+      // Update file path with the new unique filename
+      const newPath = path.join(path.dirname(file.path), uniqueFileName);
+      fs.renameSync(file.path, newPath); // Rename the file on disk
+      file.path = newPath; // Update the file object with the new path
+
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
 
-      return [listingID, file.originalname, url, type, auditUser, formattedDate];
+      return [listingID, uniqueFileName, url, type, auditUser, formattedDate];
     });
 
+    // Attempt to insert the files into the database
     await connection.query(insertQuery, [values]);
 
+    // Handle thumbnails if present
     const thumbnailValues = files
       .filter(file => file.thumbnail)
-      .map(file => [
-        listingID,
-        file.originalname.replace(/\.pdf$/, '-thumbnail.png'),
-        file.thumbnail,
-        type,
-        auditUser,
-        new Date().toISOString().slice(0, 10),
-      ]);
+      .map(file => {
+        const originalName = file.originalname.replace(/\.pdf$/, '-thumbnail.png');
+        return [
+          listingID,
+          originalName,
+          file.thumbnail,
+          type,
+          auditUser,
+          new Date().toISOString().slice(0, 10),
+        ];
+      });
 
     if (thumbnailValues.length > 0) {
       const thumbnailInsertQuery = `

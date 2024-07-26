@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Switch } from "@headlessui/react";
 import AddCustomLabel from "./Component/CustomLabel";
-import AparmentModule from "./Component/AparmentModule";
+import ApartmentModule from "./Component/AparmentModule";
 import VillaModule from "./Component/VillaModule";
 import PlotsModule from "./Component/PlotsModule";
 import RowModule from "./Component/RowModule";
@@ -531,7 +531,7 @@ function NewListingPage() {
           {/* Render different modules based on listing type */}
           <div>
             {listingType === 'Apartments' ? (
-              <AparmentModule onDataUpdate={handleApartmentDataUpdate} />
+              <ApartmentModule onDataUpdate={handleApartmentDataUpdate} />
             ) : listingType === 'Villas' ? (
               <VillaModule onDataUpdate={handleVillaDataUpdate} />
             ) : listingType === 'Plots' ? (
