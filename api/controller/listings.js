@@ -73,6 +73,7 @@ const addListings = async (req, res) => {
     ltg_det_about_project_buder = '${req.body.ListingData.projectBuilderDetails}', 
     ltg_det_amenities = '${req.body.ListingData.amenitiesAsString}', 
     ltg_det_property_video_url = '${req.body.ListingData.videoUrl}', 
+    ltg_det_available_from = '${req.body.ListingData.availableFrom}',
     ltg_det_audit_user = '${req.body.auditUser}',
     ltg_det_create_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}', 
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
@@ -435,6 +436,7 @@ const updateListItem = async (req, res) => {
           ltg_det_about_project_buder = '${req.body.ListingData.projectBuilderDetails}',
           ltg_det_amenities = '${req.body.ListingData.amenitiesAsString}',
           ltg_det_property_video_url = '${req.body.ListingData.videoUrl}',
+          ltg_det_available_from = '${req.body.ListingData.availableFrom}',
           ltg_det_audit_user = '${req.body.auditUser}',
           ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
         WHERE ltg_det_mstRowID = '${listingID}'`;
@@ -798,7 +800,7 @@ const getTableData = async (req, res) => {
           ltg_mst.RowID = ?;
       `;
       const [detailResults] = await db.query(detailQuery, [RowID]);
-      console.log('detailQuery:', detailQuery, 'RowID:', RowID);
+      // console.log('detailQuery:', detailQuery, 'RowID:', RowID);
       return detailResults[0];
     });
 
@@ -957,6 +959,7 @@ const getTableById = async (req, res) => {
 // get SingleLsit Item
 const getListItemId = async (req, res) => {
   const { listingID, type } = req.params;
+  console.log(type, listingID);
   let query = '';
 
   if (type === "Plots") {
@@ -1185,10 +1188,10 @@ const uploadListItem = async (req, res) => {
   const connection = await db.getConnection();
   try {
     const { listingID } = req.params;
-    const { type, auditUser, update, deletedFiles } = req.body; // Added deletedFiles parameter
+    const { type, auditUser, update } = req.body;
     const files = req.files;
 
-    console.log('Received request to upload files:', { listingID, type, auditUser, update, deletedFiles });
+    console.log('Received request to upload files:', { listingID, type, auditUser, update });
     console.log('Received files:', files);
 
     if (!files || files.length === 0) {
@@ -1196,13 +1199,6 @@ const uploadListItem = async (req, res) => {
     }
 
     await connection.beginTransaction();
-
-    // Delete specific images if update is true and deletedFiles are provided
-    if (update === true && deletedFiles && deletedFiles.length > 0) {
-      const deleteQuery = 'DELETE FROM ltg_ref WHERE ltg_mstRowID = ? AND type = ? AND file_name IN (?)';
-      await connection.query(deleteQuery, [listingID, type, deletedFiles]);
-      console.log("Selected existing data deleted");
-    }
 
     const insertQuery = `
       INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
