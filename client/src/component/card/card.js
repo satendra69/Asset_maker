@@ -161,16 +161,21 @@ function Card({ item }) {
           </p>
           <p className="price">₹{formattedPrice}</p>
           <div className="bottom">
-            <div className="features">
-              <div className="feature">
-                <img src="/bed.png" alt="" />
-                <span>{bedrooms} bedroom</span>
-              </div>
-              <div className="feature">
-                <img src="/bath.png" alt="" />
-                <span>{bathrooms} bathrooms</span>
-              </div>
-            </div>
+            {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ?
+              <span></span> :
+              (<>
+                <div className="features">
+                  <div className="feature">
+                    <img src="/bed.png" alt="" />
+                    <span>{bedrooms} bedroom</span>
+                  </div>
+                  <div className="feature">
+                    <img src="/bath.png" alt="" />
+                    <span>{bathrooms} bathrooms</span>
+                  </div>
+                </div>
+              </>
+              )}
             <div className="icons">
               <Link to={"/saved-list"} className="icon">
                 <img src="/save.png" alt="" />

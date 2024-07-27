@@ -91,7 +91,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   React.useEffect(() => {
     onFilterChange(formData);
     // console.log(formData);
-  }, [formData]);
+  }, [formData, onFilterChange]);
 
   return (
     <div className="w-full mt-5 mb-5">
@@ -320,11 +320,9 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
-                      <option value="Ready to Move">Ready to Move</option>
-                      <option value="Under Construction">
-                        Under Construction
-                      </option>
-                      <option value="Upcoming">Upcoming</option>
+                      <option value="ready_to_move">Ready to Move</option>
+                      <option value="under_construction">Under Construction</option>
+                      <option value="upcoming">Upcoming</option>
                     </select>
                   </div>
                 </div>
