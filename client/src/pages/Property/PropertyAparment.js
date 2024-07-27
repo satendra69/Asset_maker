@@ -13,7 +13,7 @@ import { FaRegHandshake } from "react-icons/fa";
 function PropertyApartment() {
   const [allProperties, setAllProperties] = useState([]);
   const [originalProperties, setOriginalProperties] = useState([]);
-  const [defaultType] = useState("Apartments");
+  const defaultType = "Apartments";
 
   const fetchAllProperties = async (filterParams = {}) => {
     try {
@@ -25,6 +25,7 @@ function PropertyApartment() {
       if (response.data.status === "success") {
         setAllProperties(response.data.data);
         setOriginalProperties(response.data.data);
+        handleFilterChange({ property: defaultType });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -74,6 +75,8 @@ function PropertyApartment() {
 
       filteredProperties = filteredProperties.filter((item) => {
         const salePrice = parseInt(item.ltg_det_sale_price, 10);
+        console.log(item.ltg_type, "item.ltg_det_sale_price");
+        console.log(salePrice, minPrice, maxPrice, "price");
         return salePrice >= minPrice && salePrice <= maxPrice;
       });
     }
@@ -84,7 +87,7 @@ function PropertyApartment() {
       const maxArea = formData.area && formData.area.max !== undefined ? formData.area.max : "";
 
       filteredProperties = filteredProperties.filter((item) => {
-        const areaMatch = item.ltg_det_pmts_area_dts.match(/(\d+)/); // Extract numeric value
+        const areaMatch = item.ltg_det_pmts_area_dts.match(/(\d+)/);
         const area = areaMatch ? parseInt(areaMatch[0], 10) : 0;
         return area >= minArea && area <= maxArea;
       });
@@ -93,14 +96,14 @@ function PropertyApartment() {
     // Filter by bedrooms (ltg_det_pmts_bed_rom)
     if (formData.bedRooms) {
       filteredProperties = filteredProperties.filter((item) =>
-        parseInt(item.ltg_det_pmts_bed_rom, 10) >= parseInt(formData.bedRooms, 10)
+        parseInt(item.ltg_det_pmts_bed_rom, 10) === parseInt(formData.bedRooms, 10)
       );
     }
 
     // Filter by bathrooms (ltg_det_pmts_bth_rom)
     if (formData.bathRooms) {
       filteredProperties = filteredProperties.filter((item) =>
-        parseInt(item.ltg_det_pmts_bth_rom, 10) >= parseInt(formData.bathRooms, 10)
+        parseInt(item.ltg_det_pmts_bth_rom, 10) === parseInt(formData.bathRooms, 10),
       );
     }
 
@@ -111,22 +114,19 @@ function PropertyApartment() {
       );
     }
 
-    // Filter by amenities (ltg_det_amenities)
     if (formData.amenities && formData.amenities.length > 0) {
       filteredProperties = filteredProperties.filter((item) => {
-        const amenities = item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim());
+        const amenities = item.ltg_det_amenities ? item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim()) : [];
         return formData.amenities.every((amenity) => amenities.includes(amenity));
       });
     }
 
-    // Update state with filtered properties
     setAllProperties(filteredProperties);
   };
 
   useEffect(() => {
     fetchAllProperties({ property: defaultType });
-    handleFilterChange({ property: defaultType });
-  }, [defaultType]);
+  }, []);
 
   return (
     <>
@@ -136,7 +136,7 @@ function PropertyApartment() {
           defaultProperty={defaultType}
         />
         {(allProperties).map((item) => (
-          <Card item={item} />
+          <Card item={item} key={item.id} />
         ))}
       </Container>
 

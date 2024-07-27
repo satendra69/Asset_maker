@@ -13,7 +13,7 @@ import { FaRegHandshake } from "react-icons/fa";
 function PropertyCommercial() {
   const [allProperties, setAllProperties] = useState([]);
   const [originalProperties, setOriginalProperties] = useState([]);
-  const [defaultType] = useState("Apartments");
+  const [defaultType] = useState("CommercialProperties");
 
   const fetchAllProperties = async (filterParams = {}) => {
     try {

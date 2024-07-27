@@ -13,7 +13,7 @@ import { FaRegHandshake } from "react-icons/fa";
 function PropertyVilla() {
   const [allProperties, setAllProperties] = useState([]);
   const [originalProperties, setOriginalProperties] = useState([]);
-  const [defaultType] = useState("Apartments");
+  const [defaultType] = useState("Villas");
 
   const fetchAllProperties = async (filterParams = {}) => {
     try {

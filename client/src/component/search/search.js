@@ -5,7 +5,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
     search: "",
     location: "",
     type: "any",
-    property: defaultProperty,
+    property: defaultProperty || "any",
     price: {
       min: "",
       max: "",
@@ -24,7 +24,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   const [showFields, setShowFields] = useState(false);
   const formRef = useRef(null);
 
-  console.log(formData, defaultProperty, "formData")
+  // console.log(formData, defaultProperty, "formdata");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -41,7 +41,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
         ...formData,
         area: {
           ...formData.area,
-          [name]: value !== "" ? parseInt(value, 10) : "",
+          [name === "minArea" ? "min" : "max"]: value !== "" ? parseInt(value, 10) : "",
         },
       });
     } else if (name === "minPrice" || name === "maxPrice") {
@@ -49,7 +49,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
         ...formData,
         price: {
           ...formData.price,
-          [name]: value !== "" ? parseInt(value, 10) : "",
+          [name === "minPrice" ? "min" : "max"]: value !== "" ? parseInt(value, 10) : "",
         },
       });
     } else {
@@ -89,19 +89,19 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   }, []);
 
   React.useEffect(() => {
-    console.log("formData before filter change:", formData);
     onFilterChange(formData);
+    // console.log(formData);
   }, [formData]);
 
   return (
     <div className="w-full mt-5 mb-5">
       <div className="flex flex-col">
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-lg">
+        <div className="p-6 bg-white border border-gray-200 shadow-lg rounded-xl">
           <form onSubmit={handleSubmit} ref={formRef}>
-            <div className="relative w-full flex flex-col items-center sm:flex-row sm:justify-between rounded-md">
+            <div className="relative flex flex-col items-center w-full rounded-md sm:flex-row sm:justify-between">
               <div className="relative flex items-center w-full mr-0 sm:mr-4">
                 <svg
-                  className="absolute left-2 block h-5 w-5 text-gray-400"
+                  className="absolute block w-5 h-5 text-gray-400 left-2"
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
                   height="24"
@@ -121,16 +121,16 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                   value={formData.search}
                   onChange={handleChange}
                   onFocus={handleFocus}
-                  className="h-12 w-full cursor-text rounded-md border border-gray-100 bg-gray-100 py-4 pr-40 pl-12 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                  className="w-full h-12 py-4 pl-12 pr-40 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none cursor-text focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                   placeholder="Search by name, type, manufacturer, etc"
                 />
               </div>
               {!showFields && (
-                <div className="flex flex-row items-center justify-center mt-4 gap-4 sm:gap-2 sm:mt-0">
-                  <button className="rounded-lg bg-gray-200 px-8 py-3 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring">
+                <div className="flex flex-row items-center justify-center gap-4 mt-4 sm:gap-2 sm:mt-0">
+                  <button className="px-8 py-3 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring">
                     Reset
                   </button>
-                  <button className="rounded-lg bg-blue-600 px-8 py-3 font-medium text-white outline-none hover:opacity-80 focus:ring">
+                  <button className="px-8 py-3 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring">
                     Search
                   </button>
                 </div>
@@ -153,7 +153,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="city"
                       value={formData.city}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
                       <option value="Bangaluru">Bangaluru</option>
@@ -174,7 +174,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="type"
                       value={formData.type}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="any">Any</option>
                       <option value="buy">Buy</option>
@@ -194,7 +194,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="property"
                       value={formData.property}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="any">Any</option>
                       <option value="Apartments">Apartment</option>
@@ -211,7 +211,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                     <label className="text-sm font-medium text-stone-600">
                       Price
                     </label>
-                    <div className="mt-2 flex space-x-2">
+                    <div className="flex mt-2 space-x-2">
                       <input
                         type="number"
                         id="minPrice"
@@ -219,7 +219,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                         value={formData.price.min}
                         onChange={handleChange}
                         placeholder="Min"
-                        className="flex-1 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                       <input
                         type="number"
@@ -228,7 +228,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                         value={formData.price.max}
                         onChange={handleChange}
                         placeholder="Max"
-                        className="flex-1 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                     </div>
                   </div>
@@ -237,7 +237,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                     <label className="text-sm font-medium text-stone-600">
                       Area (Sq-Ft/Sq-Yrd)
                     </label>
-                    <div className="mt-2 flex space-x-2">
+                    <div className="flex mt-2 space-x-2">
                       <input
                         type="number"
                         id="minArea"
@@ -245,7 +245,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                         value={formData.area.min}
                         onChange={handleChange}
                         placeholder="Min"
-                        className="flex-1 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                       <input
                         type="number"
@@ -254,7 +254,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                         value={formData.area.max}
                         onChange={handleChange}
                         placeholder="Max"
-                        className="flex-1 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                       />
                     </div>
                   </div>
@@ -271,7 +271,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="bedRooms"
                       value={formData.bedRooms}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
                       {[...Array(25).keys()].map((value) => (
@@ -294,7 +294,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="bathRooms"
                       value={formData.bathRooms}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
                       {[...Array(25).keys()].map((value) => (
@@ -317,7 +317,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                       name="status"
                       value={formData.status}
                       onChange={handleChange}
-                      className="mt-2 block w-full rounded-md border border-gray-100 bg-gray-100 px-2 py-2 shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
                       <option value="Ready to Move">Ready to Move</option>
@@ -332,7 +332,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                   <label className="text-sm font-medium text-stone-600">
                     Amenities
                   </label>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
                     {[
                       "24 Hrs Backup",
                       "CCTV Surveillance",
@@ -365,7 +365,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
                           value={amenity}
                           checked={formData.amenities.includes(amenity)}
                           onChange={handleChange}
-                          className="form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+                          className="w-5 h-5 text-blue-600 transition duration-150 ease-in-out form-checkbox"
                         />
                         <span className="ml-2 text-stone-600">{amenity}</span>
                       </label>
@@ -376,17 +376,17 @@ function SearchForm({ onFilterChange, defaultProperty }) {
             )}
 
             {showFields && (
-              <div className="mt-6 grid w-full grid-cols-2 justify-end space-x-4 md:flex">
+              <div className="grid justify-end w-full grid-cols-2 mt-6 space-x-4 md:flex">
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="rounded-lg bg-gray-200 px-8 py-2 font-medium text-gray-700 outline-none hover:opacity-80 focus:ring"
+                  className="px-8 py-2 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring"
                 >
                   Reset
                 </button>
                 <button
                   type="submit"
-                  className="rounded-lg bg-blue-600 px-8 py-2 font-medium text-white outline-none hover:opacity-80 focus:ring"
+                  className="px-8 py-2 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring"
                 >
                   Search
                 </button>
