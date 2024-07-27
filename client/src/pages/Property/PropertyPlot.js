@@ -37,9 +37,8 @@ function PropertyPlot() {
     // Filter by search term
     if (formData.search) {
       filteredProperties = filteredProperties.filter((item) =>
-        item.ltg_title.toLowerCase().includes(formData.search.toLowerCase()) ||
-        item.ltg_det_location.toLowerCase().includes(formData.search.toLowerCase()) ||
-        item.ltg_det_about_project_buder.toLowerCase().includes(formData.search.toLowerCase())
+        item.ltg_regions.toLowerCase().includes(formData.search.toLowerCase()) ||
+        item.ltg_categories.toLowerCase().includes(formData.search.toLowerCase())
       );
     }
 
@@ -73,8 +72,36 @@ function PropertyPlot() {
       const maxPrice = formData.price && formData.price.max !== undefined ? formData.price.max : "";
 
       filteredProperties = filteredProperties.filter((item) => {
-        const salePrice = parseInt(item.ltg_det_sale_price, 10);
-        return salePrice >= minPrice && salePrice <= maxPrice;
+        let salePrice = 0;
+        if (item.ltg_type === "CommercialProperties") {
+          salePrice = parseInt(item.ltg_det_comm_prop_sale_price, 10);
+        }
+        else if (item.ltg_type === "PentHouses") {
+          salePrice = parseInt(item.ltg_det_penthouses_sale_price, 10);
+        }
+        else if (item.ltg_type === "RowHouses") {
+          salePrice = parseInt(item.ltg_det_row_house_sale_price, 10);
+        }
+        else if (item.ltg_type === "Plots") {
+          salePrice = parseInt(item.ltg_det_plot_sale_price, 10);
+        }
+        else if (item.ltg_type === "Villaments") {
+          salePrice = parseInt(item.ltg_det_villaments_sale_price, 10);
+        }
+        else {
+          salePrice = parseInt(item.ltg_det_sale_price, 10);
+        }
+
+        if (minPrice !== "" && maxPrice !== "") {
+          return salePrice >= minPrice && salePrice <= maxPrice;
+        } else if (minPrice !== "") {
+          return salePrice >= minPrice;
+        } else if (maxPrice !== "") {
+          return salePrice <= maxPrice;
+        } else {
+          return true;
+        }
+
       });
     }
 
@@ -84,49 +111,143 @@ function PropertyPlot() {
       const maxArea = formData.area && formData.area.max !== undefined ? formData.area.max : "";
 
       filteredProperties = filteredProperties.filter((item) => {
-        const areaMatch = item.ltg_det_pmts_area_dts.match(/(\d+)/); // Extract numeric value
-        const area = areaMatch ? parseInt(areaMatch[0], 10) : 0;
-        return area >= minArea && area <= maxArea;
+        let areaMatch = 0;
+        if (item.ltg_type === "CommercialProperties") {
+          areaMatch = item.ltg_det_comm_prop_pmts_area_dts?.match(/(\d+)/);
+        }
+        else if (item.ltg_type === "PentHouses") {
+          areaMatch = item.ltg_det_penthouses_pmts_area_dts?.match(/(\d+)/);
+        }
+        else if (item.ltg_type === "RowHouses") {
+          areaMatch = item.ltg_det_row_house_pmts_area_dts?.match(/(\d+)/);
+        }
+        else if (item.ltg_type === "Plots") {
+          areaMatch = item.ltg_det_plot_pmts_area_dts?.match(/(\d+)/);
+        }
+        else if (item.ltg_type === "Villaments") {
+          areaMatch = item.ltg_det_villaments_pmts_area_dts?.match(/(\d+)/);
+        }
+        else {
+          areaMatch = item.ltg_det_pmts_area_dts?.match(/(\d+)/);
+        }
+
+        if (areaMatch) {
+          const area = parseInt(areaMatch[0], 10);
+
+          if (minArea !== "" && maxArea !== "") {
+            return area >= minArea && area <= maxArea;
+          } else if (minArea !== "") {
+            return area >= minArea;
+          } else if (maxArea !== "") {
+            return area <= maxArea;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+
       });
     }
 
     // Filter by bedrooms (ltg_det_pmts_bed_rom)
     if (formData.bedRooms) {
-      filteredProperties = filteredProperties.filter((item) =>
-        parseInt(item.ltg_det_pmts_bed_rom, 10) >= parseInt(formData.bedRooms, 10)
-      );
+      filteredProperties = filteredProperties.filter((item) => {
+        let bedroom = 0;
+        if (item.ltg_type === "PentHouses") {
+          bedroom = parseInt(item.ltg_det_penthouses_pmts_bed_rom, 10);
+        }
+        else if (item.ltg_type === "RowHouses") {
+          bedroom = parseInt(item.ltg_det_row_house_pmts_bed_rom, 10);
+        }
+        else if (item.ltg_type === "Villaments") {
+          bedroom = parseInt(item.ltg_det_villaments_pmts_bed_rom, 10);
+        }
+        else {
+          bedroom = parseInt(item.ltg_det_pmts_bed_rom, 10);
+        }
+        return bedroom >= parseInt(formData.bedRooms, 10);
+      });
     }
 
     // Filter by bathrooms (ltg_det_pmts_bth_rom)
     if (formData.bathRooms) {
-      filteredProperties = filteredProperties.filter((item) =>
-        parseInt(item.ltg_det_pmts_bth_rom, 10) >= parseInt(formData.bathRooms, 10)
-      );
+      filteredProperties = filteredProperties.filter((item) => {
+        let bathroom = 0;
+        if (item.ltg_type === "PentHouses") {
+          bathroom = parseInt(item.ltg_det_penthouses_pmts_bth_rom, 10);
+        }
+        else if (item.ltg_type === "RowHouses") {
+          bathroom = parseInt(item.ltg_det_row_house_pmts_bth_rom, 10);
+        }
+        else if (item.ltg_type === "Villaments") {
+          bathroom = parseInt(item.ltg_det_villaments_pmts_bth_rom, 10);
+        }
+        else {
+          bathroom = parseInt(item.ltg_det_pmts_bth_rom, 10);
+        }
+        return bathroom >= parseInt(formData.bathRooms, 10);
+      });
     }
 
     // Filter by status (ltg_det_pmts_status)
     if (formData.status && formData.status !== 'any') {
-      filteredProperties = filteredProperties.filter((item) =>
-        item.ltg_det_pmts_status === formData.status
-      );
+      filteredProperties = filteredProperties.filter((item) => {
+        let status = '';
+        if (item.ltg_type === "CommercialProperties") {
+          status = item.ltg_det_comm_prop_pmts_status;
+        }
+        else if (item.ltg_type === "PentHouses") {
+          status = item.ltg_det_penthouses_pmts_status;
+        }
+        else if (item.ltg_type === "RowHouses") {
+          status = item.ltg_det_row_house_pmts_status;
+        }
+        else if (item.ltg_type === "Plots") {
+          status = item.ltg_det_plot_pmts_status;
+        }
+        else if (item.ltg_type === "Villaments") {
+          status = item.ltg_det_villaments_pmts_status;
+        }
+        else {
+          status = item.ltg_det_pmts_status;
+        }
+        return status === formData.status;
+      });
     }
 
-    // Filter by amenities (ltg_det_amenities)
+    // Filter by amenities
     if (formData.amenities && formData.amenities.length > 0) {
       filteredProperties = filteredProperties.filter((item) => {
-        const amenities = item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim());
+        let amenities = [];
+        if (item.ltg_type === "CommercialProperties") {
+          amenities = item.ltg_det_comm_prop_amenities ? item.ltg_det_comm_prop_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
+        else if (item.ltg_type === "PentHouses") {
+          amenities = item.ltg_penthouses_det_amenities ? item.ltg_det_penthouses_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
+        else if (item.ltg_type === "RowHouses") {
+          amenities = item.ltg_det_row_house_amenities ? item.ltg_dett_row_house_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
+        else if (item.ltg_type === "Plots") {
+          amenities = item.ltg_det_plot_amenities ? item.ltg_det_plot_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
+        else if (item.ltg_type === "Villaments") {
+          amenities = item.ltg_det_villaments_amenities ? item.ltg_det_villaments_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
+        else {
+          amenities = item.ltg_det_amenities ? item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+        }
         return formData.amenities.every((amenity) => amenities.includes(amenity));
       });
     }
 
-    // Update state with filtered properties
     setAllProperties(filteredProperties);
   };
 
   useEffect(() => {
     fetchAllProperties({ property: defaultType });
-    handleFilterChange({ property: defaultType });
-  }, [defaultType]);
+  }, []);
 
   return (
     <>

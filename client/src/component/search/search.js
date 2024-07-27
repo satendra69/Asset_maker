@@ -61,7 +61,11 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   };
 
   const handleReset = () => {
-    setFormData(initialState);
+    const resetState = {
+      ...initialState,
+      property: "any",
+    };
+    setFormData(resetState);
     onFilterChange(initialState);
   };
 

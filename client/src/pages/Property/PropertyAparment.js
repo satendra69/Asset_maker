@@ -92,7 +92,17 @@ function PropertyApartment() {
         else {
           salePrice = parseInt(item.ltg_det_sale_price, 10);
         }
-        return salePrice >= minPrice && salePrice <= maxPrice;
+
+        if (minPrice !== "" && maxPrice !== "") {
+          return salePrice >= minPrice && salePrice <= maxPrice;
+        } else if (minPrice !== "") {
+          return salePrice >= minPrice;
+        } else if (maxPrice !== "") {
+          return salePrice <= maxPrice;
+        } else {
+          return true;
+        }
+
       });
     }
 
@@ -121,9 +131,23 @@ function PropertyApartment() {
         else {
           areaMatch = item.ltg_det_pmts_area_dts?.match(/(\d+)/);
         }
-        const area = areaMatch ? parseInt(areaMatch[0], 10) : 0;
-        console.log(area);
-        return area >= minArea && area <= maxArea;
+
+        if (areaMatch) {
+          const area = parseInt(areaMatch[0], 10);
+
+          if (minArea !== "" && maxArea !== "") {
+            return area >= minArea && area <= maxArea;
+          } else if (minArea !== "") {
+            return area >= minArea;
+          } else if (maxArea !== "") {
+            return area <= maxArea;
+          } else {
+            return true;
+          }
+        } else {
+          return false;
+        }
+
       });
     }
 
@@ -221,7 +245,6 @@ function PropertyApartment() {
 
     setAllProperties(filteredProperties);
   };
-
 
   useEffect(() => {
     fetchAllProperties({ property: defaultType });
