@@ -19,7 +19,7 @@ function PropertyComponent({ defaultType }) {
     const location = useLocation();
     const query = location.state?.query || "";
 
-    console.log(query, "query");
+    // console.log(query, "query");
 
     const fetchAllProperties = async (filterParams = {}) => {
         setLoading(true);
@@ -49,15 +49,15 @@ function PropertyComponent({ defaultType }) {
         // Filter by search term
         if (formData.search) {
             filteredProperties = filteredProperties.filter((item) =>
-                item.ltg_regions.toLowerCase().includes(formData.search.toLowerCase()) ||
-                item.ltg_categories.toLowerCase().includes(formData.search.toLowerCase())
+                item.ltg_regions?.toLowerCase().includes(formData.search.toLowerCase()) ||
+                item.ltg_categories?.toLowerCase().includes(formData.search.toLowerCase())
             );
         }
 
         // Filter by location (ltg_regions)
         if (formData.location && formData.location !== 'any') {
             filteredProperties = filteredProperties.filter((item) =>
-                item.ltg_regions.toLowerCase() === formData.location.toLowerCase()
+                item.ltg_regions?.toLowerCase() === formData.location?.toLowerCase()
             );
         }
 
@@ -257,9 +257,11 @@ function PropertyComponent({ defaultType }) {
         setAllProperties(filteredProperties);
     };
 
+    // console.log("defaultType", defaultType);
+
     useEffect(() => {
         fetchAllProperties({ property: defaultType });
-    }, []);
+    }, [defaultType]);
 
     useEffect(() => {
         handleFilterChange(query);
