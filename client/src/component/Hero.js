@@ -223,6 +223,7 @@ function Hero() {
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/bengaluru.png"
+                  alt="Bengaluru"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Bengaluru</h3>
@@ -231,14 +232,14 @@ function Hero() {
             </a>
             <a href="#" className="place-link">
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img src="/delhi.png" className="object-cover w-full h-[60%] " />
+                <img src="/delhi.png" alt="delhi" className="object-cover w-full h-[60%] " />
                 <h3 className="text-center">Delhi</h3>
                 <p className="text-xs font-light text-center">5000+ properties</p>
               </div>
             </a>
             <a href="#" className="place-link">
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img src="/pune.png" className="object-cover w-full h-[60%] " />
+                <img src="/pune.png" alt="pune" className="object-cover w-full h-[60%] " />
                 <h3 className="text-center">Pune</h3>
                 <p className="text-xs font-light text-center">1000+ properties</p>
               </div>
@@ -247,6 +248,7 @@ function Hero() {
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/hyderabad.png"
+                  alt="Hyderabad"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Hyderabad</h3>
@@ -257,6 +259,7 @@ function Hero() {
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/tirupati.jpg"
+                  alt="Tirupati"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Tirupati</h3>
@@ -267,6 +270,7 @@ function Hero() {
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/ahmedabad.jpg"
+                  alt="ahmedabad"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Ahmedabad</h3>

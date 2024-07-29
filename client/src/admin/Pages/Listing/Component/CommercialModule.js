@@ -4,7 +4,7 @@ import { EditorState, convertFromRaw, convertToRaw, ContentState, convertFromHTM
 import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
-import { stateFromHTML } from 'draft-js-import-html';
+//import { stateFromHTML } from 'draft-js-import-html';
 import { toast } from 'sonner';
 import MapComponent from "./MapComponent";
 import inwords from './toIndianNumberingWords';

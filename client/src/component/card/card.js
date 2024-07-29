@@ -45,6 +45,11 @@ function Card({ item }) {
 
   const getImageAttachments = (attachments) => {
     // Define allowed image file extensions
+
+    if (!attachments) {
+      return [];
+    }
+    
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     if (!attachments) {
       return [];
