@@ -161,7 +161,8 @@ function Hero() {
 
   const Featured = properties.map((item) => {
     // Split the attachments string into an array
-    const attachmentArray = item.attachments.split(',').map(path => path.trim());
+    //const attachmentArray = item.attachments.split(',').map(path => path.trim());
+    const attachmentArray = item.attachments?.split(',').map(path => path.trim()) || [];
 
     // Filter out files that end with .pdf or .docx
     const validImages = attachmentArray.filter(path =>

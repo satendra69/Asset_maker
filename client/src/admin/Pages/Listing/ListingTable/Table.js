@@ -159,6 +159,10 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         size: 300,
         Cell: ({ row }) => {
           const descriptionHtml = row.original[getDynamicFields(row.original.ltg_type).desc];
+          if (!descriptionHtml) {
+            // If descriptionHtml is null or undefined, return an empty string or some default value
+            return '';
+          }
           const descriptionText = descriptionHtml.replace(/<[^>]*>/g, '').trim();
           const capitalizedDescription = descriptionText.charAt(0).toUpperCase() + descriptionText.slice(1);
           const updatedHtml = descriptionHtml.replace(descriptionText, capitalizedDescription);
