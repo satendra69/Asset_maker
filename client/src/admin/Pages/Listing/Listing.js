@@ -176,8 +176,8 @@ function NewListingPage() {
           icon: "success",
           title: responseData.status,
           text: responseData.message,
-        }).then(() => {
-          navigate(`/admin`);
+          // }).then(() => {
+          //   navigate(`/admin`);
         });
 
       } else {

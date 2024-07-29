@@ -255,7 +255,7 @@ function ApartmentModule({ onDataUpdate }) {
 
   const handleStoredImageDelete = async (RowID) => {
     try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`); // Adjust the endpoint as necessary
+      const response = await httpCommon.delete(`/list/images/${RowID}`);
       if (response.data.status === "success") {
         setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
       } else {
@@ -1293,8 +1293,8 @@ function ApartmentModule({ onDataUpdate }) {
                 file.file_name.endsWith('.pdf') ||
                 file.file_name.endsWith('.doc') ||
                 file.file_name.endsWith('.docx')
-              ).map((file, index) => (
-                <div key={index} className="flex items-center">
+              ).map((file) => (
+                <div key={file.RowID} className="flex items-center">
                   <button
                     onClick={() => handleStoredFileDelete(file.RowID)}
                     className="px-2 py-1 ml-2 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
@@ -1303,7 +1303,7 @@ function ApartmentModule({ onDataUpdate }) {
                   </button>
                   <span
                     className="ml-2 text-blue-500 cursor-pointer"
-                    onClick={() => handleFileClick(index, httpCommon.defaults.baseURL + file.attachment, true)}
+                    onClick={() => handleFileClick(file.RowID, httpCommon.defaults.baseURL + file.attachment, true)}
                   >
                     {file.file_name}
                   </span>
@@ -1391,8 +1391,8 @@ function ApartmentModule({ onDataUpdate }) {
           {/* Displaying Stored Gallery Images */}
           {storedGalleryImages.length > 0 && (
             <div className="flex flex-row">
-              {storedGalleryImages.map((file, index) => (
-                <div key={index} className="relative m-2">
+              {storedGalleryImages.map((file) => (
+                <div key={file.RowID} className="relative m-2">
                   <button
                     onClick={() => handleStoredImageDelete(file.RowID)} // Implement this function
                     className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
@@ -1400,10 +1400,10 @@ function ApartmentModule({ onDataUpdate }) {
                     X
                   </button>
                   <img
-                    src={httpCommon.defaults.baseURL + file.attachment} // Adjust URL for stored images
+                    src={httpCommon.defaults.baseURL + file.attachment}
                     alt={`Stored Image ${file.file_name}`}
                     className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => openGalleryModal(index)} // Implement modal opening for stored images
+                    onClick={() => openGalleryModal(file.RowID)}
                   />
                 </div>
               ))}
@@ -1499,8 +1499,8 @@ function ApartmentModule({ onDataUpdate }) {
             {/* Displaying Stored Master Plan Images */}
             {storedMasterPlanImages.length > 0 && (
               <div className="flex flex-row">
-                {storedMasterPlanImages.map((file, index) => (
-                  <div key={index} className="relative m-2">
+                {storedMasterPlanImages.map((file) => (
+                  <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID)}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
@@ -1511,7 +1511,7 @@ function ApartmentModule({ onDataUpdate }) {
                       src={httpCommon.defaults.baseURL + file.attachment}
                       alt={`Stored Image ${file.file_name}`}
                       className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => openMasterPlanModal(index)}
+                      onClick={() => openMasterPlanModal(file.RowID)}
                     />
                   </div>
                 ))}
@@ -1591,8 +1591,8 @@ function ApartmentModule({ onDataUpdate }) {
             {/* Displaying Stored Floor Area Plan Images */}
             {storedFloorAreaPlanImages.length > 0 && (
               <div className="flex flex-row">
-                {storedFloorAreaPlanImages.map((file, index) => (
-                  <div key={index} className="relative m-2">
+                {storedFloorAreaPlanImages.map((file) => (
+                  <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID)}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
@@ -1603,7 +1603,11 @@ function ApartmentModule({ onDataUpdate }) {
                       src={httpCommon.defaults.baseURL + file.attachment}
                       alt={`Stored Image ${file.file_name}`}
                       className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => openFloorAreaPlanModal(index)}
+                      onClick={() => {
+                        openFloorAreaPlanModal(file.RowID)
+                        const imageUrl = httpCommon.defaults.baseURL + file.attachment;
+                        console.log(imageUrl);
+                      }}
                     />
                   </div>
                 ))}

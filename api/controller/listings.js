@@ -1,6 +1,7 @@
 const db = require("../connect");
 const moment = require("moment");
-
+const path = require('path');
+const fs = require('fs');
 
 const addListings = async (req, res) => {
 
@@ -1258,8 +1259,14 @@ const uploadListItem = async (req, res) => {
     const files = req.files;
 
     if (!files || files.length === 0) {
-      return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded' });
+      return res.status(200).json({ status: 'success', message: 'No files uploaded' });
     }
+
+    if (!listingID || !type || !auditUser) {
+      return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
+    }
+
+    // console.log('Uploaded files for type :', type, files);
 
     await connection.beginTransaction();
 
@@ -1276,12 +1283,16 @@ const uploadListItem = async (req, res) => {
       const originalName = file.originalname;
       const extension = path.extname(originalName);
       const baseName = path.basename(originalName, extension);
-      const uniqueFileName = `${baseName}-${timestamp}${extension}`; // Append timestamp to filename
+      const uniqueFileName = `${baseName}-${timestamp}${extension}`;
 
-      // Update file path with the new unique filename
       const newPath = path.join(path.dirname(file.path), uniqueFileName);
-      fs.renameSync(file.path, newPath); // Rename the file on disk
-      file.path = newPath; // Update the file object with the new path
+      try {
+        fs.renameSync(file.path, newPath);
+      } catch (renameError) {
+        console.error(`Error renaming file ${file.path} to ${newPath}:`, renameError);
+        throw new Error(`Error processing file: ${originalName}`);
+      }
+      file.path = newPath;
 
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
@@ -1289,10 +1300,8 @@ const uploadListItem = async (req, res) => {
       return [listingID, uniqueFileName, url, type, auditUser, formattedDate];
     });
 
-    // Attempt to insert the files into the database
     await connection.query(insertQuery, [values]);
 
-    // Handle thumbnails if present
     const thumbnailValues = files
       .filter(file => file.thumbnail)
       .map(file => {
@@ -1326,12 +1335,13 @@ const uploadListItem = async (req, res) => {
     });
   } catch (error) {
     await connection.rollback();
-    console.error('Error uploading files:', error);
+    console.log('Error uploading files:', error);
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
     connection.release();
   }
 };
+
 
 // Delete Images
 const deleteListImage = (req, res) => {
