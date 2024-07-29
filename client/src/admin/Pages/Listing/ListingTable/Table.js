@@ -159,6 +159,9 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         size: 300,
         Cell: ({ row }) => {
           const descriptionHtml = row.original[getDynamicFields(row.original.ltg_type).desc];
+          if (!descriptionHtml) {
+            return '';
+          }
           const descriptionText = descriptionHtml.replace(/<[^>]*>/g, '').trim();
           const capitalizedDescription = descriptionText.charAt(0).toUpperCase() + descriptionText.slice(1);
           const updatedHtml = descriptionHtml.replace(descriptionText, capitalizedDescription);
@@ -299,7 +302,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       pagination: { pageSize: 8 },
       showGlobalFilter: true,
       columnPinning: {
-        left: ["mrt-row-expand", "mrt-row-select", "actions"],
+        left: ["mrt-row-expand", "mrt-row-select"],
         right: [],
       },
     },

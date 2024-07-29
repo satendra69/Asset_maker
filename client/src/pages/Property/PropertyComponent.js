@@ -31,9 +31,11 @@ function PropertyComponent({ defaultType }) {
             // console.log("response____AllProperties", response);
 
             if (response.data.status === "success") {
-                setAllProperties(response.data.data);
-                setOriginalProperties(response.data.data);
+                const properties = response.data.data;
+                setAllProperties(properties);
+                setOriginalProperties(properties);
                 handleFilterChange({ property: defaultType });
+                console.log("Fetched properties:", allProperties);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -45,12 +47,12 @@ function PropertyComponent({ defaultType }) {
 
     const handleFilterChange = (formData) => {
         let filteredProperties = originalProperties;
-
+        console.log(formData, "formData");
         // Filter by search term
         if (formData.search) {
             filteredProperties = filteredProperties.filter((item) =>
-                item.ltg_regions?.toLowerCase().includes(formData.search.toLowerCase()) ||
-                item.ltg_categories?.toLowerCase().includes(formData.search.toLowerCase())
+                item.ltg_regions?.toLowerCase().includes(formData.search?.toLowerCase()) ||
+                item.ltg_categories?.toLowerCase().includes(formData.search?.toLowerCase())
             );
         }
 
@@ -70,6 +72,7 @@ function PropertyComponent({ defaultType }) {
 
         // Always set property based on formData before filtering
         const selectedProperty = formData.property || defaultType;
+        console.log("selectedProperty", selectedProperty);
 
         // Filter by property type (ltg_type)
         if (formData.property && formData.property !== 'any') {
@@ -257,10 +260,18 @@ function PropertyComponent({ defaultType }) {
         setAllProperties(filteredProperties);
     };
 
-    // console.log("defaultType", defaultType);
 
     useEffect(() => {
-        fetchAllProperties({ property: defaultType });
+        const handler = setTimeout(() => {
+            if (defaultType !== "") {
+                fetchAllProperties({ property: defaultType });
+            }
+            console.log("allProperties", allProperties);
+        }, 300);
+
+        return () => {
+            clearTimeout(handler);
+        };
     }, [defaultType]);
 
     useEffect(() => {

@@ -46,6 +46,9 @@ function Card({ item }) {
   const getImageAttachments = (attachments) => {
     // Define allowed image file extensions
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
+    if (!attachments) {
+      return [];
+    }
     return attachments
       .split(',')
       .map(file => file.trim())

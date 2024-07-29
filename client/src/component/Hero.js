@@ -161,7 +161,7 @@ function Hero() {
 
   const Featured = properties.map((item) => {
     // Split the attachments string into an array
-    const attachmentArray = item.attachments.split(',').map(path => path.trim());
+    const attachmentArray = item.attachments?.split(',').map(path => path.trim()) || [];
 
     // Filter out files that end with .pdf or .docx
     const validImages = attachmentArray.filter(path =>
@@ -212,49 +212,70 @@ function Hero() {
         </Container>
       </section>
 
-      <section className="my-10 top-cities">
+      <section className="my-10 top-cities ">
         <Container className={"space-y-3"}>
           <h2>Top Cities In India</h2>
           <p>Best places to live in India</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
 
-          <div className="grid items-center grid-cols-2 gap-1 mx-auto places py-7 md:flex md:flex-row md:gap-5">
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img
-                src="/bengaluru.png"
-                alt="Bengaluru"
-                className="object-cover w-full h-[60%]"
-              />
-              <h3 className="text-center">Bengaluru</h3>
-              <p className="text-xs font-light text-center">
-                {propertyCounts.bengaluru} properties
-              </p>
-            </div>
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img
-                src="/hyderabad.png"
-                alt="Hyderabad"
-                className="object-cover w-full h-[60%]"
-              />
-              <h3 className="text-center">Hyderabad</h3>
-              <p className="text-xs font-light text-center">
-                {propertyCounts.hyderabad} properties
-              </p>
-            </div>
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img
-                src="/tirupati.jpg"
-                alt="Tirupati"
-                className="object-cover w-full h-[60%]"
-              />
-              <h3 className="text-center">Tirupati</h3>
-              <p className="text-xs font-light text-center">
-                {propertyCounts.tirupati} properties
-              </p>
-            </div>
+          <div className="grid items-center justify-center grid-cols-2 gap-1 mx-auto places py-7 md:flex md:flex-row md:justify-between md:gap-5">
+            <a href="/Cities/Bengaluru" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img
+                  src="/bengaluru.png"
+                  className="object-cover w-full h-[60%] "
+                />
+                <h3 className="text-center">Bengaluru</h3>
+                <p className="text-xs font-light text-center">{propertyCounts.bengaluru} properties</p>
+              </div>
+            </a>
+            <a href="#" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img src="/delhi.png" className="object-cover w-full h-[60%] " />
+                <h3 className="text-center">Delhi</h3>
+                <p className="text-xs font-light text-center">5000+ properties</p>
+              </div>
+            </a>
+            <a href="#" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img src="/pune.png" className="object-cover w-full h-[60%] " />
+                <h3 className="text-center">Pune</h3>
+                <p className="text-xs font-light text-center">1000+ properties</p>
+              </div>
+            </a>
+            <a href="/Cities/Hyderabad" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img
+                  src="/hyderabad.png"
+                  className="object-cover w-full h-[60%] "
+                />
+                <h3 className="text-center">Hyderabad</h3>
+                <p className="text-xs font-light text-center">{propertyCounts.hyderabad} properties</p>
+              </div>
+            </a>
+            <a href="Cities/Tirupati" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img
+                  src="/tirupati.jpg"
+                  className="object-cover w-full h-[60%] "
+                />
+                <h3 className="text-center">Tirupati</h3>
+                <p className="text-xs font-light text-center">{propertyCounts.tirupati} properties</p>
+              </div>
+            </a>
+            <a href="#" className="place-link">
+              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+                <img
+                  src="/ahmedabad.jpg"
+                  className="object-cover w-full h-[60%] "
+                />
+                <h3 className="text-center">Ahmedabad</h3>
+                <p className="text-xs font-light text-center">1000+ properties</p>
+              </div>
+            </a>
           </div>
         </Container>
-      </section>
+      </section >
 
       <section className="py-5 my-2 bg-white feature-collection md:my-10">
         <Container className={"space-y-3"}>
@@ -273,7 +294,7 @@ function Hero() {
               const capitalizedRegion = region.charAt(0).toUpperCase() + region.slice(1);
 
               return (
-                <div key={index} className="relative p-1 rounded-md shadow-md md:w-1/3 md:h-72 md:p-4 group md:aspect-auto">
+                <a href={`/Cities/${capitalizedRegion}`} key={index} className="relative p-1 rounded-md shadow-md md:w-1/3 md:h-72 md:p-4 group md:aspect-auto">
                   <img
                     src={imageSrcMap[region]}
                     className="object-cover w-full h-full transition-all duration-1000 shadow-inner group-hover:blur-sm shadow-black"
@@ -285,7 +306,7 @@ function Hero() {
                       {featuredPropertyCounts[region]} properties
                     </p>
                   </div>
-                </div>
+                </a>
               );
             })}
           </div>
