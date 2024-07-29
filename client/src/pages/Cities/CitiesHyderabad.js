@@ -10,7 +10,7 @@ import { IoMdHappy } from "react-icons/io";
 import { FaRegHandshake } from "react-icons/fa";
 
 
-const CitiesBangalore = () => {
+const CitiesHyderabad = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const images = [
     // "/hyderabad1.jpg",
@@ -40,17 +40,17 @@ const CitiesBangalore = () => {
     <div>
       <div style={{ position: "relative", width: "100%", textAlign: "center" }}>
         {/* Image changing panel */}
-        <div className="relative h-96 overflow-hidden">
+        <div className="relative overflow-hidden h-96">
           {/* Image */}
           <img
             src={images[currentImageIndex]}
             alt={`Property ${currentImageIndex + 1}`}
-            className="absolute inset-0 w-full h-full object-cover"
+            className="absolute inset-0 object-cover w-full h-full"
           />
 
           {/* Previous button */}
           <button
-            className="absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-black bg-opacity-50 text-white"
+            className="absolute left-0 px-4 py-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 top-1/2"
             onClick={() => handleImageChange("prev")}
           >
             {"<"}
@@ -58,7 +58,7 @@ const CitiesBangalore = () => {
 
           {/* Next button */}
           <button
-            className="absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-black bg-opacity-50 text-white"
+            className="absolute right-0 px-4 py-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 top-1/2"
             onClick={() => handleImageChange("next")}
           >
             {">"}
@@ -84,68 +84,68 @@ const CitiesBangalore = () => {
       </div>
 
       {/* <Exploretypes /> */}
-      <section className="top-cities my-10 ">
+      <section className="my-10 top-cities ">
         <Container className={"space-y-3"}>
           <h2>Browse by Property Type</h2>
           <p>Best places to live in India</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
 
-          <div className="places py-7 md:flex md:flex-row grid grid-cols-2 gap-1 justify-center md:justify-between items-center md:gap-5 mx-auto">
+          <div className="grid items-center justify-center grid-cols-2 gap-1 mx-auto places py-7 md:flex md:flex-row md:justify-between md:gap-5">
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/apartment.png"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Apartments</h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/villas.png"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Villas</h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/villaments.png"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Villaments</h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
               <div
-                className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0"
+                className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0"
                 style={{ maxWidth: "200px" }}
               >
                 <img
                   src="/row.png"
                   className="object-cover w-full h-[60%] "
                 />
-                <h3 className="text-center text-sm md:text-base">
+                <h3 className="text-sm text-center md:text-base">
                   Row&nbsp;Houses
                 </h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/commercial.png"
                   className="object-cover w-full h-[60%] "
@@ -155,31 +155,31 @@ const CitiesBangalore = () => {
                   <br />
                   Properties
                 </h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/plots.png"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Plots</h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
             </a>
             <a href="/list" className="place-link">
-              <div className="bg-white shadow-md rounded-md w-max  border md:px-3 px-1 md:h-40 h-28  mx-auto md:mx-0 mb-5 md:mb-0">
+              <div className="px-1 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-3 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
                   src="/pent.png"
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Pent&nbsp;Houses</h3>
-                <p className="text-center text-xs font-light">
+                <p className="text-xs font-light text-center">
                   1000+ properties
                 </p>
               </div>
@@ -196,44 +196,44 @@ const CitiesBangalore = () => {
             "md:py-20 flex flex-col md:flex-row items-center justify-between"
           }
         >
-          <div className="left md:w-1/2 w-full md:pr-10">
-            <h2 className="text-white font-bold text-4xl md:text-5xl mb-4">
+          <div className="w-full left md:w-1/2 md:pr-10">
+            <h2 className="mb-4 text-4xl font-bold text-white md:text-5xl">
               More than 10 Years of Experience
             </h2>
-            <hr className="w-20 h-1 bg-blue-800 mb-4" />
+            <hr className="w-20 h-1 mb-4 bg-blue-800" />
             <p className="text-white">
               It’s not what we do, but how we do it that sets us apart. Get in
               touch with us today to experience our holistic services that will
               put you a step closer to your dream home.
             </p>
           </div>
-          <div className="right md:w-1/2 w-full grid md:grid-cols-2 grid-cols-1 gap-7 mt-10 md:mt-0">
-            <div className="1 flex items-center gap-5">
+          <div className="grid w-full grid-cols-1 mt-10 right md:w-1/2 md:grid-cols-2 gap-7 md:mt-0">
+            <div className="flex items-center gap-5 1">
               <FaSellsy className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">2,000 +</h2>
-                <p className="description text-white">Properties Sold</p>
+                <h2 className="text-white price">2,000 +</h2>
+                <p className="text-white description">Properties Sold</p>
               </div>
             </div>
-            <div className="2 flex items-center gap-5">
+            <div className="flex items-center gap-5 2">
               <MdAddHome className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">80 +</h2>
-                <p className="description text-white">Projects Handled</p>
+                <h2 className="text-white price">80 +</h2>
+                <p className="text-white description">Projects Handled</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <IoMdHappy className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">400 +</h2>
-                <p className="description text-white">NRI Clientele Served</p>
+                <h2 className="text-white price">400 +</h2>
+                <p className="text-white description">NRI Clientele Served</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <FaRegHandshake className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">150 +</h2>
-                <p className="description text-white">Satisfied Builders</p>
+                <h2 className="text-white price">150 +</h2>
+                <p className="text-white description">Satisfied Builders</p>
               </div>
             </div>
           </div>
@@ -246,4 +246,4 @@ const CitiesBangalore = () => {
   );
 };
 
-export default CitiesBangalore;
+export default CitiesHyderabad;

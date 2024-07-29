@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-function SearchForm({ onFilterChange, defaultProperty }) {
+function SearchForm({ onFilterChange, defaultProperty, query }) {
   const initialState = {
     search: "",
     location: "",
@@ -23,6 +23,22 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   const [formData, setFormData] = useState(initialState);
   const [showFields, setShowFields] = useState(false);
   const formRef = useRef(null);
+
+
+  if (query) {
+    handleQuery();
+  }
+
+  const handleQuery = () => {
+    // const queryData = {
+    //   ...initialState,
+    //   property: "any",
+    // };
+    // setFormData(resetState);
+    // onFilterChange(resetState);
+
+    console.log(query);
+  };
 
   // console.log(formData, defaultProperty, "formdata");
 
@@ -66,7 +82,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
       property: "any",
     };
     setFormData(resetState);
-    onFilterChange(initialState);
+    onFilterChange(resetState);
   };
 
   const handleSubmit = (e) => {
@@ -94,7 +110,6 @@ function SearchForm({ onFilterChange, defaultProperty }) {
 
   React.useEffect(() => {
     onFilterChange(formData);
-    // console.log(formData);
   }, [formData, onFilterChange]);
 
   return (

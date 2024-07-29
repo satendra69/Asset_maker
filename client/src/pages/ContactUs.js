@@ -37,17 +37,17 @@ function ContactUs() {
   return (
     <section>
       {/* Image changing panel */}
-      <div className="relative h-96 overflow-hidden">
+      <div className="relative overflow-hidden h-96">
         {/* Image */}
         <img
           src={images[currentImageIndex]}
           alt={`Property ${currentImageIndex + 1}`}
-          className="absolute inset-0 w-full h-full object-cover"
+          className="absolute inset-0 object-cover w-full h-full"
         />
 
         {/* Previous button */}
         {/* <button
-          className="absolute top-1/2 left-0 transform -translate-y-1/2 px-4 py-2 bg-black bg-opacity-50 text-white"
+          className="absolute left-0 px-4 py-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 top-1/2"
           onClick={() => handleImageChange("prev")}
         >
           {"<"}
@@ -55,7 +55,7 @@ function ContactUs() {
 
         {/* Next button */}
         {/* <button
-          className="absolute top-1/2 right-0 transform -translate-y-1/2 px-4 py-2 bg-black bg-opacity-50 text-white"
+          className="absolute right-0 px-4 py-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 top-1/2"
           onClick={() => handleImageChange("next")}
         >
           {">"}
@@ -63,22 +63,22 @@ function ContactUs() {
       </div>
 
       {/* Contact Us section */}
-      <div className="max-w-6xl mx-auto p-3 py-20 space-y-10">
+      <div className="max-w-6xl p-3 py-20 mx-auto space-y-10">
         <div className="flex items-center gap-2">
           <Lottie animationData={Contactus} loop={true} className="w-24" />
           <h2 className="text-3xl ">Contact Us</h2>
         </div>
 
-        <div className="content-wraper md:flex items-start block justify-between mt-10">
-          <div className="left space-x-5 space-y-5 flex flex-col justify-center items-center gap-3 shadow-md border p-5 rounded-md mb-2 mr-2">
+        <div className="items-start justify-between block mt-10 content-wraper md:flex">
+          <div className="flex flex-col items-center justify-center gap-3 p-5 mb-2 mr-2 space-x-5 space-y-5 border rounded-md shadow-md left">
             <p className="text-2xl ">Corporate Office</p>
             <p>
               We deal with properties in many cities and are headquartered in
-              Bangalore, Karnataka, India. You can get in touch with us for any
+              Bengaluru, Karnataka, India. You can get in touch with us for any
               query through our address mentioned below. To contact us
               instantly, you can choose to call us or email us.{" "}
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 space-y-5">
+            <div className="grid grid-cols-1 space-y-5 md:grid-cols-2">
               <motion.div className="flex items-center gap-8">
                 <motion.div
                   whileHover={{
@@ -113,7 +113,7 @@ function ContactUs() {
                   <p className="font-bold">Address</p>
                   <p>
                     #02, Level 5, Dhruti Arcade, Insight Academy Lane,
-                    Marathalli, Bangalore, 560103
+                    Marathalli, Bengaluru, 560103
                   </p>
                 </div>
               </div>
@@ -157,8 +157,8 @@ function ContactUs() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col justify-center items-center h-full">
-            <div className="flex flex-col justify-center items-center gap-5 shadow-md border p-5 rounded-md">
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="flex flex-col items-center justify-center gap-5 p-5 border rounded-md shadow-md">
               <h1 className="text-2xl">RERA License Certification Number</h1>
               <p>PRM/KA/RERA/1251/446/AG/230427/003604</p>
             </div>

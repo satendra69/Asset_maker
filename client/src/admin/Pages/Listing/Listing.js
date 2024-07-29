@@ -431,20 +431,20 @@ function NewListingPage() {
               {/* Checkboxes for regions */}
               <div className="flex flex-wrap items-center">
 
-                {/* Bangalore */}
+                {/* Bengaluru */}
                 <label
-                  htmlFor="bangalore"
+                  htmlFor="bengaluru"
                   className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
                     type="checkbox"
-                    id="bangalore"
+                    id="bengaluru"
                     className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
                     onChange={handleRegionsCheckboxChange}
-                    checked={selectedRegions.includes("bangalore")}
+                    checked={selectedRegions.includes("bengaluru")}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Bangalore
+                    Bengaluru
                   </span>
                 </label>
 

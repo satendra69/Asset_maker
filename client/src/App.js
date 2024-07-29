@@ -18,11 +18,8 @@ import SignUp from "./pages/Signup";
 import SignIn from "./pages/Login";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
-import { motion } from "framer-motion";
 
-import List from "./pages/List/List";
 import SinglePage from "./pages/singlepage/SinglePage";
-import AdminHeader from "./admin/Component/AdminHeader";
 import AdminHome from "./admin/Pages/AdminHome";
 
 import City from "./admin/Pages/City/City";
@@ -30,20 +27,13 @@ import MyList from "./pages/MyList";
 import SavedList from "./pages/SavedList";
 import SideBar from "./admin/Component/Sidebar/SideBar";
 import SingleCity from "./admin/Pages/City/SingleCity";
-import { GiVillage } from "react-icons/gi";
 
-import CitiesBangalore from "./pages/Cities/CitiesBangalore";
+import CitiesBengaluru from "./pages/Cities/CitiesBengaluru";
 import CitiesHyderabad from "./pages/Cities/CitiesHyderabad";
 import CitiesTirupati from "./pages/Cities/CitiesTirupati";
-import PropertyAparment from "./pages/Property/PropertyAparment";
-import PropertyCommercial from "./pages/Property/PropertyCommercial";
-import PropertyPent from "./pages/Property/PropertyPent";
-import PropertyPlot from "./pages/Property/PropertyPlot";
-import PropertyRow from "./pages/Property/PropertyRow";
-import PropertyVilla from "./pages/Property/PropertyVilla";
-import PropertyVillament from "./pages/Property/PropertyVillament";
+import PropertyComponent from "./pages/Property/PropertyComponent";
 
-import { useSelector, UseSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 import AdminUsers from "./admin/Pages/users/AdminUsers";
 import AdminMessages from "./admin/Pages/Message/AdminMessages";
@@ -126,8 +116,8 @@ const router = createBrowserRouter([
         element: <SinglePage />,
       },
       {
-        path: "/Cities/Bangalore",
-        element: <CitiesBangalore />,
+        path: "/Cities/Bengaluru",
+        element: <CitiesBengaluru />,
       },
       {
         path: "/Cities/Hyderabad",
@@ -138,32 +128,36 @@ const router = createBrowserRouter([
         element: <CitiesTirupati />,
       },
       {
+        path: "/Property",
+        element: <PropertyComponent />,
+      },
+      {
         path: "/Property/Apartments",
-        element: <PropertyAparment />,
+        element: <PropertyComponent defaultType="Apartments" />,
       },
       {
         path: "/Property/CommercialProperties",
-        element: <PropertyCommercial />,
+        element: <PropertyComponent defaultType="CommercialProperties" />,
       },
       {
         path: "/Property/PentHouses",
-        element: <PropertyPent />,
+        element: <PropertyComponent defaultType="PentHouses" />,
       },
       {
         path: "/Property/Plots",
-        element: <PropertyPlot />,
+        element: <PropertyComponent defaultType="Plots" />,
       },
       {
         path: "/Property/RowHouses",
-        element: <PropertyRow />,
+        element: <PropertyComponent defaultType="RowHouses" />,
       },
       {
         path: "/Property/Villas",
-        element: <PropertyVilla />,
+        element: <PropertyComponent defaultType="Villas" />,
       },
       {
         path: "/Property/Villaments",
-        element: <PropertyVillament />,
+        element: <PropertyComponent defaultType="Villaments" />,
       },
     ],
   },
