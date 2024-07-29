@@ -1,18 +1,46 @@
-import { useState } from "react";
-import "./searchBar.scss";
-import { FaSearch } from "react-icons/fa";
-const types = ["buy", "rent"];
+import React, { useState } from 'react';
+import './searchBar.scss';
+import { FaSearch } from 'react-icons/fa';
 
-function SearchBar() {
+const types = ['buy', 'rent'];
+
+function SearchBar({ onFilterChange }) {
+  console.log('onFilterChange:', onFilterChange);
   const [query, setQuery] = useState({
-    type: "buy",
-    location: "",
-    minPrice: 0,
-    maxPrice: 0,
+    type: 'buy',
+    location: '',
+    price: {
+      min: '',
+      max: '',
+    },
   });
 
   const switchType = (val) => {
     setQuery((prev) => ({ ...prev, type: val }));
+    // onFilterChange({ ...query, type: val });
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setQuery((prev) => ({ ...prev, [name]: value }));
+    // onFilterChange({ ...query, [name]: value });
+  };
+
+  const handlePriceChange = (e) => {
+    const { name, value } = e.target;
+    setQuery((prev) => ({
+      ...prev,
+      price: { ...prev.price, [name]: value },
+    }));
+    // onFilterChange({
+    //   ...query,
+    //   price: { ...query.price, [name]: value },
+    // });
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    // onFilterChange(query);
   };
 
   return (
@@ -23,37 +51,38 @@ function SearchBar() {
             <button
               key={type}
               onClick={() => switchType(type)}
-              className={query.type === type ? "active" : ""}
+              className={query.type === type ? 'active' : ''}
             >
               {type}
             </button>
           ))}
         </div>
-        <button className="button2">
+        <button className="button2" onClick={handleSearch}>
           <FaSearch size={32} className="text-white" />
         </button>
       </div>
-      <form>
-        {/* <input type="text" name="location" placeholder="City Location" /> */}
-        <select name="city gap-3" id="city">
+      <form onSubmit={handleSearch}>
+        <select name="location" id="city" onChange={handleInputChange}>
           <option value="">Select City</option>
           <option value="hyderabad">Hyderabad</option>
-          <option value="bangalore">Bangalore</option>
+          <option value="bengaluru">Bengaluru</option>
           <option value="tirupati">Tirupati</option>
         </select>
         <input
           type="number"
-          name="minPrice"
+          name="min"
           min={0}
           max={10000000}
           placeholder="Min Price"
+          onChange={handlePriceChange}
         />
         <input
           type="number"
-          name="maxPrice"
+          name="max"
           min={0}
           max={10000000}
           placeholder="Max Price"
+          onChange={handlePriceChange}
         />
       </form>
     </div>

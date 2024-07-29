@@ -177,7 +177,7 @@ function Header() {
                 onMouseEnter={() => setOpenCities(true)}
                 onMouseLeave={() => setOpenCities(false)}
               >
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bengaluru")}>Bengaluru</p>
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
               </div>
@@ -330,7 +330,7 @@ function Header() {
                 className={`${cityOpenMobile ? "block" : "hidden"
                   } transition-all text-left duration-1000 mt-2`}
               >
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bangalore")}>Bangalore</p>
+                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bengaluru")}>Bengaluru</p>
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
               </div>

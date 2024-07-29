@@ -10,14 +10,14 @@ function Apart() {
   const navigate = useNavigate();
 
   const handleViewAllList = () => {
-    navigate("/list");
+    navigate("/Property");
   };
   return (
-    <div className="py-2 -mt-4  rounded-md mb-20 h-max padingm ">
+    <div className="py-2 mb-20 -mt-4 rounded-md h-max padingm ">
       <Container className={"px-5"}>
         <div className="bg-[#F0F9FF] md:h-80 border p-5 px-10 rounded-lg md:relative  ">
           <div className="flex justify-between gap-5">
-            <div className="heading md:flex items-center gap-2 mb-2 ">
+            <div className="items-center gap-2 mb-2 heading md:flex ">
               <FcDonate size={52} />
               <div className="">
                 <h2 className="text-smc">What sets us apart?</h2>
@@ -26,13 +26,13 @@ function Apart() {
             </div>
             <button
               onClick={handleViewAllList}
-              className="border md:px-7 px-3 h-max py-2 shadow-inner rounded-lg border-yellow-500 text-yellow-500 text-smc"
+              className="px-3 py-2 text-yellow-500 border border-yellow-500 rounded-lg shadow-inner md:px-7 h-max text-smc"
             >
               View all List
             </button>
           </div>
-          <div className="md:absolute  md:flex   items-center md:justify-between md:gap-7 md:-bottom-20 bottom-72 right-5 left-5 ">
-            <div className="shadow-lg bg-white  p-5 rounded-lg  space-y-3 md:w-1/3 py-8 aspect-square md:aspect-auto mb-2">
+          <div className="items-center md:absolute md:flex md:justify-between md:gap-7 md:-bottom-20 bottom-72 right-5 left-5 ">
+            <div className="p-5 py-8 mb-2 space-y-3 bg-white rounded-lg shadow-lg md:w-1/3 aspect-square md:aspect-auto">
               <div className="rounded-full bg-[#F0F9FF]  p-4 h-[80px] w-[80px]  mx-auto flex items-center justify-center">
                 {/* icon */}
                 <FcHome size={72} />
@@ -43,7 +43,7 @@ function Apart() {
                 they are all verified by our team.
               </p>
             </div>
-            <div className="shadow-lg bg-white  p-5 rounded-lg space-y-3 md:w-1/3 mb-2">
+            <div className="p-5 mb-2 space-y-3 bg-white rounded-lg shadow-lg md:w-1/3">
               <div className="rounded-full bg-[#F0F9FF] p-4 h-[80px] w-[80px] mx-auto flex items-center ">
                 {/* icon */}
                 <FcIdea size={72} />
@@ -55,7 +55,7 @@ function Apart() {
                 possible service.
               </p>
             </div>
-            <div className="shadow-lg bg-white  p-5 rounded-lg space-y-3 md:w-1/3 mb-2">
+            <div className="p-5 mb-2 space-y-3 bg-white rounded-lg shadow-lg md:w-1/3">
               <div className="rounded-full bg-[#F0F9FF] p-4 h-[80px] w-[80px]  flex items-center mx-auto">
                 {/* icon */}
                 <FcMultipleSmartphones size={72} />

@@ -29,6 +29,11 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedType, setSelectedType] = useState(null);
   const navigate = useNavigate();
 
+  const capitalizeFirstLetter = (string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  };
+
   const getDynamicFields = (type) => {
     switch (type) {
       case 'CommercialProperties':
@@ -80,16 +85,70 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const columns = useMemo(
     () => [
       {
+        id: "actions",
+        header: "",
+        size: 10,
+        Cell: ({ row }) => (
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
+              alignItems: 'center',
+            }}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              sx={{
+                minWidth: 0,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
+            >
+              <Edit />
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              sx={{
+                minWidth: 0,
+                width: 30,
+                height: 30,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onClick={() => {
+                setSelectedId(row.original.ltg_det_mstRowID);
+                setSelectedType(row.original.ltg_type);
+                setOpen(true);
+              }}
+            >
+              <Delete />
+            </Button>
+          </Box>
+        ),
+      },
+      {
         id: "ltg_title",
         header: "Property Title",
         accessorKey: "ltg_title",
         size: 200,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
         id: "ltg_owner",
         header: "Owner",
         accessorKey: "ltg_owner",
         size: 150,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
         id: 'description',
@@ -98,21 +157,28 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         filterVariant: 'autocomplete',
         header: 'Description',
         size: 300,
-        Cell: ({ row }) => (
-          <Box
-            sx={{
-              maxWidth: '300px',
-              maxHeight: '100px',
-              whiteSpace: 'normal',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-            }}
-          >
-            <div
-              dangerouslySetInnerHTML={{ __html: row.original[getDynamicFields(row.original.ltg_type).desc] }}
-            />
-          </Box>
-        ),
+        Cell: ({ row }) => {
+          const descriptionHtml = row.original[getDynamicFields(row.original.ltg_type).desc];
+          const descriptionText = descriptionHtml.replace(/<[^>]*>/g, '').trim();
+          const capitalizedDescription = descriptionText.charAt(0).toUpperCase() + descriptionText.slice(1);
+          const updatedHtml = descriptionHtml.replace(descriptionText, capitalizedDescription);
+
+          return (
+            <Box
+              sx={{
+                maxWidth: '300px',
+                maxHeight: '100px',
+                whiteSpace: 'normal',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              <div
+                dangerouslySetInnerHTML={{ __html: updatedHtml }}
+              />
+            </Box>
+          );
+        },
       },
       {
         id: "salePrice",
@@ -149,43 +215,49 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         accessorKey: "ltg_categories",
         header: "Category",
         size: 60,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
-        // accessorKey: "ltg_det_address",
         accessorFn: (row) => row[getDynamicFields(row.ltg_type).address],
         header: "Address",
         size: 80,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
-        accessorKey: "ltg_regions", //hey a simple column for once
+        accessorKey: "ltg_regions",
         header: "City",
         size: 50,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
+      },
+      {
+        accessorFn: (row) => row[getDynamicFields(row.ltg_type).area],
+        header: "Size",
+        size: 50,
+        Cell: ({ renderedCellValue }) => <span>{renderedCellValue} sqrt</span>,
       },
       // {
-      //   accessorKey: "ltg_det_pmts_area_dts", //hey a simple column for once
-      //   header: "Size",
-      //   size: 50,
-      //   Cell: ({ renderedCellValue }) => <span>{renderedCellValue}sqrt</span>,
-      // },
-      // {
-      //   accessorKey: "ltg_det_pmts_bth_rom", //hey a simple column for once
+      //   accessorKey: "ltg_det_pmts_bth_rom",
       //   header: "Bathrooms",
       //   size: 50,
+      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       // },
       // {
-      //   accessorKey: "ltg_det_pmts_bed_rom", //hey a simple column for once
+      //   accessorKey: "ltg_det_pmts_bed_rom",
       //   header: "Bedrooms",
       //   size: 50,
+      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       // },
       // {
-      //   accessorKey: "ltg_det_pmts_furnishing", //hey a simple column for once
+      //   accessorKey: "ltg_det_pmts_furnishing",
       //   header: "Furnished",
       //   size: 50,
+      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       // },
       // {
-      //   accessorKey: "ltg_det_pmts_car_park", //hey a simple column for once
+      //   accessorKey: "ltg_det_pmts_car_park",
       //   header: "Parking",
       //   size: 50,
+      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       // },
       {
         id: "ltg_create_date",
@@ -202,35 +274,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             </span>
           );
         },
-      },
-      {
-        id: "actions",
-        header: "Actions",
-        size: 150,
-        Cell: ({ row }) => (
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
-              startIcon={<Edit />}
-            >
-              Edit
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => {
-                setSelectedId(row.original.ltg_det_mstRowID);
-                setSelectedType(row.original.ltg_type);
-                setOpen(true);
-              }}
-              startIcon={<Delete />}
-            >
-              Delete
-            </Button>
-          </Box>
-        ),
       },
     ], [navigate, setOpen]);
 
@@ -256,8 +299,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       pagination: { pageSize: 8 },
       showGlobalFilter: true,
       columnPinning: {
-        left: ["mrt-row-expand", "mrt-row-select"],
-        right: ["mrt-row-actions"],
+        left: ["mrt-row-expand", "mrt-row-select", "actions"],
+        right: [],
       },
     },
     paginationDisplayMode: "pages",

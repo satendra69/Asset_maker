@@ -2,8 +2,10 @@ import Container from "../Container";
 import SingleCrousel from "../Crousel";
 import SearchBar from "../searchBar/searchBar";
 import "./homePage.scss";
+import { useNavigate } from "react-router-dom";
 
 function HomePage() {
+  const navigate = useNavigate();
   const heroData = [
     {
       key: 1,
@@ -27,6 +29,13 @@ function HomePage() {
       imgUrl: "/h3.jpg",
     },
   ];
+
+  const handleSearch = (query) => {
+    console.log('handleSearch:', query);
+    navigate('/Property', { state: { query } });
+  };
+
+
   return (
     <div className="homePage padingm ">
       <div className="textContainer">
@@ -61,8 +70,8 @@ function HomePage() {
         {/* image slider */}
         <SingleCrousel data={heroData} />
         {/* Seachbar */}
-        <div className="md:hidden  mb-32 mt-3">
-          <SearchBar />
+        <div className="mt-3 mb-32 md:hidden">
+          <SearchBar onFilterChange={handleSearch} />
         </div>
       </div>
     </div>

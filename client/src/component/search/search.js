@@ -1,6 +1,6 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
-function SearchForm({ onFilterChange, defaultProperty }) {
+function SearchForm({ onFilterChange, defaultProperty, query }) {
   const initialState = {
     search: "",
     location: "",
@@ -21,8 +21,43 @@ function SearchForm({ onFilterChange, defaultProperty }) {
   };
 
   const [formData, setFormData] = useState(initialState);
+
+  useEffect(() => {
+    console.log("defaultProperty useEffect", defaultProperty);
+    if (defaultProperty) {
+      setFormData((prevData) => ({
+        ...prevData,
+        property: defaultProperty,
+      }));
+    }
+  }, [defaultProperty]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      console.log("defaultProperty handler useEffect", defaultProperty, formData);
+      if (formData.property !== "any" && formData.property) {
+        onFilterChange(formData);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [formData]);
+
   const [showFields, setShowFields] = useState(false);
   const formRef = useRef(null);
+
+  const handleQuery = () => {
+    // const queryData = {
+    //   ...initialState,
+    //   property: "any",
+    // };
+    // setFormData(resetState);
+    // onFilterChange(resetState);
+
+    console.log(query);
+  };
 
   // console.log(formData, defaultProperty, "formdata");
 
@@ -66,7 +101,7 @@ function SearchForm({ onFilterChange, defaultProperty }) {
       property: "any",
     };
     setFormData(resetState);
-    onFilterChange(initialState);
+    onFilterChange(resetState);
   };
 
   const handleSubmit = (e) => {
@@ -85,17 +120,16 @@ function SearchForm({ onFilterChange, defaultProperty }) {
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  React.useEffect(() => {
-    onFilterChange(formData);
-    // console.log(formData);
-  }, [formData, onFilterChange]);
+  useEffect(() => {
+    handleQuery();
+  }, [query]);
 
   return (
     <div className="w-full mt-5 mb-5">

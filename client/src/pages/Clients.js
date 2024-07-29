@@ -28,7 +28,7 @@ const responsive = {
 const data = [
   {
     name: "Sangeeta Goyal",
-    description: "IT Professional | Bangalore",
+    description: "IT Professional | Bengaluru",
     message:
       "We are quite happy with the way Asset Makers team deal and navigate the real estate purchase or sale transaction with purchaser and seller, to be frank i experienced both the versions of property transactions with them and i am not much aware how does all this modalities work since i indulge in my IT domain. I do not stop referring them with in my references which is out of affection. Thanks !!",
     img: "https://assetmakers.com/wp-content/uploads/2021/11/vidya-150x150.jpg",
@@ -36,7 +36,7 @@ const data = [
   {
     name: "Satish",
     description:
-      "Co-Founder & Director Silicon Mosaic Technologies Pvt Ltd | Bangalore",
+      "Co-Founder & Director Silicon Mosaic Technologies Pvt Ltd | Bengaluru",
     message:
       "We are quite happy with the way Asset Makers team deal and navigate the real estate purchase or sale transaction with purchaser and seller, to be frank i experienced both the versions of property transactions with them and i am not much aware how does all this modalities work since i indulge in my IT domain. I do not stop referring them with in my references which is out of affection. Thanks !!",
     img: "https://assetmakers.com/wp-content/uploads/2021/11/Satish-Acharya-150x150.jpg",
@@ -85,7 +85,7 @@ function Clients() {
   return (
     <section className="clients bg-[#F0F9FF]">
       <Container className="py-20 space-y-10">
-        <h2 className="text-center text-4xl">Our Clients Say</h2>
+        <h2 className="text-4xl text-center">Our Clients Say</h2>
         <Carousel
           swipeable={true}
           draggable={true}
@@ -105,12 +105,12 @@ function Clients() {
           customLeftArrow={<CustomLeftArrow />}
         >
           {data.map((item, index) => (
-            <div className="card space-y-5 ml-5" key={index}>
-              <div className="flex item gap-3">
+            <div className="ml-5 space-y-5 card" key={index}>
+              <div className="flex gap-3 item">
                 <div className="rounded-full border-2 border-blue-600 p-1 overflow-hidden md:w-[64px] md:h-[64px] w-[40px] h-[40px]">
                   <img
                     alt="profile"
-                    className="border rounded-full h-full w-full border-black"
+                    className="w-full h-full border border-black rounded-full"
                     src={item.img}
                   />
                 </div>

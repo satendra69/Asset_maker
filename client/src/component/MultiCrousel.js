@@ -49,6 +49,7 @@ const responsive = {
 };
 function MultiCrousel({ data, autoplay, details }) {
 
+  console.log(data, "multicarousel");
   return (
     <Carousel
       swipeable={true}
