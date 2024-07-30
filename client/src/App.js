@@ -32,6 +32,7 @@ import CitiesBengaluru from "./pages/Cities/CitiesBengaluru";
 import CitiesHyderabad from "./pages/Cities/CitiesHyderabad";
 import CitiesTirupati from "./pages/Cities/CitiesTirupati";
 import PropertyComponent from "./pages/Property/PropertyComponent";
+import PropertyQuery from "./pages/Property/PropertyQuery";
 
 import { useSelector } from "react-redux";
 
@@ -129,7 +130,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/Property",
-        element: <PropertyComponent />,
+        element: <PropertyQuery />,
       },
       {
         path: "/Property/Apartments",

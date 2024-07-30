@@ -11,11 +11,14 @@ import { IoMdHappy } from "react-icons/io";
 import { FaRegHandshake } from "react-icons/fa";
 import Loader from "../../component/Loader/Loader";
 
-function PropertyComponent({ defaultType }) {
+function PropertyQuery() {
     const [allProperties, setAllProperties] = useState([]);
     const [originalProperties, setOriginalProperties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+
+    const location = useLocation();
+    const query = location.state?.query || "";
 
     const fetchAllProperties = async (filterParams = {}) => {
         setLoading(true);
@@ -63,7 +66,7 @@ function PropertyComponent({ defaultType }) {
         }
 
         // Filter by location (ltg_regions)
-        if (formData.location && formData.location !== 'any') {
+        if (formData.city && formData.city !== 'any') {
             filteredProperties = filteredProperties.filter((item) =>
                 item.ltg_regions?.toLowerCase() === formData.location?.toLowerCase()
             );
@@ -77,7 +80,7 @@ function PropertyComponent({ defaultType }) {
         }
 
         // Always set property based on formData before filtering
-        const selectedProperty = formData.property || defaultType;
+        const selectedProperty = formData.property;
 
         // Filter by property type (ltg_type)
         if (formData.property && formData.property !== 'any') {
@@ -239,28 +242,30 @@ function PropertyComponent({ defaultType }) {
 
     useEffect(() => {
         const handler = setTimeout(() => {
-            if (defaultType !== "") {
-                fetchAllProperties();
-            }
+            fetchAllProperties();
         }, 1000);
 
         return () => {
             clearTimeout(handler);
         };
-    }, [defaultType]);
+    }, []);
 
     useEffect(() => {
         if (originalProperties.length > 0) {
-            handleFilterChange({ property: defaultType });
+            handleFilterChange();
         }
-    }, [originalProperties, defaultType]);
+    }, [originalProperties]);
+
+    useEffect(() => {
+        handleFilterChange(query);
+    }, [query]);
 
     return (
         <>
             <Container>
                 <SearchForm
                     onFilterChange={handleFilterChange}
-                    defaultProperty={defaultType}
+                    query={query}
                 />
                 {loading ? <Loader /> : (
                     allProperties.map((item) => (
@@ -325,4 +330,4 @@ function PropertyComponent({ defaultType }) {
     );
 }
 
-export default PropertyComponent;
+export default PropertyQuery;
