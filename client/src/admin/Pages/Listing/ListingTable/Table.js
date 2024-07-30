@@ -82,6 +82,13 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     }
   };
 
+  const formatText = (text) => {
+    if (text === "AssetMakers") {
+      return "Asset Makers";
+    }
+    return text.replace(/\b\w/g, char => char.toUpperCase());
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -92,7 +99,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           <Box
             sx={{
               display: 'flex',
-              flexDirection: 'column',
+              flexDirection: 'row',
               gap: 1,
               alignItems: 'center',
             }}
@@ -103,15 +110,15 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               size="small"
               sx={{
                 minWidth: 0,
-                width: 30,
-                height: 30,
+                width: 20,
+                height: 20,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
               }}
               onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
             >
-              <Edit />
+              <Edit style={{ fontSize: 15 }} />
             </Button>
             <Button
               variant="contained"
@@ -119,8 +126,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               size="small"
               sx={{
                 minWidth: 0,
-                width: 30,
-                height: 30,
+                width: 20,
+                height: 20,
                 display: 'flex',
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -131,7 +138,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
                 setOpen(true);
               }}
             >
-              <Delete />
+              <Delete style={{ fontSize: 15 }} />
             </Button>
           </Box>
         ),
@@ -148,7 +155,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "Owner",
         accessorKey: "ltg_owner",
         size: 150,
-        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
+        Cell: ({ cell }) => formatText(cell.getValue()),
       },
       {
         id: 'description',

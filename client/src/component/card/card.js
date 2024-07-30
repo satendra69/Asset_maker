@@ -8,7 +8,7 @@ import axios from "axios";
 import httpCommon from "../../http-common";
 import { queryClient } from "../..";
 
-function Card({ item }) {
+function Card({ key, item }) {
 
   const [open, setOpen] = useState(false);
 
@@ -49,7 +49,7 @@ function Card({ item }) {
     if (!attachments) {
       return [];
     }
-    
+
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     if (!attachments) {
       return [];

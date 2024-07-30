@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 function SearchForm({ onFilterChange, defaultProperty, query }) {
   const initialState = {
     search: "",
-    location: "",
+    city: "",
     type: "any",
     property: defaultProperty || "any",
     price: {
@@ -23,7 +23,6 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
-    console.log("defaultProperty useEffect", defaultProperty);
     if (defaultProperty) {
       setFormData((prevData) => ({
         ...prevData,
@@ -34,7 +33,6 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
 
   useEffect(() => {
     const handler = setTimeout(() => {
-      console.log("defaultProperty handler useEffect", defaultProperty, formData);
       if (formData.property !== "any" && formData.property) {
         onFilterChange(formData);
       }
@@ -49,17 +47,27 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   const formRef = useRef(null);
 
   const handleQuery = () => {
-    // const queryData = {
-    //   ...initialState,
-    //   property: "any",
-    // };
-    // setFormData(resetState);
-    // onFilterChange(resetState);
-
-    console.log(query);
+    if (query) {
+      console.log("Current Query:", query);
+      const updatedData = {
+        ...formData,
+        type: query.type || formData.type,
+        city: query.city ? query.city.charAt(0).toUpperCase() + query.city.slice(1) : formData.city,
+        price: {
+          min: query.price.min !== undefined ? query.price.min : formData.price.min,
+          max: query.price.max !== undefined ? query.price.max : formData.price.max,
+        },
+      };
+      console.log("Current Form Data:", updatedData);
+      console.log("Current Form Data:", formData);
+      setFormData(updatedData);
+      console.log("Updated Form Data:", formData);
+      const test = onFilterChange(updatedData);
+      console.log(test);
+    }
   };
 
-  // console.log(formData, defaultProperty, "formdata");
+  console.log(formData, defaultProperty, "formdata");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -128,7 +136,16 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   }, []);
 
   useEffect(() => {
-    handleQuery();
+    const handler = setTimeout(() => {
+      if (query) {
+        console.log(query);
+        handleQuery();
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
   }, [query]);
 
   return (
@@ -194,7 +211,7 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                       className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
-                      <option value="Bangaluru">Bangaluru</option>
+                      <option value="Bengaluru">Bengaluru</option>
                       <option value="Hyderabad">Hyderabad</option>
                       <option value="Tirupati">Tirupati</option>
                     </select>

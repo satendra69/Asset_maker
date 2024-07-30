@@ -47,8 +47,8 @@ function SinglePage() {
   const singlePageImg = async () => {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
-      const filteredData = response.data.data.filter(item => item.type !== 'Brochure');
       if (response.data.status === "success") {
+        const filteredData = response.data.data.filter(item => item.type !== 'Brochure');
         setsinglePageImgData(filteredData);
       }
     } catch (error) {
@@ -59,8 +59,8 @@ function SinglePage() {
   const getBrochureData = async () => {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
-      const brochureData = response.data.data.filter(item => item.type === 'Brochure');
       if (response.data.status === "success") {
+        const brochureData = response.data.data.filter(item => item.type === 'Brochure');
         setBrochureData(brochureData);
       }
     } catch (error) {
@@ -130,7 +130,7 @@ function SinglePage() {
                   </div>
                 </div>
               </div>
-              <div className="bottom mr-56">
+              <div className="mr-56 bottom">
                 {singlePageData && singlePageData.length > 0 && (
                   <div className="description">
                     {singlePageData[0].ltg_type === 'Plots' ? (

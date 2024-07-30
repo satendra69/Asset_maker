@@ -1266,7 +1266,7 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
     }
 
-    // console.log('Uploaded files for type :', type, files);
+    console.log('Uploaded files for type :', type, files);
 
     await connection.beginTransaction();
 
@@ -1275,29 +1275,13 @@ const uploadListItem = async (req, res) => {
       VALUES ?
     `;
 
-    // Get current timestamp for unique file naming
-    const timestamp = Date.now();
-
     const values = files.map(file => {
-      const url = file.path.replace('public', '');
       const originalName = file.originalname;
-      const extension = path.extname(originalName);
-      const baseName = path.basename(originalName, extension);
-      const uniqueFileName = `${baseName}-${timestamp}${extension}`;
-
-      const newPath = path.join(path.dirname(file.path), uniqueFileName);
-      try {
-        fs.renameSync(file.path, newPath);
-      } catch (renameError) {
-        console.error(`Error renaming file ${file.path} to ${newPath}:`, renameError);
-        throw new Error(`Error processing file: ${originalName}`);
-      }
-      file.path = newPath;
-
+      const url = file.path.replace('public', '');
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
 
-      return [listingID, uniqueFileName, url, type, auditUser, formattedDate];
+      return [listingID, originalName, url, type, auditUser, formattedDate];
     });
 
     await connection.query(insertQuery, [values]);
@@ -1335,13 +1319,12 @@ const uploadListItem = async (req, res) => {
     });
   } catch (error) {
     await connection.rollback();
-    console.log('Error uploading files:', error);
+    console.erro('Error uploading files:', error);
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
     connection.release();
   }
 };
-
 
 // Delete Images
 const deleteListImage = (req, res) => {

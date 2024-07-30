@@ -9,6 +9,7 @@ import { FaSellsy } from "react-icons/fa6";
 import { MdAddHome } from "react-icons/md";
 import { IoMdHappy } from "react-icons/io";
 import { FaRegHandshake } from "react-icons/fa";
+import Loader from "../../component/Loader/Loader";
 
 function PropertyComponent({ defaultType }) {
     const [allProperties, setAllProperties] = useState([]);
@@ -18,8 +19,6 @@ function PropertyComponent({ defaultType }) {
 
     const location = useLocation();
     const query = location.state?.query || "";
-
-    // console.log(query, "query");
 
     const fetchAllProperties = async (filterParams = {}) => {
         setLoading(true);
@@ -32,10 +31,7 @@ function PropertyComponent({ defaultType }) {
 
             if (response.data.status === "success") {
                 const properties = response.data.data;
-                setAllProperties(properties);
                 setOriginalProperties(properties);
-                handleFilterChange({ property: defaultType });
-                console.log("Fetched properties:", allProperties);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -46,8 +42,21 @@ function PropertyComponent({ defaultType }) {
     };
 
     const handleFilterChange = (formData) => {
-        let filteredProperties = originalProperties;
-        console.log(formData, "formData");
+
+        // Check if formData is empty
+        if (!formData || Object.keys(formData).length === 0) {
+            setAllProperties(originalProperties); // Return original properties if formData is empty
+            return;
+        }
+
+        let filteredProperties = originalProperties || [];
+
+        // Check if filteredProperties is empty
+        if (filteredProperties.length === 0) {
+            setAllProperties(filteredProperties); // Set empty properties if originalProperties is empty
+            return; // Return early if no properties to filter
+        }
+
         // Filter by search term
         if (formData.search) {
             filteredProperties = filteredProperties.filter((item) =>
@@ -72,7 +81,6 @@ function PropertyComponent({ defaultType }) {
 
         // Always set property based on formData before filtering
         const selectedProperty = formData.property || defaultType;
-        console.log("selectedProperty", selectedProperty);
 
         // Filter by property type (ltg_type)
         if (formData.property && formData.property !== 'any') {
@@ -82,7 +90,7 @@ function PropertyComponent({ defaultType }) {
         }
 
         // Filter by price range (ltg_det_sale_price)
-        if (formData.price && (formData.price.min || formData.price.max)) {
+        if (formData.price && (formData.price.min !== undefined || formData.price.max !== undefined)) {
             const minPrice = formData.price && formData.price.min !== undefined ? formData.price.min : "";
             const maxPrice = formData.price && formData.price.max !== undefined ? formData.price.max : "";
 
@@ -90,20 +98,15 @@ function PropertyComponent({ defaultType }) {
                 let salePrice = 0;
                 if (item.ltg_type === "CommercialProperties") {
                     salePrice = parseInt(item.ltg_det_comm_prop_sale_price, 10);
-                }
-                else if (item.ltg_type === "PentHouses") {
+                } else if (item.ltg_type === "PentHouses") {
                     salePrice = parseInt(item.ltg_det_penthouses_sale_price, 10);
-                }
-                else if (item.ltg_type === "RowHouses") {
+                } else if (item.ltg_type === "RowHouses") {
                     salePrice = parseInt(item.ltg_det_row_house_sale_price, 10);
-                }
-                else if (item.ltg_type === "Plots") {
+                } else if (item.ltg_type === "Plots") {
                     salePrice = parseInt(item.ltg_det_plot_sale_price, 10);
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     salePrice = parseInt(item.ltg_det_villaments_sale_price, 10);
-                }
-                else {
+                } else {
                     salePrice = parseInt(item.ltg_det_sale_price, 10);
                 }
 
@@ -116,12 +119,11 @@ function PropertyComponent({ defaultType }) {
                 } else {
                     return true;
                 }
-
             });
         }
 
         // Filter by area range (ltg_det_pmts_area_dts)
-        if (formData.area && (formData.area.min || formData.area.max)) {
+        if (formData.area && (formData.area.min !== undefined || formData.area.max !== undefined)) {
             const minArea = formData.area && formData.area.min !== undefined ? formData.area.min : "";
             const maxArea = formData.area && formData.area.max !== undefined ? formData.area.max : "";
 
@@ -129,20 +131,15 @@ function PropertyComponent({ defaultType }) {
                 let areaMatch = 0;
                 if (item.ltg_type === "CommercialProperties") {
                     areaMatch = item.ltg_det_comm_prop_pmts_area_dts?.match(/(\d+)/);
-                }
-                else if (item.ltg_type === "PentHouses") {
+                } else if (item.ltg_type === "PentHouses") {
                     areaMatch = item.ltg_det_penthouses_pmts_area_dts?.match(/(\d+)/);
-                }
-                else if (item.ltg_type === "RowHouses") {
+                } else if (item.ltg_type === "RowHouses") {
                     areaMatch = item.ltg_det_row_house_pmts_area_dts?.match(/(\d+)/);
-                }
-                else if (item.ltg_type === "Plots") {
+                } else if (item.ltg_type === "Plots") {
                     areaMatch = item.ltg_det_plot_pmts_area_dts?.match(/(\d+)/);
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     areaMatch = item.ltg_det_villaments_pmts_area_dts?.match(/(\d+)/);
-                }
-                else {
+                } else {
                     areaMatch = item.ltg_det_pmts_area_dts?.match(/(\d+)/);
                 }
 
@@ -161,7 +158,6 @@ function PropertyComponent({ defaultType }) {
                 } else {
                     return false;
                 }
-
             });
         }
 
@@ -171,14 +167,11 @@ function PropertyComponent({ defaultType }) {
                 let bedroom = 0;
                 if (item.ltg_type === "PentHouses") {
                     bedroom = parseInt(item.ltg_det_penthouses_pmts_bed_rom, 10);
-                }
-                else if (item.ltg_type === "RowHouses") {
+                } else if (item.ltg_type === "RowHouses") {
                     bedroom = parseInt(item.ltg_det_row_house_pmts_bed_rom, 10);
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     bedroom = parseInt(item.ltg_det_villaments_pmts_bed_rom, 10);
-                }
-                else {
+                } else {
                     bedroom = parseInt(item.ltg_det_pmts_bed_rom, 10);
                 }
                 return bedroom >= parseInt(formData.bedRooms, 10);
@@ -191,14 +184,11 @@ function PropertyComponent({ defaultType }) {
                 let bathroom = 0;
                 if (item.ltg_type === "PentHouses") {
                     bathroom = parseInt(item.ltg_det_penthouses_pmts_bth_rom, 10);
-                }
-                else if (item.ltg_type === "RowHouses") {
+                } else if (item.ltg_type === "RowHouses") {
                     bathroom = parseInt(item.ltg_det_row_house_pmts_bth_rom, 10);
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     bathroom = parseInt(item.ltg_det_villaments_pmts_bth_rom, 10);
-                }
-                else {
+                } else {
                     bathroom = parseInt(item.ltg_det_pmts_bth_rom, 10);
                 }
                 return bathroom >= parseInt(formData.bathRooms, 10);
@@ -211,20 +201,15 @@ function PropertyComponent({ defaultType }) {
                 let status = '';
                 if (item.ltg_type === "CommercialProperties") {
                     status = item.ltg_det_comm_prop_pmts_status;
-                }
-                else if (item.ltg_type === "PentHouses") {
+                } else if (item.ltg_type === "PentHouses") {
                     status = item.ltg_det_penthouses_pmts_status;
-                }
-                else if (item.ltg_type === "RowHouses") {
+                } else if (item.ltg_type === "RowHouses") {
                     status = item.ltg_det_row_house_pmts_status;
-                }
-                else if (item.ltg_type === "Plots") {
+                } else if (item.ltg_type === "Plots") {
                     status = item.ltg_det_plot_pmts_status;
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     status = item.ltg_det_villaments_pmts_status;
-                }
-                else {
+                } else {
                     status = item.ltg_det_pmts_status;
                 }
                 return status === formData.status;
@@ -237,20 +222,15 @@ function PropertyComponent({ defaultType }) {
                 let amenities = [];
                 if (item.ltg_type === "CommercialProperties") {
                     amenities = item.ltg_det_comm_prop_amenities ? item.ltg_det_comm_prop_amenities.split(', ').map((amenity) => amenity.trim()) : [];
-                }
-                else if (item.ltg_type === "PentHouses") {
-                    amenities = item.ltg_penthouses_det_amenities ? item.ltg_det_penthouses_amenities.split(', ').map((amenity) => amenity.trim()) : [];
-                }
-                else if (item.ltg_type === "RowHouses") {
-                    amenities = item.ltg_det_row_house_amenities ? item.ltg_dett_row_house_amenities.split(', ').map((amenity) => amenity.trim()) : [];
-                }
-                else if (item.ltg_type === "Plots") {
+                } else if (item.ltg_type === "PentHouses") {
+                    amenities = item.ltg_det_penthouses_amenities ? item.ltg_det_penthouses_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+                } else if (item.ltg_type === "RowHouses") {
+                    amenities = item.ltg_det_row_house_amenities ? item.ltg_det_row_house_amenities.split(', ').map((amenity) => amenity.trim()) : [];
+                } else if (item.ltg_type === "Plots") {
                     amenities = item.ltg_det_plot_amenities ? item.ltg_det_plot_amenities.split(', ').map((amenity) => amenity.trim()) : [];
-                }
-                else if (item.ltg_type === "Villaments") {
+                } else if (item.ltg_type === "Villaments") {
                     amenities = item.ltg_det_villaments_amenities ? item.ltg_det_villaments_amenities.split(', ').map((amenity) => amenity.trim()) : [];
-                }
-                else {
+                } else {
                     amenities = item.ltg_det_amenities ? item.ltg_det_amenities.split(', ').map((amenity) => amenity.trim()) : [];
                 }
                 return formData.amenities.every((amenity) => amenities.includes(amenity));
@@ -260,19 +240,23 @@ function PropertyComponent({ defaultType }) {
         setAllProperties(filteredProperties);
     };
 
-
     useEffect(() => {
         const handler = setTimeout(() => {
             if (defaultType !== "") {
-                fetchAllProperties({ property: defaultType });
+                fetchAllProperties();
             }
-            console.log("allProperties", allProperties);
         }, 300);
 
         return () => {
             clearTimeout(handler);
         };
     }, [defaultType]);
+
+    useEffect(() => {
+        if (originalProperties.length > 0) {
+            handleFilterChange({ property: defaultType });
+        }
+    }, [originalProperties, defaultType]);
 
     useEffect(() => {
         handleFilterChange(query);
@@ -286,9 +270,11 @@ function PropertyComponent({ defaultType }) {
                     defaultProperty={defaultType}
                     query={query}
                 />
-                {(allProperties).map((item) => (
-                    <Card item={item} />
-                ))}
+                {loading ? <Loader /> : (
+                    allProperties.map((item) => (
+                        <Card key={item.id} item={item} />
+                    ))
+                )}
             </Container>
 
             <section className="footerPatner  bg-[#1C1C1E] ">

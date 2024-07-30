@@ -8,7 +8,7 @@ function SearchBar({ onFilterChange }) {
   console.log('onFilterChange:', onFilterChange);
   const [query, setQuery] = useState({
     type: 'buy',
-    location: '',
+    city: '',
     price: {
       min: '',
       max: '',
@@ -17,13 +17,11 @@ function SearchBar({ onFilterChange }) {
 
   const switchType = (val) => {
     setQuery((prev) => ({ ...prev, type: val }));
-    // onFilterChange({ ...query, type: val });
   };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setQuery((prev) => ({ ...prev, [name]: value }));
-    // onFilterChange({ ...query, [name]: value });
   };
 
   const handlePriceChange = (e) => {
@@ -32,15 +30,11 @@ function SearchBar({ onFilterChange }) {
       ...prev,
       price: { ...prev.price, [name]: value },
     }));
-    // onFilterChange({
-    //   ...query,
-    //   price: { ...query.price, [name]: value },
-    // });
   };
 
   const handleSearch = (e) => {
     e.preventDefault();
-    // onFilterChange(query);
+    onFilterChange(query);
   };
 
   return (
@@ -62,7 +56,7 @@ function SearchBar({ onFilterChange }) {
         </button>
       </div>
       <form onSubmit={handleSearch}>
-        <select name="location" id="city" onChange={handleInputChange}>
+        <select name="city" id="city" onChange={handleInputChange}>
           <option value="">Select City</option>
           <option value="hyderabad">Hyderabad</option>
           <option value="bengaluru">Bengaluru</option>

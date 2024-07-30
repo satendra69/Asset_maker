@@ -61,7 +61,7 @@ function HomePage() {
             and style.
           </p>
           <div className="hidden md:block">
-            <SearchBar />
+            <SearchBar onFilterChange={handleSearch} />
           </div>
         </div>
       </div>

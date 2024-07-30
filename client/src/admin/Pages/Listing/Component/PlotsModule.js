@@ -86,14 +86,31 @@ function PlotsModule({ onDataUpdate }) {
       console.log("listingData", listingData);
 
       // Fetch images and brochures
-      const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
-      const imageData = imgResponse.data.data;
+      try {
+        const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+        if (imgResponse.data.status === "success") {
+          const imageData = imgResponse.data.data;
 
-      // Separate gallery and brochure data
-      const galleryData = imageData.filter(item => item.type === "Gallery");
-      const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
-      const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
-      const brochureData = (imageData.filter(item => item.type === "Brochure"));
+          // Separate gallery and brochure data
+          const galleryData = imageData.filter(item => item.type === "Gallery");
+          const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
+          const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
+          const brochureData = imageData.filter(item => item.type === "Brochure");
+
+          // Set images and brochures
+          setStoredGalleryImages(galleryData);
+          setStoredMasterPlanImages(masterPlanData);
+          setStoredFloorAreaPlanImages(floorAreaPlanData);
+          setStoredBrochure(brochureData);
+        } else {
+          console.error("Error fetching image data: Response status not successful");
+          // Handle the non-success status appropriately here
+        }
+      } catch (error) {
+        console.error("Error fetching image data:", error);
+        // Handle the error appropriately here
+        // For example, you could set state to show an error message in your UI
+      }
 
       // Update state with fetched data
       setDisplaySalePrice(listingData.ltg_det_plot_sale_price);
@@ -150,12 +167,6 @@ function PlotsModule({ onDataUpdate }) {
         latitude: listingData.ltg_det_plot_latitude || 17.387140,
         longitude: listingData.ltg_det_plot_longitude || 78.491684,
       });
-
-      // Set images and brochures
-      setStoredGalleryImages(galleryData);
-      setStoredMasterPlanImages(masterPlanData);
-      setStoredFloorAreaPlanImages(floorAreaPlanData);
-      setStoredBrochure(brochureData);
 
     } catch (error) {
       if (error.response && error.response.status === 404) {

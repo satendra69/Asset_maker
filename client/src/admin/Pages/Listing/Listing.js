@@ -12,6 +12,8 @@ import PentModule from "./Component/PentModule";
 import httpCommon from "../../../http-common";
 import Swal from "sweetalert2";
 import { toast } from 'sonner';
+import { Rings } from 'react-loader-spinner';
+import LoadingOverlay from '../../Component/LoadingOverlay/LoadingOverlay';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -20,6 +22,8 @@ function classNames(...classes) {
 function NewListingPage() {
   const navigate = useNavigate();
   const { listingId } = useParams();
+
+  const [isLoading, setIsLoading] = useState(false);
 
   // Define state for form inputs
   const [title, setTitle] = useState("");
@@ -125,6 +129,7 @@ function NewListingPage() {
 
   const publishBtn = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
 
     const listingData = {
       Apartments: ApartmentData,
@@ -176,8 +181,8 @@ function NewListingPage() {
           icon: "success",
           title: responseData.status,
           text: responseData.message,
-          // }).then(() => {
-          //   navigate(`/admin`);
+        }).then(() => {
+          navigate(`/admin`);
         });
 
       } else {
@@ -190,6 +195,8 @@ function NewListingPage() {
       }
     } catch (error) {
       console.error("Error publishing listing:", error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -295,6 +302,7 @@ function NewListingPage() {
   return (
     <div className="w-full bg-[#f5f3f3]">
       <div className="h-[98vh] overflow-y-scroll px-10">
+        {isLoading && <LoadingOverlay />}
         <div className="py-2 sticky top-0 bg-[#f5f3f3] mb-5 z-40">
           <div className="flex items-center justify-between">
             <div>
@@ -305,8 +313,18 @@ function NewListingPage() {
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}
+              disabled={isLoading}
             >
-              {listing.button}
+              {isLoading ? (
+                <Rings
+                  height="20"
+                  width="20"
+                  color="white"
+                  ariaLabel="loading"
+                />
+              ) : (
+                listing.button
+              )}
             </button>
           </div>
         </div>
