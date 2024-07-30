@@ -31,18 +31,6 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
     }
   }, [defaultProperty]);
 
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      if (formData.property !== "any" && formData.property) {
-        onFilterChange(formData);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [formData]);
-
   const [showFields, setShowFields] = useState(false);
   const formRef = useRef(null);
 
@@ -59,11 +47,9 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
         },
       };
       console.log("Current Form Data:", updatedData);
-      console.log("Current Form Data:", formData);
       setFormData(updatedData);
-      console.log("Updated Form Data:", formData);
-      const test = onFilterChange(updatedData);
-      console.log(test);
+      console.log("Current Form Data:", formData);
+      onFilterChange(updatedData);
     }
   };
 
@@ -147,6 +133,19 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
       clearTimeout(handler);
     };
   }, [query]);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      if (formData.property !== "any" && formData.property) {
+        console.log(formData);
+        onFilterChange(formData);
+      }
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [formData]);
 
   return (
     <div className="w-full mt-5 mb-5">
