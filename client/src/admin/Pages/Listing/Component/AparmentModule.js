@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { EditorState, convertFromRaw, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
+import { LoadScript, GoogleMap, Marker, Autocomplete } from '@react-google-maps/api';
 import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
@@ -94,6 +96,38 @@ function ApartmentModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "Apartments";
+
+
+  /* map code start    */
+  const libraries = ['places'];
+  const mapContainerStyle = {
+    height: '500px',
+    width: '100%',
+  };
+  
+  const center = {
+    lat: 20.5937,
+    lng: 78.9629,
+  };
+
+  const [map, setMap] = useState(null);
+  const [marker, setMarker] = useState(null);
+  const [place, setPlace] = useState(null);
+  const autocompleteRef = useRef(null);
+  const [inputValue, setInputValue] = useState('');
+
+  const handlePlaceChanged = () => {
+    const place = autocompleteRef.current.getPlace();
+    if (place.geometry) {
+      const location = place.geometry.location;
+      setPlace(place);
+      setMarker({ lat: location.lat(), lng: location.lng() });
+      map.panTo(location);
+      map.setZoom(15);
+    }
+  };
+
+  /* end map code */
 
   const fetchProperty = async (listingId) => {
     try {
@@ -658,7 +692,69 @@ function ApartmentModule({ onDataUpdate }) {
 
       {/* Location Details */}
       <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
+      <LoadScript googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4" libraries={libraries}>
 
+      <div>
+        <label htmlFor="location-input">Enter Location</label>
+        <Autocomplete
+          onLoad={(ref) => (autocompleteRef.current = ref)}
+          onPlaceChanged={handlePlaceChanged}
+        >
+          <input
+            id="location-input"
+            type="text"
+            placeholder="Enter a location"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            style={{ width: '300px', padding: '10px', marginBottom: '10px' }}
+          />
+        </Autocomplete>
+      </div>
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={5}
+        onLoad={(map) => setMap(map)}
+      >
+        {marker && <Marker position={marker} />}
+      </GoogleMap>
+      <div>
+        <label htmlFor="address">Address</label>
+        <input
+          id="address"
+          type="text"
+          value={place ? place.formatted_address : ''}
+          readOnly
+        />
+      </div>
+      <div>
+        <label htmlFor="postal-code">Postal Code</label>
+        <input
+          id="postal-code"
+          type="text"
+          value={place ? getAddressComponent(place, 'postal_code') : ''}
+          readOnly
+        />
+      </div>
+      <div>
+        <label htmlFor="latitude">Latitude</label>
+        <input
+          id="latitude"
+          type="text"
+          value={marker ? marker.lat : ''}
+          readOnly
+        />
+      </div>
+      <div>
+        <label htmlFor="longitude">Longitude</label>
+        <input
+          id="longitude"
+          type="text"
+          value={marker ? marker.lng : ''}
+          readOnly
+        />
+      </div>
+      </LoadScript>
       {/* Parameters Section */}
       <div>
         <hr className="my-8 border-gray-400" />
@@ -1753,5 +1849,13 @@ function ApartmentModule({ onDataUpdate }) {
     </div>
   );
 }
+const getAddressComponent = (place, type) => {
+  for (const component of place.address_components) {
+    if (component.types.includes(type)) {
+      return component.long_name;
+    }
+  }
+  return '';
+};
 
 export default ApartmentModule;
