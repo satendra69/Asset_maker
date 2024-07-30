@@ -23,7 +23,7 @@ const ExampleWithLocalizationProvider = ({ data }) => {
         headers: {
           Authorization: `Bearer ${token}`
         },
-        data: { type } // Including type in the request body
+        data: { type }
       });
       console.log("Delete response: ", res);
       return res.data;

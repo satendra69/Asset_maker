@@ -41,7 +41,7 @@ function AdminHome() {
   // Check if not isError and data is defined and has a data property
   const propertiesData = !isError && data && data.data ? data.data : [];
 
-  console.log(propertiesData);
+  // console.log(propertiesData);
 
   return (
     <div className="h-[98vh] overflow-y-scroll">

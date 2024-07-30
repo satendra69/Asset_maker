@@ -1266,7 +1266,7 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
     }
 
-    console.log('Uploaded files for type :', type, files);
+    // console.log('Uploaded files for type :', type, files);
 
     await connection.beginTransaction();
 

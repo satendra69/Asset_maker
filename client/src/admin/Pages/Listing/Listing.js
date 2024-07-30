@@ -27,13 +27,13 @@ function NewListingPage() {
 
   // Define state for form inputs
   const [title, setTitle] = useState("");
-  const [listingType, setListingType] = useState([]);
+  const [listingType, setListingType] = useState("");
   const [featured, setFeatured] = useState(false);
-  const [selectedOwner, setSelectedOwner] = useState([]);
+  const [selectedOwner, setSelectedOwner] = useState("");
 
   // added by satya
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedRegions, setSelectedRegions] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState("");
+  const [selectedRegions, setSelectedRegions] = useState("");
   const [CustomLabel, setCustomLabel] = useState([]);
   const [ApartmentData, setApartment] = useState([]);
   const [ApartmentGalleryData, setApartmentGalleryData] = useState([]);
@@ -103,28 +103,14 @@ function NewListingPage() {
     }
   };
 
-  // Function to handle Regions checkbox change
-  const handleRegionsCheckboxChange = (event) => {
-    const { id, checked } = event.target;
-    if (checked) {
-      // Add to selected categories if checked
-      setSelectedRegions([...selectedRegions, id]);
-    } else {
-      // Remove from selected categories if unchecked
-      setSelectedRegions(selectedRegions.filter(category => category !== id));
-    }
+  // Function to handle Region radio button change
+  const handleRegionChange = (event) => {
+    setSelectedRegions(event.target.value);
   };
 
-  // Function to handle Categories checkbox change
-  const handleCheckboxChange = (event) => {
-    const { id, checked } = event.target;
-    if (checked) {
-      // Add to selected categories if checked
-      setSelectedCategories([...selectedCategories, id]);
-    } else {
-      // Remove from selected categories if unchecked
-      setSelectedCategories(selectedCategories.filter(category => category !== id));
-    }
+  // Function to handle Category radio button change
+  const handleCategoryChange = (event) => {
+    setSelectedCategories(event.target.value);
   };
 
   const publishBtn = async (e) => {
@@ -446,7 +432,7 @@ function NewListingPage() {
             <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Regions</h2>
             <div className="flex items-center mt-4">
-              {/* Checkboxes for regions */}
+              {/* Radio buttons for regions */}
               <div className="flex flex-wrap items-center">
 
                 {/* Bengaluru */}
@@ -455,11 +441,13 @@ function NewListingPage() {
                   className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
-                    type="checkbox"
+                    type="radio"
                     id="bengaluru"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
-                    onChange={handleRegionsCheckboxChange}
-                    checked={selectedRegions.includes("bengaluru")}
+                    name="region"
+                    value="bengaluru"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                    onChange={handleRegionChange}
+                    checked={selectedRegions === "bengaluru"}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
                     Bengaluru
@@ -472,11 +460,13 @@ function NewListingPage() {
                   className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
-                    type="checkbox"
+                    type="radio"
                     id="hyderabad"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
-                    onChange={handleRegionsCheckboxChange}
-                    checked={selectedRegions.includes("hyderabad")}
+                    name="region"
+                    value="hyderabad"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                    onChange={handleRegionChange}
+                    checked={selectedRegions === "hyderabad"}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
                     Hyderabad
@@ -489,11 +479,13 @@ function NewListingPage() {
                   className="inline-flex items-center mb-2 mr-6"
                 >
                   <input
-                    type="checkbox"
+                    type="radio"
                     id="tirupati"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
-                    onChange={handleRegionsCheckboxChange}
-                    checked={selectedRegions.includes("tirupati")}
+                    name="region"
+                    value="tirupati"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                    onChange={handleRegionChange}
+                    checked={selectedRegions === "tirupati"}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
                     Tirupati
@@ -509,15 +501,17 @@ function NewListingPage() {
             <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Categories</h2>
             <div className="flex items-center mt-4">
-              {/* Checkboxes for categories */}
+              {/* Radio buttons for categories */}
               <div className="flex flex-wrap items-center">
                 <label htmlFor="buy" className="inline-flex items-center mb-2 mr-6">
                   <input
-                    type="checkbox"
+                    type="radio"
                     id="buy"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
-                    onChange={handleCheckboxChange}
-                    checked={selectedCategories.includes("buy")}
+                    name="category"
+                    value="buy"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                    onChange={handleCategoryChange}
+                    checked={selectedCategories === "buy"}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
                     Buy
@@ -525,11 +519,13 @@ function NewListingPage() {
                 </label>
                 <label htmlFor="rent" className="inline-flex items-center mb-2">
                   <input
-                    type="checkbox"
+                    type="radio"
                     id="rent"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
-                    onChange={handleCheckboxChange}
-                    checked={selectedCategories.includes("rent")}
+                    name="category"
+                    value="rent"
+                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                    onChange={handleCategoryChange}
+                    checked={selectedCategories === "rent"}
                   />
                   <span className="ml-2 text-sm leading-6 text-gray-900">
                     Rent

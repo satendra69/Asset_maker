@@ -306,7 +306,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     initialState: {
       // showColumnFilters: true,
       density: 'compact',
-      pagination: { pageSize: 8 },
+      pagination: { pageSize: 10 },
       showGlobalFilter: true,
       columnPinning: {
         left: ["mrt-row-expand", "mrt-row-select"],
@@ -321,7 +321,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     },
     muiPaginationProps: {
       color: "secondary",
-      rowsPerPageOptions: [2, 5, 10],
+      rowsPerPageOptions: [2, 5, 10, 15, 20],
       shape: "rounded",
       variant: "outlined",
     },
