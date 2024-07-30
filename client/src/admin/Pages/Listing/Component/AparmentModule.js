@@ -11,6 +11,7 @@ import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
 import httpCommon from "../../../../http-common";
+import Select from "react-select";
 
 function ApartmentModule({ onDataUpdate }) {
 
@@ -68,12 +69,15 @@ function ApartmentModule({ onDataUpdate }) {
   const [selectedDocumentIndex, setSelectedDocumentIndex] = useState(null);
   const [isStored, setIsStored] = useState(false);
   const [videoUrl, setVideoUrl] = useState('');
+  const [mainImage, setMainImage] = useState([]);
+  const [storedMainImage, setStoredMainImage] = useState([]);
   const [galleryImages, setGalleryImages] = useState([]);
   const [storedGalleryImages, setStoredGalleryImages] = useState([]);
   const [masterPlanImages, setMasterPlanImages] = useState([]);
   const [storedMasterPlanImages, setStoredMasterPlanImages] = useState([]);
   const [floorAreaPlanImages, setFloorAreaPlanImages] = useState([]);
   const [storedFloorAreaPlanImages, setStoredFloorAreaPlanImages] = useState([]);
+  const [selectedMainImageIndex, setSelectedMainImageIndex] = useState(null);
   const [selectedGalleryImageIndex, setSelectedGalleryImageIndex] = useState(null);
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
@@ -104,13 +108,15 @@ function ApartmentModule({ onDataUpdate }) {
           if (imgResponse.data.status === "success") {
             const imageData = imgResponse.data.data;
 
-            // Separate gallery and brochure data
+            // Separate images and brochure data
+            const mainImageData = imageData.filter(item => item.type === "Main");
             const galleryData = imageData.filter(item => item.type === "Gallery");
             const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
             const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
             const brochureData = imageData.filter(item => item.type === "Brochure");
 
             // Set images and brochures
+            setStoredMainImage(mainImageData);
             setStoredGalleryImages(galleryData);
             setStoredMasterPlanImages(masterPlanData);
             setStoredFloorAreaPlanImages(floorAreaPlanData);
@@ -247,6 +253,12 @@ function ApartmentModule({ onDataUpdate }) {
     const updatedImages = images.filter((_, i) => i !== index);
     setFunction(updatedImages);
 
+    if (selectedMainImageIndex === index) {
+      setSelectedMainImageIndex(null);
+    } else if (selectedMainImageIndex > index) {
+      setSelectedMainImageIndex(selectedMainImageIndex - 1);
+    }
+
     if (selectedGalleryImageIndex === index) {
       setSelectedGalleryImageIndex(null);
     } else if (selectedGalleryImageIndex > index) {
@@ -266,20 +278,39 @@ function ApartmentModule({ onDataUpdate }) {
     }
   };
 
-  const handleStoredImageDelete = async (RowID) => {
+  const handleStoredImageDelete = async (RowID, type) => {
     try {
       const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+      if (response.data.status === 'success') {
+        switch (type) {
+          case 'Main':
+            setStoredMainImage(storedMainImage.filter(image => image.RowID !== RowID));
+            break;
+          case 'gallery':
+            setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+            break;
+          case 'masterPlan':
+            setStoredMasterPlanImages(storedMasterPlanImages.filter(image => image.RowID !== RowID));
+            break;
+          case 'floorAreaPlan':
+            setStoredFloorAreaPlanImages(storedFloorAreaPlanImages.filter(image => image.RowID !== RowID));
+            break;
+          default:
+            console.error('Invalid type provided');
+        }
       } else {
-        console.error("Error deleting gallery image:", response.data.message);
+        console.error('Error deleting images:', response.data.message);
       }
     } catch (error) {
-      console.error("Error deleting gallery image:", error);
+      console.error('Error deleting images:', error);
     }
   };
 
   // Function to open modal with selected image index
+  const openMainImageModal = (index) => {
+    setSelectedMainImageIndex(index);
+  };
+
   const openGalleryModal = (index) => {
     setSelectedGalleryImageIndex(index);
   };
@@ -294,6 +325,7 @@ function ApartmentModule({ onDataUpdate }) {
 
   // Function to close modal
   const closeImageModal = () => {
+    setSelectedMainImageIndex(null);
     setSelectedGalleryImageIndex(null);
     setSelectedMasterPlanImageIndex(null);
     setSelectedFloorAreaPlanImageIndex(null);
@@ -349,21 +381,11 @@ function ApartmentModule({ onDataUpdate }) {
     setIsStored(false);
   };
 
-  const handleAdvantagesChange = (e) => {
-    const selectedOptions = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setOtherAdvantages(selectedOptions);
+  const handleAdvantagesChange = (selectedOptions) => {
+    setOtherAdvantages(selectedOptions ? selectedOptions.map(option => option.value) : []);
   };
 
-  const removeAdvantage = (advantageToRemove) => {
-    setOtherAdvantages((prevAdvantages) =>
-      prevAdvantages.filter((advantage) => advantage !== advantageToRemove)
-    );
-  };
-
-  const advantagesAsString = otherAdvantages.join(', ');
+  const advantagesAsString = otherAdvantages?.join(', ');
 
   // List of amenities
   const amenities = [
@@ -478,6 +500,7 @@ function ApartmentModule({ onDataUpdate }) {
   // Call the handleDataUpdate function
   const handleDataUpdate = () => {
     const combinedImages = {
+      mainImage,
       galleryImages,
       masterPlanImages,
       floorAreaPlanImages,
@@ -555,8 +578,8 @@ function ApartmentModule({ onDataUpdate }) {
     balconies, approachingRoadWidth, furnishing, stampDutyAndRegistrationCharges,
     totalProjectExtent, totalBlocks, transactionType, totalTowers, totalPhases, approvalAuthority,
     totalUnits, advantagesAsString, projectBuilderDetails, amenitiesAsString, videoUrl,
-    brochure, galleryImages, masterPlanImages, floorAreaPlanImages,
-    storedBrochure, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
+    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages,
+    storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
   return (
     <div>
@@ -1178,37 +1201,15 @@ function ApartmentModule({ onDataUpdate }) {
               Other Advantages
             </label>
             <div className="mt-1 mr-3 mb-7">
-              <select
+              <Select
                 id="otherAdvantages"
-                value={otherAdvantages}
+                options={advantagesOptions}
+                isMulti
+                value={advantagesOptions.filter(option => otherAdvantages.includes(option.value))}
                 onChange={handleAdvantagesChange}
-                onBlur={handleDataUpdate}
-                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                multiple
-              >
-                {advantagesOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex flex-wrap items-center mt-2">
-              {otherAdvantages.map((advantage) => (
-                <div
-                  key={advantage}
-                  className="flex items-center px-2 py-1 mb-2 mr-2 bg-gray-100 rounded-md"
-                >
-                  <span className="text-gray-800">{advantage}</span>
-                  <button
-                    type="button"
-                    className="ml-1 text-red-600 hover:text-red-800 focus:outline-none"
-                    onClick={() => removeAdvantage(advantage)}
-                  >
-                    &#10005;
-                  </button>
-                </div>
-              ))}
+                className="basic-multi-select"
+                classNamePrefix="select"
+              />
             </div>
           </div>
         </div>
@@ -1358,6 +1359,100 @@ function ApartmentModule({ onDataUpdate }) {
         )}
       </div>
 
+      {/* Main Image Section */}
+      <div>
+        <hr className="my-8 border-gray-400" />
+        <h2 className="mb-2 text-xl font-semibold">Main Image</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+          <div
+            className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
+            id="dropzone"
+            onDragOver={handleDragOver}
+            onDrop={(e) => handleDrop(e, setMainImage)}
+          >
+            <input
+              type="file"
+              id="MainImage-upload"
+              name="MainImage-upload"
+              accept="image/*"
+              multiple
+              className="absolute inset-0 z-50 w-full h-full opacity-0"
+              onChange={(e) => handleImageUpload(e, setMainImage)}
+            />
+            <div className="text-center">
+              <img
+                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                alt="Upload"
+                className="w-12 h-12 mx-auto"
+              />
+              <h3 className="mt-2 text-sm font-medium text-gray-900">
+                <label htmlFor="file-upload" className="relative">
+                  <span>Drag and drop</span>
+                  <span className="text-indigo-600"> or browse</span>
+                  <span> to upload</span>
+                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
+                </label>
+              </h3>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+            </div>
+            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
+          </div>
+        </div>
+
+
+        <div className="flex flex-wrap mt-4">
+
+          {/* Displaying Stored Main Images */}
+          {storedMainImage.length > 0 && (
+            <div className="flex flex-row">
+              {storedMainImage.map((file) => (
+                <div key={file.RowID} className="relative m-2">
+                  <button
+                    onClick={() => handleStoredImageDelete(file.RowID, 'Main')}
+                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={httpCommon.defaults.baseURL + file.attachment}
+                    alt={`Stored Image ${file.file_name}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => openMainImageModal(file.RowID)}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
+
+          {mainImage.map((image, index) => (
+            <div key={index} className="relative m-2">
+              <button
+                onClick={() => handleImageDelete(index, mainImage, setMainImage)}
+                className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+              >
+                X
+              </button>
+              <img
+                src={URL.createObjectURL(image)}
+                alt={`Uploaded Image ${index + 1}`}
+                className="object-cover w-32 h-32 rounded cursor-pointer"
+                onClick={() => openMainImageModal(index)}
+              />
+            </div>
+          ))}
+
+        </div>
+
+        {/* Modal for displaying main image */}
+        {selectedMainImageIndex !== null && (
+          <ImageModal
+            images={mainImage}
+            currentIndex={selectedMainImageIndex}
+            onClose={closeImageModal}
+          />
+        )}
+      </div>
+
       {/* Gallery Section */}
       <div>
         <hr className="my-8 border-gray-400" />
@@ -1407,7 +1502,7 @@ function ApartmentModule({ onDataUpdate }) {
               {storedGalleryImages.map((file) => (
                 <div key={file.RowID} className="relative m-2">
                   <button
-                    onClick={() => handleStoredImageDelete(file.RowID)} // Implement this function
+                    onClick={() => handleStoredImageDelete(file.RowID, 'gallery')}
                     className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
                   >
                     X
@@ -1515,7 +1610,7 @@ function ApartmentModule({ onDataUpdate }) {
                 {storedMasterPlanImages.map((file) => (
                   <div key={file.RowID} className="relative m-2">
                     <button
-                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      onClick={() => handleStoredImageDelete(file.RowID, 'masterPlan')}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
                     >
                       X
@@ -1607,7 +1702,7 @@ function ApartmentModule({ onDataUpdate }) {
                 {storedFloorAreaPlanImages.map((file) => (
                   <div key={file.RowID} className="relative m-2">
                     <button
-                      onClick={() => handleStoredImageDelete(file.RowID)}
+                      onClick={() => handleStoredImageDelete(file.RowID, 'floorAreaPlan')}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
                     >
                       X

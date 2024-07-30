@@ -6,10 +6,11 @@ const poppler = require('pdf-poppler');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './public/images'); // Directory where files will be saved
+    cb(null, './public/images');
   },
+
   filename: function (req, file, cb) {
-    cb(null, file.originalname); // Original file name
+    cb(null, file.originalname);
   },
 });
 
@@ -21,6 +22,17 @@ const addWatermark = async (req, res, next) => {
       const watermarkPath = path.resolve(__dirname, '../public/images/watermark.png');
 
       for (const file of req.files) {
+        const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
+        const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
+
+
+        if (fs.existsSync(originalFilePath) && fs.existsSync(watermarkedFilePath)) {
+          // file.path = watermarkedFilePath;
+          // file.filename = `watermarked-${file.originalname}`;
+          console.log(`Files already exist: ${file.originalname}`);
+          continue;
+        }
+
         console.log(`Processing file: ${file.path} (Type: ${file.mimetype})`);
 
         const inputPath = file.path;

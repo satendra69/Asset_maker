@@ -145,14 +145,11 @@ function NewListingPage() {
     try {
       let response;
       if (listingId) {
-        // Update existing listing
         response = await httpCommon.patch(`/list/${listingId}`, json_ListingInsert);
       } else {
-        // Create new listing
         response = await httpCommon.post("/list", json_ListingInsert);
       }
       const responseData = await response.data;
-      //  console.log("json_Asset Data___", responseData);
 
       if (responseData.status === "SUCCESS") {
         console.log("SUCCESS_____insert__");
@@ -188,6 +185,7 @@ function NewListingPage() {
 
   const uploadListingFiles = async (listingType, listingID, auditUser, ListingData, update) => {
     const fileTypes = [
+      { key: 'combinedImages.mainImage', type: 'Main' },
       { key: 'combinedImages.galleryImages', type: 'Gallery' },
       { key: 'combinedImages.masterPlanImages', type: 'MasterPlan' },
       { key: 'combinedImages.floorAreaPlanImages', type: 'FloorAreaPlan' },
@@ -200,14 +198,13 @@ function NewListingPage() {
       const files = getFileFromListingData(ListingData, fileType.key);
       if (files && files.length > 0) {
         console.log(`Uploading ${files.length} files for ${fileType.type}`);
-
         const formData = new FormData();
-        formData.append("type", fileType.type); // Ensure type key matches server expectations
+        formData.append("type", fileType.type);
         formData.append("auditUser", auditUser);
         formData.append("update", update);
 
         for (let i = 0; i < files.length; i++) {
-          formData.append("attachments", files[i]); // Ensure "images" matches server's field name for file uploads
+          formData.append("attachments", files[i]);
         }
 
         try {

@@ -230,20 +230,16 @@ function Hero() {
                 <p className="text-xs font-light text-center">{propertyCounts.bengaluru} properties</p>
               </div>
             </a>
-            <a href="#" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img src="/delhi.png" alt="delhi" className="object-cover w-full h-[60%] " />
-                <h3 className="text-center">Delhi</h3>
-                <p className="text-xs font-light text-center">5000+ properties</p>
-              </div>
-            </a>
-            <a href="#" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img src="/pune.png" alt="pune" className="object-cover w-full h-[60%] " />
-                <h3 className="text-center">Pune</h3>
-                <p className="text-xs font-light text-center">1000+ properties</p>
-              </div>
-            </a>
+            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+              <img src="/delhi.png" alt="delhi" className="object-cover w-full h-[60%] " />
+              <h3 className="text-center">Delhi</h3>
+              <p className="text-xs font-light text-center">0 properties</p>
+            </div>
+            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+              <img src="/pune.png" alt="pune" className="object-cover w-full h-[60%] " />
+              <h3 className="text-center">Pune</h3>
+              <p className="text-xs font-light text-center">0 properties</p>
+            </div>
             <a href="/Cities/Hyderabad" className="place-link">
               <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
                 <img
@@ -266,17 +262,15 @@ function Hero() {
                 <p className="text-xs font-light text-center">{propertyCounts.tirupati} properties</p>
               </div>
             </a>
-            <a href="#" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img
-                  src="/ahmedabad.jpg"
-                  alt="ahmedabad"
-                  className="object-cover w-full h-[60%] "
-                />
-                <h3 className="text-center">Ahmedabad</h3>
-                <p className="text-xs font-light text-center">1000+ properties</p>
-              </div>
-            </a>
+            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
+              <img
+                src="/ahmedabad.jpg"
+                alt="ahmedabad"
+                className="object-cover w-full h-[60%] "
+              />
+              <h3 className="text-center">Ahmedabad</h3>
+              <p className="text-xs font-light text-center">0 properties</p>
+            </div>
           </div>
         </Container>
       </section >

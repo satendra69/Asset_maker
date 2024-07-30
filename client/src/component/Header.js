@@ -144,11 +144,7 @@ function Header() {
           {/* LOGO */}
           <Link to="/">
             <img
-              src={
-                active
-                  ? "/logo2.jpg"
-                  : "https://assetmakers.com/wp-content/uploads/2019/07/Asset-Makers-Logo-Brightest.png"
-              }
+              src={"/Asset-Makers-Logo-Brightest.png"}
               alt="logo"
               className="object-contain h-12"
             />
