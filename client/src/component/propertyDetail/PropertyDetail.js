@@ -410,171 +410,186 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   return (
     <div className="container p-4 mx-auto">
-      <div className="space-y-6">
-        {/* Conditionally render "Other Facts" section */}
-        {transformedProperty.details.otherFacts.some(fact => fact.value) && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Other Facts</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {transformedProperty.details.otherFacts.map((fact, index) => (
-                fact.value && (
+      <div className="-mt-6 space-y-16">
+        <div className="">
+          {/* Conditionally render "Other Facts" section */}
+          {transformedProperty.details.otherFacts.some(fact => fact.value) && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Other Facts</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {transformedProperty.details.otherFacts.map((fact, index) => (
+                  fact.value && (
+                    <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
+                      {getIcon(fact.label)}
+                      <span className="ml-2 font-semibold long-label">{fact.label}:</span>
+                      <span className="ml-1 text-gray-700">{fact.value}</span>
+                    </div>
+                  )
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <div className="mt-16">
+          {/* Conditionally render "Other Advantages" section */}
+          {transformedProperty.details.otherAdvantages.length > 0 && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Other Advantages</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {transformedProperty.details.otherAdvantages.map((advantage, index) => (
                   <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
-                    {getIcon(fact.label)}
-                    <span className="ml-2 font-semibold long-label">{fact.label}:</span>
-                    <span className="ml-1 text-gray-700">{fact.value}</span>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.7rem"
+                      height="1.7rem"
+                      viewBox="0 0 24 24"
+                      className="mr-2 text-blue-700"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
+                      ></path>
+                      <path
+                        fill="currentColor"
+                        d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
+                      ></path>
+                    </svg>
+                    <span className="font-semibold">{advantage.label}</span>
                   </div>
-                )
-              ))}
-            </div>
-          </section>
-        )}
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
 
+        <div className="mt-16">
+          {/* Conditionally render "Amenities" section */}
+          {transformedProperty.details.amenities.length > 0 && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Amenities</h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+                {transformedProperty.details.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.7rem"
+                      height="1.7rem"
+                      viewBox="0 0 24 24"
+                      className="mr-2 text-blue-700"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
+                      ></path>
+                      <path
+                        fill="currentColor"
+                        d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
+                      ></path>
+                    </svg>
+                    <span className="font-semibold">{amenity.label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
 
-        {/* Conditionally render "Other Advantages" section */}
-        {transformedProperty.details.otherAdvantages.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Other Advantages</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {transformedProperty.details.otherAdvantages.map((advantage, index) => (
-                <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="1.7rem"
-                    height="1.7rem"
-                    viewBox="0 0 24 24"
-                    className="mr-2 text-blue-700"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
-                    ></path>
-                    <path
-                      fill="currentColor"
-                      d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
-                    ></path>
-                  </svg>
-                  <span className="font-semibold">{advantage.label}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <div className="mt-16">
+          {/* Conditionally render "About Project/Builder" section */}
+          {transformedProperty.details.aboutProject && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">About Project/Builder</h2>
+              <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty.details.aboutProject}</p>
+            </section>
+          )}
+        </div>
 
-        {/* Conditionally render "Amenities" section */}
-        {transformedProperty.details.amenities.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Amenities</h2>
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-              {transformedProperty.details.amenities.map((amenity, index) => (
-                <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="1.7rem"
-                    height="1.7rem"
-                    viewBox="0 0 24 24"
-                    className="mr-2 text-blue-700"
-                  >
-                    <path
-                      fill="currentColor"
-                      d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
-                    ></path>
-                    <path
-                      fill="currentColor"
-                      d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
-                    ></path>
-                  </svg>
-                  <span className="font-semibold">{amenity.label}</span>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+        <div className="mt-16">
+          {/* Conditionally render "Property Video" section */}
+          {transformedProperty.details.propertyVideo && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Property Video</h2>
+              <div className="max-w-full mx-auto mb-4">
+                <iframe
+                  width="100%"
+                  height="315"
+                  src={`https://www.youtube.com/embed/${transformedProperty.details.propertyVideo.split('v=')[1]}`}
+                  title="Property Video"
+                  frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="rounded-lg"
+                ></iframe>
+              </div>
+            </section>
+          )}
+        </div>
 
-        {/* Conditionally render "About Project/Builder" section */}
-        {transformedProperty.details.aboutProject && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">About Project/Builder</h2>
-            <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty.details.aboutProject}</p>
-          </section>
-        )}
-
-        {/* Conditionally render "Property Video" section */}
-        {transformedProperty.details.propertyVideo && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Property Video</h2>
-            <div className="max-w-full mx-auto mb-4">
-              <iframe
-                width="100%"
-                height="315"
-                src={`https://www.youtube.com/embed/${transformedProperty.details.propertyVideo.split('v=')[1]}`}
-                title="Property Video"
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                className="rounded-lg"
-              ></iframe>
-            </div>
-          </section>
-        )}
-
-        {/* Conditionally render "Master Plan" section */}
-        {images.some(image => image.type === 'MasterPlan') && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Master Plan</h2>
-            <div className="flex flex-wrap gap-10">
-              {images?.filter(image => image.type === 'MasterPlan').map((image, index) => (
-                <img
-                  key={index}
-                  src={httpCommon.defaults.baseURL + image.attachment}
-                  alt={image.file_name}
-                  className="object-cover w-64 h-48 rounded cursor-pointer"
-                  onClick={() => openMasterPlanModal(index)}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Conditionally render "Floor/Area Plan" section */}
-        {images.some(image => image.type === 'FloorAreaPlan') && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Floor/Area Plan</h2>
-            <div className="flex flex-wrap gap-10">
-              {images?.filter(image => image.type === 'FloorAreaPlan').map((image, index) => (
-                <img
-                  key={index}
-                  src={httpCommon.defaults.baseURL + image.attachment}
-                  alt={image.file_name}
-                  className="object-cover w-64 h-48 rounded cursor-pointer"
-                  onClick={() => openFloorAreaPlanModal(index)}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Conditionally render "Brochure" section */}
-        {pdfFiles.length > 0 && (
-          <section>
-            <h2 className="mb-4 text-2xl font-bold">Brochure</h2>
-            <div className="flex flex-wrap gap-4">
-              {pdfFiles.map((file, index) => (
-                <div
-                  key={index}
-                  className="relative"
-                  onClick={() => handleThumbnailClick(httpCommon.defaults.baseURL + file.attachment)}
-                >
+        <div className="mt-16">
+          {/* Conditionally render "Master Plan" section */}
+          {images.some(image => image.type === 'MasterPlan') && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Master Plan</h2>
+              <div className="flex flex-wrap gap-10">
+                {images?.filter(image => image.type === 'MasterPlan').map((image, index) => (
                   <img
-                    src={httpCommon.defaults.baseURL + (thumbnailFiles.find(thumbnail => thumbnail.file_name === file.file_name.replace('.pdf', '-thumbnail.png'))?.attachment || '/images/defaultasset.jpeg')}
-                    alt={file.file_name}
-                    className="object-cover w-32 h-48 rounded-lg cursor-pointer"
+                    key={index}
+                    src={httpCommon.defaults.baseURL + image.attachment}
+                    alt={image.file_name}
+                    className="object-cover w-64 h-48 rounded cursor-pointer"
+                    onClick={() => openMasterPlanModal(index)}
                   />
-                  <p className="mt-2 text-center">{file.file_name}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <div className="mt-16">
+          {/* Conditionally render "Floor/Area Plan" section */}
+          {images.some(image => image.type === 'FloorAreaPlan') && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Floor/Area Plan</h2>
+              <div className="flex flex-wrap gap-10">
+                {images?.filter(image => image.type === 'FloorAreaPlan').map((image, index) => (
+                  <img
+                    key={index}
+                    src={httpCommon.defaults.baseURL + image.attachment}
+                    alt={image.file_name}
+                    className="object-cover w-64 h-48 rounded cursor-pointer"
+                    onClick={() => openFloorAreaPlanModal(index)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
+        <div className="mt-16">
+          {/* Conditionally render "Brochure" section */}
+          {pdfFiles.length > 0 && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Brochure</h2>
+              <div className="flex flex-wrap gap-4">
+                {pdfFiles.map((file, index) => (
+                  <div
+                    key={index}
+                    className="relative"
+                    onClick={() => handleThumbnailClick(httpCommon.defaults.baseURL + file.attachment)}
+                  >
+                    <img
+                      src={httpCommon.defaults.baseURL + (thumbnailFiles.find(thumbnail => thumbnail.file_name === file.file_name.replace('.pdf', '-thumbnail.png'))?.attachment || '/images/defaultasset.jpeg')}
+                      alt={file.file_name}
+                      className="object-cover w-32 h-48 rounded-lg cursor-pointer"
+                    />
+                    <p className="mt-2 text-center">{file.file_name}</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
 
         {/* PDF Modal */}
         {modalIsOpen && (
