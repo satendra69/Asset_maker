@@ -19,6 +19,7 @@ const MapGoogle = ({ googleMapsApiKey }) => {
     const [place, setPlace] = useState(null);
     const autocompleteRef = useRef(null);
     const [inputValue, setInputValue] = useState('');
+    const [isApiLoaded, setIsApiLoaded] = useState(false); // State to track API loading
 
     const handlePlaceChanged = () => {
         const place = autocompleteRef.current?.getPlace();
@@ -28,10 +29,13 @@ const MapGoogle = ({ googleMapsApiKey }) => {
             setMarker({ lat: location.lat(), lng: location.lng() });
             map.panTo(location);
             map.setZoom(13);
+
+            setInputValue(place.formatted_address);
         }
     };
 
     const onLoad = () => {
+        setIsApiLoaded(true);
         console.log('Google Maps API loaded');
     };
 
@@ -46,19 +50,21 @@ const MapGoogle = ({ googleMapsApiKey }) => {
                         <label htmlFor="location-input" className="block text-sm font-semibold leading-6 text-gray-900">
                             Location
                         </label>
-                        <Autocomplete
-                            onLoad={(ref) => (autocompleteRef.current = ref)}
-                            onPlaceChanged={handlePlaceChanged}
-                        >
-                            <input
-                                id="location-input"
-                                type="text"
-                                placeholder="Enter Location"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
-                            />
-                        </Autocomplete>
+                        {isApiLoaded && ( // Only render Autocomplete when API is loaded
+                            <Autocomplete
+                                onLoad={(ref) => (autocompleteRef.current = ref)}
+                                onPlaceChanged={handlePlaceChanged}
+                            >
+                                <input
+                                    id="location-input"
+                                    type="text"
+                                    placeholder="Enter Location"
+                                    value={inputValue}
+                                    onChange={(e) => setInputValue(e.target.value)}
+                                    className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+                                />
+                            </Autocomplete>
+                        )}
                     </div>
                     <div className="w-full pr-4 mb-7">
                         <label htmlFor="address" className="block text-sm font-semibold leading-6 text-gray-900">

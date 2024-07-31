@@ -700,8 +700,8 @@ function ApartmentModule({ onDataUpdate }) {
       </div>
 
       {/* Location Details */}
-      <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
-      {/* <MapGoogle googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4" /> */}
+      {/* <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} /> */}
+      <MapGoogle googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4" />
 
       {/* Parameters Section */}
       <div>
