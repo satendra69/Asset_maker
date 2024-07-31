@@ -57,7 +57,7 @@ function MultiCrousel({ data, autoplay, details }) {
       ssr={true}
       infinite={true}
       autoPlay={autoplay ? false : true}
-      autoPlaySpeed={2000}
+      autoPlaySpeed={7000}
       keyBoardControl={true}
       customTransition="transform 300ms ease-in-out"
       transitionDuration={300}

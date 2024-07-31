@@ -29,6 +29,13 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedType, setSelectedType] = useState(null);
   const navigate = useNavigate();
 
+  const getMainImageUrl = (attachments) => {
+    const mainImage = attachments.find(att => att.type === "Main");
+    return mainImage
+      ? httpCommon.defaults.baseURL + mainImage.attachment
+      : httpCommon.defaults.baseURL + '\images\defaultasset.jpeg'; // Default image URL
+  };
+
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -142,6 +149,21 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
             </Button>
           </Box>
         ),
+      },
+      {
+        id: "mainImage",
+        header: "Property Image",
+        size: 100,
+        Cell: ({ row }) => {
+          const imageUrl = getMainImageUrl(row.original.attachments);
+          return (
+            <img
+              src={imageUrl}
+              alt={row.original.ltg_title}
+              style={{ width: "100%", height: "auto", maxHeight: "100px", objectFit: "cover" }}
+            />
+          );
+        },
       },
       {
         id: "ltg_title",
@@ -306,7 +328,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     initialState: {
       // showColumnFilters: true,
       density: 'compact',
-      pagination: { pageSize: 10 },
+      pagination: { pageSize: 5 },
       showGlobalFilter: true,
       columnPinning: {
         left: ["mrt-row-expand", "mrt-row-select"],

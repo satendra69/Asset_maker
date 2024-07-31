@@ -10,7 +10,7 @@ function AdminHome() {
 
   const getProperty = async () => {
     try {
-      const res = await httpCommon.get(`/list/table`);
+      const res = await httpCommon.get(`/list`);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -21,7 +21,7 @@ function AdminHome() {
 
   const getSingleProperty = async () => {
     try {
-      const res = await httpCommon.get(`/list/table/${currentUser.id}`);
+      const res = await httpCommon.get(`/list/user/${currentUser.id}`);
       return res.data;
     } catch (error) {
       console.log(error);

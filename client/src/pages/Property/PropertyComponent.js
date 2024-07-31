@@ -24,7 +24,8 @@ function PropertyComponent({ defaultType }) {
             const response = await httpCommon.get(`/list`, {
                 params: filterParams
             });
-            // console.log("response____AllProperties", response);
+
+            // console.log(response, "response____AllProperties");
 
             if (response.data.status === "success") {
                 const properties = response.data.data;
@@ -42,7 +43,7 @@ function PropertyComponent({ defaultType }) {
 
         // Check if formData is empty
         if (!formData || Object.keys(formData).length === 0) {
-            setAllProperties(originalProperties); // Return original properties if formData is empty
+            setAllProperties(originalProperties);
             return;
         }
 
@@ -50,8 +51,8 @@ function PropertyComponent({ defaultType }) {
 
         // Check if filteredProperties is empty
         if (filteredProperties.length === 0) {
-            setAllProperties(filteredProperties); // Set empty properties if originalProperties is empty
-            return; // Return early if no properties to filter
+            setAllProperties(filteredProperties);
+            return;
         }
 
         // Filter by search term

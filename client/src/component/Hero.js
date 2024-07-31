@@ -18,7 +18,6 @@ function Hero() {
     hyderabad: 0,
     tirupati: 0,
   });
-  const [storedMainImage, setStoredMainImage] = useState([]);
 
   // Fetch properties data
   const getPropertiesData = async () => {
@@ -34,27 +33,6 @@ function Hero() {
       console.error("Error fetching data:", error);
     }
   };
-
-
-  // Fetch images and brochures
-  const getImagesData = async () => {
-    try {
-      const imgResponse = await httpCommon.get(`/list/images/`);
-      if (imgResponse.data.status === "success") {
-        const imageData = imgResponse.data.data;
-
-        // Separate gallery and brochure data
-        const mainImageData = imageData.filter(item => item.type === "Main");
-
-        // Set images and brochures
-        setStoredMainImage(mainImageData);
-      } else {
-        console.error("Error fetching image data: Response status not successful");
-      }
-    } catch (error) {
-      console.error("Error fetching image data:", error);
-    }
-  }
 
   const updatePropertyCounts = (properties) => {
     const counts = {
@@ -182,18 +160,11 @@ function Hero() {
   };
 
   const Featured = properties.map((item) => {
-    // Ensure storedMainImage is an array
-    if (!Array.isArray(storedMainImage)) {
-      throw new Error("storedMainImage is not an array");
-    }
+    const mainImage = item.attachments.filter(att => att.type === "Main");
 
-    // Find the main image for this property based on ltg_mstRowID
-    const mainImage = storedMainImage.find(img => img.ltg_mstRowID === item.ltg_det_mstRowID);
-
-    // Take the first valid image or set a default image if none found
-    const imgUrl = mainImage
-      ? httpCommon.defaults.baseURL + mainImage.attachment
-      : httpCommon.defaults.baseURL + '\images\defaultasset.jpeg';
+    const imgUrl = mainImage.length > 0
+      ? httpCommon.defaults.baseURL + mainImage[0].attachment
+      : httpCommon.defaults.baseURL + '/images/defaultasset.jpeg';
 
     // Get the property details based on the type
     const details = getPropertyDetails(item.ltg_type, item);
@@ -208,7 +179,6 @@ function Hero() {
 
   useEffect(() => {
     getPropertiesData();
-    getImagesData();
   }, []);
 
   return (

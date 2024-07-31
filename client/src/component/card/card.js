@@ -46,25 +46,16 @@ function Card({ key, item }) {
   const getImageAttachments = (attachments) => {
     // Define allowed image file extensions
 
-    if (!attachments) {
-      return [];
-    }
-
     const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     if (!attachments) {
       return [];
     }
-    return attachments
-      .split(',')
-      .map(file => file.trim())
-      .filter(file => {
-        const extension = file.split('.').pop().toLowerCase();
-        return allowedExtensions.includes(extension) && !file.endsWith('-thumbnail.png');
-      });
+    return attachments.filter(att => att.type === "Main");
   };
 
   // Filter attachments
   const imageAttachments = getImageAttachments(item.attachments);
+  console.log(imageAttachments)
 
   const priceMapping = {
     Plots: item.ltg_det_plot_sale_price,
@@ -134,7 +125,7 @@ function Card({ key, item }) {
           <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}>
             {imageAttachments.length > 0 ? (
               <img
-                src={httpCommon.defaults.baseURL + imageAttachments[0]}
+                src={httpCommon.defaults.baseURL + imageAttachments[0].attachment}
                 alt="attachment"
               />
             ) : (

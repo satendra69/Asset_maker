@@ -1517,27 +1517,31 @@ function VillamentModule({ onDataUpdate }) {
           )}
 
           {mainImage.length > 0 && (
-            <div className="relative m-2">
-              <button
-                onClick={() => handleImageDelete(0, mainImage, setMainImage)}
-                className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
-              >
-                X
-              </button>
-              <img
-                src={URL.createObjectURL(mainImage[0])}
-                alt="Uploaded Image"
-                className="object-cover w-32 h-32 rounded cursor-pointer"
-                onClick={() => openMainImageModal(0)}
-              />
-            </div>
+            <>
+              {mainImage.map((image, index) => (
+                <div key={index} className="relative m-2">
+                  <button
+                    onClick={() => handleImageDelete(0, mainImage, setMainImage)}
+                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  >
+                    X
+                  </button>
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Uploaded Image ${index + 1}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => openMainImageModal(index)}
+                  />
+                </div>
+              ))}
+            </>
           )}
         </div>
 
         {/* Modal for displaying main image */}
         {selectedMainImageIndex !== null && (
           <ImageModal
-            images={mainImage}
+            images={[...storedMainImage, ...mainImage]}
             currentIndex={selectedMainImageIndex}
             onClose={closeImageModal}
           />
@@ -1631,7 +1635,7 @@ function VillamentModule({ onDataUpdate }) {
         {/* Modal for displaying images */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
-            images={galleryImages}
+            images={[...storedGalleryImages, ...galleryImages]}
             currentIndex={selectedGalleryImageIndex}
             onClose={closeImageModal}
           />
@@ -1738,7 +1742,7 @@ function VillamentModule({ onDataUpdate }) {
           {/* Modal for displaying images */}
           {selectedMasterPlanImageIndex !== null && (
             <ImageModal
-              images={masterPlanImages}
+              images={[...storedMasterPlanImages, ...masterPlanImages]}
               currentIndex={selectedMasterPlanImageIndex}
               onClose={closeImageModal}
             />
@@ -1830,7 +1834,7 @@ function VillamentModule({ onDataUpdate }) {
           {/* Modal for displaying images */}
           {selectedFloorAreaPlanImageIndex !== null && (
             <ImageModal
-              images={floorAreaPlanImages}
+              images={[...storedFloorAreaPlanImages, ...floorAreaPlanImages]}
               currentIndex={selectedFloorAreaPlanImageIndex}
               onClose={closeImageModal}
             />
