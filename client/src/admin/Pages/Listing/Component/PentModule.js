@@ -114,11 +114,11 @@ function PentModule({ onDataUpdate }) {
           const imageData = imgResponse.data.data;
 
           // Separate gallery and brochure data
-          const mainImageData = imageData.filter(item => item.type === "Main");
-          const galleryData = imageData.filter(item => item.type === "Gallery");
-          const masterPlanData = imageData.filter(item => item.type === "MasterPlan");
-          const floorAreaPlanData = imageData.filter(item => item.type === "FloorAreaPlan");
-          const brochureData = imageData.filter(item => item.type === "Brochure");
+          const mainImageData = imageData?.filter(item => item.type === "Main");
+          const galleryData = imageData?.filter(item => item.type === "Gallery");
+          const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
+          const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
+          const brochureData = imageData?.filter(item => item.type === "Brochure");
 
           // Set images and brochures
           setStoredMainImage(mainImageData);
@@ -271,7 +271,7 @@ function PentModule({ onDataUpdate }) {
   };
 
   const handleImageDelete = (index, images, setFunction) => {
-    const updatedImages = images.filter((_, i) => i !== index);
+    const updatedImages = images?.filter((_, i) => i !== index);
     setFunction(updatedImages);
 
     if (selectedMainImageIndex === index) {
@@ -305,13 +305,13 @@ function PentModule({ onDataUpdate }) {
       const response = await httpCommon.delete(`/list/images/${RowID}`);
       if (response.data.status === "success") {
         if (type === 'Main') {
-          setStoredMainImage(storedMainImage.filter(image => image.RowID !== RowID));
+          setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
         } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
+          setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
         } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages.filter(image => image.RowID !== RowID));
+          setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
         } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages.filter(image => image.RowID !== RowID));
+          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
         }
       } else {
         console.error("Error deleting images:", response.data.message);
@@ -364,7 +364,7 @@ function PentModule({ onDataUpdate }) {
   };
 
   const handleFileDelete = (index) => {
-    const updatedBrochure = brochure.filter((_, i) => i !== index);
+    const updatedBrochure = brochure?.filter((_, i) => i !== index);
     setBrochure(updatedBrochure);
   };
 
@@ -372,7 +372,7 @@ function PentModule({ onDataUpdate }) {
     try {
       const response = await httpCommon.delete(`/list/files/${RowID}`);
       if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
+        setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
 
       } else {
         console.error("Error deleting brochure:", response.data.message);
@@ -483,7 +483,7 @@ function PentModule({ onDataUpdate }) {
     const amenity = e.target.value;
     if (selectedAmenities.includes(amenity)) {
       setSelectedAmenities(
-        selectedAmenities.filter((item) => item !== amenity)
+        selectedAmenities?.filter((item) => item !== amenity)
       );
     } else {
       setSelectedAmenities([...selectedAmenities, amenity]);
@@ -1099,7 +1099,7 @@ function PentModule({ onDataUpdate }) {
               id="otherAdvantages"
               options={advantagesOptions}
               isMulti
-              value={advantagesOptions.filter(option => otherAdvantages.includes(option.value))}
+              value={advantagesOptions?.filter(option => otherAdvantages.includes(option.value))}
               onChange={handleAdvantagesChange}
               className="basic-multi-select"
               classNamePrefix="select"
@@ -1372,7 +1372,7 @@ function PentModule({ onDataUpdate }) {
         {storedBrochure.length > 0 && (
           <div className="mt-4">
             {storedBrochure
-              .filter(file =>
+              ?.filter(file =>
                 file.file_name.endsWith('.pdf') ||
                 file.file_name.endsWith('.doc') ||
                 file.file_name.endsWith('.docx')

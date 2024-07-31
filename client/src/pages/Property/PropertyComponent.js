@@ -57,7 +57,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by search term
         if (formData.search) {
-            filteredProperties = filteredProperties.filter((item) =>
+            filteredProperties = filteredProperties?.filter((item) =>
                 item.ltg_regions?.toLowerCase().includes(formData.search?.toLowerCase()) ||
                 item.ltg_categories?.toLowerCase().includes(formData.search?.toLowerCase())
             );
@@ -65,14 +65,14 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by location (ltg_regions)
         if (formData.location && formData.location !== 'any') {
-            filteredProperties = filteredProperties.filter((item) =>
+            filteredProperties = filteredProperties?.filter((item) =>
                 item.ltg_regions?.toLowerCase() === formData.location?.toLowerCase()
             );
         }
 
         // Filter by type (ltg_categories)
         if (formData.type && formData.type !== 'any') {
-            filteredProperties = filteredProperties.filter((item) =>
+            filteredProperties = filteredProperties?.filter((item) =>
                 item.ltg_categories === formData.type
             );
         }
@@ -82,7 +82,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by property type (ltg_type)
         if (formData.property && formData.property !== 'any') {
-            filteredProperties = filteredProperties.filter((item) =>
+            filteredProperties = filteredProperties?.filter((item) =>
                 item.ltg_type === selectedProperty
             );
         }
@@ -92,7 +92,7 @@ function PropertyComponent({ defaultType }) {
             const minPrice = formData.price && formData.price.min !== undefined ? formData.price.min : "";
             const maxPrice = formData.price && formData.price.max !== undefined ? formData.price.max : "";
 
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let salePrice = 0;
                 if (item.ltg_type === "CommercialProperties") {
                     salePrice = parseInt(item.ltg_det_comm_prop_sale_price, 10);
@@ -125,7 +125,7 @@ function PropertyComponent({ defaultType }) {
             const minArea = formData.area && formData.area.min !== undefined ? formData.area.min : "";
             const maxArea = formData.area && formData.area.max !== undefined ? formData.area.max : "";
 
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let areaMatch = 0;
                 if (item.ltg_type === "CommercialProperties") {
                     areaMatch = item.ltg_det_comm_prop_pmts_area_dts?.match(/(\d+)/);
@@ -161,7 +161,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by bedrooms (ltg_det_pmts_bed_rom)
         if (formData.bedRooms) {
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let bedroom = 0;
                 if (item.ltg_type === "PentHouses") {
                     bedroom = parseInt(item.ltg_det_penthouses_pmts_bed_rom, 10);
@@ -178,7 +178,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by bathrooms (ltg_det_pmts_bth_rom)
         if (formData.bathRooms) {
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let bathroom = 0;
                 if (item.ltg_type === "PentHouses") {
                     bathroom = parseInt(item.ltg_det_penthouses_pmts_bth_rom, 10);
@@ -195,7 +195,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by status (ltg_det_pmts_status)
         if (formData.status && formData.status !== 'any') {
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let status = '';
                 if (item.ltg_type === "CommercialProperties") {
                     status = item.ltg_det_comm_prop_pmts_status;
@@ -216,7 +216,7 @@ function PropertyComponent({ defaultType }) {
 
         // Filter by amenities
         if (formData.amenities && formData.amenities.length > 0) {
-            filteredProperties = filteredProperties.filter((item) => {
+            filteredProperties = filteredProperties?.filter((item) => {
                 let amenities = [];
                 if (item.ltg_type === "CommercialProperties") {
                     amenities = item.ltg_det_comm_prop_amenities ? item.ltg_det_comm_prop_amenities.split(', ').map((amenity) => amenity.trim()) : [];

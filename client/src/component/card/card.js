@@ -44,13 +44,10 @@ function Card({ key, item }) {
   });
 
   const getImageAttachments = (attachments) => {
-    // Define allowed image file extensions
-
-    const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif'];
     if (!attachments) {
       return [];
     }
-    return attachments.filter(att => att.type === "Main");
+    return attachments?.filter(att => att.type === "Main");
   };
 
   // Filter attachments

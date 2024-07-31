@@ -60,7 +60,7 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
     if (type === "checkbox") {
       const newAmenities = checked
         ? [...formData.amenities, value]
-        : formData.amenities.filter((amenity) => amenity !== value);
+        : formData.amenities?.filter((amenity) => amenity !== value);
       setFormData({
         ...formData,
         amenities: newAmenities,

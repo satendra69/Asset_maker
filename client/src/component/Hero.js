@@ -57,7 +57,7 @@ function Hero() {
       tirupati: 0,
     };
 
-    const featuredProperties = properties.filter(
+    const featuredProperties = properties?.filter(
       (property) =>
         property.ltg_mark_as_featured === "true" &&
         ["bengaluru", "hyderabad", "tirupati"].includes(property.ltg_regions)
@@ -160,7 +160,9 @@ function Hero() {
   };
 
   const Featured = properties.map((item) => {
-    const mainImage = item.attachments.filter(att => att.type === "Main");
+    const mainImage = Array.isArray(item.attachments)
+      ? item.attachments?.filter(att => att.type === "Main")
+      : [];
 
     const imgUrl = mainImage.length > 0
       ? httpCommon.defaults.baseURL + mainImage[0].attachment
