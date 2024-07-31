@@ -104,7 +104,7 @@ function ApartmentModule({ onDataUpdate }) {
     height: '500px',
     width: '100%',
   };
-  
+
   const center = {
     lat: 20.5937,
     lng: 78.9629,
@@ -275,6 +275,16 @@ function ApartmentModule({ onDataUpdate }) {
         setSuffixPriceWords("");
         setIsSuffixPriceExceeded(true);
       }
+    }
+  };
+
+  const handleMainImageUpload = (e, setImage) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage([file]);
+    }
+    if (storedMainImage.length > 0) {
+      handleStoredImageDelete(storedMainImage[0].RowID, 'Main');
     }
   };
 
@@ -694,66 +704,66 @@ function ApartmentModule({ onDataUpdate }) {
       <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
       <LoadScript googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4" libraries={libraries}>
 
-      <div>
-        <label htmlFor="location-input">Enter Location</label>
-        <Autocomplete
-          onLoad={(ref) => (autocompleteRef.current = ref)}
-          onPlaceChanged={handlePlaceChanged}
+        <div>
+          <label htmlFor="location-input">Enter Location</label>
+          <Autocomplete
+            onLoad={(ref) => (autocompleteRef.current = ref)}
+            onPlaceChanged={handlePlaceChanged}
+          >
+            <input
+              id="location-input"
+              type="text"
+              placeholder="Enter a location"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              style={{ width: '300px', padding: '10px', marginBottom: '10px' }}
+            />
+          </Autocomplete>
+        </div>
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={5}
+          onLoad={(map) => setMap(map)}
         >
+          {marker && <Marker position={marker} />}
+        </GoogleMap>
+        <div>
+          <label htmlFor="address">Address</label>
           <input
-            id="location-input"
+            id="address"
             type="text"
-            placeholder="Enter a location"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            style={{ width: '300px', padding: '10px', marginBottom: '10px' }}
+            value={place ? place.formatted_address : ''}
+            readOnly
           />
-        </Autocomplete>
-      </div>
-      <GoogleMap
-        mapContainerStyle={mapContainerStyle}
-        center={center}
-        zoom={5}
-        onLoad={(map) => setMap(map)}
-      >
-        {marker && <Marker position={marker} />}
-      </GoogleMap>
-      <div>
-        <label htmlFor="address">Address</label>
-        <input
-          id="address"
-          type="text"
-          value={place ? place.formatted_address : ''}
-          readOnly
-        />
-      </div>
-      <div>
-        <label htmlFor="postal-code">Postal Code</label>
-        <input
-          id="postal-code"
-          type="text"
-          value={place ? getAddressComponent(place, 'postal_code') : ''}
-          readOnly
-        />
-      </div>
-      <div>
-        <label htmlFor="latitude">Latitude</label>
-        <input
-          id="latitude"
-          type="text"
-          value={marker ? marker.lat : ''}
-          readOnly
-        />
-      </div>
-      <div>
-        <label htmlFor="longitude">Longitude</label>
-        <input
-          id="longitude"
-          type="text"
-          value={marker ? marker.lng : ''}
-          readOnly
-        />
-      </div>
+        </div>
+        <div>
+          <label htmlFor="postal-code">Postal Code</label>
+          <input
+            id="postal-code"
+            type="text"
+            value={place ? getAddressComponent(place, 'postal_code') : ''}
+            readOnly
+          />
+        </div>
+        <div>
+          <label htmlFor="latitude">Latitude</label>
+          <input
+            id="latitude"
+            type="text"
+            value={marker ? marker.lat : ''}
+            readOnly
+          />
+        </div>
+        <div>
+          <label htmlFor="longitude">Longitude</label>
+          <input
+            id="longitude"
+            type="text"
+            value={marker ? marker.lng : ''}
+            readOnly
+          />
+        </div>
       </LoadScript>
       {/* Parameters Section */}
       <div>
@@ -1471,9 +1481,8 @@ function ApartmentModule({ onDataUpdate }) {
               id="MainImage-upload"
               name="MainImage-upload"
               accept="image/*"
-              multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
-              onChange={(e) => handleImageUpload(e, setMainImage)}
+              onChange={(e) => handleMainImageUpload(e, setMainImage)}
             />
             <div className="text-center">
               <img
@@ -1486,22 +1495,18 @@ function ApartmentModule({ onDataUpdate }) {
                   <span>Drag and drop</span>
                   <span className="text-indigo-600"> or browse</span>
                   <span> to upload</span>
-                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
               <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
 
-
         <div className="flex flex-wrap mt-4">
-
           {/* Displaying Stored Main Images */}
           {storedMainImage.length > 0 && (
             <div className="flex flex-row">
-              {storedMainImage.map((file) => (
+              {storedMainImage.map((file, index) => (
                 <div key={file.RowID} className="relative m-2">
                   <button
                     onClick={() => handleStoredImageDelete(file.RowID, 'Main')}
@@ -1513,41 +1518,41 @@ function ApartmentModule({ onDataUpdate }) {
                     src={httpCommon.defaults.baseURL + file.attachment}
                     alt={`Stored Image ${file.file_name}`}
                     className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => openMainImageModal(file.RowID)}
+                    onClick={() => openMainImageModal(index)}
                   />
                 </div>
               ))}
             </div>
           )}
 
-          {mainImage.map((image, index) => (
-            <div key={index} className="relative m-2">
+          {mainImage.length > 0 && (
+            <div className="relative m-2">
               <button
-                onClick={() => handleImageDelete(index, mainImage, setMainImage)}
+                onClick={() => handleImageDelete(0, mainImage, setMainImage)}
                 className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
               >
                 X
               </button>
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
+                src={URL.createObjectURL(mainImage[0])}
+                alt="Uploaded Image"
                 className="object-cover w-32 h-32 rounded cursor-pointer"
-                onClick={() => openMainImageModal(index)}
+                onClick={() => openMainImageModal(0)}
               />
             </div>
-          ))}
-
+          )}
         </div>
 
         {/* Modal for displaying main image */}
         {selectedMainImageIndex !== null && (
           <ImageModal
-            images={mainImage}
+            images={[...storedMainImage, ...mainImage]}
             currentIndex={selectedMainImageIndex}
             onClose={closeImageModal}
           />
         )}
       </div>
+
 
       {/* Gallery Section */}
       <div>
@@ -1595,7 +1600,7 @@ function ApartmentModule({ onDataUpdate }) {
           {/* Displaying Stored Gallery Images */}
           {storedGalleryImages.length > 0 && (
             <div className="flex flex-row">
-              {storedGalleryImages.map((file) => (
+              {storedGalleryImages.map((file, index) => (
                 <div key={file.RowID} className="relative m-2">
                   <button
                     onClick={() => handleStoredImageDelete(file.RowID, 'gallery')}
@@ -1607,7 +1612,7 @@ function ApartmentModule({ onDataUpdate }) {
                     src={httpCommon.defaults.baseURL + file.attachment}
                     alt={`Stored Image ${file.file_name}`}
                     className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => openGalleryModal(file.RowID)}
+                    onClick={() => openGalleryModal(index)}
                   />
                 </div>
               ))}
@@ -1630,13 +1635,11 @@ function ApartmentModule({ onDataUpdate }) {
               />
             </div>
           ))}
-
         </div>
 
-        {/* Modal for displaying images */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
-            images={galleryImages}
+            images={[...storedGalleryImages, ...galleryImages]}
             currentIndex={selectedGalleryImageIndex}
             onClose={closeImageModal}
           />
@@ -1703,7 +1706,7 @@ function ApartmentModule({ onDataUpdate }) {
             {/* Displaying Stored Master Plan Images */}
             {storedMasterPlanImages.length > 0 && (
               <div className="flex flex-row">
-                {storedMasterPlanImages.map((file) => (
+                {storedMasterPlanImages.map((file, index) => (
                   <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID, 'masterPlan')}
@@ -1715,7 +1718,7 @@ function ApartmentModule({ onDataUpdate }) {
                       src={httpCommon.defaults.baseURL + file.attachment}
                       alt={`Stored Image ${file.file_name}`}
                       className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => openMasterPlanModal(file.RowID)}
+                      onClick={() => openMasterPlanModal(index)}
                     />
                   </div>
                 ))}
@@ -1743,7 +1746,7 @@ function ApartmentModule({ onDataUpdate }) {
           {/* Modal for displaying images */}
           {selectedMasterPlanImageIndex !== null && (
             <ImageModal
-              images={masterPlanImages}
+              images={[...storedMasterPlanImages, ...masterPlanImages]}
               currentIndex={selectedMasterPlanImageIndex}
               onClose={closeImageModal}
             />
@@ -1795,7 +1798,7 @@ function ApartmentModule({ onDataUpdate }) {
             {/* Displaying Stored Floor Area Plan Images */}
             {storedFloorAreaPlanImages.length > 0 && (
               <div className="flex flex-row">
-                {storedFloorAreaPlanImages.map((file) => (
+                {storedFloorAreaPlanImages.map((file, index) => (
                   <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID, 'floorAreaPlan')}
@@ -1807,11 +1810,7 @@ function ApartmentModule({ onDataUpdate }) {
                       src={httpCommon.defaults.baseURL + file.attachment}
                       alt={`Stored Image ${file.file_name}`}
                       className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => {
-                        openFloorAreaPlanModal(file.RowID)
-                        const imageUrl = httpCommon.defaults.baseURL + file.attachment;
-                        console.log(imageUrl);
-                      }}
+                      onClick={() => openFloorAreaPlanModal(index)}
                     />
                   </div>
                 ))}
@@ -1839,7 +1838,7 @@ function ApartmentModule({ onDataUpdate }) {
           {/* Modal for displaying images */}
           {selectedFloorAreaPlanImageIndex !== null && (
             <ImageModal
-              images={floorAreaPlanImages}
+              images={[...storedFloorAreaPlanImages, ...floorAreaPlanImages]}
               currentIndex={selectedFloorAreaPlanImageIndex}
               onClose={closeImageModal}
             />

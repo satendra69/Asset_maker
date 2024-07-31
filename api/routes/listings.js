@@ -9,6 +9,7 @@ const {
   deleteListItem,
   uploadListItem,
   getListItemId,
+  getAllImages,
   getsinglePageImg,
   deleteImagesByRowID,
   deleteBrochureFile,
@@ -31,7 +32,10 @@ router.get("/listing/:type", getListingbyType);
 /* post listing */
 router.post("/", addListings);
 
-// get All img
+// get all images
+router.get("/images", getAllImages);
+
+// get All img by listing id
 router.get("/singlePageImg/:listingID", getsinglePageImg);
 
 /* delete images by RowID */

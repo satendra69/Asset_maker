@@ -254,6 +254,16 @@ function PentModule({ onDataUpdate }) {
     }
   };
 
+  const handleMainImageUpload = (e, setImage) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage([file]);
+    }
+    if (storedMainImage.length > 0) {
+      handleStoredImageDelete(storedMainImage[0].RowID, 'Main');
+    }
+  };
+
   // Function to handle image upload for each section
   const handleImageUpload = (event, setFunction) => {
     const files = Array.from(event.target.files);
@@ -1434,9 +1444,8 @@ function PentModule({ onDataUpdate }) {
               id="MainImage-upload"
               name="MainImage-upload"
               accept="image/*"
-              multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
-              onChange={(e) => handleImageUpload(e, setMainImage)}
+              onChange={(e) => handleMainImageUpload(e, setMainImage)}
             />
             <div className="text-center">
               <img
@@ -1449,18 +1458,14 @@ function PentModule({ onDataUpdate }) {
                   <span>Drag and drop</span>
                   <span className="text-indigo-600"> or browse</span>
                   <span> to upload</span>
-                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
               <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
             </div>
-            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
 
-
         <div className="flex flex-wrap mt-4">
-
           {/* Displaying Stored Main Images */}
           {storedMainImage.length > 0 && (
             <div className="flex flex-row">
@@ -1483,23 +1488,22 @@ function PentModule({ onDataUpdate }) {
             </div>
           )}
 
-          {mainImage.map((image, index) => (
-            <div key={index} className="relative m-2">
+          {mainImage.length > 0 && (
+            <div className="relative m-2">
               <button
-                onClick={() => handleImageDelete(index, mainImage, setMainImage)}
+                onClick={() => handleImageDelete(0, mainImage, setMainImage)}
                 className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
               >
                 X
               </button>
               <img
-                src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
+                src={URL.createObjectURL(mainImage[0])}
+                alt="Uploaded Image"
                 className="object-cover w-32 h-32 rounded cursor-pointer"
-                onClick={() => openMainImageModal(index)}
+                onClick={() => openMainImageModal(0)}
               />
             </div>
-          ))}
-
+          )}
         </div>
 
         {/* Modal for displaying main image */}

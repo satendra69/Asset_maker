@@ -1073,8 +1073,28 @@ const getListItemId = async (req, res) => {
     res.status(500).json({ message: "Error fetching properties", status: "error" });
   }
 };
-// get Single page img 
 
+// get all images
+const getAllImages = async (req, res) => {
+
+  const query = `SELECT * FROM ltg_ref`;
+
+  try {
+    const [results] = await db.query(query);
+
+    if (results.length === 0) {
+      res.status(404).json({ message: "No properties found", status: "not_found" });
+      return;
+    }
+
+    res.json({ data: results, message: "Properties Image fetched successfully", status: "success" });
+  } catch (error) {
+    console.error("Error fetching properties:", error.stack);
+    res.status(500).json({ message: "Error fetching properties", status: "error" });
+  }
+};
+
+// get all images by listingID
 const getsinglePageImg = async (req, res) => {
   const { listingID } = req.params;
 
@@ -1373,6 +1393,7 @@ module.exports = {
   updateListImage,
   getListItemId,
   getTableById,
+  getAllImages,
   getsinglePageImg,
   deleteImagesByRowID,
   deleteBrochureFile,

@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
+import httpCommon from "../../../../http-common";
 
 const ImageModal = ({ images, currentIndex, onClose }) => {
     const [currentImageIndex, setCurrentImageIndex] = useState(currentIndex);
     const modalRef = useRef(null);
 
     useEffect(() => {
-        // Focus the modal when it opens
         if (modalRef.current) {
             modalRef.current.focus();
         }
 
-        // Clean up function to release object URLs
         return () => {
             if (images[currentImageIndex] && typeof images[currentImageIndex] === 'object') {
                 URL.revokeObjectURL(images[currentImageIndex]);
@@ -31,12 +30,9 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
     };
 
     const handleKeyDown = (event) => {
-        // Close modal on Escape key press
         if (event.key === 'Escape') {
             closeModal();
         }
-
-        // Navigate images on left and right arrow key press
         if (event.key === 'ArrowLeft') {
             handlePrev();
         }
@@ -45,14 +41,29 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
         }
     };
 
-    const imageUrl =
-        images[currentImageIndex] && typeof images[currentImageIndex] === 'object'
-            ? URL.createObjectURL(images[currentImageIndex])
-            : '';
+    const getImageUrl = (image) => {
+        console.log(typeof image, "typeof image", image);
+
+        // Check if the image is a File object (for galleryImages)
+        if (image instanceof File) {
+            console.log(URL.createObjectURL(image), "File object");
+            return URL.createObjectURL(image);
+        }
+
+        // Check if the image is an object with an attachment property (for storedGalleryImages)
+        if (typeof image === 'object' && image.attachment) {
+            console.log(httpCommon.defaults.baseURL + image.attachment, "Stored image object");
+            return httpCommon.defaults.baseURL + image.attachment;
+        }
+
+        return '';
+    };
+
+    const imageUrl = getImageUrl(images[currentImageIndex]);
 
     return (
         <div
-            className="fixed inset-0 flex items-center justify-center z-50"
+            className="fixed inset-0 z-50 flex items-center justify-center"
             role="dialog"
             aria-modal="true"
             aria-labelledby="image-modal-title"
@@ -60,37 +71,36 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
             tabIndex={-1}
             ref={modalRef}
         >
-            <div className="modal-overlay fixed inset-0 bg-gray-500 opacity-50" onClick={closeModal}></div>
-            <div className="modal-container bg-white max-w-7xl sm:max-w-3xl mx-4 md:mx-auto rounded-lg overflow-hidden relative">
+            <div className="fixed inset-0 bg-gray-500 opacity-50 modal-overlay" onClick={closeModal}></div>
+            <div className="relative mx-4 overflow-hidden bg-white rounded-lg modal-container max-w-7xl sm:max-w-3xl md:mx-auto">
                 <button
-                    className="modal-close absolute top-0 right-0 cursor-pointer text-white font-bold text-3xl m-4 z-50"
+                    className="absolute top-0 right-0 z-50 m-4 text-3xl font-bold text-white cursor-pointer modal-close"
                     onClick={closeModal}
                     aria-label="Close modal"
                 >
                     &times;
                 </button>
 
-                <div className="carousel relative">
+                <div className="relative carousel">
                     <div className="slide active">
                         {imageUrl && (
                             <img
                                 src={imageUrl}
                                 alt={`Uploaded Image ${currentImageIndex + 1}`}
-                                className="w-full h-auto object-cover"
+                                className="object-cover w-full h-auto"
                             />
                         )}
                     </div>
 
-                    {/* Navigation arrows */}
                     <button
-                        className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-50"
+                        className="absolute z-50 p-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full top-1/2 left-4"
                         onClick={handlePrev}
                         aria-label="Previous image"
                     >
                         &lt;
                     </button>
                     <button
-                        className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-black bg-opacity-50 text-white p-2 rounded-full z-50"
+                        className="absolute z-50 p-2 text-white transform -translate-y-1/2 bg-black bg-opacity-50 rounded-full top-1/2 right-4"
                         onClick={handleNext}
                         aria-label="Next image"
                     >
@@ -99,8 +109,8 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
                 </div>
 
                 {images[currentImageIndex] && (
-                    <div className="modal-caption text-center py-4 text-gray-400" id="image-modal-title">
-                        {images[currentImageIndex].name}
+                    <div className="py-4 text-center text-gray-400 modal-caption" id="image-modal-title">
+                        {images[currentImageIndex].name || images[currentImageIndex].file_name}
                     </div>
                 )}
             </div>

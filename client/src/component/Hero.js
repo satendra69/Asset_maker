@@ -18,6 +18,7 @@ function Hero() {
     hyderabad: 0,
     tirupati: 0,
   });
+  const [storedMainImage, setStoredMainImage] = useState([]);
 
   // Fetch properties data
   const getPropertiesData = async () => {
@@ -33,6 +34,27 @@ function Hero() {
       console.error("Error fetching data:", error);
     }
   };
+
+
+  // Fetch images and brochures
+  const getImagesData = async () => {
+    try {
+      const imgResponse = await httpCommon.get(`/list/images/`);
+      if (imgResponse.data.status === "success") {
+        const imageData = imgResponse.data.data;
+
+        // Separate gallery and brochure data
+        const mainImageData = imageData.filter(item => item.type === "Main");
+
+        // Set images and brochures
+        setStoredMainImage(mainImageData);
+      } else {
+        console.error("Error fetching image data: Response status not successful");
+      }
+    } catch (error) {
+      console.error("Error fetching image data:", error);
+    }
+  }
 
   const updatePropertyCounts = (properties) => {
     const counts = {
@@ -160,17 +182,17 @@ function Hero() {
   };
 
   const Featured = properties.map((item) => {
-    // Split the attachments string into an array
-    const attachmentArray = item.attachments?.split(',').map(path => path.trim()) || [];
+    // Ensure storedMainImage is an array
+    if (!Array.isArray(storedMainImage)) {
+      throw new Error("storedMainImage is not an array");
+    }
 
-    // Filter out files that end with .pdf or .docx
-    const validImages = attachmentArray.filter(path =>
-      !path.endsWith('.pdf') && !path.endsWith('.docx') && !path.endsWith('-thumbnail.png')
-    );
+    // Find the main image for this property based on ltg_mstRowID
+    const mainImage = storedMainImage.find(img => img.ltg_mstRowID === item.ltg_det_mstRowID);
 
     // Take the first valid image or set a default image if none found
-    const imgUrl = validImages.length > 0
-      ? httpCommon.defaults.baseURL + validImages[0]
+    const imgUrl = mainImage
+      ? httpCommon.defaults.baseURL + mainImage.attachment
       : httpCommon.defaults.baseURL + '\images\defaultasset.jpeg';
 
     // Get the property details based on the type
@@ -184,10 +206,9 @@ function Hero() {
     };
   });
 
-  console.log("Featured:", Featured);
-
   useEffect(() => {
     getPropertiesData();
+    getImagesData();
   }, []);
 
   return (
