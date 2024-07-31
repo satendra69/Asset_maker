@@ -123,7 +123,7 @@ function ApartmentModule({ onDataUpdate }) {
       setPlace(place);
       setMarker({ lat: location.lat(), lng: location.lng() });
       map.panTo(location);
-      map.setZoom(15);
+      map.setZoom(1);
     }
   };
 
