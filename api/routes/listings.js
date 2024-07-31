@@ -2,8 +2,6 @@ var express = require("express");
 const {
   addListings,
   getListItem,
-  getTableData,
-  getTableById,
   getListingbyType,
   updateListItem,
   deleteListItem,
@@ -21,10 +19,6 @@ var router = express.Router();
 
 /* get listing */
 router.get("/", getListItem);
-
-/* get listing table data*/
-router.get("/table", getTableData);
-router.get("/table/:listingID", getTableById);
 
 /* get listing by type */
 router.get("/listing/:type", getListingbyType);

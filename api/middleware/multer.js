@@ -38,10 +38,9 @@ const addWatermark = async (req, res, next) => {
         const inputPath = file.path;
         const outputPath = path.join(path.dirname(inputPath), `watermarked-${path.basename(inputPath)}`);
 
-        console.log("Starting watermark processing for:", file.originalname);
-
         try {
           if (file.mimetype.startsWith('image')) {
+            console.log("Starting watermark processing for:", file.originalname);
             const inputImage = sharp(inputPath);
             console.log("processing");
             const { width, height } = await inputImage.metadata();
@@ -66,6 +65,7 @@ const addWatermark = async (req, res, next) => {
             console.log(file.filename);
 
           } else if (file.mimetype === 'application/pdf') {
+            console.log("No watermark processing for:", file.originalname);
             const baseFileName = path.basename(file.originalname, path.extname(file.originalname));
             const pdfOutputPath = path.join(path.dirname(inputPath), `processed-${file.originalname}`);
             const thumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-thumbnail.png`);
