@@ -185,13 +185,29 @@ const MortgageCalculator = () => {
       </div>
 
       <div className="w-1/2 pl-4">
-        <h3 className="text-xl font-bold">Results</h3>
-        <p>Payments            : ₹{monthlyPayment}</p>
-        <p>Total Cost of Loan  : ₹{totalCostOfLoan}</p>
-        <p>Total Interest Paid : ₹{totalInterestPaid}</p>
-        <p>Payment             : {paymentPeriod}</p>
-        <p>Mortgage Payment    : ₹{monthlyPayment}</p>
-
+        <div className="flex flex-col space-y-2">
+          <h3 className="text-xl font-bold">Results</h3>
+          <div className="flex justify-between">
+            <p>Monthly Payment :</p>
+            <p>₹{monthlyPayment}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Total Cost of Loan :</p>
+            <p>₹{totalCostOfLoan}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Total Interest Paid :</p>
+            <p>₹{totalInterestPaid}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Payment Period :</p>
+            <p>{paymentPeriod}</p>
+          </div>
+          <div className="flex justify-between">
+            <p>Mortgage Payment :</p>
+            <p>₹{monthlyPayment}</p>
+          </div>
+        </div>
         <div className="mt-4">
           <h4 className="text-lg font-bold">Loan Balance Chart</h4>
           <Line

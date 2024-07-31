@@ -33,7 +33,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     const mainImage = attachments?.find(att => att.type === "Main");
     return mainImage
       ? httpCommon.defaults.baseURL + mainImage.attachment
-      : httpCommon.defaults.baseURL + '\images\defaultasset.jpeg'; // Default image URL
+      : httpCommon.defaults.baseURL + '\defaultasset.jpg'; // Default image URL
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -94,7 +94,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       return "Asset Makers";
     }
     return text.replace(/\b\w/g, char => char.toUpperCase());
-};
+  };
 
   const columns = useMemo(
     () => [
@@ -177,7 +177,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "Owner",
         accessorKey: "ltg_owner",
         size: 150,
-      //  Cell: ({ cell }) => formatText(cell.getValue()),
+        //  Cell: ({ cell }) => formatText(cell.getValue()),
       },
       {
         id: 'description',
