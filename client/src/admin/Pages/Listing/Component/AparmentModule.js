@@ -7,7 +7,6 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
 //import { stateFromHTML } from 'draft-js-import-html';
 import { toast } from 'sonner';
-import MapComponent from "./MapComponent";
 import MapGoogle from "./MapGoogle";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
@@ -85,54 +84,25 @@ function ApartmentModule({ onDataUpdate }) {
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const limit = 999999999999;
-  const [initialPosition, setInitialPosition] = useState({
+  const [locationData, setLocationData] = useState({
     location: "",
     address: "",
     postalCode: "",
     latitude: 17.387140,
     longitude: 78.491684,
   });
-  const [locationData, setLocationData] = useState({});
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "Apartments";
-
-  /* map code start    */
-  const libraries = ['places'];
-  const mapContainerStyle = {
-    height: '500px',
-    width: '100%',
-  };
-
-  const center = {
-    lat: 20.5937,
-    lng: 78.9629,
-  };
-
-  const [map, setMap] = useState(null);
-  const [marker, setMarker] = useState(null);
-  const [place, setPlace] = useState(null);
-  const autocompleteRef = useRef(null);
-  const [inputValue, setInputValue] = useState('');
-
-  const handlePlaceChanged = () => {
-    const place = autocompleteRef.current.getPlace();
-    if (place.geometry) {
-      const location = place.geometry.location;
-      setPlace(place);
-      setMarker({ lat: location.lat(), lng: location.lng() });
-      map.panTo(location);
-      map.setZoom(1);
-    }
-  };
-
-  /* end map code */
 
   const fetchProperty = async (listingId) => {
     try {
       const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
+
+
+      console.log("Listing Data Full:", JSON.stringify(listingData, null, 2));
 
       // Fetch images and brochures
       if (response.data.status === "success") {
@@ -202,12 +172,16 @@ function ApartmentModule({ onDataUpdate }) {
       setVideoUrl(listingData.ltg_det_property_video_url);
       setOtherAdvantages(listingData.ltg_det_pmts_other_advtages.split(", "));
       setSelectedAmenities(listingData.ltg_det_amenities.split(", "));
-      setInitialPosition({
+
+      console.log("Listing Data Address:", listingData.ltg_det_address);
+      console.log("Listing Data Postal Code:", listingData.ltg_det_postal_code);
+
+      setLocationData({
         location: listingData.ltg_det_location || "",
         address: listingData.ltg_det_address || "",
         postalCode: listingData.ltg_det_postal_code || "",
-        latitude: listingData.ltg_det_latitude || 17.387140,
-        longitude: listingData.ltg_det_longitude || 78.491684,
+        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -531,13 +505,9 @@ function ApartmentModule({ onDataUpdate }) {
     setContent(html);
   };
 
-  const handleLocationChange = (updatedLocationData) => {
-    if (updatedLocationData.latitude && updatedLocationData.longitude) {
-      setLocationData(updatedLocationData);
-      onDataUpdate(updatedLocationData);
-    } else {
-      console.error("Invalid location data:", updatedLocationData);
-    }
+  const handlePositionChange = (position) => {
+    setLocationData(position);
+    // console.log('Initial Position:', position);
   };
 
   // Call the handleDataUpdate function
@@ -585,7 +555,7 @@ function ApartmentModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    console.log("Data to be passed to onDataUpdate:", data);
+    // console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
@@ -615,7 +585,7 @@ function ApartmentModule({ onDataUpdate }) {
 
   useEffect(() => {
     handleDataUpdate();
-  }, [salePrice, suffixPrice, content, locationData, initialPosition, areaDetails,
+  }, [salePrice, suffixPrice, content, locationData, areaDetails,
     ratePerSqFt, selectedStatus, selectedBedRooms, selectedBathRooms, selectedCarParking,
     yearBuilt, totalFloors, flatOnFloor, liftsInTheTower, mainDoorFacing, propertyFlooring,
     balconies, approachingRoadWidth, furnishing, stampDutyAndRegistrationCharges,
@@ -701,7 +671,11 @@ function ApartmentModule({ onDataUpdate }) {
 
       {/* Location Details */}
       {/* <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} /> */}
-      <MapGoogle googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4" />
+      <MapGoogle
+        googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4"
+        initialPosition={locationData}
+        onPositionChange={handlePositionChange}
+      />
 
       {/* Parameters Section */}
       <div>

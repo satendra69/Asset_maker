@@ -267,30 +267,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         size: 50,
         Cell: ({ renderedCellValue }) => <span>{renderedCellValue} sqrt</span>,
       },
-      // {
-      //   accessorKey: "ltg_det_pmts_bth_rom",
-      //   header: "Bathrooms",
-      //   size: 50,
-      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
-      // },
-      // {
-      //   accessorKey: "ltg_det_pmts_bed_rom",
-      //   header: "Bedrooms",
-      //   size: 50,
-      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
-      // },
-      // {
-      //   accessorKey: "ltg_det_pmts_furnishing",
-      //   header: "Furnished",
-      //   size: 50,
-      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
-      // },
-      // {
-      //   accessorKey: "ltg_det_pmts_car_park",
-      //   header: "Parking",
-      //   size: 50,
-      // Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
-      // },
       {
         id: "ltg_create_date",
         accessorKey: "ltg_create_date",

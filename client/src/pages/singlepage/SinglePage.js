@@ -328,7 +328,7 @@ function SinglePage() {
                   {singlePageData && singlePageData.length > 0 && singlePageData[0].ltg_title && (
                     <h1>{singlePageData[0].ltg_title}</h1>
                   )}
-                  <div className="address">
+                  <div className="mr-56 address">
                     <img src="/pin.png" alt="" />
                     {singlePageData && singlePageData.length > 0 && (
                       <span>
