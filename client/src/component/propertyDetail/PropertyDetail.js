@@ -104,7 +104,7 @@ const getIcon = (label) => {
           sx={{ fontSize: "1.7rem", color: "#2196f3", marginRight: "0.5rem" }}
         />
       );
-    case "STAMP DUTY & REGISTRATION CHARGES":
+    case "STAMP & REG. CHARGES":
       return (
         <StampDutyRegistrationChargesIcon
           sx={{ fontSize: "1.7rem", color: "#2196f3", marginRight: "0.5rem" }}
@@ -308,51 +308,208 @@ const getIcon = (label) => {
 };
 
 const transformData = (propertyData, propertyImages) => {
-  if (!propertyData) return {}; // Handle if propertyData is undefined
-  if (!propertyImages || !Array.isArray(propertyImages)) propertyImages = []; // Ensure propertyImages is an array
+  if (!propertyData) return {};
+  if (!propertyImages || !Array.isArray(propertyImages)) propertyImages = [];
 
-  const amenities = propertyData.ltg_det_amenities ?
-    propertyData.ltg_det_amenities.split(',').map(amenity => ({
+  console.log("propertyData", propertyData);
+
+  const mapCommonFields = (data) => ({
+    id: data.RowID,
+    type: data.ltg_type,
+    price: data.ltg_det_sale_price,
+    title: data.ltg_title,
+    description: data.ltg_det_desc,
+    amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
       icon: 'tickmark-icon',
       label: amenity.trim(),
-    })) : [];
+    })) : [],
+    propertyVideo: data.ltg_det_property_video_url,
+  });
 
-  const otherAdvantages = propertyData.ltg_det_pmts_other_advtages ?
-    propertyData.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
-      icon: 'tickmark-icon',
-      label: advantage.trim(),
-    })) : [];
-
-  const mappedProperty = {
-    id: propertyData.RowID,
-    type: propertyData.ltg_type,
-    price: propertyData.ltg_det_sale_price,
-    title: propertyData.ltg_title,
-    description: propertyData.ltg_det_desc,
+  const mapApartmentFields = (data) => ({
+    ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: propertyData.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: propertyData.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: propertyData.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: propertyData.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: propertyData.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: propertyData.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: propertyData.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REGISTRATION CHARGES', value: propertyData.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: propertyData.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: propertyData.ltg_det_pmts_approval_authority },
-        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: propertyData.ltg_det_pmts_approaching_road_width },
-        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: propertyData.ltg_det_pmts_total_phases },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: propertyData.ltg_det_pmts_transaction_typ },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
+        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
       ],
-      otherAdvantages: otherAdvantages,
-      amenities: amenities,
-      aboutProject: propertyData.ltg_det_about_project_buder,
-      propertyVideo: propertyData.ltg_det_property_video_url,
+      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_about_project_buder,
     },
-  };
+  });
 
-  return mappedProperty;
+  const mapPlotFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_plot_pmts_approaching_road_width },
+        { icon: 'area-dts-icon', label: 'AREA DTS', value: data.ltg_det_plot_pmts_area_dts },
+        { icon: 'boundary-wall-icon', label: 'BOUNDARY WALL MADE', value: data.ltg_det_plot_pmts_boundary_wall_made },
+        { icon: 'corner-plot-icon', label: 'CORNER PLOT', value: data.ltg_det_plot_pmts_corner_plot },
+        { icon: 'floors-allowed-icon', label: 'FLOORS ALLOWED FOR CONSTRUCTION', value: data.ltg_det_plot_pmts_floors_allowed_for_construction },
+        { icon: 'gated-community-icon', label: 'GATED COMMUNITY', value: data.ltg_det_plot_pmts_gated_community },
+        { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_plot_pmts_no_of_open_sides },
+        { icon: 'approval-authority-icon', label: 'PLOT APPROVAL AUTHORITY', value: data.ltg_det_plot_pmts_plot_approval_authority },
+        { icon: 'plot-dimensions-icon', label: 'PLOT DIMENSIONS', value: data.ltg_det_plot_pmts_plot_dimensions },
+        { icon: 'plot-facing-icon', label: 'PLOT FACING', value: data.ltg_det_plot_pmts_plot_facing },
+        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REG. CHARGES', value: data.ltg_det_plot_pmts_stamp_duty_registration_charges },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_plot_pmts_transaction_type },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_plot_pmts_total_phases },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_plot_pmts_total_units },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_plot_pmts_year_built },
+      ],
+      aboutProject: data.ltg_det_plot_about_project_builder,
+    },
+  });
+
+  const mapVillaFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'main-door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+      ],
+      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_about_project_buder,
+    },
+  });
+
+  const mapRowHouseFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
+        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+      ],
+      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_about_project_buder,
+    },
+  });
+
+  const mapVillamentFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
+        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+      ],
+      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_about_project_buder,
+    },
+  });
+
+  const mapPentHouseFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
+        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+      ],
+      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_about_project_buder,
+    },
+  });
+
+  let transformedData;
+
+  switch (propertyData.ltg_type) {
+    case 'Plots':
+      transformedData = mapPlotFields(propertyData);
+      break;
+    case 'Apartments':
+      transformedData = mapApartmentFields(propertyData);
+      break;
+    case 'Villas':
+      transformedData = mapVillaFields(propertyData);
+      break;
+    case 'RowHouses':
+      transformedData = mapRowHouseFields(propertyData);
+      break;
+    case 'Villaments':
+      transformedData = mapVillamentFields(propertyData);
+      break;
+    case 'PentHouses':
+      transformedData = mapPentHouseFields(propertyData);
+      break;
+    default:
+      transformedData = mapCommonFields(propertyData);
+      break;
+  }
+
+  transformedData.propertyImages = propertyImages.map(image => ({
+    src: image,
+    alt: `Image for ${transformedData.title}`,
+  }));
+
+  return transformedData;
 };
 
 const PropertyDetails = ({ property, images, brochure }) => {
@@ -413,16 +570,16 @@ const PropertyDetails = ({ property, images, brochure }) => {
       <div className="-mt-6 space-y-16">
         <div className="">
           {/* Conditionally render "Other Facts" section */}
-          {transformedProperty.details.otherFacts.some(fact => fact.value) && (
+          {transformedProperty?.details.otherFacts.some(fact => fact.value) && (
             <section>
-              <h2 className="mb-4 text-2xl font-bold">Other Facts</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {transformedProperty.details.otherFacts.map((fact, index) => (
+              <h2 className="mb-4 text-xl font-bold">Other Facts</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {transformedProperty?.details.otherFacts.map((fact, index) => (
                   fact.value && (
-                    <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
+                    <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-2 font-semibold long-label">{fact.label}:</span>
-                      <span className="ml-1 text-gray-700">{fact.value}</span>
+                      <span className="ml-1 text-sm font-semibold long-label">{fact.label}:</span>
+                      <span className="ml-1 text-sm text-gray-700">{fact.value}</span>
                     </div>
                   )
                 ))}
@@ -433,16 +590,16 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Other Advantages" section */}
-          {transformedProperty.details.otherAdvantages.length > 0 && (
+          {transformedProperty?.details?.otherAdvantages?.length > 0 && (
             <section>
-              <h2 className="mb-4 text-2xl font-bold">Other Advantages</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
+              <h2 className="mb-4 text-xl font-bold">Other Advantages</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 {transformedProperty.details.otherAdvantages.map((advantage, index) => (
-                  <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
+                  <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="1.7rem"
-                      height="1.7rem"
+                      width="1.5rem"
+                      height="1.5rem"
                       viewBox="0 0 24 24"
                       className="mr-2 text-blue-700"
                     >
@@ -455,7 +612,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
                         d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
                       ></path>
                     </svg>
-                    <span className="font-semibold">{advantage.label}</span>
+                    <span className="text-sm font-semibold">{advantage.label}</span>
                   </div>
                 ))}
               </div>
@@ -465,16 +622,16 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Amenities" section */}
-          {transformedProperty.details.amenities.length > 0 && (
+          {transformedProperty?.details?.amenities?.length > 0 && (
             <section>
-              <h2 className="mb-4 text-2xl font-bold">Amenities</h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3">
-                {transformedProperty.details.amenities.map((amenity, index) => (
-                  <div key={index} className="flex items-center p-4 border border-gray-200 rounded-md shadow-sm">
+              <h2 className="mb-4 text-xl font-bold">Amenities</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {transformedProperty?.details.amenities.map((amenity, index) => (
+                  <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      width="1.7rem"
-                      height="1.7rem"
+                      width="1.5rem"
+                      height="1.5rem"
                       viewBox="0 0 24 24"
                       className="mr-2 text-blue-700"
                     >
@@ -487,7 +644,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
                         d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
                       ></path>
                     </svg>
-                    <span className="font-semibold">{amenity.label}</span>
+                    <span className="text-sm font-semibold">{amenity.label}</span>
                   </div>
                 ))}
               </div>
@@ -497,24 +654,24 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "About Project/Builder" section */}
-          {transformedProperty.details.aboutProject && (
+          {transformedProperty?.details?.aboutProject && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">About Project/Builder</h2>
-              <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty.details.aboutProject}</p>
+              <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty?.details.aboutProject}</p>
             </section>
           )}
         </div>
 
         <div className="mt-16">
           {/* Conditionally render "Property Video" section */}
-          {transformedProperty.details.propertyVideo && (
+          {transformedProperty?.details?.propertyVideo && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Property Video</h2>
               <div className="max-w-full mx-auto mb-4">
                 <iframe
                   width="100%"
                   height="315"
-                  src={`https://www.youtube.com/embed/${transformedProperty.details.propertyVideo.split('v=')[1]}`}
+                  src={`https://www.youtube.com/embed/${transformedProperty?.details.propertyVideo.split('v=')[1]}`}
                   title="Property Video"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -528,7 +685,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Master Plan" section */}
-          {images.some(image => image.type === 'MasterPlan') && (
+          {images?.some(image => image.type === 'MasterPlan') && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Master Plan</h2>
               <div className="flex flex-wrap gap-10">
@@ -548,7 +705,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Floor/Area Plan" section */}
-          {images.some(image => image.type === 'FloorAreaPlan') && (
+          {images?.some(image => image.type === 'FloorAreaPlan') && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Floor/Area Plan</h2>
               <div className="flex flex-wrap gap-10">
@@ -568,7 +725,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Brochure" section */}
-          {pdfFiles.length > 0 && (
+          {pdfFiles?.length > 0 && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Brochure</h2>
               <div className="flex flex-wrap gap-4">

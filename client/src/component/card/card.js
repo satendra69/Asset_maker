@@ -119,7 +119,11 @@ function Card({ key, item }) {
 
       <div className="cardProperty">
         <div className="cardImageContainer">
-          <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}>
+          {/* <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}> */}
+          <Link
+            to={`/Property/details`}
+            state={{ id: item.RowID, ltg_type: item.ltg_type }}
+          >
             {imageAttachments.length > 0 ? (
               <img
                 src={httpCommon.defaults.baseURL + imageAttachments[0].attachment}
@@ -132,7 +136,11 @@ function Card({ key, item }) {
         </div>
         <div className="cardTextContainer">
           <h2 className="cardTitle">
-            <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}>
+            {/* <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}> */}
+            <Link
+              to={`/Property/details`}
+              state={{ id: item.RowID, ltg_type: item.ltg_type }}
+            >
               {item.ltg_title}
             </Link>
           </h2>

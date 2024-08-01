@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend } from 'chart.js';
@@ -238,25 +238,32 @@ const MortgageCalculator = () => {
 };
 
 function SinglePage() {
-  const { id: RowID, type: TypeGet } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { id: RowID, ltg_type: TypeGet } = location.state || {};
   const [open, setOpen] = useState(false);
 
   const [singlePageData, setsinglePageData] = useState([]);
   const [singlePageImgData, setsinglePageImgData] = useState([]);
   const [brochureData, setBrochureData] = useState([]);
 
+  useEffect(() => {
+    if (!RowID || !TypeGet) {
+      navigate('/Property');
+      return;
+    }
+
+    getSinglepropertiesData(RowID, TypeGet);
+    singlePageImg(RowID);
+    getBrochureData(RowID);
+  }, [RowID, TypeGet, navigate]);
+
   const handleClose = () => {
     setOpen(false);
   };
 
-  useEffect(() => {
-    getSinglepropertiesData();
-    singlePageImg();
-    getBrochureData();
-  }, []);
-
   // get properties Listing data by id
-  const getSinglepropertiesData = async () => {
+  const getSinglepropertiesData = async (RowID, TypeGet) => {
     try {
       //const response = await httpCommon.get(`/list/${RowID}`);
       const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
@@ -272,7 +279,7 @@ function SinglePage() {
 
   console.log(singlePageData);
 
-  const singlePageImg = async () => {
+  const singlePageImg = async (RowID) => {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
       if (response.data.status === "success") {
@@ -284,7 +291,7 @@ function SinglePage() {
     }
   };
 
-  const getBrochureData = async () => {
+  const getBrochureData = async (RowID) => {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
       if (response.data.status === "success") {
