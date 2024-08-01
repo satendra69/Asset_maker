@@ -1,14 +1,11 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import BasicModal from "../admin/Component/OtpModal";
 import { CheckIcon } from "lucide-react";
-import firebase from "firebase/app";
 import "firebase/auth";
 
-// firebase authentication import
 import {
   getAuth,
   RecaptchaVerifier,
@@ -40,7 +37,7 @@ export default function SignUp() {
   }, [otpActiveIndex, otpOpen]);
   // handle key
   const handeleKey = (e, index) => {
-    if (e.key == "Backspace") {
+    if (e.key === "Backspace") {
       setOtpActiveIndex(index - 1);
     }
   };
@@ -74,61 +71,6 @@ export default function SignUp() {
   console.log("form", formData);
   // api url
   const url = "http://localhost:8000";
-
-  // const postUsers = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     setLoading(true);
-  //     const otpString = otp.join("");
-  //     if (otpString == currentOtp) {
-  //       const res = await fetch(`${url}/auth/signup`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(formData),
-  //       });
-  //       const data = await res.json();
-  //       // if (!data.ok) return toast.error(data);
-  //       // console.log(data);
-  //       // // if (data.success === false) {
-  //       // //   setLoading(false);
-  //       // //   setError(data.message);
-  //       // //   return;
-  //       // // }
-  //       toast.success(data);
-  //       setLoading(false);
-  //       setError(null);
-  //       toast.success(data);
-  //       navigate("/sign-in");
-  //     } else {
-  //       setLoading(false);
-  //       toast.error("Otp Not Match");
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     setError(error.message);
-  //   }
-  // };
-
-  // firebase authenticater
-
-  // useEffect(() => {
-  //   window.recaptchaVerifier = new RecaptchaVerifier(
-  //     auth,
-  //     "recaptcha-container",
-  //     {
-  //       size: "normal",
-  //       callback: (response) => {
-  //         console.log(response);
-  //       },
-  //       "expired-callback": function (response) {
-  //         console.log(response);
-  //       },
-  //     }
-  //   );
-  // }, [auth]);
 
   const auth = getAuth(app);
   useEffect(() => {
@@ -202,21 +144,21 @@ export default function SignUp() {
 
   return (
     <>
-      <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
+      <div className="max-w-lg p-3 mx-auto">
+        <h1 className="text-3xl font-semibold text-center my-7">Sign Up</h1>
 
         <form className="flex flex-col gap-4">
           <input
             type="text"
             placeholder="username"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="username"
             onChange={handleChange}
           />
           <input
             type="text"
             placeholder="7668434576"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="phoneNumber"
             name="phoneNumber"
             onChange={handleChange}
@@ -224,21 +166,21 @@ export default function SignUp() {
           <input
             type="email"
             placeholder="email"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="email"
             onChange={handleChange}
           />
           <input
             type="password"
             placeholder="password"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="password"
             onChange={handleChange}
           />
 
           <button
             disabled={loading}
-            className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
+            className="p-3 text-white uppercase rounded-lg bg-slate-700 hover:opacity-95 disabled:opacity-80"
             onClick={handleSendOtp}
           >
             {loading ? "Loading..." : "Sign Up"}
@@ -274,7 +216,7 @@ export default function SignUp() {
                   alignItems: "center",
                 }}
                 onChange={(e) => handleChangeOtp(e, index)}
-                ref={otpActiveIndex == index ? inputRef : null}
+                ref={otpActiveIndex === index ? inputRef : null}
                 value={otp[index]}
                 onKeyDown={(e) => handeleKey(e, index)}
               />
@@ -314,7 +256,7 @@ export default function SignUp() {
             <span className="text-blue-700">Sign in</span>
           </Link>
         </div>
-        {error && <p className="text-red-500 mt-5">{error}</p>}
+        {error && <p className="mt-5 text-red-500">{error}</p>}
         {!otpSent ? <div id="recaptcha-container"></div> : null}
       </div>
     </>

@@ -1,5 +1,4 @@
 const express = require("express");
-
 const {
   deleteUser,
   getUser,
@@ -13,6 +12,6 @@ const router = express.Router();
 router.get("/", verifyToken, getUsers);
 router.delete("/:id", verifyToken, deleteUser);
 router.get("/:id", getUser);
-router.get("/:id", verifyToken, updateUser);
+router.put("/:id", verifyToken, updateUser);
 
 module.exports = router;

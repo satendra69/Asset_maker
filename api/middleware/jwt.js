@@ -12,7 +12,11 @@ const verifyToken = (req, res, next) => {
   if (!token) return next(createError(401, "Token is missing!"));
 
   jwt.verify(token, process.env.JWT_KEY, async (err, payload) => {
-    if (err) return next(createError(403, "Token is not valid!"));
+    console.log("Payload:", payload);
+    if (err) {
+      console.error("JWT Verification Error:", err);
+      return next(createError(403, "Token is not valid!"));
+    }
 
     req.userId = payload.id;
     req.isAdmin = payload.isAdmin;

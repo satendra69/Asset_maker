@@ -21,6 +21,9 @@ import AboutUs from "./pages/AboutUs";
 
 import SinglePage from "./pages/singlepage/SinglePage";
 import AdminHome from "./admin/Pages/AdminHome";
+import AdminUsers from "./admin/Pages/users/AdminUsers";
+import AdminMessages from "./admin/Pages/Message/AdminMessages";
+import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
 import City from "./admin/Pages/City/City";
 import MyList from "./pages/MyList";
@@ -35,10 +38,6 @@ import PropertyComponent from "./pages/Property/PropertyComponent";
 import PropertyQuery from "./pages/Property/PropertyQuery";
 
 import { useSelector } from "react-redux";
-
-import AdminUsers from "./admin/Pages/users/AdminUsers";
-import AdminMessages from "./admin/Pages/Message/AdminMessages";
-import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
 import NewListingPage from "./admin/Pages/Listing/Listing";
 import Blog from "./admin/Pages/Blog/Blog";
@@ -174,6 +173,10 @@ const router = createBrowserRouter([
       {
         path: "/admin",
         element: <AdminHome />,
+      },
+      {
+        path: "/admin/users",
+        element: <AdminUsers />,
       },
       {
         path: "/admin/city",
