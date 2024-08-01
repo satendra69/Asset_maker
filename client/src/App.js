@@ -22,6 +22,7 @@ import AboutUs from "./pages/AboutUs";
 import SinglePage from "./pages/singlepage/SinglePage";
 import AdminHome from "./admin/Pages/AdminHome";
 import AdminUsers from "./admin/Pages/users/AdminUsers";
+import NewUsers from "./admin/Pages/users/newUsers";
 import AdminMessages from "./admin/Pages/Message/AdminMessages";
 import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
@@ -177,6 +178,10 @@ const router = createBrowserRouter([
       {
         path: "/admin/users",
         element: <AdminUsers />,
+      },
+      {
+        path: "/admin/users/new",
+        element: <NewUsers />,
       },
       {
         path: "/admin/city",
