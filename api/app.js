@@ -12,7 +12,6 @@ var cityRouter = require("./routes/city");
 var messageRouter = require("./routes/message");
 var cors = require("cors");
 const db = require("./connect");
-// const os = require("os");
 
 var app = express();
 app.use(cookieParser());
@@ -67,7 +66,7 @@ app.listen(PORT || process.env.PORT, async () => {
     `API server running at http://localhost:${process.env.PORT || PORT}`
   );
   // Test MySQL connection
-  try {
+  try {   //////
     const [rows, fields] = await db.query("SELECT 1");
     console.log("Connected to MySQL database");
   } catch (err) {

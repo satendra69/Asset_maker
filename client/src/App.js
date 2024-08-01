@@ -187,10 +187,6 @@ const router = createBrowserRouter([
         element: <SingleCity />,
       },
       {
-        path: "/admin/users",
-        element: <AdminUsers />,
-      },
-      {
         path: "/admin/messages",
         element: <AdminMessages />,
       },

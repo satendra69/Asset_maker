@@ -1,11 +1,10 @@
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-//import { Typography } from '@mui/material/Typography';
-import Typography from '@mui/material/Typography';
-
+import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import ClearIcon from "@mui/icons-material/Clear";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -19,29 +18,24 @@ const style = {
   p: 6,
 };
 
-export default function BasicModal({
-  open,
-  handleOpen,
-  title,
-  description,
-  setOpen,
-  children,
-}) {
-  const handleClose = () => setOpen(false);
+export default function BasicModal({ modalOpen, setModalOpen, children }) {
+  if (!modalOpen) return null;
+
+  const handleClose = () => setModalOpen(false);
 
   return (
     <div>
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={modalOpen} onClose={handleClose}>
         <Box sx={style} style={{ position: "relative" }}>
           <div style={{ display: "flex", flexDirection: "column" }}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
-              {title}
+              OTP Verification
             </Typography>
             <Typography
               id="modal-modal-description"
               sx={{ marginY: 2, fontWeight: "300", color: "rgb(156 163 175)" }}
             >
-              {description}
+              Please enter the OTP sent to your email.
             </Typography>
           </div>
           <div>{children}</div>

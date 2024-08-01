@@ -18,8 +18,8 @@ const AdminUsers = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      setLoading(true); // Start loading
-      setError(null); // Reset error state
+      setLoading(true);
+      setError(null);
       try {
         const res = await httpCommon.get("/users", {
           headers: { Authorization: `Bearer ${currentUser.token}` },
@@ -60,6 +60,7 @@ const AdminUsers = () => {
       if (!updatedData.password) {
         delete updatedData.password;
       }
+      console.log("updatedData", updatedData);
       const res = await httpCommon.put(`/users/${editingUser.id}`, updatedData, {
         headers: { Authorization: `Bearer ${currentUser.token}` },
       });
