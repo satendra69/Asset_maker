@@ -6,7 +6,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
 //import { stateFromHTML } from 'draft-js-import-html';
 import { toast } from 'sonner';
-import MapComponent from "./MapComponent";
+import MapGoogle from "./MapGoogle";
 import inwords from './toIndianNumberingWords';
 import ImageModal from './ImageModal';
 import FileModal from './FileModal';
@@ -77,14 +77,13 @@ function CommercialModule({ onDataUpdate }) {
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
   const [projectBuilderDetails, setProjectBuilderDetails] = useState("");
   const limit = 999999999999;
-  const [initialPosition, setInitialPosition] = useState({
+  const [locationData, setLocationData] = useState({
     location: "",
     address: "",
     postalCode: "",
     latitude: 17.387140,
     longitude: 78.491684,
   });
-  const [locationData, setLocationData] = useState({});
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "CommercialProperties";
@@ -156,12 +155,12 @@ function CommercialModule({ onDataUpdate }) {
       setOtherAdvantages(listingData.ltg_det_comm_prop_pmts_other_advantages.split(", "));
       setSelectedAmenities(listingData.ltg_det_comm_prop_amenities.split(", "));
 
-      setInitialPosition({
-        location: listingData.ltg_det_comm_prop_location || "",
-        address: listingData.ltg_det_comm_prop_address || "",
-        postalCode: listingData.ltg_det_comm_prop_postal_code || "",
-        latitude: listingData.ltg_det_comm_prop_latitude || 17.387140,
-        longitude: listingData.ltg_det_comm_prop_longitude || 78.491684,
+      setLocationData({
+        location: listingData.ltg_det_location || "",
+        address: listingData.ltg_det_address || "",
+        postalCode: listingData.ltg_det_postal_code || "",
+        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -480,13 +479,9 @@ function CommercialModule({ onDataUpdate }) {
     setContent(html);
   };
 
-  const handleLocationChange = (updatedLocationData) => {
-    if (updatedLocationData.latitude && updatedLocationData.longitude) {
-      setLocationData(updatedLocationData);
-      onDataUpdate(updatedLocationData);
-    } else {
-      console.error("Invalid location data:", updatedLocationData);
-    }
+  const handlePositionChange = (position) => {
+    setLocationData(position);
+    // console.log('Initial Position:', position);
   };
 
   const handleDataUpdate = () => {
@@ -527,7 +522,7 @@ function CommercialModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    console.log("Data to be passed to onDataUpdate:", data);
+    // console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
@@ -826,7 +821,12 @@ function CommercialModule({ onDataUpdate }) {
       </div>
 
       {/* Location Details */}
-      <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} />
+      {/* <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} /> */}
+      <MapGoogle
+        googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4"
+        initialPosition={locationData}
+        onPositionChange={handlePositionChange}
+      />
 
 
       {/* Parameters Section */}

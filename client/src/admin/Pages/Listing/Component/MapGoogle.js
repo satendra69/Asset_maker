@@ -14,18 +14,23 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
     const [place, setPlace] = useState(null);
     const autocompleteRef = useRef(null);
     const [inputValue, setInputValue] = useState(initialPosition.location);
+    const [address, setAddress] = useState(initialPosition.address);
+    const [postalCode, setPostalCode] = useState(initialPosition.postalCode);
     const [isApiLoaded, setIsApiLoaded] = useState(false);
+    const isFirstLoad = useRef(true);
+    const updateTimeoutRef = useRef(null);
 
     useEffect(() => {
         setMarker({ lat: initialPosition.latitude, lng: initialPosition.longitude });
         setInputValue(initialPosition.location);
+        setAddress(initialPosition.address);
+        setPostalCode(initialPosition.postalCode);
     }, [initialPosition]);
 
     const handlePlaceChanged = useCallback(() => {
         const place = autocompleteRef.current?.getPlace();
         if (place?.geometry) {
             const location = place.geometry.location;
-            setPlace(place);
             const newMarker = { lat: location.lat(), lng: location.lng() };
             setMarker(newMarker);
 
@@ -41,8 +46,11 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                 latitude: newMarker.lat,
                 longitude: newMarker.lng,
             };
+
             onPositionChange(newPosition);
             setInputValue(place.formatted_address);
+            setAddress(place.formatted_address);
+            setPostalCode(getAddressComponent(place, 'postal_code'));
         }
     }, [map, onPositionChange]);
 
@@ -57,21 +65,92 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
             mapInstance.setCenter(initialMarker);
             mapInstance.setZoom(13);
         }
-        console.log('Google Maps API loaded');
+        setIsApiLoaded(true);
     }, [initialPosition]);
 
+    const handleInputChange = (e) => {
+        setInputValue(e.target.value);
+    };
+
+    const handleMarkerDragEnd = useCallback((event) => {
+        const newMarker = {
+            lat: event.latLng.lat(),
+            lng: event.latLng.lng(),
+        };
+        setMarker(newMarker);
+
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ location: newMarker }, (results, status) => {
+            if (status === 'OK' && results[0]) {
+                const newPlace = results[0];
+                setPlace(newPlace);
+                setInputValue(newPlace.formatted_address);
+                setAddress(newPlace.formatted_address);
+                setPostalCode(getAddressComponent(newPlace, 'postal_code'));
+
+                const newPosition = {
+                    location: newPlace.formatted_address,
+                    address: newPlace.formatted_address,
+                    postalCode: getAddressComponent(newPlace, 'postal_code'),
+                    latitude: newMarker.lat,
+                    longitude: newMarker.lng,
+                };
+                onPositionChange(newPosition);
+            }
+        });
+    }, [onPositionChange]);
+
     useEffect(() => {
-        if (isApiLoaded && map) {
+        if (isApiLoaded && map && place && !isFirstLoad.current) {
             const updatedPosition = {
                 location: inputValue,
-                address: place ? place.formatted_address : '',
-                postalCode: place ? getAddressComponent(place, 'postal_code') : '',
+                address: place.formatted_address,
+                postalCode: getAddressComponent(place, 'postal_code'),
                 latitude: marker.lat,
                 longitude: marker.lng,
             };
+
             onPositionChange(updatedPosition);
+            map.panTo(marker);
+        } else {
+            isFirstLoad.current = false;
         }
-    }, [marker, inputValue, place, onPositionChange, isApiLoaded, map]);
+    }, [marker, place, onPositionChange, isApiLoaded, map, inputValue]);
+
+    const handleIdle = useCallback(() => {
+        if (updateTimeoutRef.current) {
+            clearTimeout(updateTimeoutRef.current);
+        }
+
+        updateTimeoutRef.current = setTimeout(() => {
+            const center = map.getCenter();
+            const newMarker = {
+                lat: center.lat(),
+                lng: center.lng(),
+            };
+            setMarker(newMarker);
+
+            const geocoder = new window.google.maps.Geocoder();
+            geocoder.geocode({ location: newMarker }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                    const newPlace = results[0];
+                    setPlace(newPlace);
+                    setInputValue(newPlace.formatted_address);
+                    setAddress(newPlace.formatted_address);
+                    setPostalCode(getAddressComponent(newPlace, 'postal_code'));
+
+                    const newPosition = {
+                        location: newPlace.formatted_address,
+                        address: newPlace.formatted_address,
+                        postalCode: getAddressComponent(newPlace, 'postal_code'),
+                        latitude: newMarker.lat,
+                        longitude: newMarker.lng,
+                    };
+                    onPositionChange(newPosition);
+                }
+            });
+        }, 300);
+    }, [map, onPositionChange]);
 
     return (
         <div>
@@ -93,13 +172,7 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                                     type="text"
                                     placeholder="Enter Location"
                                     value={inputValue}
-                                    onChange={(e) => {
-                                        setInputValue(e.target.value);
-                                        onPositionChange((prev) => ({
-                                            ...prev,
-                                            location: e.target.value,
-                                        }));
-                                    }}
+                                    onChange={handleInputChange}
                                     className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                                 />
                             </Autocomplete>
@@ -116,7 +189,7 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                         <input
                             id="address"
                             type="text"
-                            value={place ? place.formatted_address : initialPosition.address}
+                            value={address}
                             readOnly
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                         />
@@ -128,7 +201,7 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                         <input
                             id="postal-code"
                             type="text"
-                            value={place ? getAddressComponent(place, 'postal_code') : initialPosition.postalCode}
+                            value={postalCode}
                             readOnly
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                         />
@@ -165,15 +238,21 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                         <LoadScript
                             googleMapsApiKey={googleMapsApiKey}
                             libraries={libraries}
-                            onLoad={() => setIsApiLoaded(true)}
                         >
                             <GoogleMap
                                 mapContainerStyle={mapContainerStyle}
-                                center={marker || initialPosition}
-                                zoom={marker ? 13 : 5}
+                                center={marker}
+                                zoom={13}
                                 onLoad={onLoad}
+                                onIdle={handleIdle}
                             >
-                                {marker && <Marker position={marker} />}
+                                {marker && (
+                                    <Marker
+                                        position={marker}
+                                        draggable={true}
+                                        onDragEnd={handleMarkerDragEnd}
+                                    />
+                                )}
                             </GoogleMap>
                         </LoadScript>
                     </div>

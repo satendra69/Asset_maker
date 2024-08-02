@@ -361,9 +361,9 @@ function NewListingPage() {
           </div>
 
           {/* Listing Type and Mark as Featured */}
-          <div className="flex flex-wrap items-center mt-4">
+          <div className="flex flex-wrap items-center mt-4 space-x-4">
             {/* Listing Type */}
-            <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <div className="w-full sm:w-1/2 lg:w-1/3">
               <label
                 htmlFor="listingType"
                 className="block text-sm font-semibold leading-6 text-gray-900"
@@ -393,33 +393,29 @@ function NewListingPage() {
             </div>
 
             {/* Mark as Featured toggle button */}
-            <div className="flex items-center">
-              {" "}
+            <div className="flex items-center mt-6">
               <Switch
                 checked={featured}
                 onChange={setFeatured}
                 className={classNames(
                   featured ? "bg-indigo-600" : "bg-gray-200",
-                  "flex w-8 flex-none cursor-pointer rounded-full p-px ring-1 ring-inset ring-gray-900/5 transition-colors duration-200 ease-in-out focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  "relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                 )}
               >
                 <span className="sr-only">Mark as featured</span>
                 <span
                   aria-hidden="true"
                   className={classNames(
-                    featured ? "translate-x-3.5" : "translate-x-0",
-                    "h-4 w-4 transform rounded-full bg-white shadow-sm ring-1 ring-gray-900/5 transition duration-200 ease-in-out"
+                    featured ? "translate-x-6" : "translate-x-1",
+                    "inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
                   )}
                 />
               </Switch>
               <label
                 htmlFor="featured"
-                className="ml-2 text-sm leading-6 text-gray-600"
+                className="ml-3 text-sm font-medium text-gray-900"
               >
-                {" "}
-                <a href="#" className="font-semibold text-indigo-600">
-                  Mark as Featured
-                </a>
+                Mark as Featured
               </label>
             </div>
           </div>

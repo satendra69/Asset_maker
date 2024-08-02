@@ -97,11 +97,6 @@ const SideBar = ({ children }) => {
             name: "Users",
             icon: <FaUser size={15} />,
           },
-          {
-            path: "/admin/users/new",
-            name: "Add Users",
-            icon: <FaLock size={15} />,
-          },
         ],
       },
       {
