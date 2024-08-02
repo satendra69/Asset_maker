@@ -99,10 +99,10 @@ function ApartmentModule({ onDataUpdate }) {
     try {
       const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
-      console.log("listingData", listingData);
+      // console.log("listingData", listingData);
 
 
-      console.log("Listing Data Full:", JSON.stringify(listingData, null, 2));
+      // console.log("Listing Data Full:", JSON.stringify(listingData, null, 2));
 
       // Fetch images and brochures
       if (response.data.status === "success") {
@@ -173,8 +173,8 @@ function ApartmentModule({ onDataUpdate }) {
       setOtherAdvantages(listingData.ltg_det_pmts_other_advtages.split(", "));
       setSelectedAmenities(listingData.ltg_det_amenities.split(", "));
 
-      console.log("Listing Data Address:", listingData.ltg_det_address);
-      console.log("Listing Data Postal Code:", listingData.ltg_det_postal_code);
+      // console.log("Listing Data Address:", listingData.ltg_det_address);
+      // console.log("Listing Data Postal Code:", listingData.ltg_det_postal_code);
 
       setLocationData({
         location: listingData.ltg_det_location || "",

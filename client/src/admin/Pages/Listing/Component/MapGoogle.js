@@ -14,143 +14,75 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
     const [place, setPlace] = useState(null);
     const autocompleteRef = useRef(null);
     const [inputValue, setInputValue] = useState(initialPosition.location);
-    const [address, setAddress] = useState(initialPosition.address);
-    const [postalCode, setPostalCode] = useState(initialPosition.postalCode);
-    const [isApiLoaded, setIsApiLoaded] = useState(false);
-    const isFirstLoad = useRef(true);
-    const updateTimeoutRef = useRef(null);
+    const [postalCode, setPostalCode] = useState(initialPosition.postalCode || '');
+    const [address, setAddress] = useState(initialPosition.address || '');
+    const isApiLoaded = useRef(false);
 
     useEffect(() => {
         setMarker({ lat: initialPosition.latitude, lng: initialPosition.longitude });
         setInputValue(initialPosition.location);
-        setAddress(initialPosition.address);
-        setPostalCode(initialPosition.postalCode);
+        setPostalCode(initialPosition.postalCode || '');
+        setAddress(initialPosition.address || '');
     }, [initialPosition]);
 
     const handlePlaceChanged = useCallback(() => {
-        const place = autocompleteRef.current?.getPlace();
-        if (place?.geometry) {
-            const location = place.geometry.location;
+        const selectedPlace = autocompleteRef.current?.getPlace();
+        if (selectedPlace?.geometry) {
+            const location = selectedPlace.geometry.location;
             const newMarker = { lat: location.lat(), lng: location.lng() };
             setMarker(newMarker);
-
-            if (map) {
-                map.panTo(location);
-                map.setZoom(13);
-            }
-
-            const newPosition = {
-                location: place.formatted_address,
-                address: place.formatted_address,
-                postalCode: getAddressComponent(place, 'postal_code'),
-                latitude: newMarker.lat,
-                longitude: newMarker.lng,
-            };
-
-            onPositionChange(newPosition);
-            setInputValue(place.formatted_address);
-            setAddress(place.formatted_address);
-            setPostalCode(getAddressComponent(place, 'postal_code'));
+            map.panTo(location);
+            map.setZoom(13);
+            updatePosition(newMarker, selectedPlace);
+            setInputValue(selectedPlace.formatted_address);
         }
-    }, [map, onPositionChange]);
+    }, [map]);
 
     const onLoad = useCallback((mapInstance) => {
         setMap(mapInstance);
-        if (initialPosition.latitude && initialPosition.longitude) {
-            const initialMarker = {
-                lat: initialPosition.latitude,
-                lng: initialPosition.longitude,
-            };
-            setMarker(initialMarker);
-            mapInstance.setCenter(initialMarker);
-            mapInstance.setZoom(13);
-        }
-        setIsApiLoaded(true);
+        const initialMarker = {
+            lat: initialPosition.latitude,
+            lng: initialPosition.longitude,
+        };
+        setMarker(initialMarker);
+        mapInstance.setCenter(initialMarker);
+        mapInstance.setZoom(13);
+        isApiLoaded.current = true;
     }, [initialPosition]);
 
     const handleInputChange = (e) => {
-        setInputValue(e.target.value);
-    };
-
-    const handleMarkerDragEnd = useCallback((event) => {
-        const newMarker = {
-            lat: event.latLng.lat(),
-            lng: event.latLng.lng(),
-        };
-        setMarker(newMarker);
-
-        const geocoder = new window.google.maps.Geocoder();
-        geocoder.geocode({ location: newMarker }, (results, status) => {
-            if (status === 'OK' && results[0]) {
-                const newPlace = results[0];
-                setPlace(newPlace);
-                setInputValue(newPlace.formatted_address);
-                setAddress(newPlace.formatted_address);
-                setPostalCode(getAddressComponent(newPlace, 'postal_code'));
-
-                const newPosition = {
-                    location: newPlace.formatted_address,
-                    address: newPlace.formatted_address,
-                    postalCode: getAddressComponent(newPlace, 'postal_code'),
-                    latitude: newMarker.lat,
-                    longitude: newMarker.lng,
-                };
-                onPositionChange(newPosition);
-            }
-        });
-    }, [onPositionChange]);
-
-    useEffect(() => {
-        if (isApiLoaded && map && place && !isFirstLoad.current) {
-            const updatedPosition = {
-                location: inputValue,
-                address: place.formatted_address,
-                postalCode: getAddressComponent(place, 'postal_code'),
-                latitude: marker.lat,
-                longitude: marker.lng,
-            };
-
-            onPositionChange(updatedPosition);
-            map.panTo(marker);
-        } else {
-            isFirstLoad.current = false;
-        }
-    }, [marker, place, onPositionChange, isApiLoaded, map, inputValue]);
-
-    const handleIdle = useCallback(() => {
-        if (updateTimeoutRef.current) {
-            clearTimeout(updateTimeoutRef.current);
-        }
-
-        updateTimeoutRef.current = setTimeout(() => {
-            const center = map.getCenter();
-            const newMarker = {
-                lat: center.lat(),
-                lng: center.lng(),
-            };
-            setMarker(newMarker);
-
+        const newValue = e.target.value;
+        setInputValue(newValue);
+        if (newValue) {
             const geocoder = new window.google.maps.Geocoder();
-            geocoder.geocode({ location: newMarker }, (results, status) => {
+            geocoder.geocode({ address: newValue }, (results, status) => {
                 if (status === 'OK' && results[0]) {
-                    const newPlace = results[0];
-                    setPlace(newPlace);
-                    setInputValue(newPlace.formatted_address);
-                    setAddress(newPlace.formatted_address);
-                    setPostalCode(getAddressComponent(newPlace, 'postal_code'));
-
-                    const newPosition = {
-                        location: newPlace.formatted_address,
-                        address: newPlace.formatted_address,
-                        postalCode: getAddressComponent(newPlace, 'postal_code'),
-                        latitude: newMarker.lat,
-                        longitude: newMarker.lng,
-                    };
-                    onPositionChange(newPosition);
+                    const newMarker = results[0].geometry.location;
+                    const updatedPlace = results[0];
+                    setMarker({ lat: newMarker.lat(), lng: newMarker.lng() });
+                    setPlace(updatedPlace);
+                    updatePosition({ lat: newMarker.lat(), lng: newMarker.lng() }, updatedPlace);
+                } else {
+                    setPlace(null);
                 }
             });
-        }, 300);
-    }, [map, onPositionChange]);
+        } else {
+            setPlace(null);
+        }
+    };
+
+    const updatePosition = (newMarker, place) => {
+        const newPosition = {
+            location: place ? place.formatted_address : inputValue,
+            address: place ? place.formatted_address : '',
+            postalCode: getAddressComponent(place, 'postal_code'),
+            latitude: newMarker.lat,
+            longitude: newMarker.lng,
+        };
+        setPostalCode(newPosition.postalCode);
+        setAddress(newPosition.address);
+        onPositionChange(newPosition);
+    };
 
     return (
         <div>
@@ -162,7 +94,7 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                         <label htmlFor="location-input" className="block text-sm font-semibold leading-6 text-gray-900">
                             Location
                         </label>
-                        {isApiLoaded ? (
+                        {isApiLoaded.current ? (
                             <Autocomplete
                                 onLoad={(ref) => (autocompleteRef.current = ref)}
                                 onPlaceChanged={handlePlaceChanged}
@@ -235,24 +167,14 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                 </div>
                 <div className="z-10 w-full pr-4 sm:w-1/2 lg:w-1/2">
                     <div className="w-full mb-4 sm:mb-0">
-                        <LoadScript
-                            googleMapsApiKey={googleMapsApiKey}
-                            libraries={libraries}
-                        >
+                        <LoadScript googleMapsApiKey={googleMapsApiKey} libraries={libraries}>
                             <GoogleMap
                                 mapContainerStyle={mapContainerStyle}
                                 center={marker}
                                 zoom={13}
                                 onLoad={onLoad}
-                                onIdle={handleIdle}
                             >
-                                {marker && (
-                                    <Marker
-                                        position={marker}
-                                        draggable={true}
-                                        onDragEnd={handleMarkerDragEnd}
-                                    />
-                                )}
+                                <Marker position={marker} />
                             </GoogleMap>
                         </LoadScript>
                     </div>
@@ -265,12 +187,13 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
 export default MapGoogle;
 
 function getAddressComponent(place, component) {
-    const addressComponents = place.address_components;
-    for (let i = 0; i < addressComponents.length; i++) {
-        const types = addressComponents[i].types;
-        if (types.includes(component)) {
-            return addressComponents[i].long_name;
+    const addressComponents = place?.address_components || [];
+
+    for (const componentItem of addressComponents) {
+        if (componentItem.types.includes(component)) {
+            return componentItem.long_name;
         }
     }
+
     return '';
 }
