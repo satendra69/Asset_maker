@@ -51,24 +51,7 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
     }, [initialPosition]);
 
     const handleInputChange = (e) => {
-        const newValue = e.target.value;
-        setInputValue(newValue);
-        if (newValue) {
-            const geocoder = new window.google.maps.Geocoder();
-            geocoder.geocode({ address: newValue }, (results, status) => {
-                if (status === 'OK' && results[0]) {
-                    const newMarker = results[0].geometry.location;
-                    const updatedPlace = results[0];
-                    setMarker({ lat: newMarker.lat(), lng: newMarker.lng() });
-                    setPlace(updatedPlace);
-                    updatePosition({ lat: newMarker.lat(), lng: newMarker.lng() }, updatedPlace);
-                } else {
-                    setPlace(null);
-                }
-            });
-        } else {
-            setPlace(null);
-        }
+        setInputValue(e.target.value);
     };
 
     const updatePosition = (newMarker, place) => {
