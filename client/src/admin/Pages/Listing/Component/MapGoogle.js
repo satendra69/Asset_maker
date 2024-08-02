@@ -11,7 +11,6 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
 
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState({ lat: initialPosition.latitude, lng: initialPosition.longitude });
-    const [place, setPlace] = useState(null);
     const autocompleteRef = useRef(null);
     const [inputValue, setInputValue] = useState(initialPosition.location);
     const [postalCode, setPostalCode] = useState(initialPosition.postalCode || '');

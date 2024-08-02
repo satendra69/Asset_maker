@@ -163,11 +163,11 @@ function PlotsModule({ onDataUpdate }) {
       setPlotApprovalAuthority(listingData.ltg_det_plot_pmts_plot_approval_authority);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_plot_location || "",
+        address: listingData.ltg_det_plot_address || "",
+        postalCode: listingData.ltg_det_plot_postal_code || "",
+        latitude: parseFloat(listingData.ltg_det_plot_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_plot_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -525,7 +525,7 @@ function PlotsModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property

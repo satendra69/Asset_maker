@@ -177,11 +177,11 @@ function PentModule({ onDataUpdate }) {
       setIsCornerPenthouse(listingData.ltg_det_penthouses_pmts_corner_penthouse);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_penthouses_location || "",
+        address: listingData.ltg_det_penthouses_address || "",
+        postalCode: listingData.ltg_det_penthouses_postal_code || "",
+        latitude: parseFloat(listingData.ltg_det_penthouses_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_penthouses_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -553,7 +553,7 @@ function PentModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property

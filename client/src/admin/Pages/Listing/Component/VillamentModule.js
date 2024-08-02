@@ -181,11 +181,11 @@ function VillamentModule({ onDataUpdate }) {
       setIsCornerVillament(listingData.ltg_det_villaments_pmts_corner_villament);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_villaments_location || "",
+        address: listingData.ltg_det_villaments_address || "",
+        postalCode: listingData.ltg_det_villaments_postal_code || "",
+        latitude: parseFloat(listingData.ltg_villaments_det_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_villaments_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -556,7 +556,7 @@ function VillamentModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property

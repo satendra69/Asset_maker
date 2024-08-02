@@ -557,7 +557,7 @@ function VillaModule({ onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
