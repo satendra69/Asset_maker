@@ -159,6 +159,11 @@ function NewListingPage() {
 
         await uploadListingFiles(listingType, listingId, auditUser, listingData[listingType], update);
 
+        console.log(json_ListingInsert.ListingData.deletedImages);
+
+        await deleteImagesFromDatabase(json_ListingInsert.ListingData.deletedImages);
+        await deletedFilesFromDatabase(json_ListingInsert.ListingData.deletedFiles);
+
         Swal.close();
         Swal.fire({
           icon: "success",
@@ -222,6 +227,32 @@ function NewListingPage() {
     }
 
     console.log('File upload process completed.');
+  };
+
+  const deleteImagesFromDatabase = async (deletedImages) => {
+    try {
+      for (const type in deletedImages) {
+        const images = deletedImages[type];
+        for (const RowID of images) {
+          await httpCommon.delete(`/list/images/${RowID}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting images:", error);
+    }
+  };
+
+  const deletedFilesFromDatabase = async (deletedFiles) => {
+    try {
+      for (const type in deletedFiles) {
+        const files = deletedFiles[type];
+        for (const RowID of files) {
+          await httpCommon.delete(`/list/files/${RowID}`);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting files:", error);
+    }
   };
 
   // Helper function to get nested listing from object

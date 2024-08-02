@@ -99,6 +99,15 @@ function VillaModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "Villas";
+  const [deletedImages, setDeletedImages] = useState({
+    main: [],
+    gallery: [],
+    masterPlan: [],
+    floorAreaPlan: []
+  });
+  const [deletedFiles, setDeletedFiles] = useState({
+    brochure: [],
+  });
 
   // fetch property
   const fetchProperty = async (listingId) => {
@@ -299,24 +308,38 @@ function VillaModule({ onDataUpdate }) {
 
   };
 
-  const handleStoredImageDelete = async (RowID, type) => {
-    try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        if (type === 'Main') {
-          setStoredMainImage(storedMainImage.filter(image => image.RowID !== RowID));
-        } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
-        } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages.filter(image => image.RowID !== RowID));
-        } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages.filter(image => image.RowID !== RowID));
-        }
-      } else {
-        console.error("Error deleting images:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting images:", error);
+  const handleStoredImageDelete = (RowID, type) => {
+    switch (type) {
+      case 'Main':
+        setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          main: [...prevState.main, RowID]
+        }));
+        break;
+      case 'gallery':
+        setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          gallery: [...prevState.gallery, RowID]
+        }));
+        break;
+      case 'masterPlan':
+        setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          masterPlan: [...prevState.masterPlan, RowID]
+        }));
+        break;
+      case 'floorAreaPlan':
+        setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          floorAreaPlan: [...prevState.floorAreaPlan, RowID]
+        }));
+        break;
+      default:
+        console.error('Invalid type provided');
     }
   };
 
@@ -368,17 +391,11 @@ function VillaModule({ onDataUpdate }) {
   };
 
   const handleStoredFileDelete = async (RowID) => {
-    try {
-      const response = await httpCommon.delete(`/list/files/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
-
-      } else {
-        console.error("Error deleting brochure:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting brochure:", error);
-    }
+    setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
+    setDeletedFiles(prevState => ({
+      ...prevState,
+      brochure: [...prevState.brochure, RowID]
+    }));
   };
 
   const handleFileClick = (index, pdfUrl = null, isStored = false) => {
@@ -554,6 +571,8 @@ function VillaModule({ onDataUpdate }) {
       projectBuilderDetails,
       brochure,
       combinedImages,
+      deletedImages,
+      deletedFiles,
       type: propertyType,
     };
     onDataUpdate(data);
@@ -591,9 +610,9 @@ function VillaModule({ onDataUpdate }) {
     selectedStatus, selectedCarParking, amenitiesAsString, videoUrl, selectedBedRooms, selectedBathRooms,
     yearBuilt, plotDimensions, noOfOpenSides, mainDoorFacing, isCornerVilla, plotArea, balconies, furnishing,
     propertyFlooring, approachingRoadWidth, isInGatedCommunity, overLooking, advantagesAsString, totalFloors,
-    transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority,
+    transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority, deletedFiles,
     totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails,
-    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages,
+    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
   return (

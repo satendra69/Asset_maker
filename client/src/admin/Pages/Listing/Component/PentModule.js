@@ -97,6 +97,15 @@ function PentModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "PentHouses";
+  const [deletedImages, setDeletedImages] = useState({
+    main: [],
+    gallery: [],
+    masterPlan: [],
+    floorAreaPlan: []
+  });
+  const [deletedFiles, setDeletedFiles] = useState({
+    brochure: [],
+  });
 
   // fetch property
   const fetchProperty = async (listingId) => {
@@ -298,24 +307,38 @@ function PentModule({ onDataUpdate }) {
 
   };
 
-  const handleStoredImageDelete = async (RowID, type) => {
-    try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        if (type === 'Main') {
-          setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
-        } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
-        }
-      } else {
-        console.error("Error deleting images:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting images:", error);
+  const handleStoredImageDelete = (RowID, type) => {
+    switch (type) {
+      case 'Main':
+        setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          main: [...prevState.main, RowID]
+        }));
+        break;
+      case 'gallery':
+        setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          gallery: [...prevState.gallery, RowID]
+        }));
+        break;
+      case 'masterPlan':
+        setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          masterPlan: [...prevState.masterPlan, RowID]
+        }));
+        break;
+      case 'floorAreaPlan':
+        setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          floorAreaPlan: [...prevState.floorAreaPlan, RowID]
+        }));
+        break;
+      default:
+        console.error('Invalid type provided');
     }
   };
 
@@ -367,17 +390,11 @@ function PentModule({ onDataUpdate }) {
   };
 
   const handleStoredFileDelete = async (RowID) => {
-    try {
-      const response = await httpCommon.delete(`/list/files/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
-
-      } else {
-        console.error("Error deleting brochure:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting brochure:", error);
-    }
+    setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
+    setDeletedFiles(prevState => ({
+      ...prevState,
+      brochure: [...prevState.brochure, RowID]
+    }));
   };
 
   const handleFileClick = (index, pdfUrl = null, isStored = false) => {
@@ -550,6 +567,8 @@ function PentModule({ onDataUpdate }) {
       selectedOptions,
       projectBuilderDetails,
       combinedImages,
+      deletedImages,
+      deletedFiles,
       type: propertyType,
     };
     onDataUpdate(data);
@@ -585,9 +604,9 @@ function PentModule({ onDataUpdate }) {
     handleDataUpdate();
   }, [salePrice, suffixPrice, areaDetails, locationData, ratePerSqFt, content, propertyAddressDetails,
     selectedStatus, selectedCarParking, amenitiesAsString, videoUrl, brochure, selectedBedRooms,
-    selectedBathRooms, yearBuilt, mainDoorFacing, isCornerPenthouse, balconies,
+    selectedBathRooms, yearBuilt, mainDoorFacing, isCornerPenthouse, balconies, deletedImages,
     furnishing, propertyFlooring, approachingRoadWidth, isInGatedCommunity, selectedDuplex,
-    overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom,
+    overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom, deletedFiles,
     stampDutyAndRegistrationCharges, approvalAuthority, totalProjectExtent, totalUnits, totalPhases,
     selectedOptions, projectBuilderDetails, brochure, galleryImages, masterPlanImages, floorAreaPlanImages,
     storedBrochure, mainImage, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
