@@ -84,6 +84,21 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
         onPositionChange(newPosition);
     };
 
+    const handleMarkerDragEnd = (event) => {
+        const newMarker = { lat: event.latLng.lat(), lng: event.latLng.lng() };
+        setMarker(newMarker);
+        const geocoder = new window.google.maps.Geocoder();
+        geocoder.geocode({ location: newMarker }, (results, status) => {
+            if (status === 'OK' && results[0]) {
+                const updatedPlace = results[0];
+                updatePosition(newMarker, updatedPlace);
+                setInputValue(updatedPlace.formatted_address);
+            } else {
+                console.error('Geocode was not successful for the following reason:', status);
+            }
+        });
+    };
+
     return (
         <div>
             <hr className="my-8 border-gray-400" />
@@ -174,7 +189,11 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                                 zoom={13}
                                 onLoad={onLoad}
                             >
-                                <Marker position={marker} />
+                                <Marker
+                                    position={marker}
+                                    draggable={true}
+                                    onDragEnd={handleMarkerDragEnd}
+                                />
                             </GoogleMap>
                         </LoadScript>
                     </div>
@@ -188,12 +207,10 @@ export default MapGoogle;
 
 function getAddressComponent(place, component) {
     const addressComponents = place?.address_components || [];
-
     for (const componentItem of addressComponents) {
         if (componentItem.types.includes(component)) {
             return componentItem.long_name;
         }
     }
-
     return '';
 }
