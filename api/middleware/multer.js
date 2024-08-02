@@ -1,5 +1,5 @@
 const multer = require('multer');
-const sharp = require('sharp');
+const Jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
 const poppler = require('pdf-poppler');
@@ -25,10 +25,7 @@ const addWatermark = async (req, res, next) => {
         const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
         const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
 
-
         if (fs.existsSync(originalFilePath) && fs.existsSync(watermarkedFilePath)) {
-          // file.path = watermarkedFilePath;
-          // file.filename = `watermarked-${file.originalname}`;
           console.log(`Files already exist: ${file.originalname}`);
           continue;
         }
@@ -41,21 +38,20 @@ const addWatermark = async (req, res, next) => {
         try {
           if (file.mimetype.startsWith('image')) {
             console.log("Starting watermark processing for:", file.originalname);
-            const inputImage = sharp(inputPath);
-            console.log("processing");
-            const { width, height } = await inputImage.metadata();
+            const inputImage = await Jimp.read(inputPath);
+            const watermark = await Jimp.read(watermarkPath);
 
-            const watermarkBuffer = await sharp(watermarkPath)
-              .resize({
-                width: Math.floor(width / 4),
-                height: Math.floor(height / 4),
-                fit: 'inside',
-              })
-              .toBuffer();
+            const width = inputImage.bitmap.width;
+            const height = inputImage.bitmap.height;
 
-            await inputImage
-              .composite([{ input: watermarkBuffer, top: 10, left: 10 }])
-              .toFile(outputPath);
+            watermark.resize(width / 4, Jimp.AUTO);
+
+            inputImage.composite(watermark, 10, 10, {
+              mode: Jimp.BLEND_SOURCE_OVER,
+              opacitySource: 0.5
+            });
+
+            await inputImage.writeAsync(outputPath);
 
             file.path = outputPath;
             file.filename = `watermarked-${file.originalname}`;
@@ -63,7 +59,6 @@ const addWatermark = async (req, res, next) => {
             console.log("Watermark processing completed successfully.");
             console.log(file.path);
             console.log(file.filename);
-
           } else if (file.mimetype === 'application/pdf') {
             console.log("No watermark processing for:", file.originalname);
             const baseFileName = path.basename(file.originalname, path.extname(file.originalname));
@@ -104,7 +99,6 @@ const addWatermark = async (req, res, next) => {
           }
         } catch (fileProcessingError) {
           console.error(`Error processing file ${file.originalname}:`, fileProcessingError);
-          // Continue to the next file, or handle the error as needed
         }
       }
     }

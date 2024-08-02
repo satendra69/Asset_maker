@@ -1,7 +1,6 @@
 const db = require("../connect");
 const moment = require("moment");
 const path = require('path');
-const fs = require('fs');
 
 const addListings = async (req, res) => {
 

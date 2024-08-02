@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import httpCommon from "../../http-common";
 import "./property.css";
-import { useParams } from "react-router-dom";
 import {
   CalendarToday as YearBuiltIcon,
   Business as TotalFloorsIcon,
@@ -224,12 +223,6 @@ const getIcon = (label) => {
           sx={{ fontSize: "1.7rem", color: "#2196f3", marginRight: "0.5rem" }}
         />
       );
-    case "THIS IS CORNER ROWHOUSE":
-      return (
-        <ThisIsCornerRowhouseIcon
-          sx={{ fontSize: "1.7rem", color: "#2196f3", marginRight: "0.5rem" }}
-        />
-      );
     case "AVAILABLE FROM":
       return (
         <AvailableFromIcon
@@ -319,36 +312,48 @@ const transformData = (propertyData, propertyImages) => {
     price: data.ltg_det_sale_price,
     title: data.ltg_title,
     description: data.ltg_det_desc,
-    amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
-      icon: 'tickmark-icon',
-      label: amenity.trim(),
-    })) : [],
-    propertyVideo: data.ltg_det_property_video_url,
   });
 
   const mapApartmentFields = (data) => ({
     ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
         { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_pmts_area_dts },
+        { icon: 'available-from-icon', label: 'AVAILABLE FROM', value: data.ltg_det_available_from },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_pmts_balconies },
+        { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_pmts_bth_rom },
+        { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_pmts_bed_rom },
+        { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
+        { icon: 'total-flrs-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
+        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'lfts-in-tower-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'main-door-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'overlooking-icon', label: 'OVER LOOKING', value: data.ltg_det_over_looking },
+        { icon: 'property-flrg-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'project-extent-icon', label: 'TOTAL PROJECT EXTENT', value: data.ltg_det_pmts_tproject_evnt },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_pmts_status },
         { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'totl_block-icon', label: 'TOTAL BLOCKS', value: data.ltg_det_pmts_totl_block },
+        { icon: 'total_towrs-icon', label: 'TOTAL TOWERS', value: data.ltg_det_pmts_total_towrs },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
         { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
       ],
+      amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
       otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
         icon: 'tickmark-icon',
         label: advantage.trim(),
       })) : [],
       aboutProject: data.ltg_det_about_project_buder,
+      propertyVideo: data.ltg_det_property_video_url,
     },
   });
 
@@ -357,22 +362,34 @@ const transformData = (propertyData, propertyImages) => {
     details: {
       otherFacts: [
         { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_plot_pmts_approaching_road_width },
-        { icon: 'area-dts-icon', label: 'AREA DTS', value: data.ltg_det_plot_pmts_area_dts },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_pmts_area_dts },
         { icon: 'boundary-wall-icon', label: 'BOUNDARY WALL MADE', value: data.ltg_det_plot_pmts_boundary_wall_made },
         { icon: 'corner-plot-icon', label: 'CORNER PLOT', value: data.ltg_det_plot_pmts_corner_plot },
         { icon: 'floors-allowed-icon', label: 'FLOORS ALLOWED FOR CONSTRUCTION', value: data.ltg_det_plot_pmts_floors_allowed_for_construction },
-        { icon: 'gated-community-icon', label: 'GATED COMMUNITY', value: data.ltg_det_plot_pmts_gated_community },
+        { icon: 'gated-community-icon', label: 'IS IN GATED COMMUNITY', value: data.ltg_det_plot_pmts_gated_community },
         { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_plot_pmts_no_of_open_sides },
         { icon: 'approval-authority-icon', label: 'PLOT APPROVAL AUTHORITY', value: data.ltg_det_plot_pmts_plot_approval_authority },
-        { icon: 'plot-dimensions-icon', label: 'PLOT DIMENSIONS', value: data.ltg_det_plot_pmts_plot_dimensions },
-        { icon: 'plot-facing-icon', label: 'PLOT FACING', value: data.ltg_det_plot_pmts_plot_facing },
-        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REG. CHARGES', value: data.ltg_det_plot_pmts_stamp_duty_registration_charges },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_plot_pmts_transaction_type },
+        { icon: 'dimensions-icon', label: 'PLOT DIMENSIONS', value: data.ltg_det_plot_pmts_plot_dimensions },
+        { icon: 'facing-icon', label: 'PLOT FACING', value: data.ltg_det_plot_pmts_plot_facing },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_plot_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_plot_pmts_stamp_duty_registration_charges },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_plot_pmts_status },
         { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_plot_pmts_total_phases },
+        { icon: 'project-extent-icon', label: 'TOTAL PROJECT EXTENT', value: data.ltg_det_plot_pmts_total_project_extent },
         { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_plot_pmts_total_units },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_plot_pmts_transaction_type },
         { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_plot_pmts_year_built },
       ],
+      amenities: data.ltg_det_plot_amenities ? data.ltg_det_plot_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
+      otherAdvantages: data.ltg_det_plot_pmts_other_advtages ? data.ltg_det_plot_pmts_other_advtages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
       aboutProject: data.ltg_det_plot_about_project_builder,
+      propertyVideo: data.ltg_det_plot_property_video_url,
     },
   });
 
@@ -380,23 +397,44 @@ const transformData = (propertyData, propertyImages) => {
     ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
-        { icon: 'main-door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP DUTY & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
         { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_pmts_area_dts },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_pmts_balconies },
+        { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_pmts_bed_rom },
+        { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_pmts_bth_rom },
+        { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
+        { icon: 'flat-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
+        { icon: 'property-flrg-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
+        { icon: 'main-door-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
+        { icon: 'corner-villa-icon', label: 'THIS IS CORNER VILLA', value: data.ltg_det_corner_villa },
+        { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_open_sides },
+        { icon: 'gated-community-icon', label: 'IS IN GATED COMMUNITY', value: data.ltg_det_gated_community },
+        { icon: 'overlooking-icon', label: 'OVER LOOKING', value: data.ltg_det_over_looking },
+        { icon: 'plot-area-icon', label: 'PLOT AREA', value: data.ltg_det_plot_area },
+        { icon: 'plot-dimensions-icon', label: 'PLOT DIMENSIONS', value: data.ltg_det_plot_dimensions },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_pmts_rate_per_sq },
+        { icon: 'available-from-icon', label: 'AVAILABLE FROM', value: data.ltg_det_available_from },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_pmts_status },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
         { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
+        { icon: 'project-extent-icon', label: 'TOTAL PROJECT EXTENT', value: data.ltg_det_pmts_tproject_evnt },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
       ],
+      amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
       otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
         icon: 'tickmark-icon',
         label: advantage.trim(),
       })) : [],
       aboutProject: data.ltg_det_about_project_buder,
+      propertyVideo: data.ltg_det_property_video_url,
     },
   });
 
@@ -404,25 +442,41 @@ const transformData = (propertyData, propertyImages) => {
     ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
-        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
-        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_row_house_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_row_house_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_row_house_pmts_area_dts },
+        { icon: 'available-from-icon', label: 'AVAILABLE FROM', value: data.ltg_det_row_house_pmts_available_from },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_row_house_pmts_balconies },
+        { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_row_house_pmts_bath_rooms },
+        { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_row_house_pmts_bed_rooms },
+        { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_row_house_pmts_car_parking },
+        { icon: 'corner-rowhouse-icon', label: 'THIS IS A CORNER ROWHOUSE', value: data.ltg_det_row_house_pmts_corner_rowhouse },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_row_house_pmts_furnishing },
+        { icon: 'gated-community-icon', label: 'IS IN GATED COMMUNITY', value: data.ltg_det_row_house_pmts_gated_community },
+        { icon: 'land-uds-area-icon', label: 'LAND UDS AREA', value: data.ltg_det_row_house_pmts_land_uds_area },
+        { icon: 'main-door-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_row_house_pmts_main_door_facing },
+        { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_row_house_pmts_no_of_open_sides },
+        { icon: 'overlooking-icon', label: 'OVER LOOKING', value: data.ltg_det_row_house_pmts_over_looking },
+        { icon: 'plot-dimensions-icon', label: 'PLOT DIMENSIONS', value: data.ltg_det_row_house_pmts_plot_dimensions },
+        { icon: 'property-flrg-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_row_house_pmts_property_flooring },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_row_house_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_row_house_pmts_stamp_duty_registration_charges },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_row_house_pmts_status },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_row_house_pmts_total_phases },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_row_house_pmts_total_units },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_row_house_pmts_transaction_type },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_row_house_pmts_year_built },
       ],
-      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+      amenities: data.ltg_det_row_house_amenities ? data.ltg_det_row_house_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
+      otherAdvantages: data.ltg_det_row_house_pmts_other_advantages ? data.ltg_det_row_house_pmts_other_advantages.split(',').map(advantage => ({
         icon: 'tickmark-icon',
         label: advantage.trim(),
       })) : [],
-      aboutProject: data.ltg_det_about_project_buder,
+      aboutProject: data.ltg_det_row_house_about_project_builder,
+      propertyVideo: data.ltg_det_row_house_property_video_url,
     },
   });
 
@@ -430,25 +484,75 @@ const transformData = (propertyData, propertyImages) => {
     ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
-        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
-        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_villaments_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_villaments_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_villaments_pmts_area_dts },
+        { icon: 'available-from-icon', label: 'AVAILABLE FROM', value: data.ltg_det_villaments_pmts_available_from },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_villaments_pmts_balconies },
+        { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_villaments_pmts_bath_rooms },
+        { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_villaments_pmts_bed_rooms },
+        { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_villaments_pmts_car_parking },
+        { icon: 'corner-villament-icon', label: 'THIS IS CORNER VILLAMENT', value: data.ltg_det_villaments_pmts_corner_villament },
+        { icon: 'duplex-icon', label: 'DUPLEX', value: data.ltg_det_villaments_pmts_duplex },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_villaments_pmts_furnishing },
+        { icon: 'gated-community-icon', label: 'IS IN GATED COMMUNITY', value: data.ltg_det_villaments_pmts_gated_community },
+        { icon: 'land-uds-area-icon', label: 'LAND UDS AREA', value: data.ltg_det_villaments_pmts_land_uds_area },
+        { icon: 'main-door-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_villaments_pmts_main_door_facing },
+        { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_villaments_pmts_no_of_open_sides },
+        { icon: 'overlooking-icon', label: 'OVER LOOKING', value: data.ltg_det_villaments_pmts_over_looking },
+        { icon: 'property-flrg-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_villaments_pmts_property_flooring },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_villaments_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_villaments_pmts_stamp_duty_registration_charges },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_villaments_pmts_status },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_villaments_pmts_total_phases },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_villaments_pmts_total_units },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_villaments_pmts_transaction_type },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_villaments_pmts_year_built },
       ],
-      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+      amenities: data.ltg_det_villaments_amenities ? data.ltg_det_villaments_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
+      otherAdvantages: data.ltg_det_villaments_pmts_other_advantages ? data.ltg_det_villaments_pmts_other_advantages.split(',').map(advantage => ({
         icon: 'tickmark-icon',
         label: advantage.trim(),
       })) : [],
-      aboutProject: data.ltg_det_about_project_buder,
+      aboutProject: data.ltg_det_villaments_about_project_builder,
+      propertyVideo: data.ltg_det_villaments_property_video_url,
+    },
+  });
+
+  const mapCommercialPropertyFields = (data) => ({
+    ...mapCommonFields(data),
+    details: {
+      otherFacts: [
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_comm_prop_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_comm_prop_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_comm_prop_pmts_area_dts },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_comm_prop_pmts_balconies },
+        { icon: 'car-parking-icon', label: 'CAR PARKING', value: data.ltg_det_comm_prop_pmts_car_parking },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_comm_prop_pmts_furnishing },
+        { icon: 'property-flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_comm_prop_pmts_property_flooring },
+        { icon: 'property-on-floor-icon', label: 'PROPERTY ON FLOOR', value: data.ltg_det_comm_prop_pmts_property_on_floor },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_comm_prop_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_comm_prop_pmts_stamp_duty_registration_charges },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_comm_prop_pmts_status },
+        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_comm_prop_pmts_total_floors },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_comm_prop_pmts_total_phases },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_comm_prop_pmts_total_units },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_comm_prop_pmts_transaction_type },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_comm_prop_pmts_year_built },
+      ],
+      amenities: data.ltg_det_comm_prop_amenities ? data.ltg_det_comm_prop_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
+      otherAdvantages: data.ltg_det_comm_prop_pmts_other_advantages ? data.ltg_det_comm_prop_pmts_other_advantages.split(',').map(advantage => ({
+        icon: 'tickmark-icon',
+        label: advantage.trim(),
+      })) : [],
+      aboutProject: data.ltg_det_comm_prop_about_project_builder,
+      propertyVideo: data.ltg_det_comm_prop_property_video_url,
     },
   });
 
@@ -456,25 +560,40 @@ const transformData = (propertyData, propertyImages) => {
     ...mapCommonFields(data),
     details: {
       otherFacts: [
-        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_pmts_year_build },
-        { icon: 'total-floors-icon', label: 'TOTAL FLOORS', value: data.ltg_det_pmts_total_flrs },
-        { icon: 'flat-on-floor-icon', label: 'FLAT ON FLOOR', value: data.ltg_det_pmts_flat_on_flr },
-        { icon: 'lifts-icon', label: 'LIFTS IN THE TOWER', value: data.ltg_det_pmts_lfts_in_tower },
-        { icon: 'door-facing-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_pmts_main_dor_facing },
-        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_pmts_furnishing },
-        { icon: 'flooring-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_pmts_property_flrg },
-        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_pmts_stamp_duty },
-        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_pmts_totalunits },
-        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_pmts_approval_authority },
-        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_pmts_approaching_road_width },
-        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_pmts_total_phases },
-        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_pmts_transaction_typ },
+        { icon: 'road-width-icon', label: 'APPROACHING ROAD WIDTH', value: data.ltg_det_penthouses_pmts_approaching_road_width },
+        { icon: 'approval-authority-icon', label: 'APPROVAL AUTHORITY', value: data.ltg_det_penthouses_pmts_approval_authority },
+        { icon: 'area-dts-icon', label: 'AREA DETAILS', value: data.ltg_det_penthouses_pmts_area_dts },
+        { icon: 'available-from-icon', label: 'AVAILABLE FROM', value: data.ltg_det_penthouses_pmts_available_form },
+        { icon: 'balconies-icon', label: 'BALCONIES', value: data.ltg_det_penthouses_pmts_balconies },
+        { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_penthouses_pmts_bath_rooms },
+        { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_penthouses_pmts_bed_rooms },
+        { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_penthouses_pmts_car_parking },
+        { icon: 'corner-penthouse-icon', label: 'THIS IS A CORNER PENTHOUSE', value: data.ltg_det_penthouses_pmts_corner_penthouse },
+        { icon: 'duplex-icon', label: 'DUPLEX', value: data.ltg_det_penthouses_pmts_duplex },
+        { icon: 'furnishing-icon', label: 'FURNISHING', value: data.ltg_det_penthouses_pmts_furnishing },
+        { icon: 'gated-community-icon', label: 'IS IN GATED COMMUNITY', value: data.ltg_det_penthouses_pmts_gated_community },
+        { icon: 'main-door-icon', label: 'MAIN DOOR FACING', value: data.ltg_det_penthouses_pmts_main_door_facing },
+        { icon: 'open-sides-icon', label: 'NO OF OPEN SIDES', value: data.ltg_det_penthouses_pmts_no_of_open_sides },
+        { icon: 'overlooking-icon', label: 'OVER LOOKING', value: data.ltg_det_penthouses_pmts_over_looking },
+        { icon: 'property-flrg-icon', label: 'PROPERTY FLOORING', value: data.ltg_det_penthouses_pmts_property_flooring },
+        { icon: 'rate-icon', label: 'RATE PER SQ-FT/YRD', value: data.ltg_det_penthouses_pmts_rate_per_sq },
+        { icon: 'stamp-duty-icon', label: 'STAMP & REG. CHARGES', value: data.ltg_det_penthouses_pmts_stamp_duty_registration_charges },
+        { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_penthouses_pmts_status },
+        { icon: 'total-phases-icon', label: 'TOTAL PHASES', value: data.ltg_det_penthouses_pmts_total_phases },
+        { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_penthouses_pmts_total_units },
+        { icon: 'transaction-type-icon', label: 'TRANSACTION TYPE', value: data.ltg_det_penthouses_pmts_transaction_type },
+        { icon: 'year-built-icon', label: 'YEAR BUILT', value: data.ltg_det_penthouses_pmts_year_built },
       ],
-      otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
+      amenities: data.ltg_det_penthouses_amenities ? data.ltg_det_penthouses_amenities.split(',').map(amenity => ({
+        icon: 'tickmark-icon',
+        label: amenity.trim(),
+      })) : [],
+      otherAdvantages: data.ltg_det_penthouses_pmts_other_advantages ? data.ltg_det_penthouses_pmts_other_advantages.split(',').map(advantage => ({
         icon: 'tickmark-icon',
         label: advantage.trim(),
       })) : [],
-      aboutProject: data.ltg_det_about_project_buder,
+      aboutProject: data.ltg_det_penthouses_about_project_builder,
+      propertyVideo: data.ltg_det_penthouses_property_video_url,
     },
   });
 
@@ -495,6 +614,9 @@ const transformData = (propertyData, propertyImages) => {
       break;
     case 'Villaments':
       transformedData = mapVillamentFields(propertyData);
+      break;
+    case 'CommercialProperties':
+      transformedData = mapCommercialPropertyFields(propertyData);
       break;
     case 'PentHouses':
       transformedData = mapPentHouseFields(propertyData);
@@ -570,11 +692,11 @@ const PropertyDetails = ({ property, images, brochure }) => {
       <div className="-mt-6 space-y-16">
         <div className="">
           {/* Conditionally render "Other Facts" section */}
-          {transformedProperty?.details.otherFacts.some(fact => fact.value) && (
+          {transformedProperty?.details?.otherFacts.some(fact => fact.value) && (
             <section>
               <h2 className="mb-4 text-xl font-bold">Other Facts</h2>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {transformedProperty?.details.otherFacts.map((fact, index) => (
+                {transformedProperty?.details?.otherFacts.map((fact, index) => (
                   fact.value && (
                     <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}

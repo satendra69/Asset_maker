@@ -93,12 +93,12 @@ const SideBar = ({ children }) => {
         exact: true,
         subRoutes: [
           {
-            path: "/settings/2fa",
+            path: "/admin/users",
             name: "Users",
             icon: <FaUser size={15} />,
           },
           {
-            path: "/settings/2fa",
+            path: "/admin/users/new",
             name: "Add Users",
             icon: <FaLock size={15} />,
           },

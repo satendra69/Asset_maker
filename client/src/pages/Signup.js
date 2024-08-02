@@ -1,69 +1,26 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import BasicModal from "../admin/Component/OtpModal";
-import { CheckIcon } from "lucide-react";
-import firebase from "firebase/app";
-import "firebase/auth";
-
-// firebase authentication import
-import {
-  getAuth,
-  RecaptchaVerifier,
-  signInWithPhoneNumber,
-} from "firebase/auth";
-import { app } from "../config";
+import httpCommon from "../http-common";
 
 export default function SignUp() {
   const [formData, setFormData] = useState({
-    phoneNumber: "",
     username: "",
     email: "",
     password: "",
   });
-  const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  // otp dialog
   const [otpOpen, setOtpOpen] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
-  // confirmotp
   const [currentOtp, setCurrentOtp] = useState(null);
-
-  // otp sent flag
   const [otpSent, setOtpSent] = useState(false);
   const [otpActiveIndex, setOtpActiveIndex] = useState(0);
   const inputRef = useRef();
+
   useEffect(() => {
     inputRef.current?.focus();
   }, [otpActiveIndex, otpOpen]);
-  // handle key
-  const handeleKey = (e, index) => {
-    if (e.key == "Backspace") {
-      setOtpActiveIndex(index - 1);
-    }
-  };
-  // handle change for otp
-  const handleChangeOtp = (e, index) => {
-    const { value } = e.target;
-
-    if (!value) {
-      const newOtp = [...otp];
-      newOtp[index] = value;
-      setOtpActiveIndex(index - 1);
-      setOtp(newOtp);
-    } else {
-      const val = value.substring(value.length - 1);
-      const newOtp = [...otp];
-      newOtp[index] = val;
-      setOtpActiveIndex(index + 1);
-
-      setOtp(newOtp);
-    }
-  };
-
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -71,252 +28,142 @@ export default function SignUp() {
       [e.target.id]: e.target.value,
     });
   };
-  console.log("form", formData);
-  // api url
-  const url = "http://localhost:8000";
 
-  // const postUsers = async (e) => {
-  //   e.preventDefault();
+  const handleChangeOtp = (e, index) => {
+    const { value } = e.target;
+    const newOtp = [...otp];
+    if (!value) {
+      newOtp[index] = "";
+      setOtpActiveIndex(index - 1);
+    } else {
+      const val = value.substring(value.length - 1);
+      newOtp[index] = val;
+      setOtpActiveIndex(index + 1);
+    }
+    setOtp(newOtp);
+  };
 
-  //   try {
-  //     setLoading(true);
-  //     const otpString = otp.join("");
-  //     if (otpString == currentOtp) {
-  //       const res = await fetch(`${url}/auth/signup`, {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //         body: JSON.stringify(formData),
-  //       });
-  //       const data = await res.json();
-  //       // if (!data.ok) return toast.error(data);
-  //       // console.log(data);
-  //       // // if (data.success === false) {
-  //       // //   setLoading(false);
-  //       // //   setError(data.message);
-  //       // //   return;
-  //       // // }
-  //       toast.success(data);
-  //       setLoading(false);
-  //       setError(null);
-  //       toast.success(data);
-  //       navigate("/sign-in");
-  //     } else {
-  //       setLoading(false);
-  //       toast.error("Otp Not Match");
-  //     }
-  //   } catch (error) {
-  //     setLoading(false);
-  //     setError(error.message);
-  //   }
-  // };
+  const handleKey = (e, index) => {
+    if (e.key === "Backspace") {
+      setOtpActiveIndex(index - 1);
+    }
+  };
 
-  // firebase authenticater
+  const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   window.recaptchaVerifier = new RecaptchaVerifier(
-  //     auth,
-  //     "recaptcha-container",
-  //     {
-  //       size: "normal",
-  //       callback: (response) => {
-  //         console.log(response);
-  //       },
-  //       "expired-callback": function (response) {
-  //         console.log(response);
-  //       },
-  //     }
-  //   );
-  // }, [auth]);
-
-  const auth = getAuth(app);
-  useEffect(() => {
-    window.recaptchaVerifier = new RecaptchaVerifier(
-      auth,
-      "recaptcha-container",
-      {
-        size: "normal",
-        callback: (response) => {
-          // reCAPTCHA solved, allow signInWithPhoneNumber.
-          // ...
-        },
-        "expired-callback": () => {
-          // Response expired. Ask user to solve reCAPTCHA again.
-          // ...
-        },
-      }
-    );
-  }, [auth]);
   const handleSendOtp = async (e) => {
     e.preventDefault();
     try {
-      const formattedPhoneNumber = formData.phoneNumber.replace(/\D/g, "");
-      const countryCode = "91";
-      const phoneNumberWithCountryCode = `+${countryCode}${formattedPhoneNumber}`;
-
-      console.log(phoneNumberWithCountryCode, "number");
-
-      const confirmation = await signInWithPhoneNumber(
-        auth,
-        phoneNumberWithCountryCode,
-        window.recaptchaVerifier
-      );
-      setCurrentOtp(confirmation);
-      setOtpSent(true);
-      toast.success("OTP  sent successfully");
-      setOtpOpen(true);
+      setLoading(true);
+      const res = await httpCommon.post(`/auth/registerP`, formData);
+      if (res.data) {
+        setCurrentOtp(res.data.otp);
+        setOtpSent(true);
+        toast.success("OTP sent successfully to your email.");
+        setOtpOpen(true);
+      }
     } catch (error) {
-      console.log(error);
-      toast.error("Error sending otp");
+      console.error("Error sending OTP:", error);
+      toast.error("Error sending OTP");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
-    // join array of opt to one string
     const otpString = otp.join("");
-
-    try {
-      await currentOtp.confirm(otpString);
-
-      const res = await axios.post(
-        `${url}/auth/signup`,
-
-        formData
-      );
-
-      if (!res.data) return toast.error("something went wrong");
-      console.log(res.data);
-
-      toast.success(res.data);
-      setLoading(false);
-      setError(null);
-      toast.success(res.data);
-      navigate("/sign-in");
-    } catch (error) {
-      toast.error("internal error");
-      console.log(error);
+    if (otpString === currentOtp.toString()) {
+      try {
+        await httpCommon.post(`/auth/verifyP`, {
+          email: formData.email,
+          otp: otpString,
+        });
+        toast.success("Email verified successfully");
+        navigate("/sign-in");
+      } catch (error) {
+        console.error("OTP verification failed:", error);
+        toast.error("OTP verification failed");
+      }
+    } else {
+      toast.error("Invalid OTP");
     }
   };
 
   return (
     <>
-      <div className="p-3 max-w-lg mx-auto">
-        <h1 className="text-3xl text-center font-semibold my-7">Sign Up</h1>
-
-        <form className="flex flex-col gap-4">
+      <div className="max-w-lg p-3 mx-auto">
+        <h1 className="text-3xl font-semibold text-center my-7">Sign Up</h1>
+        <form className="flex flex-col gap-4" onSubmit={handleSendOtp}>
           <input
             type="text"
             placeholder="username"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="username"
             onChange={handleChange}
-          />
-          <input
-            type="text"
-            placeholder="7668434576"
-            className="border p-3 rounded-lg"
-            id="phoneNumber"
-            name="phoneNumber"
-            onChange={handleChange}
+            required
           />
           <input
             type="email"
             placeholder="email"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="email"
             onChange={handleChange}
+            required
           />
           <input
             type="password"
             placeholder="password"
-            className="border p-3 rounded-lg"
+            className="p-3 border rounded-lg"
             id="password"
             onChange={handleChange}
+            required
           />
-
           <button
             disabled={loading}
-            className="bg-slate-700 text-white p-3 rounded-lg uppercase hover:opacity-95 disabled:opacity-80"
-            onClick={handleSendOtp}
+            className="p-3 text-white uppercase rounded-lg bg-slate-700 hover:opacity-95 disabled:opacity-80"
+            type="submit"
           >
-            {loading ? "Loading..." : "Sign Up"}
+            {loading ? "Loading..." : "Sign up"}
           </button>
-          {/* <OAuth /> */}
         </form>
-        <BasicModal
-          title="Please Enter You OTP"
-          description={`OTP send to ${formData.email}`}
-          setOpen={setOtpOpen}
-          open={otpOpen}
-        >
-          {" "}
-          <div
-            style={{
-              display: "flex",
-              gap: "20px",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "20px",
-            }}
-          >
-            {otp.map((_, index) => (
-              <input
-                placeholder="0"
-                style={{
-                  width: "40px",
-                  border: "1px solid black",
-                  borderRadius: "5px",
-                  padding: "5px",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-                onChange={(e) => handleChangeOtp(e, index)}
-                ref={otpActiveIndex == index ? inputRef : null}
-                value={otp[index]}
-                onKeyDown={(e) => handeleKey(e, index)}
-              />
-            ))}
-          </div>
-          <button
-            style={{
-              margin: "20px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              background: "transparent",
-              width: "100%",
-              gap: "5px",
-            }}
-            onClick={handleOtpSubmit}
-          >
-            <div
-              style={{
-                borderRadius: "100%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                color: "green",
-                border: "1px solid green",
-                padding: "10px",
-              }}
-            >
-              <CheckIcon />
-            </div>
-            {/* <button>Verify</button> */}
-          </button>
-        </BasicModal>
-        <div className="flex gap-2 mt-5">
-          <p>Have an account?</p>
-          <Link to={"/sign-in"}>
-            <span className="text-blue-700">Sign in</span>
+        <p className="mt-6">
+          Have an account?{" "}
+          <Link to="/sign-in" className="font-medium text-slate-800">
+            Sign in
           </Link>
-        </div>
-        {error && <p className="text-red-500 mt-5">{error}</p>}
-        {!otpSent ? <div id="recaptcha-container"></div> : null}
+        </p>
       </div>
+      <BasicModal modalOpen={otpOpen} setModalOpen={setOtpOpen}>
+        <div>
+          <form className="flex flex-col gap-4 p-6" onSubmit={handleOtpSubmit}>
+            <p>Enter OTP sent to your email</p>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex gap-3">
+                {otp.map((value, index) => (
+                  <input
+                    key={index}
+                    type="number"
+                    value={value}
+                    onChange={(e) => handleChangeOtp(e, index)}
+                    onKeyUp={(e) => handleKey(e, index)}
+                    ref={index === otpActiveIndex ? inputRef : null}
+                    className="w-12 h-12 text-center border-2 rounded"
+                    maxLength={1}
+                    required
+                  />
+                ))}
+              </div>
+              <button
+                type="submit"
+                className="p-3 text-white uppercase rounded-lg bg-slate-700 hover:opacity-95 disabled:opacity-80"
+              >
+                Verify OTP
+              </button>
+            </div>
+          </form>
+        </div>
+      </BasicModal>
     </>
   );
 }

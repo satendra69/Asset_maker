@@ -1,2 +1,4 @@
 .vscode/
 ./api/connect.js
+
+**/node_modules/

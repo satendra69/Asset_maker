@@ -1,10 +1,10 @@
 const express = require("express");
-const { register, login, logout, verify } = require("../controller/auth");
 const router = express.Router();
+const { loginP, logoutP, registerP, verifyP } = require("../controller/auth");
 
-router.post("/signup", register);
-router.post("/signin", login);
-router.post("/signout", logout);
-router.post("/verify", verify);
+router.post("/loginP", loginP);
+router.post("/logoutP", logoutP);
+router.post("/registerP", registerP);
+router.post("/verifyP", verifyP);
 
 module.exports = router;
