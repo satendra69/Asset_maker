@@ -1,4 +1,4 @@
-const createError = require("../middleware/creatError");
+const createError = require("../middleware/createError");
 const db = require("../connect");
 const path = require("path");
 const transporter = require("../middleware/transpoter");

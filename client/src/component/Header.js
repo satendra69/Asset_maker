@@ -235,16 +235,14 @@ function Header() {
               </div>
               {profile && (
                 <motion.div className="absolute right-0 p-5 space-y-3 bg-white rounded-lg shadow-md ">
-                  {currentUser.admin === 1 && (
-                    <Link
-                      className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                      to={"/admin"}
-                    >
-                      {" "}
-                      <MdOutlineAdminPanelSettings size={32} />
-                      Admin Panel
-                    </Link>
-                  )}
+                  <Link
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
+                    to={"/admin"}
+                  >
+                    {" "}
+                    <MdOutlineAdminPanelSettings size={32} />
+                    Admin Panel
+                  </Link>
                   <Link
                     className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                     to={"/saved-list"}

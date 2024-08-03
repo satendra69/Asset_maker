@@ -9,6 +9,7 @@ export default function SignUp() {
     username: "",
     email: "",
     password: "",
+    confirmPassword: "", // Added confirm password field
   });
   const [loading, setLoading] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
@@ -16,6 +17,7 @@ export default function SignUp() {
   const [currentOtp, setCurrentOtp] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otpActiveIndex, setOtpActiveIndex] = useState(0);
+  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
   const inputRef = useRef();
 
   useEffect(() => {
@@ -27,6 +29,7 @@ export default function SignUp() {
       ...formData,
       [e.target.id]: e.target.value,
     });
+    setErrorMessage(""); // Clear error message on input change
   };
 
   const handleChangeOtp = (e, index) => {
@@ -53,6 +56,13 @@ export default function SignUp() {
 
   const handleSendOtp = async (e) => {
     e.preventDefault();
+
+    // Validate that password and confirm password match
+    if (formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+
     try {
       setLoading(true);
       const res = await httpCommon.post(`/auth/registerP`, formData);
@@ -64,7 +74,8 @@ export default function SignUp() {
       }
     } catch (error) {
       console.error("Error sending OTP:", error);
-      toast.error("Error sending OTP");
+      // Set error message for UI display
+      setErrorMessage(error.response?.data?.error || "Error sending OTP");
     } finally {
       setLoading(false);
     }
@@ -73,7 +84,7 @@ export default function SignUp() {
   const handleOtpSubmit = async (e) => {
     e.preventDefault();
     const otpString = otp.join("");
-    if (otpString === currentOtp.toString()) {
+    if (currentOtp && otpString === currentOtp.toString()) {
       try {
         await httpCommon.post(`/auth/verifyP`, {
           email: formData.email,
@@ -119,6 +130,17 @@ export default function SignUp() {
             onChange={handleChange}
             required
           />
+          <input
+            type="password"
+            placeholder="confirm password" // Confirm password field
+            className="p-3 border rounded-lg"
+            id="confirmPassword"
+            onChange={handleChange}
+            required
+          />
+          {errorMessage && (
+            <div className="text-red-500">{errorMessage}</div> // Display error message
+          )}
           <button
             disabled={loading}
             className="p-3 text-white uppercase rounded-lg bg-slate-700 hover:opacity-95 disabled:opacity-80"

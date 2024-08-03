@@ -1,73 +1,76 @@
-const createError = require("../middleware/creatError");
+const createError = require("../middleware/createError");
 const db = require("../connect");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const { logoutP } = require("./auth");
+const nodemailer = require("nodemailer");
 
-// Function to get user
-const getUsers = (req, res, next) => {
+// Function to get users
+const getUsers = async (req, res, next) => {
   const admin = req.isAdmin;
 
-  // only admin can access all user list
   if (!admin) {
-    return next(createError(401, "only admin can access all user list"));
+    return next(createError(401, "Only admin can access all user list"));
   }
 
-  // Construct the SQL query to get all users
-  const getUsersQuery = `SELECT * FROM users`;
+  try {
+    const [results] = await db.query("SELECT * FROM users");
 
-  // Execute the query
-  db.query(getUsersQuery, (error, results, fields) => {
-    if (error) {
-      return next(error);
-    }
-    // Check if users exist
     if (!results || results.length === 0) {
-      return next(createError(401, "No users found"));
+      return res.status(404).send("No users found.");
     }
-    // Users found, send user data
+
     res.status(200).send(results);
-  });
+  } catch (error) {
+    return next(error);
+  }
 };
 
 // Function to delete user
-const deleteUser = (req, res, next) => {
+const deleteUser = async (req, res, next) => {
   const userId = req.userId;
-  const userIdToDelete = req.params.id;
+  const userIdToDelete = Number(req.params.id);
 
-  // Check if the user is trying to delete their own account
   if (userId !== userIdToDelete) {
     return next(createError(401, "You can delete only your account!"));
   }
 
-  // Construct the SQL query to delete the user
   const deleteUserQuery = `DELETE FROM users WHERE id = ?`;
 
-  // Execute the query
-  db.query(deleteUserQuery, [userIdToDelete], (error, results, fields) => {
-    if (error) {
-      return next(error);
+  try {
+    const [results] = await db.query(deleteUserQuery, [userIdToDelete]);
+
+    if (results.affectedRows === 0) {
+      return next(createError(404, "User not found."));
     }
-    res.status(200).send("deleted.");
-  });
+
+    if (userId === userIdToDelete) {
+      logoutP(req, res);
+    }
+
+    res.status(200).send("Deleted successfully.");
+  } catch (error) {
+    return next(error);
+  }
 };
 
-// Function to get user
-const getUser = (req, res, next) => {
+// Function to get user by ID
+const getUser = async (req, res, next) => {
   const userId = req.params.id;
 
-  // Construct the SQL query to get the user
   const getUserQuery = `SELECT * FROM users WHERE id = ?`;
 
-  // Execute the query
-  connection.query(getUserQuery, [userId], (error, results, fields) => {
-    if (error) {
-      return next(error);
+  try {
+    const [results] = await db.query(getUserQuery, [userId]);
+
+    if (!results || results.length === 0) {
+      return res.status(404).send("User not found.");
     }
-    // Check if user exists
-    if (results.length === 0) {
-      return next(createError(401, "User not found"));
-    }
-    // User found, send user data
+
     res.status(200).send(results[0]);
-  });
+  } catch (error) {
+    return next(error);
+  }
 };
 
 // Function to update user
@@ -75,7 +78,6 @@ const updateUser = async (req, res, next) => {
   const userId = req.params.id;
   const updatedUserData = req.body;
 
-  // Construct the SQL query to update the user
   let updateUserQuery = "UPDATE users SET ";
   let fields = [];
   let values = [];
@@ -101,8 +103,8 @@ const updateUser = async (req, res, next) => {
   }
 
   if (updatedUserData.password) {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = bcrypt.hashSync(updatedUserData.password, salt);
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(updatedUserData.password, salt);
     fields.push("password = ?");
     values.push(hashedPassword);
   }
@@ -114,17 +116,82 @@ const updateUser = async (req, res, next) => {
   updateUserQuery += fields.join(", ") + " WHERE id = ?";
   values.push(userId);
 
-  // Execute the query
-  db.query(updateUserQuery, values, (error, results, fields) => {
-    if (error) {
-      return next(error);
-    }
-    // Check if the user was updated successfully
+  try {
+    const [results] = await db.query(updateUserQuery, values);
+
     if (results.affectedRows === 0) {
-      return next(createError(401, "User not found or no changes were made"));
+      return next(createError(404, "User not found or no changes were made"));
     }
+
     res.status(200).send("User updated successfully.");
-  });
+  } catch (error) {
+    return next(error);
+  }
+};
+
+// Function to handle forgot password
+const forgotPassword = async (req, res, next) => {
+  const { email } = req.body;
+
+  try {
+    const [results] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+
+    if (results.length === 0) {
+      return next(createError(404, "User with this email does not exist"));
+    }
+
+    const user = results[0];
+
+    // Generate a reset token
+    const token = jwt.sign({ id: user.id }, process.env.JWT_KEY, { expiresIn: "1h" });
+
+    // Send the reset link via email
+    const transporter = nodemailer.createTransport({
+      service: "Gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset Request",
+      text: `To reset your password, please click the following link: ${resetLink}`,
+    };
+
+    await transporter.sendMail(mailOptions);
+
+    res.status(200).send("Password reset link has been sent to your email.");
+  } catch (error) {
+    return next(createError(500, "Error processing request"));
+  }
+};
+
+// Function to reset password
+const resetPassword = async (req, res, next) => {
+  const { token, newPassword } = req.body;
+
+  if (!token) {
+    return next(createError(400, "Token is required"));
+  }
+
+  try {
+    const payload = jwt.verify(token, process.env.JWT_KEY);
+    const userId = payload.id;
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    await db.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
+
+    res.status(200).send("Password has been reset successfully.");
+  } catch (error) {
+    return next(createError(500, "Error resetting password"));
+  }
 };
 
 module.exports = {
@@ -132,4 +199,6 @@ module.exports = {
   getUser,
   getUsers,
   updateUser,
+  forgotPassword,
+  resetPassword,
 };

@@ -1,17 +1,32 @@
 const express = require("express");
 const {
+  getUsers,
   deleteUser,
   getUser,
-  getUsers,
   updateUser,
-} = require("../controller/users.js");
-const verifyToken = require("../middleware/jwt.js");
+  forgotPassword,
+  resetPassword,
+} = require("../controller/users");
+const verifyToken = require("../middleware/jwt");
 
 const router = express.Router();
 
+// Get all users (admin only)
 router.get("/", verifyToken, getUsers);
-router.delete("/:id", verifyToken, deleteUser);
-router.get("/:id", getUser);
+
+// Get user by ID
+router.get("/:id", verifyToken, getUser);
+
+// Update user
 router.put("/:id", verifyToken, updateUser);
+
+// Delete user
+router.delete("/:id", verifyToken, deleteUser);
+
+// Forgot password
+router.post("/forgot-password", forgotPassword);
+
+// Reset password
+router.post("/reset-password", resetPassword);
 
 module.exports = router;

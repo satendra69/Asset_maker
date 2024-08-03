@@ -1,8 +1,7 @@
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
-const bodyParser = require('body-parser');
-
+const bodyParser = require("body-parser");
 var logger = require("morgan");
 require("dotenv").config();
 var listingsRouter = require("./routes/listings");
@@ -27,20 +26,22 @@ app.use(express.urlencoded({ extended: false }));
 
 // static serving of public folder
 app.use(express.static(path.join(__dirname, "public")));
+
 // Configure CORS
 const corsOptions = {
-  origin: ['http://142.93.213.221:8004', 'http://localhost:3000'], // Add your frontend URL here
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true, // Enable to pass cookies
-  optionsSuccessStatus: 204
+  origin: ["http://142.93.213.221:8004", "http://localhost:3000"], // Add your frontend URL here
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true,
+  optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-app.use('/api/images', express.static(path.join(__dirname, 'public', 'images')));
+app.use("/api/images", express.static(path.join(__dirname, "public", "images")));
 
 app.get("/api", function (req, res) {
   res.send("Hello");
 });
+
 // Routes
 app.use("/api/list", listingsRouter);
 app.use("/api/users", usersRouter);
@@ -48,32 +49,33 @@ app.use("/api/auth", authRouter);
 app.use("/api/city", cityRouter);
 app.use("/api/message", messageRouter);
 
-// error handler
+// Consolidated error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  console.log(`${req.method} request for '${req.url}': ${err.message}`);
+
+  const statusCode = err.status || 500;
+  res.status(statusCode).json({
+    message: err.message || "Internal Server Error",
+  });
 });
 
+// Start server
 const PORT = 8000;
 
 app.listen(PORT || process.env.PORT, async () => {
   console.log(
     `API server running at http://localhost:${process.env.PORT || PORT}`
   );
-  // Test MySQL connection
-  try {   //////
-    const [rows, fields] = await db.query("SELECT 1");
+  try {
+    await db.query("SELECT 1");
     console.log("Connected to MySQL database");
   } catch (err) {
     console.error("Error connecting to MySQL database:", err);
   }
 });
-
-
 
 module.exports = app;
