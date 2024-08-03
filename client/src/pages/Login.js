@@ -20,26 +20,29 @@ export default function SignIn() {
       ...formData,
       [e.target.id]: e.target.value,
     });
+    if (error) {
+      dispatch(signInFailure(null));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       dispatch(signInStart());
-      console.log(formData);
       const res = await httpCommon.post(`/auth/loginP`, formData);
-      const data = await res.data;
+      const data = res.data;
 
       if (data.token) {
         localStorage.setItem("token", data.token);
         toast.success(data.message || "Login successful!");
-        dispatch(signInSuccess(data.user));
-        navigate(data.user.admin ? "/" : "/dashboard");
+        dispatch(signInSuccess({ ...data.user, token: data.token }));
+        navigate(data.user.admin ? "/" : "/");
       } else {
         toast.error(data);
         dispatch(signInFailure("Login failed"));
       }
     } catch (error) {
+      console.error("Error occurred during sign-in:", error);
       if (axios.isAxiosError(error)) {
         const errorMessage = error.response?.data?.message || "An error occurred.";
         toast.error(errorMessage);
@@ -81,11 +84,19 @@ export default function SignIn() {
             {loading ? "Loading..." : "Sign In"}
           </button>
         </form>
-        <div className="flex gap-2 mt-5">
-          <p>Don't have an account?</p>
-          <Link to={"/sign-up"}>
-            <span className="text-blue-700">Sign up</span>
-          </Link>
+        <div className="flex flex-col gap-2 mt-5">
+          <div className="flex gap-2">
+            <p>Don't have an account?</p>
+            <Link to={"/sign-up"}>
+              <span className="text-blue-700">Sign up</span>
+            </Link>
+          </div>
+          <div className="flex gap-2">
+            <p>Forgot your password?</p>
+            <Link to={"/forgot-password"}>
+              <span className="text-blue-700">Reset Password</span>
+            </Link>
+          </div>
         </div>
         {error && <p className="mt-5 text-red-500">{error}</p>}
       </div>

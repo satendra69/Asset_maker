@@ -112,7 +112,7 @@ const SideBar = ({ children }) => {
         exact: true,
         subRoutes: [
           {
-            path: "/settings/profile",
+            path: "/admin/settings/profile",
             name: "Profile ",
             icon: <FaUser size={15} />,
           },
@@ -172,11 +172,6 @@ const SideBar = ({ children }) => {
             name: "City List",
             icon: <FaListAlt size={24} />,
           },
-          {
-            path: "/admin/city/new",
-            name: "Add New City",
-            icon: <FaFileCirclePlus size={24} />,
-          },
         ],
       },
       {
@@ -186,7 +181,7 @@ const SideBar = ({ children }) => {
         exact: true,
         subRoutes: [
           {
-            path: "/settings/profile",
+            path: "/admin/settings/profile",
             name: "Profile ",
             icon: <FaUser size={24} />,
           },

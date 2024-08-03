@@ -98,6 +98,15 @@ function VillamentModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "Villaments";
+  const [deletedImages, setDeletedImages] = useState({
+    main: [],
+    gallery: [],
+    masterPlan: [],
+    floorAreaPlan: []
+  });
+  const [deletedFiles, setDeletedFiles] = useState({
+    brochure: [],
+  });
 
   // fetch property
   const fetchProperty = async (listingId) => {
@@ -181,11 +190,11 @@ function VillamentModule({ onDataUpdate }) {
       setIsCornerVillament(listingData.ltg_det_villaments_pmts_corner_villament);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_villaments_location || "",
+        address: listingData.ltg_det_villaments_address || "",
+        postalCode: listingData.ltg_det_villaments_postal_code || "",
+        latitude: parseFloat(listingData.ltg_villaments_det_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_villaments_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -300,24 +309,38 @@ function VillamentModule({ onDataUpdate }) {
     }
   };
 
-  const handleStoredImageDelete = async (RowID, type) => {
-    try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        if (type === 'Main') {
-          setStoredMainImage(storedMainImage.filter(image => image.RowID !== RowID));
-        } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages.filter(image => image.RowID !== RowID));
-        } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages.filter(image => image.RowID !== RowID));
-        } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages.filter(image => image.RowID !== RowID));
-        }
-      } else {
-        console.error("Error deleting images:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting images:", error);
+  const handleStoredImageDelete = (RowID, type) => {
+    switch (type) {
+      case 'Main':
+        setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          main: [...prevState.main, RowID]
+        }));
+        break;
+      case 'gallery':
+        setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          gallery: [...prevState.gallery, RowID]
+        }));
+        break;
+      case 'masterPlan':
+        setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          masterPlan: [...prevState.masterPlan, RowID]
+        }));
+        break;
+      case 'floorAreaPlan':
+        setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          floorAreaPlan: [...prevState.floorAreaPlan, RowID]
+        }));
+        break;
+      default:
+        console.error('Invalid type provided');
     }
   };
 
@@ -369,17 +392,11 @@ function VillamentModule({ onDataUpdate }) {
   };
 
   const handleStoredFileDelete = async (RowID) => {
-    try {
-      const response = await httpCommon.delete(`/list/files/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure.filter(file => file.RowID !== RowID));
-
-      } else {
-        console.error("Error deleting brochure:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting brochure:", error);
-    }
+    setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
+    setDeletedFiles(prevState => ({
+      ...prevState,
+      brochure: [...prevState.brochure, RowID]
+    }));
   };
 
   const handleFileClick = (index, pdfUrl = null, isStored = false) => {
@@ -553,10 +570,12 @@ function VillamentModule({ onDataUpdate }) {
       projectBuilderDetails,
       brochure,
       combinedImages,
+      deletedImages,
+      deletedFiles,
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
@@ -588,12 +607,12 @@ function VillamentModule({ onDataUpdate }) {
     handleDataUpdate();
   }, [salePrice, suffixPrice, areaDetails, ratePerSqFt, content, locationData,
     propertyAddressDetails, selectedStatus, selectedCarParking, amenitiesAsString,
-    videoUrl, selectedBedRooms, selectedBathRooms, yearBuilt, noOfOpenSides,
+    videoUrl, selectedBedRooms, selectedBathRooms, yearBuilt, noOfOpenSides, deletedFiles,
     mainDoorFacing, isCornerVillament, landUDSArea, selectedDuplex, balconies, furnishing,
     propertyFlooring, approachingRoadWidth, isInGatedCommunity, overLooking, advantagesAsString,
     transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority,
     totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails,
-    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages,
+    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
   return (

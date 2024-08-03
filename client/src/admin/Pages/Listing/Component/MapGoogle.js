@@ -11,7 +11,6 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
 
     const [map, setMap] = useState(null);
     const [marker, setMarker] = useState({ lat: initialPosition.latitude, lng: initialPosition.longitude });
-    const [place, setPlace] = useState(null);
     const autocompleteRef = useRef(null);
     const [inputValue, setInputValue] = useState(initialPosition.location);
     const [postalCode, setPostalCode] = useState(initialPosition.postalCode || '');
@@ -120,7 +119,6 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                             id="address"
                             type="text"
                             value={address}
-                            readOnly
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                         />
                     </div>
@@ -132,7 +130,6 @@ const MapGoogle = ({ googleMapsApiKey, initialPosition, onPositionChange }) => {
                             id="postal-code"
                             type="text"
                             value={postalCode}
-                            readOnly
                             className="w-full p-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
                         />
                     </div>

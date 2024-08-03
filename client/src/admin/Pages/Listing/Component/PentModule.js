@@ -97,6 +97,15 @@ function PentModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "PentHouses";
+  const [deletedImages, setDeletedImages] = useState({
+    main: [],
+    gallery: [],
+    masterPlan: [],
+    floorAreaPlan: []
+  });
+  const [deletedFiles, setDeletedFiles] = useState({
+    brochure: [],
+  });
 
   // fetch property
   const fetchProperty = async (listingId) => {
@@ -177,11 +186,11 @@ function PentModule({ onDataUpdate }) {
       setIsCornerPenthouse(listingData.ltg_det_penthouses_pmts_corner_penthouse);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_penthouses_location || "",
+        address: listingData.ltg_det_penthouses_address || "",
+        postalCode: listingData.ltg_det_penthouses_postal_code || "",
+        latitude: parseFloat(listingData.ltg_det_penthouses_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_penthouses_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -298,24 +307,38 @@ function PentModule({ onDataUpdate }) {
 
   };
 
-  const handleStoredImageDelete = async (RowID, type) => {
-    try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        if (type === 'Main') {
-          setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
-        } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
-        }
-      } else {
-        console.error("Error deleting images:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting images:", error);
+  const handleStoredImageDelete = (RowID, type) => {
+    switch (type) {
+      case 'Main':
+        setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          main: [...prevState.main, RowID]
+        }));
+        break;
+      case 'gallery':
+        setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          gallery: [...prevState.gallery, RowID]
+        }));
+        break;
+      case 'masterPlan':
+        setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          masterPlan: [...prevState.masterPlan, RowID]
+        }));
+        break;
+      case 'floorAreaPlan':
+        setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          floorAreaPlan: [...prevState.floorAreaPlan, RowID]
+        }));
+        break;
+      default:
+        console.error('Invalid type provided');
     }
   };
 
@@ -367,17 +390,11 @@ function PentModule({ onDataUpdate }) {
   };
 
   const handleStoredFileDelete = async (RowID) => {
-    try {
-      const response = await httpCommon.delete(`/list/files/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
-
-      } else {
-        console.error("Error deleting brochure:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting brochure:", error);
-    }
+    setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
+    setDeletedFiles(prevState => ({
+      ...prevState,
+      brochure: [...prevState.brochure, RowID]
+    }));
   };
 
   const handleFileClick = (index, pdfUrl = null, isStored = false) => {
@@ -550,10 +567,12 @@ function PentModule({ onDataUpdate }) {
       selectedOptions,
       projectBuilderDetails,
       combinedImages,
+      deletedImages,
+      deletedFiles,
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
@@ -585,9 +604,9 @@ function PentModule({ onDataUpdate }) {
     handleDataUpdate();
   }, [salePrice, suffixPrice, areaDetails, locationData, ratePerSqFt, content, propertyAddressDetails,
     selectedStatus, selectedCarParking, amenitiesAsString, videoUrl, brochure, selectedBedRooms,
-    selectedBathRooms, yearBuilt, mainDoorFacing, isCornerPenthouse, balconies,
+    selectedBathRooms, yearBuilt, mainDoorFacing, isCornerPenthouse, balconies, deletedImages,
     furnishing, propertyFlooring, approachingRoadWidth, isInGatedCommunity, selectedDuplex,
-    overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom,
+    overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom, deletedFiles,
     stampDutyAndRegistrationCharges, approvalAuthority, totalProjectExtent, totalUnits, totalPhases,
     selectedOptions, projectBuilderDetails, brochure, galleryImages, masterPlanImages, floorAreaPlanImages,
     storedBrochure, mainImage, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);

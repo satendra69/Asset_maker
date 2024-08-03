@@ -77,6 +77,15 @@ function PlotsModule({ onDataUpdate }) {
   const [modalPdfUrl, setModalPdfUrl] = useState('');
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const propertyType = "Plots";
+  const [deletedImages, setDeletedImages] = useState({
+    main: [],
+    gallery: [],
+    masterPlan: [],
+    floorAreaPlan: []
+  });
+  const [deletedFiles, setDeletedFiles] = useState({
+    brochure: [],
+  });
 
   // fetch property
   const fetchProperty = async (listingId) => {
@@ -163,11 +172,11 @@ function PlotsModule({ onDataUpdate }) {
       setPlotApprovalAuthority(listingData.ltg_det_plot_pmts_plot_approval_authority);
 
       setLocationData({
-        location: listingData.ltg_det_location || "",
-        address: listingData.ltg_det_address || "",
-        postalCode: listingData.ltg_det_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_longitude) || 78.491684,
+        location: listingData.ltg_det_plot_location || "",
+        address: listingData.ltg_det_plot_address || "",
+        postalCode: listingData.ltg_det_plot_postal_code || "",
+        latitude: parseFloat(listingData.ltg_det_plot_latitude) || 17.387140,
+        longitude: parseFloat(listingData.ltg_det_plot_longitude) || 78.491684,
       });
 
     } catch (error) {
@@ -283,24 +292,38 @@ function PlotsModule({ onDataUpdate }) {
 
   };
 
-  const handleStoredImageDelete = async (RowID, type) => {
-    try {
-      const response = await httpCommon.delete(`/list/images/${RowID}`);
-      if (response.data.status === "success") {
-        if (type === 'Main') {
-          setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
-        } else if (type === 'gallery') {
-          setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'masterPlan') {
-          setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
-        } else if (type === 'floorAreaPlan') {
-          setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
-        }
-      } else {
-        console.error("Error deleting images:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting images:", error);
+  const handleStoredImageDelete = (RowID, type) => {
+    switch (type) {
+      case 'Main':
+        setStoredMainImage(storedMainImage?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          main: [...prevState.main, RowID]
+        }));
+        break;
+      case 'gallery':
+        setStoredGalleryImages(storedGalleryImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          gallery: [...prevState.gallery, RowID]
+        }));
+        break;
+      case 'masterPlan':
+        setStoredMasterPlanImages(storedMasterPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          masterPlan: [...prevState.masterPlan, RowID]
+        }));
+        break;
+      case 'floorAreaPlan':
+        setStoredFloorAreaPlanImages(storedFloorAreaPlanImages?.filter(image => image.RowID !== RowID));
+        setDeletedImages(prevState => ({
+          ...prevState,
+          floorAreaPlan: [...prevState.floorAreaPlan, RowID]
+        }));
+        break;
+      default:
+        console.error('Invalid type provided');
     }
   };
 
@@ -352,17 +375,11 @@ function PlotsModule({ onDataUpdate }) {
   };
 
   const handleStoredFileDelete = async (RowID) => {
-    try {
-      const response = await httpCommon.delete(`/list/files/${RowID}`);
-      if (response.data.status === "success") {
-        setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
-
-      } else {
-        console.error("Error deleting brochure:", response.data.message);
-      }
-    } catch (error) {
-      console.error("Error deleting brochure:", error);
-    }
+    setStoredBrochure(storedBrochure?.filter(file => file.RowID !== RowID));
+    setDeletedFiles(prevState => ({
+      ...prevState,
+      brochure: [...prevState.brochure, RowID]
+    }));
   };
 
   const handleFileClick = (index, pdfUrl = null, isStored = false) => {
@@ -522,10 +539,12 @@ function PlotsModule({ onDataUpdate }) {
       projectBuilderDetails,
       brochure,
       combinedImages,
+      deletedImages,
+      deletedFiles,
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
+    console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property
@@ -557,9 +576,9 @@ function PlotsModule({ onDataUpdate }) {
     handleDataUpdate();
   }, [salePrice, suffixPrice, locationData, areaDetails, ratePerSqFt, content, selectedStatus,
     propertyAddressDetails, floorsAllowedForConstruction, amenitiesAsString, videoUrl, cornerPlot,
-    yearBuilt, plotDimensions, noOfOpenSides, plotFacing, boundaryWallMade,
+    yearBuilt, plotDimensions, noOfOpenSides, plotFacing, boundaryWallMade, deletedImages,
     plotApprovalAuthority, approachingRoadWidth, isInGatedCommunity, transactionType,
-    stampDutyAndRegistrationCharges, totalProjectExtent, totalUnits, totalPhases,
+    stampDutyAndRegistrationCharges, totalProjectExtent, totalUnits, totalPhases, deletedFiles,
     projectBuilderDetails, brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 

@@ -16,12 +16,15 @@ import Footer from "./component/Footer";
 import Home from "./pages/Home";
 import SignUp from "./pages/Signup";
 import SignIn from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import ContactUs from "./pages/ContactUs";
 import AboutUs from "./pages/AboutUs";
 
 import SinglePage from "./pages/singlepage/SinglePage";
 import AdminHome from "./admin/Pages/AdminHome";
 import AdminUsers from "./admin/Pages/users/AdminUsers";
+import Profile from "./admin/Pages/users/Profile";
 import AdminMessages from "./admin/Pages/Message/AdminMessages";
 import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
@@ -94,6 +97,14 @@ const router = createBrowserRouter([
       {
         path: "/sign-up",
         element: <SignUp />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPassword />
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPassword />
       },
       {
         path: "/contact-us",
@@ -214,6 +225,11 @@ const router = createBrowserRouter([
         path: "/admin/blog/category",
         element: <CreateCategory />,
       },
+      {
+        path: "/admin/settings/profile",
+        element: <Profile />,
+      },
+
     ],
   },
 ]);
