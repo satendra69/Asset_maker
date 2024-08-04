@@ -38,13 +38,13 @@ export default function SignIn() {
         dispatch(signInSuccess({ ...data.user, token: data.token }));
         navigate(data.user.admin ? "/" : "/");
       } else {
-        toast.error(data);
-        dispatch(signInFailure("Login failed"));
+        toast.error(data.error);
+        dispatch(signInFailure(data.error || "Login failed"));
       }
     } catch (error) {
       console.error("Error occurred during sign-in:", error);
       if (axios.isAxiosError(error)) {
-        const errorMessage = error.response?.data?.message || "An error occurred.";
+        const errorMessage = error.response?.data?.error || "An error occurred.";
         toast.error(errorMessage);
         dispatch(signInFailure(errorMessage));
       } else {
