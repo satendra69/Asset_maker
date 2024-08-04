@@ -1195,28 +1195,6 @@ const uploadListItem = async (req, res) => {
 
     await connection.query(insertQuery, [values]);
 
-    const thumbnailValues = files
-      .filter(file => file.thumbnail)
-      .map(file => {
-        const originalName = file.originalname.replace(/\.pdf$/, '-thumbnail.png');
-        return [
-          listingID,
-          originalName,
-          file.thumbnail,
-          type,
-          auditUser,
-          new Date().toISOString().slice(0, 10),
-        ];
-      });
-
-    if (thumbnailValues.length > 0) {
-      const thumbnailInsertQuery = `
-        INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
-        VALUES ?
-      `;
-      await connection.query(thumbnailInsertQuery, [thumbnailValues]);
-    }
-
     await connection.commit();
 
     res.status(200).json({

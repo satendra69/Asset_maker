@@ -1,9 +1,7 @@
 const multer = require('multer');
 const Jimp = require('jimp');
 const path = require('path');
-const fs = require('fs');
-const { PDFDocument } = require('pdf-lib');
-const { spawn } = require('child_process');
+const fs = require('fs')
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -60,48 +58,7 @@ const addWatermark = async (req, res, next) => {
             console.log(file.path);
             console.log(file.filename);
           } else if (file.mimetype === 'application/pdf') {
-            console.log("Starting PDF processing for:", file.originalname);
-            const baseFileName = path.basename(file.originalname, path.extname(file.originalname));
-            const pdfOutputPath = path.join(path.dirname(inputPath), `processed-${file.originalname}`);
-            const thumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-thumbnail.png`);
-
-            fs.renameSync(inputPath, pdfOutputPath);
-
-            const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfOutputPath));
-            const pdfPages = pdfDoc.getPages();
-            const firstPage = pdfPages[0];
-            const { width, height } = firstPage.getSize();
-
-            const watermarkImage = await Jimp.read(watermarkPath);
-            watermarkImage.resize(width / 4, Jimp.AUTO);
-
-            const watermarkBytes = await watermarkImage.getBufferAsync(Jimp.MIME_PNG);
-            const watermarkEmbed = await pdfDoc.embedPng(watermarkBytes);
-
-            const watermarkDims = watermarkEmbed.scale(1);
-
-            firstPage.drawImage(watermarkEmbed, {
-              x: 10,
-              y: height - watermarkDims.height - 10,
-              width: watermarkDims.width,
-              height: watermarkDims.height,
-              opacity: 0.5,
-            });
-
-            const modifiedPdfBytes = await pdfDoc.save();
-            fs.writeFileSync(pdfOutputPath, modifiedPdfBytes);
-
-            const convertToThumbnail = spawn('convert', [pdfOutputPath + '[0]', thumbnailPath]);
-            convertToThumbnail.on('close', (code) => {
-              if (code === 0 && fs.existsSync(thumbnailPath)) {
-                file.thumbnail = `/images/${path.basename(thumbnailPath)}`;
-              } else {
-                console.error(`Error creating thumbnail: ${thumbnailPath}`);
-              }
-            });
-
-            file.path = pdfOutputPath;
-            file.filename = `processed-${file.originalname}`;
+            console.log("Saving PDF file:", file.originalname);
           } else {
             console.log(`Skipping unsupported file type: ${file.originalname}`);
           }

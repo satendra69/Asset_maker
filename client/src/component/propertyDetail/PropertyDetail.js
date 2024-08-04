@@ -663,7 +663,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const transformedProperty = transformData(property[0]);
 
-  const handleThumbnailClick = (pdfUrl) => {
+  const handleFileClick = (pdfUrl) => {
     setModalPdfUrl(pdfUrl);
     setModalIsOpen(true);
   };
@@ -850,19 +850,14 @@ const PropertyDetails = ({ property, images, brochure }) => {
           {pdfFiles?.length > 0 && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Brochure</h2>
-              <div className="flex flex-wrap gap-4">
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                 {pdfFiles.map((file, index) => (
                   <div
                     key={index}
-                    className="relative"
-                    onClick={() => handleThumbnailClick(httpCommon.defaults.baseURL + file.attachment)}
+                    className="relative flex flex-col items-center justify-center overflow-hidden transition duration-300 transform border rounded-lg shadow-lg cursor-pointer hover:scale-105"
+                    onClick={() => handleFileClick(httpCommon.defaults.baseURL + file.attachment)}
                   >
-                    <img
-                      src={httpCommon.defaults.baseURL + (thumbnailFiles.find(thumbnail => thumbnail.file_name === file.file_name.replace('.pdf', '-thumbnail.png'))?.attachment || '/images/defaultasset.jpeg')}
-                      alt={file.file_name}
-                      className="object-cover w-32 h-48 rounded-lg cursor-pointer"
-                    />
-                    <p className="mt-2 text-center">{file.file_name}</p>
+                    <p className="text-center text-black">{file.file_name}</p>
                   </div>
                 ))}
               </div>
@@ -870,13 +865,14 @@ const PropertyDetails = ({ property, images, brochure }) => {
           )}
         </div>
 
+
         {/* PDF Modal */}
         {modalIsOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-4xl p-4 bg-white rounded-lg modal-content" style={{ height: '75%', marginTop: '100px' }}>
+            <div className="w-full max-w-4xl p-4 bg-white rounded-lg modal-content" style={{ height: '80%', marginTop: '30px' }}>
               <button
                 onClick={closeModal}
-                className="absolute p-2 text-white bg-red-600 rounded-full shadow-md top-2 right-2"
+                className="absolute p-1 text-white bg-red-600 rounded-full shadow-md top-20 right-60"
               >
                 ×
               </button>
