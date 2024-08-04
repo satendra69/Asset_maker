@@ -2,13 +2,13 @@ const multer = require('multer');
 const Jimp = require('jimp');
 const path = require('path');
 const fs = require('fs');
-const poppler = require('pdf-poppler');
+const { PDFDocument } = require('pdf-lib');
+const { spawn } = require('child_process');
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './public/images');
   },
-
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
@@ -48,7 +48,7 @@ const addWatermark = async (req, res, next) => {
 
             inputImage.composite(watermark, 10, 10, {
               mode: Jimp.BLEND_SOURCE_OVER,
-              opacitySource: 0.5
+              opacitySource: 0.5,
             });
 
             await inputImage.writeAsync(outputPath);
@@ -60,37 +60,45 @@ const addWatermark = async (req, res, next) => {
             console.log(file.path);
             console.log(file.filename);
           } else if (file.mimetype === 'application/pdf') {
-            console.log("No watermark processing for:", file.originalname);
+            console.log("Starting PDF processing for:", file.originalname);
             const baseFileName = path.basename(file.originalname, path.extname(file.originalname));
             const pdfOutputPath = path.join(path.dirname(inputPath), `processed-${file.originalname}`);
             const thumbnailPath = path.join(path.dirname(pdfOutputPath), `${baseFileName}-thumbnail.png`);
 
             fs.renameSync(inputPath, pdfOutputPath);
 
-            const opts = {
-              format: 'png',
-              out_dir: path.dirname(pdfOutputPath),
-              out_prefix: baseFileName,
-              page: 1,
-            };
-            await poppler.convert(pdfOutputPath, opts);
+            const pdfDoc = await PDFDocument.load(fs.readFileSync(pdfOutputPath));
+            const pdfPages = pdfDoc.getPages();
+            const firstPage = pdfPages[0];
+            const { width, height } = firstPage.getSize();
 
-            const generatedThumbnailPath1 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-1.png`);
-            const generatedThumbnailPath2 = path.join(path.dirname(pdfOutputPath), `${baseFileName}-01.png`);
+            const watermarkImage = await Jimp.read(watermarkPath);
+            watermarkImage.resize(width / 4, Jimp.AUTO);
 
-            let actualThumbnailPath;
-            if (fs.existsSync(generatedThumbnailPath1)) {
-              actualThumbnailPath = generatedThumbnailPath1;
-            } else if (fs.existsSync(generatedThumbnailPath2)) {
-              actualThumbnailPath = generatedThumbnailPath2;
-            }
+            const watermarkBytes = await watermarkImage.getBufferAsync(Jimp.MIME_PNG);
+            const watermarkEmbed = await pdfDoc.embedPng(watermarkBytes);
 
-            if (actualThumbnailPath) {
-              fs.renameSync(actualThumbnailPath, thumbnailPath);
-              file.thumbnail = `/images/${path.basename(thumbnailPath)}`;
-            } else {
-              console.error(`Thumbnail file not found: ${generatedThumbnailPath1} or ${generatedThumbnailPath2}`);
-            }
+            const watermarkDims = watermarkEmbed.scale(1);
+
+            firstPage.drawImage(watermarkEmbed, {
+              x: 10,
+              y: height - watermarkDims.height - 10,
+              width: watermarkDims.width,
+              height: watermarkDims.height,
+              opacity: 0.5,
+            });
+
+            const modifiedPdfBytes = await pdfDoc.save();
+            fs.writeFileSync(pdfOutputPath, modifiedPdfBytes);
+
+            const convertToThumbnail = spawn('convert', [pdfOutputPath + '[0]', thumbnailPath]);
+            convertToThumbnail.on('close', (code) => {
+              if (code === 0 && fs.existsSync(thumbnailPath)) {
+                file.thumbnail = `/images/${path.basename(thumbnailPath)}`;
+              } else {
+                console.error(`Error creating thumbnail: ${thumbnailPath}`);
+              }
+            });
 
             file.path = pdfOutputPath;
             file.filename = `processed-${file.originalname}`;

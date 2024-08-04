@@ -20,6 +20,7 @@
     "env": "^0.0.2",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
+    "install": "^0.13.0",
     "jade": "~1.11.0",
     "jimp": "^0.22.12",
     "jsonwebtoken": "^9.0.2",
@@ -29,7 +30,8 @@
     "mysql2": "^3.9.2",
     "nodemailer": "^6.9.12",
     "nodemon": "^3.1.0",
-    "pdf-poppler": "^0.2.1",
+    "npm": "^10.8.2",
+    "pdf-lib": "^1.17.1",
     "sweetalert2": "^11.10.8"
   }
 }
