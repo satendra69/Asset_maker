@@ -28,9 +28,11 @@ const regionController = {
             const newRegionId = await Region.create(req.body);
             res.status(201).json({ id: newRegionId });
         } catch (error) {
-            res.status(500).json({ message: 'Error creating region', error });
+            console.error("Error creating region:", error);
+            res.status(500).json({ message: 'Error creating region', error: error.message });
         }
     },
+
 
     updateRegion: async (req, res) => {
         const { id } = req.params;

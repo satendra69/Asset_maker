@@ -14,7 +14,7 @@ const Region = {
     create: async (region) => {
         const { name, description, latitude, longitude, location } = region;
         const [result] = await db.query(
-            'INSERT INTO regions (name, description, latitude, longitude, location) VALUES (?, ?, ?, ?, ?, ?, ?)',
+            'INSERT INTO regions (name, description, latitude, longitude, location) VALUES (?, ?, ?, ?, ?)',
             [name, description, latitude, longitude, location]
         );
         return result.insertId;

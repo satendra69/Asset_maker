@@ -7,7 +7,6 @@ const CategoryPage = () => {
     const [categoryForm, setCategoryForm] = useState({
         name: "",
         description: "",
-        parentCategory: "",
         listingType: "",
     });
     const [editingCategory, setEditingCategory] = useState(null);
@@ -20,6 +19,12 @@ const CategoryPage = () => {
         try {
             const response = await httpCommon.get("/categories");
             setCategories(response.data);
+            if (editingCategory) {
+                const categoryToEdit = response.data.find(cat => cat.id === editingCategory.id);
+                if (categoryToEdit) {
+                    setCategoryForm(categoryToEdit);
+                }
+            }
         } catch (error) {
             console.error("Error fetching categories", error);
         }
@@ -45,7 +50,7 @@ const CategoryPage = () => {
                 await httpCommon.post("/categories", categoryForm, config);
             }
             fetchCategories();
-            setCategoryForm({ name: "", description: "", parentCategory: "", listingType: "" });
+            setCategoryForm({ name: "", description: "", listingType: "" });
             setEditingCategory(null);
         } catch (error) {
             console.error("Error saving category", error);
@@ -53,8 +58,13 @@ const CategoryPage = () => {
     };
 
     const handleEdit = (category) => {
-        setCategoryForm(category);
         setEditingCategory(category);
+        setCategoryForm({
+            id: category.id,
+            name: category.name,
+            description: category.description,
+            listingType: category.listing_type
+        });
     };
 
     const handleDelete = async (id) => {
@@ -101,24 +111,6 @@ const CategoryPage = () => {
                                     className="w-full p-2 border border-gray-300 rounded"
                                     placeholder="Enter category description"
                                 />
-                            </div>
-                            <div className="mb-4">
-                                <label className="block mb-2 font-semibold">Parent Category</label>
-                                <select
-                                    name="parentCategory"
-                                    value={categoryForm.parentCategory}
-                                    onChange={handleInputChange}
-                                    className="w-full p-2 border border-gray-300 rounded"
-                                >
-                                    <option value="" disabled>
-                                        Select Parent Category
-                                    </option>
-                                    {categories.map((category) => (
-                                        <option key={category.id} value={category.name}>
-                                            {category.name}
-                                        </option>
-                                    ))}
-                                </select>
                             </div>
                             <div className="mb-4">
                                 <label className="block mb-2 font-semibold">Listing Type</label>

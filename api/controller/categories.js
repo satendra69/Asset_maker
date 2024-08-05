@@ -1,15 +1,14 @@
 const Category = require('../models/Category');
 
 const createCategory = async (req, res) => {
-    const { name, description, parentCategory, listingType } = req.body;
+    const { name, description, listingType } = req.body;
 
-    // Validation for required field 'name'
     if (!name) {
         return res.status(400).json({ message: "Name is required." });
     }
 
     try {
-        await Category.createCategory(name, description || null, parentCategory || null, listingType || null);
+        await Category.createCategory(name, description || null, listingType || null);
         res.status(201).json({ message: "Category created successfully" });
     } catch (error) {
         console.error("Error creating category:", error);
@@ -29,15 +28,14 @@ const getAllCategories = async (req, res) => {
 
 const updateCategory = async (req, res) => {
     const { id } = req.params;
-    const { name, description, parentCategory, listingType } = req.body;
+    const { name, description, listingType } = req.body;
 
-    // Validation for required field 'name'
     if (!name) {
         return res.status(400).json({ message: "Name is required." });
     }
 
     try {
-        const result = await Category.updateCategory(id, name, description || null, parentCategory || null, listingType || null);
+        const result = await Category.updateCategory(id, name, description || null, listingType || null);
         if (result.affectedRows === 0) {
             return res.status(404).json({ message: "Category not found." });
         }

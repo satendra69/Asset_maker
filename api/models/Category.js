@@ -1,11 +1,10 @@
 const db = require('../connect');
 
-const createCategory = async (name, description, parentCategory, listingType) => {
+const createCategory = async (name, description = null, listingType = null) => {
     const query = `
-    INSERT INTO categories (name, description, parent_category, listing_type) 
-    VALUES (?, ?, ?, ?)
-  `;
-    const [result] = await db.execute(query, [name, description, parentCategory, listingType]);
+    INSERT INTO categories (name, description, listing_type)
+    VALUES (?, ?, ?)`;
+    const [result] = await db.execute(query, [name, description, listingType]);
     return result;
 };
 
@@ -15,13 +14,12 @@ const getAllCategories = async () => {
     return rows;
 };
 
-const updateCategory = async (id, name, description, parentCategory, listingType) => {
+const updateCategory = async (id, name, description = null, listingType = null) => {
     const query = `
-    UPDATE categories 
-    SET name = ?, description = ?, parent_category = ?, listing_type = ? 
-    WHERE id = ?
-  `;
-    const [result] = await db.execute(query, [name, description, parentCategory, listingType, id]);
+    UPDATE categories
+    SET name = ?, description = ?, listing_type = ?
+    WHERE id = ?`;
+    const [result] = await db.execute(query, [name, description, listingType, id]);
     return result;
 };
 
