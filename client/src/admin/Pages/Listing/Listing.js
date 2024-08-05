@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import { toast } from 'sonner';
 import { Rings } from 'react-loader-spinner';
 import LoadingOverlay from '../../Component/LoadingOverlay/LoadingOverlay';
+import CreatePDF from './Component/CreatePDF';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -38,6 +39,10 @@ function NewListingPage() {
   const [ApartmentData, setApartment] = useState([]);
   const [ApartmentGalleryData, setApartmentGalleryData] = useState([]);
   const [ApartmentBrochureData, setApartmentBrochureData] = useState([]);
+
+  console.log("ApartmentData", ApartmentData);
+  // console.log("ApartmentBrochureData", ApartmentBrochureData);
+  // console.log("ApartmentGalleryData", ApartmentGalleryData);
 
   // for villa
   const [VillaData, setVilla] = useState([]);
@@ -68,6 +73,19 @@ function NewListingPage() {
   const [PentHouseData, setPentHouse] = useState({});
   const [PentHouseGalleryData, setPentHouseGalleryData] = useState([]);
   const [PentHouseBrochureData, setPentHouseBrochureData] = useState([]);
+
+
+  /* pdf start*/
+  const propertyData = {
+    title: title,
+    propertyOwner: selectedOwner,
+    type: listingType,
+    region: selectedRegions,
+    category: selectedCategories,
+    apartmentDetails: ApartmentData,
+  };
+
+  /* pdf end*/
 
   // Fetch property details if in update mode
   useEffect(() => {
@@ -323,6 +341,9 @@ function NewListingPage() {
               <h2>{listing.title}</h2>
               <p>{listing.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
+            </div>
+            <div className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
+              <CreatePDF propertyData={propertyData} storedGalleryImages={ApartmentData.storedGalleryImages} />
             </div>
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
