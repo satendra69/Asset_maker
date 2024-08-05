@@ -45,7 +45,9 @@ import { useSelector } from "react-redux";
 import NewListingPage from "./admin/Pages/Listing/Listing";
 import Blog from "./admin/Pages/Blog/Blog";
 import NewBlog from "./admin/Pages/Blog/NewBlog";
-import CreateCategory from "./admin/Pages/Blog/CreateCategory";
+// import CreateCategory from "./admin/Pages/Blog/CreateCategory";
+import CategoryPage from "./admin/Pages/CategoryPage";
+import RegionsPage from "./admin/Pages/RegionsPage";
 
 const Layout = () => (
   <>
@@ -222,8 +224,12 @@ const router = createBrowserRouter([
         element: <Blog />,
       },
       {
-        path: "/admin/blog/category",
-        element: <CreateCategory />,
+        path: "/admin/property/category",
+        element: <CategoryPage />,
+      },
+      {
+        path: "/admin/property/regions",
+        element: <RegionsPage />,
       },
       {
         path: "/admin/settings/profile",

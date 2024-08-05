@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { FaBars, FaHome, FaLock, FaUser, FaFileAlt, FaListAlt, FaCity, FaBlog, FaBlogger, FaMicroblog } from "react-icons/fa";
+import { FaBars, FaHome, FaUser, FaFileAlt, FaListAlt, FaCity, FaBlog, FaBlogger, FaMicroblog, FaTags, FaMapMarkerAlt } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import { BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
@@ -43,6 +43,16 @@ const SideBar = ({ children }) => {
             name: "Add New Property",
             icon: <FaFileCirclePlus size={24} />,
           },
+          {
+            path: "/admin/property/category",
+            name: "Category",
+            icon: <FaTags size={24} />,
+          },
+          {
+            path: "/admin/property/regions",
+            name: "Regions",
+            icon: <FaMapMarkerAlt size={24} />,
+          },
         ],
       },
       {
@@ -77,11 +87,6 @@ const SideBar = ({ children }) => {
           {
             path: "/admin/blog/new",
             name: "Add New Blog",
-            icon: <FaMicroblog size={24} />,
-          },
-          {
-            path: "/admin/blog/category",
-            name: "Add New Category",
             icon: <FaMicroblog size={24} />,
           },
         ],

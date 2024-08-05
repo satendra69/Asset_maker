@@ -685,7 +685,7 @@ function ApartmentModule({ onDataUpdate }) {
       {/* Location Details */}
       {/* <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} /> */}
       <MapGoogle
-        googleMapsApiKey="AIzaSyAdW5ouYwF7ikEIGGgVcQJiaUYv-N-8Yj4"
+        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         initialPosition={locationData}
         onPositionChange={handlePositionChange}
       />

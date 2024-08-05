@@ -9,6 +9,8 @@ var usersRouter = require("./routes/users");
 var authRouter = require("./routes/auth");
 var cityRouter = require("./routes/city");
 var messageRouter = require("./routes/message");
+var categoriesRouter = require("./routes/categories");
+var regionRoutes = require("./routes/regions");
 var cors = require("cors");
 const db = require("./connect");
 
@@ -48,6 +50,9 @@ app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/city", cityRouter);
 app.use("/api/message", messageRouter);
+app.use("/api/categories", categoriesRouter);
+app.use('/api/regions', regionRoutes);
+
 
 // Consolidated error handler
 app.use(function (err, req, res, next) {
