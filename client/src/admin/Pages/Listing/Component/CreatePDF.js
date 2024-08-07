@@ -25,8 +25,10 @@ const CreatePDF = ({ createPDFInsert }) => {
                 const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
                 const helveticaBoldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
 
-                const drawBoldText = (text, x, y, size) => {
-                    page.drawText(text, { x, y, size, font: helveticaBoldFont, color: rgb(0, 0, 0) });
+                const drawBoldText = (text, x, y, size, centered = false) => {
+                    const textWidth = helveticaBoldFont.widthOfTextAtSize(text, size);
+                    const posX = centered ? (width - textWidth) / 2 : x;
+                    page.drawText(text, { x: posX, y, size, font: helveticaBoldFont, color: rgb(0, 0, 0) });
                     return y - lineHeight;
                 };
 

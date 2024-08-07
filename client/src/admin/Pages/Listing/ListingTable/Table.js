@@ -96,6 +96,15 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     return text.replace(/\b\w/g, char => char.toUpperCase());
   };
 
+  const formatSalePrice = (price) => {
+    if (!price) return '';
+    const strPrice = price.toString();
+    const lastThreeDigits = strPrice.slice(-3);
+    const otherDigits = strPrice.slice(0, -3);
+    const formattedOtherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    return otherDigits.length > 0 ? formattedOtherDigits + ',' + lastThreeDigits : lastThreeDigits;
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -177,7 +186,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "Owner",
         accessorKey: "ltg_owner",
         size: 150,
-        //  Cell: ({ cell }) => formatText(cell.getValue()),
+        Cell: ({ cell }) => formatText(cell.getValue()),
       },
       {
         id: 'description',
@@ -234,12 +243,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               p: "0.25rem",
             })}
           >
-            {cell.getValue()?.toLocaleString?.("en-US", {
-              style: "currency",
-              currency: "INR",
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 0,
-            })}
+            {formatSalePrice(cell.getValue())}
           </Box>
         ),
       },
@@ -278,7 +282,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           const dateValue = cell.getValue();
           return (
             <span>
-              {dateValue ? dayjs(dateValue).format('YYYY-MM-DD HH:mm') : ''}
+              {dateValue ? dayjs(dateValue).format('YYYY-MM-DD') : ''}
             </span>
           );
         },
