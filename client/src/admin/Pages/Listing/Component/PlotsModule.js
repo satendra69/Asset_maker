@@ -12,7 +12,7 @@ import ImageModal from './ImageModal';
 import FileModal from './FileModal';
 import httpCommon from "../../../../http-common";
 
-function PlotsModule({ onDataUpdate }) {
+function PlotsModule({ action, onDataUpdate }) {
 
   const { listingId } = useParams();
   const navigate = useNavigate();
@@ -88,96 +88,84 @@ function PlotsModule({ onDataUpdate }) {
   });
 
   // fetch property
-  const fetchProperty = async (listingId) => {
+  const fetchProperty = async (listingId, action) => {
     try {
       const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
 
       // Fetch images and brochures
-      try {
-        const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
-        if (imgResponse.data.status === "success") {
-          const imageData = imgResponse.data.data;
+      if (response.data.status === "success" && action !== 'clone') {
+        try {
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          if (imgResponse.data.status === "success") {
+            const imageData = imgResponse.data.data;
 
-          // Separate images and brochure data
-          const mainImageData = imageData?.filter(item => item.type === "Main");
-          const galleryData = imageData?.filter(item => item.type === "Gallery");
-          const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
-          const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
-          const brochureData = imageData?.filter(item => item.type === "Brochure");
+            // Separate images and brochure data
+            const mainImageData = imageData?.filter(item => item.type === "Main");
+            const galleryData = imageData?.filter(item => item.type === "Gallery");
+            const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
+            const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
+            const brochureData = imageData?.filter(item => item.type === "Brochure");
 
-          // Set images and brochures
-          setStoredMainImage(mainImageData);
-          setStoredGalleryImages(galleryData);
-          setStoredMasterPlanImages(masterPlanData);
-          setStoredFloorAreaPlanImages(floorAreaPlanData);
-          setStoredBrochure(brochureData);
-        } else {
-          console.error("Error fetching image data: Response status not successful");
-          // Handle the non-success status appropriately here
+            // Set images and brochures
+            setStoredMainImage(mainImageData);
+            setStoredGalleryImages(galleryData);
+            setStoredMasterPlanImages(masterPlanData);
+            setStoredFloorAreaPlanImages(floorAreaPlanData);
+            setStoredBrochure(brochureData);
+          } else {
+            console.error("Error fetching image data: Response status not successful");
+            // Handle the non-success status appropriately here
+          }
+        } catch (error) {
+          console.error("Error fetching image data:", error);
+          // Handle the error appropriately here
+          // For example, you could set state to show an error message in your UI
         }
-      } catch (error) {
-        console.error("Error fetching image data:", error);
-        // Handle the error appropriately here
-        // For example, you could set state to show an error message in your UI
       }
 
-      // Update state with fetched data
-      setDisplaySalePrice(listingData.ltg_det_plot_sale_price);
-      setDisplaySuffixPrice(listingData.ltg_det_plot_suffix_price);
+      if (response.data.status === "success") {
+        // Update state with fetched data
+        setDisplaySalePrice(listingData.ltg_det_plot_sale_price);
+        setDisplaySuffixPrice(listingData.ltg_det_plot_suffix_price);
 
-      // content update
-      setContent(listingData.ltg_det_plot_desc);
-      const blocksFromHTML = convertFromHTML(listingData.ltg_det_plot_desc || '');
-      const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
-      setEditorState(EditorState.createWithContent(contentState));
+        // content update
+        setContent(listingData.ltg_det_plot_desc);
+        const blocksFromHTML = convertFromHTML(listingData.ltg_det_plot_desc || '');
+        const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+        setEditorState(EditorState.createWithContent(contentState));
+        setAreaDetails(listingData.ltg_det_plot_pmts_area_dts);
+        setRatePerSqFt(listingData.ltg_det_plot_pmts_rate_per_sq);
+        setSelectedStatus(listingData.ltg_det_plot_pmts_status);
+        setYearBuilt(listingData.ltg_det_plot_pmts_year_built);
+        setPlotDimensions(listingData.ltg_det_plot_pmts_plot_dimensions);
+        setNoOfOpenSides(listingData.ltg_det_plot_pmts_no_of_open_sides);
+        setApproachingRoadWidth(listingData.ltg_det_plot_pmts_approaching_road_width);
+        setStampDutyAndRegistrationCharges(listingData.ltg_det_plot_pmts_stamp_duty_registration_charges);
+        setTotalProjectExtent(listingData.ltg_det_plot_pmts_total_project_extent);
+        setTransactionType(listingData.ltg_det_plot_pmts_transaction_type);
+        setTotalPhases(listingData.ltg_det_plot_pmts_total_phases);
+        setTotalUnits(listingData.ltg_det_plot_pmts_total_units);
+        setProjectBuilderDetails(listingData.ltg_det_plot_about_project_builder);
+        setVideoUrl(listingData.ltg_det_plot_property_video_url);
+        setSelectedAmenities(listingData.ltg_det_plot_amenities.split(", "));
+        setPropertyAddressDetails(listingData.ltg_det_plot_property_address_details);
+        setFloorsAllowedForConstruction(listingData.ltg_det_plot_pmts_floors_allowed_for_construction);
+        setPlotFacing(listingData.ltg_det_plot_pmts_plot_facing);
+        setCornerPlot(listingData.ltg_det_plot_pmts_corner_plot);
+        setIsInGatedCommunity(listingData.ltg_det_plot_pmts_gated_community);
+        setBoundaryWallMade(listingData.ltg_det_plot_pmts_boundary_wall_made);
+        setPlotApprovalAuthority(listingData.ltg_det_plot_pmts_plot_approval_authority);
 
-      setAreaDetails(listingData.ltg_det_plot_pmts_area_dts);
-      setRatePerSqFt(listingData.ltg_det_plot_pmts_rate_per_sq);
-      setSelectedStatus(listingData.ltg_det_plot_pmts_status);
-      // setSelectedBedRooms(listingData.ltg_det_pmts_bed_rom);
-      // setSelectedBathRooms(listingData.ltg_det_pmts_bth_rom);
-      // setSelectedCarParking(listingData.ltg_det_pmts_car_park);
-      setYearBuilt(listingData.ltg_det_plot_pmts_year_built);
-      // setTotalFloors(listingData.ltg_det_pmts_total_flrs);
-      setPlotDimensions(listingData.ltg_det_plot_pmts_plot_dimensions);
-      setNoOfOpenSides(listingData.ltg_det_plot_pmts_no_of_open_sides);
-      // setMainDoorFacing(listingData.ltg_det_pmts_main_dor_facing);
-      // setPropertyFlooring(listingData.ltg_det_pmts_property_flrg);
-      // setBalconies(listingData.ltg_det_pmts_balconies);
-      setApproachingRoadWidth(listingData.ltg_det_plot_pmts_approaching_road_width);
-      // setFurnishing(listingData.ltg_det_pmts_furnishing);
-      setStampDutyAndRegistrationCharges(listingData.ltg_det_plot_pmts_stamp_duty_registration_charges);
-      setTotalProjectExtent(listingData.ltg_det_plot_pmts_total_project_extent);
-      // setIsCornerVilla(listingData.ltg_det_corner_villa);
-      setTransactionType(listingData.ltg_det_plot_pmts_transaction_type);
-      // setPlotArea(listingData.ltg_det_plot_area);
-      setTotalPhases(listingData.ltg_det_plot_pmts_total_phases);
-      // setApprovalAuthority(listingData.ltg_det_pmts_approval_authority);
-      setTotalUnits(listingData.ltg_det_plot_pmts_total_units);
-      setProjectBuilderDetails(listingData.ltg_det_plot_about_project_builder);
-      setVideoUrl(listingData.ltg_det_plot_property_video_url);
-      // setOtherAdvantages(listingData.ltg_det_pmts_other_advtages.split(", "));
-      setSelectedAmenities(listingData.ltg_det_plot_amenities.split(", "));
-      // setOverLooking(listingData.ltg_det_over_looking);
-      // setIsInGatedCommunity(listingData.ltg_det_gated_community);
-      // setAvailableFrom(listingData.ltg_det_available_from);
-      setPropertyAddressDetails(listingData.ltg_det_plot_property_address_details);
-      setFloorsAllowedForConstruction(listingData.ltg_det_plot_pmts_floors_allowed_for_construction);
-      setPlotFacing(listingData.ltg_det_plot_pmts_plot_facing);
-      setCornerPlot(listingData.ltg_det_plot_pmts_corner_plot);
-      setIsInGatedCommunity(listingData.ltg_det_plot_pmts_gated_community);
-      setBoundaryWallMade(listingData.ltg_det_plot_pmts_boundary_wall_made);
-      setPlotApprovalAuthority(listingData.ltg_det_plot_pmts_plot_approval_authority);
-
-      setLocationData({
-        location: listingData.ltg_det_plot_location || "",
-        address: listingData.ltg_det_plot_address || "",
-        postalCode: listingData.ltg_det_plot_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_plot_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_plot_longitude) || 78.491684,
-      });
+        setLocationData({
+          location: listingData.ltg_det_plot_location || "",
+          address: listingData.ltg_det_plot_address || "",
+          postalCode: listingData.ltg_det_plot_postal_code || "",
+          latitude: parseFloat(listingData.ltg_det_plot_latitude) || 17.387140,
+          longitude: parseFloat(listingData.ltg_det_plot_longitude) || 78.491684,
+        });
+      }
 
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -558,9 +546,13 @@ function PlotsModule({ onDataUpdate }) {
   // fetch property
   useEffect(() => {
     if (listingId) {
-      fetchProperty(listingId);
+      if (action !== 'clone') {
+        fetchProperty(listingId);
+      } else if (action === 'clone') {
+        fetchProperty(listingId, action);
+      }
     }
-  }, [listingId]);
+  }, [listingId, action]);
 
   useEffect(() => {
     if (displaySalePrice) {

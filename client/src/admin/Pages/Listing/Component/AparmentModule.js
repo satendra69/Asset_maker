@@ -16,8 +16,6 @@ import Select from "react-select";
 
 function ApartmentModule({ action, onDataUpdate }) {
 
-  console.log(action, "action outside")
-
   const { listingId } = useParams();
   const navigate = useNavigate();
 
@@ -108,7 +106,6 @@ function ApartmentModule({ action, onDataUpdate }) {
   });
 
   const fetchProperty = async (listingId, action) => {
-    console.log(action, "action inside")
     try {
       const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
@@ -576,7 +573,7 @@ function ApartmentModule({ action, onDataUpdate }) {
     if (listingId) {
       if (action !== 'clone') {
         fetchProperty(listingId);
-      } else if (action) {
+      } else if (action === 'clone') {
         fetchProperty(listingId, action);
       }
     }

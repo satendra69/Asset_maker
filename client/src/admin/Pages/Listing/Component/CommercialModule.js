@@ -13,7 +13,7 @@ import FileModal from './FileModal';
 import httpCommon from "../../../../http-common";
 import Select from "react-select";
 
-function CommercialModule({ onDataUpdate }) {
+function CommercialModule({ action, onDataUpdate }) {
 
   const { listingId } = useParams();
   const navigate = useNavigate();
@@ -97,80 +97,85 @@ function CommercialModule({ onDataUpdate }) {
     brochure: [],
   });
 
-  const fetchProperty = async (listingId) => {
+  const fetchProperty = async (listingId, action) => {
     try {
       const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
 
       // Fetch images and brochures
-      try {
-        const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
-        if (imgResponse.data.status === "success") {
-          const imageData = imgResponse.data.data;
+      if (response.data.status === "success" && action !== 'clone') {
+        console.log("cloning");
+        try {
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          if (imgResponse.data.status === "success") {
+            const imageData = imgResponse.data.data;
 
-          // Separate gallery and brochure data
-          const mainImageData = imageData?.filter(item => item.type === "Main");
-          const galleryData = imageData?.filter(item => item.type === "Gallery");
-          const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
-          const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
-          const brochureData = imageData?.filter(item => item.type === "Brochure");
+            // Separate gallery and brochure data
+            const mainImageData = imageData?.filter(item => item.type === "Main");
+            const galleryData = imageData?.filter(item => item.type === "Gallery");
+            const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
+            const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
+            const brochureData = imageData?.filter(item => item.type === "Brochure");
 
-          // Set images and brochures
-          setStoredMainImage(mainImageData);
-          setStoredGalleryImages(galleryData);
-          setStoredMasterPlanImages(masterPlanData);
-          setStoredFloorAreaPlanImages(floorAreaPlanData);
-          setStoredBrochure(brochureData);
-        } else {
-          console.error("Error fetching image data: Response status not successful");
-          // Handle the non-success status appropriately here
+            // Set images and brochures
+            setStoredMainImage(mainImageData);
+            setStoredGalleryImages(galleryData);
+            setStoredMasterPlanImages(masterPlanData);
+            setStoredFloorAreaPlanImages(floorAreaPlanData);
+            setStoredBrochure(brochureData);
+          } else {
+            console.error("Error fetching image data: Response status not successful");
+            // Handle the non-success status appropriately here
+          }
+        } catch (error) {
+          console.error("Error fetching image data:", error);
+          // Handle the error appropriately here
+          // For example, you could set state to show an error message in your UI
         }
-      } catch (error) {
-        console.error("Error fetching image data:", error);
-        // Handle the error appropriately here
-        // For example, you could set state to show an error message in your UI
       }
 
-      // Update state with fetched data
-      setDisplaySalePrice(listingData.ltg_det_comm_prop_sale_price);
-      setDisplaySuffixPrice(listingData.ltg_det_comm_prop_suffix_price);
+      if (response.data.status === "success") {
+        // Update state with fetched data
+        setDisplaySalePrice(listingData.ltg_det_comm_prop_sale_price);
+        setDisplaySuffixPrice(listingData.ltg_det_comm_prop_suffix_price);
 
-      // content update
-      setContent(listingData.ltg_det_comm_prop_desc);
-      const blocksFromHTML = convertFromHTML(listingData.ltg_det_comm_prop_desc || '');
-      const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
-      setEditorState(EditorState.createWithContent(contentState));
+        // content update
+        setContent(listingData.ltg_det_comm_prop_desc);
+        const blocksFromHTML = convertFromHTML(listingData.ltg_det_comm_prop_desc || '');
+        const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
+        setEditorState(EditorState.createWithContent(contentState));
 
-      setAreaDetails(listingData.ltg_det_comm_prop_pmts_area_dts);
-      setRatePerSqFt(listingData.ltg_det_comm_prop_pmts_rate_per_sq);
-      setSelectedStatus(listingData.ltg_det_comm_prop_pmts_status);
-      setPropertyOnFloor(listingData.ltg_det_comm_prop_pmts_property_on_floor);
-      setSelectedCarParking(listingData.ltg_det_comm_prop_pmts_car_parking);
-      setYearBuilt(listingData.ltg_det_comm_prop_pmts_year_built);
-      setTotalFloors(listingData.ltg_det_comm_prop_pmts_total_floors);
-      setPropertyFlooring(listingData.ltg_det_comm_prop_pmts_property_flooring);
-      setBalconies(listingData.ltg_det_comm_prop_pmts_balconies);
-      setApproachingRoadWidth(listingData.ltg_det_comm_prop_pmts_approaching_road_width);
-      setFurnishing(listingData.ltg_det_comm_prop_pmts_furnishing);
-      setStampDutyAndRegistrationCharges(listingData.ltg_det_comm_prop_pmts_stamp_duty_registration_charges);
-      setTotalProjectExtent(listingData.ltg_det_comm_prop_pmts_total_project_extent);
-      setTransactionType(listingData.ltg_det_comm_prop_pmts_transaction_type);
-      setTotalPhases(listingData.ltg_det_comm_prop_pmts_total_phases);
-      setApprovalAuthority(listingData.ltg_det_comm_prop_pmts_approval_authority);
-      setTotalUnits(listingData.ltg_det_comm_prop_pmts_total_units);
-      setProjectBuilderDetails(listingData.ltg_det_comm_prop_about_project_builder);
-      setVideoUrl(listingData.ltg_det_comm_prop_property_video_url);
-      setOtherAdvantages(listingData.ltg_det_comm_prop_pmts_other_advantages.split(", "));
-      setSelectedAmenities(listingData.ltg_det_comm_prop_amenities.split(", "));
+        setAreaDetails(listingData.ltg_det_comm_prop_pmts_area_dts);
+        setRatePerSqFt(listingData.ltg_det_comm_prop_pmts_rate_per_sq);
+        setSelectedStatus(listingData.ltg_det_comm_prop_pmts_status);
+        setPropertyOnFloor(listingData.ltg_det_comm_prop_pmts_property_on_floor);
+        setSelectedCarParking(listingData.ltg_det_comm_prop_pmts_car_parking);
+        setYearBuilt(listingData.ltg_det_comm_prop_pmts_year_built);
+        setTotalFloors(listingData.ltg_det_comm_prop_pmts_total_floors);
+        setPropertyFlooring(listingData.ltg_det_comm_prop_pmts_property_flooring);
+        setBalconies(listingData.ltg_det_comm_prop_pmts_balconies);
+        setApproachingRoadWidth(listingData.ltg_det_comm_prop_pmts_approaching_road_width);
+        setFurnishing(listingData.ltg_det_comm_prop_pmts_furnishing);
+        setStampDutyAndRegistrationCharges(listingData.ltg_det_comm_prop_pmts_stamp_duty_registration_charges);
+        setTotalProjectExtent(listingData.ltg_det_comm_prop_pmts_total_project_extent);
+        setTransactionType(listingData.ltg_det_comm_prop_pmts_transaction_type);
+        setTotalPhases(listingData.ltg_det_comm_prop_pmts_total_phases);
+        setApprovalAuthority(listingData.ltg_det_comm_prop_pmts_approval_authority);
+        setTotalUnits(listingData.ltg_det_comm_prop_pmts_total_units);
+        setProjectBuilderDetails(listingData.ltg_det_comm_prop_about_project_builder);
+        setVideoUrl(listingData.ltg_det_comm_prop_property_video_url);
+        setOtherAdvantages(listingData.ltg_det_comm_prop_pmts_other_advantages.split(", "));
+        setSelectedAmenities(listingData.ltg_det_comm_prop_amenities.split(", "));
 
-      setLocationData({
-        location: listingData.ltg_det_comm_prop_location || "",
-        address: listingData.ltg_det_comm_prop_address || "",
-        postalCode: listingData.ltg_det_comm_prop_postal_code || "",
-        latitude: parseFloat(listingData.ltg_det_comm_prop_latitude) || 17.387140,
-        longitude: parseFloat(listingData.ltg_det_comm_prop_longitude) || 78.491684,
-      });
+        setLocationData({
+          location: listingData.ltg_det_comm_prop_location || "",
+          address: listingData.ltg_det_comm_prop_address || "",
+          postalCode: listingData.ltg_det_comm_prop_postal_code || "",
+          latitude: parseFloat(listingData.ltg_det_comm_prop_latitude) || 17.387140,
+          longitude: parseFloat(listingData.ltg_det_comm_prop_longitude) || 78.491684,
+        });
+      }
 
     } catch (error) {
       if (error.response && error.response.status === 404) {
@@ -554,9 +559,13 @@ function CommercialModule({ onDataUpdate }) {
   // fetch property
   useEffect(() => {
     if (listingId) {
-      fetchProperty(listingId);
+      if (action !== 'clone') {
+        fetchProperty(listingId);
+      } else if (action === 'clone') {
+        fetchProperty(listingId, action);
+      }
     }
-  }, [listingId]);
+  }, [listingId, action]);
 
   useEffect(() => {
     if (displaySalePrice) {
