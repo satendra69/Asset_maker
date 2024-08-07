@@ -529,7 +529,15 @@ function PentModule({ onDataUpdate }) {
       galleryImages,
       masterPlanImages,
       floorAreaPlanImages,
+      storedMainImage,
+      storedGalleryImages,
+      storedMasterPlanImages,
+      storedFloorAreaPlanImages,
     };
+    const combinedBrochure = {
+      brochure,
+      storedBrochure,
+    }
     const data = {
       salePrice,
       suffixPrice,
@@ -542,7 +550,7 @@ function PentModule({ onDataUpdate }) {
       selectedCarParking,
       amenitiesAsString,
       videoUrl,
-      brochure,
+      combinedBrochure,
       selectedBedRooms,
       selectedBathRooms,
       yearBuilt,
@@ -1461,7 +1469,7 @@ function PentModule({ onDataUpdate }) {
               type="file"
               id="MainImage-upload"
               name="MainImage-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleMainImageUpload(e, setMainImage)}
             />
@@ -1553,7 +1561,7 @@ function PentModule({ onDataUpdate }) {
               type="file"
               id="gallery-upload"
               name="gallery-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setGalleryImages)}
@@ -1663,7 +1671,7 @@ function PentModule({ onDataUpdate }) {
               type="file"
               id="masterPlan-upload"
               name="masterPlan-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
@@ -1755,7 +1763,7 @@ function PentModule({ onDataUpdate }) {
               type="file"
               id="floorAreaPlan-upload"
               name="floorAreaPlan-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}

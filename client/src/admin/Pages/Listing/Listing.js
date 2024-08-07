@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { Rings } from 'react-loader-spinner';
 import LoadingOverlay from '../../Component/LoadingOverlay/LoadingOverlay';
 import CreatePDF from './Component/CreatePDF';
+import { PDFDocument, rgb } from 'pdf-lib';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -32,57 +33,46 @@ function NewListingPage() {
   const [featured, setFeatured] = useState(false);
   const [selectedOwner, setSelectedOwner] = useState("");
 
-  // added by satya
   const [selectedCategories, setSelectedCategories] = useState("");
   const [selectedRegions, setSelectedRegions] = useState("");
   const [CustomLabel, setCustomLabel] = useState([]);
+  const [createPDFData, setCreatePDFData] = useState(null);
   const [ApartmentData, setApartment] = useState([]);
-  const [ApartmentGalleryData, setApartmentGalleryData] = useState([]);
-  const [ApartmentBrochureData, setApartmentBrochureData] = useState([]);
-
-  console.log("ApartmentData", ApartmentData);
-  // console.log("ApartmentBrochureData", ApartmentBrochureData);
-  // console.log("ApartmentGalleryData", ApartmentGalleryData);
-
-  // for villa
   const [VillaData, setVilla] = useState([]);
-  const [VillaGalleryData, setVillaGalleryData] = useState([]);
-  const [VillaBrochureData, setVillaBrochureData] = useState([]);
-
-  // for Plots
   const [PlotsData, setPlots] = useState({});
-  const [PlotsGalleryData, setPlotsGalleryData] = useState([]);
-  const [PlotsBrochureData, setPlotsBrochureData] = useState([]);
-
-  // for Row House
   const [RowHouseData, setRowHouse] = useState({});
-  const [RowHouseGalleryData, setRowHouseGalleryData] = useState([]);
-  const [RowHouseBrochureData, setRowHouseBrochureData] = useState([]);
-
-  // for Commercial Properties
   const [CommercialData, setCommercial] = useState({});
-  const [CommercialGalleryData, setCommercialGalleryData] = useState([]);
-  const [CommercialBrochureData, setCommercialBrochureData] = useState([]);
-
-  // for Villament
   const [VillamentData, setVillament] = useState({});
-  const [VillamentGalleryData, setVillamentGalleryData] = useState([]);
-  const [VillamentBrochureData, setVillamentBrochureData] = useState([]);
-
-  // for Pent House
   const [PentHouseData, setPentHouse] = useState({});
-  const [PentHouseGalleryData, setPentHouseGalleryData] = useState([]);
-  const [PentHouseBrochureData, setPentHouseBrochureData] = useState([]);
 
+  // console.log("ApartmentData outside", ApartmentData);
 
   /* pdf start*/
-  const propertyData = {
-    title: title,
-    propertyOwner: selectedOwner,
-    type: listingType,
-    region: selectedRegions,
-    category: selectedCategories,
-    apartmentDetails: ApartmentData,
+  const createPDFBtn = async () => {
+
+    // console.log("ApartmentData inside", ApartmentData);
+    const listingData = {
+      Apartments: ApartmentData,
+      Villas: VillaData,
+      Plots: PlotsData,
+      RowHouses: RowHouseData,
+      CommercialProperties: CommercialData,
+      Villaments: VillamentData,
+      PentHouses: PentHouseData,
+    };
+
+    const createPDFInsert = {
+      title: title.trim(),
+      selectedOwner: selectedOwner,
+      listingType: listingType,
+      featured: featured,
+      selectedRegions: selectedRegions,
+      selectedCategories: selectedCategories,
+      CustomLabel: JSON.stringify(CustomLabel),
+      ListingData: listingData[listingType],
+    };
+
+    setCreatePDFData({ createPDFInsert });
   };
 
   /* pdf end*/
@@ -212,7 +202,7 @@ function NewListingPage() {
       { key: 'combinedImages.galleryImages', type: 'Gallery' },
       { key: 'combinedImages.masterPlanImages', type: 'MasterPlan' },
       { key: 'combinedImages.floorAreaPlanImages', type: 'FloorAreaPlan' },
-      { key: 'brochure', type: 'Brochure' },
+      { key: 'combinedBrochure.brochure', type: 'Brochure' },
     ];
 
     console.log(`Starting file upload for listingType: ${listingType}, listingID: ${listingID}, auditUser: ${auditUser}`);
@@ -282,45 +272,31 @@ function NewListingPage() {
   const handleApartmentDataUpdate = (data) => {
     // console.log("dataee___",data);
     setApartment(data);
-    setApartmentGalleryData(data.combinedImages);
-    setApartmentBrochureData(data.brochure);
   };
 
   const handleVillaDataUpdate = (data) => {
     // console.log("data_____",data);
     setVilla(data);
-    setVillaGalleryData(data.combinedImages);
-    setVillaBrochureData(data.brochure);
   };
 
   const handlePlotsDataUpdate = (data) => {
     setPlots(data);
-    setPlotsGalleryData(data.combinedImages);
-    setPlotsBrochureData(data.brochure);
   };
 
   const handleRowHouseDataUpdate = (data) => {
     setRowHouse(data);
-    setRowHouseGalleryData(data.combinedImages);
-    setRowHouseBrochureData(data.brochure);
   };
 
   const handleCommercialDataUpdate = (data) => {
     setCommercial(data);
-    setCommercialGalleryData(data.combinedImages);
-    setCommercialBrochureData(data.brochure);
   };
 
   const handleVillamentDataUpdate = (data) => {
     setVillament(data);
-    setVillamentGalleryData(data.combinedImages);
-    setVillamentBrochureData(data.brochure);
   };
 
   const handlePentHouseDataUpdate = (data) => {
     setPentHouse(data);
-    setPentHouseGalleryData(data.combinedImages);
-    setPentHouseBrochureData(data.brochure);
   };
 
   const listing = {
@@ -342,9 +318,10 @@ function NewListingPage() {
               <p>{listing.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
             </div>
-            <div className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
-              <CreatePDF propertyData={propertyData} storedGalleryImages={ApartmentData.storedGalleryImages} />
-            </div>
+            <button onClick={createPDFBtn} className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
+              Create PDF
+            </button>
+            {createPDFData && <CreatePDF createPDFInsert={createPDFData.createPDFInsert} storedGalleryImages={createPDFData.storedGalleryImages} />}
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}

@@ -528,7 +528,15 @@ function ApartmentModule({ onDataUpdate }) {
       galleryImages,
       masterPlanImages,
       floorAreaPlanImages,
+      storedMainImage,
+      storedGalleryImages,
+      storedMasterPlanImages,
+      storedFloorAreaPlanImages,
     };
+    const combinedBrochure = {
+      brochure,
+      storedBrochure,
+    }
     const data = {
       salePrice,
       suffixPrice,
@@ -561,12 +569,8 @@ function ApartmentModule({ onDataUpdate }) {
       projectBuilderDetails,
       amenitiesAsString,
       videoUrl,
-      brochure,
+      combinedBrochure,
       combinedImages,
-      storedMainImage,
-      storedGalleryImages,
-      storedMasterPlanImages,
-      storedFloorAreaPlanImages,
       deletedImages,
       deletedFiles,
       type: propertyType,
@@ -1409,7 +1413,7 @@ function ApartmentModule({ onDataUpdate }) {
               type="file"
               id="MainImage-upload"
               name="MainImage-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleMainImageUpload(e, setMainImage)}
             />
@@ -1502,7 +1506,7 @@ function ApartmentModule({ onDataUpdate }) {
               type="file"
               id="gallery-upload"
               name="gallery-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setGalleryImages)}
@@ -1610,7 +1614,7 @@ function ApartmentModule({ onDataUpdate }) {
               type="file"
               id="masterPlan-upload"
               name="masterPlan-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
@@ -1702,7 +1706,7 @@ function ApartmentModule({ onDataUpdate }) {
               type="file"
               id="floorAreaPlan-upload"
               name="floorAreaPlan-upload"
-              accept="image/*"
+              accept=".jpg,.jpeg,.png"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}
