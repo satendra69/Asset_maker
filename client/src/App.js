@@ -216,6 +216,10 @@ const router = createBrowserRouter([
         element: <NewListingPage />,
       },
       {
+        path: "/admin/property/clone/:listingId",
+        element: <NewListingPage action="clone" />,
+      },
+      {
         path: "/admin/blog/new",
         element: <NewBlog />,
       },

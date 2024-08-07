@@ -15,16 +15,14 @@ import { toast } from 'sonner';
 import { Rings } from 'react-loader-spinner';
 import LoadingOverlay from '../../Component/LoadingOverlay/LoadingOverlay';
 import CreatePDF from './Component/CreatePDF';
-import { PDFDocument, rgb } from 'pdf-lib';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
-function NewListingPage() {
+function NewListingPage({ action }) {
   const navigate = useNavigate();
   const { listingId } = useParams();
-
   const [isLoading, setIsLoading] = useState(false);
 
   // Define state for form inputs
@@ -45,12 +43,9 @@ function NewListingPage() {
   const [VillamentData, setVillament] = useState({});
   const [PentHouseData, setPentHouse] = useState({});
 
-  // console.log("ApartmentData outside", ApartmentData);
-
   /* pdf start*/
   const createPDFBtn = async () => {
 
-    // console.log("ApartmentData inside", ApartmentData);
     const listingData = {
       Apartments: ApartmentData,
       Villas: VillaData,
@@ -88,16 +83,13 @@ function NewListingPage() {
     try {
       const response = await httpCommon.get(`/list/${listingId}`);
       const listingData = response.data.data[0];
-      // console.log("listingData", listingData);
 
-      // Update state with fetched data
       setTitle(listingData.ltg_title);
       setListingType(listingData.ltg_type);
       setFeatured(listingData.ltg_mark_as_featured === "true");
       setSelectedOwner(listingData.ltg_owner);
       setSelectedCategories(listingData.ltg_categories);
       setSelectedRegions(listingData.ltg_regions);
-      // Clean up the JSON string if it has extra quotes
       const cleanedLabels = listingData.ltg_labels.replace(/^"|"$/g, '');
       setCustomLabel(JSON.parse(cleanedLabels));
     } catch (error) {
@@ -111,7 +103,6 @@ function NewListingPage() {
     }
   };
 
-  // Function to handle Region radio button change
   const handleRegionChange = (event) => {
     setSelectedRegions(event.target.value);
   };
@@ -145,16 +136,21 @@ function NewListingPage() {
       CustomLabel: JSON.stringify(CustomLabel),
       ListingData: listingData[listingType],
       auditUser: 'admin',
-      update: Boolean(listingId),
+      update: Boolean(listingId && action !== 'clone'),
     };
 
     console.log("json_ListingInsert_____", json_ListingInsert);
 
     try {
       let response;
-      if (listingId) {
+      if (action === 'clone' && listingId) {
+        console.log("cloning listing");
+        response = await httpCommon.post("/list", json_ListingInsert);
+      } else if (listingId) {
+        console.log("updating listing");
         response = await httpCommon.patch(`/list/${listingId}`, json_ListingInsert);
       } else {
+        console.log("creating listing");
         response = await httpCommon.post("/list", json_ListingInsert);
       }
       const responseData = await response.data;
@@ -300,9 +296,9 @@ function NewListingPage() {
   };
 
   const listing = {
-    button: listingId ? "Update" : "Create",
-    title: listingId ? "Update Property" : "Create New Property",
-    description: listingId
+    button: (listingId && action !== 'clone') ? "Update" : "Create",
+    title: (listingId && action !== 'clone') ? "Update Property" : "Create New Property",
+    description: (listingId && action !== 'clone')
       ? "You can update your property here"
       : "You can add a new property here",
   };
@@ -567,19 +563,19 @@ function NewListingPage() {
           {/* Render different modules based on listing type */}
           <div>
             {listingType === 'Apartments' ? (
-              <ApartmentModule onDataUpdate={handleApartmentDataUpdate} />
+              <ApartmentModule action={action} onDataUpdate={handleApartmentDataUpdate} />
             ) : listingType === 'Villas' ? (
-              <VillaModule onDataUpdate={handleVillaDataUpdate} />
+              <VillaModule action={action} onDataUpdate={handleVillaDataUpdate} />
             ) : listingType === 'Plots' ? (
-              <PlotsModule onDataUpdate={handlePlotsDataUpdate} />
+              <PlotsModule action={action} onDataUpdate={handlePlotsDataUpdate} />
             ) : listingType === 'RowHouses' ? (
-              <RowModule onDataUpdate={handleRowHouseDataUpdate} />
+              <RowModule action={action} onDataUpdate={handleRowHouseDataUpdate} />
             ) : listingType === 'CommercialProperties' ? (
-              <CommercialModule onDataUpdate={handleCommercialDataUpdate} />
+              <CommercialModule action={action} onDataUpdate={handleCommercialDataUpdate} />
             ) : listingType === 'Villaments' ? (
-              <VillamentModule onDataUpdate={handleVillamentDataUpdate} />
+              <VillamentModule action={action} onDataUpdate={handleVillamentDataUpdate} />
             ) : listingType === 'PentHouses' ? (
-              <PentModule onDataUpdate={handlePentHouseDataUpdate} />
+              <PentModule action={action} onDataUpdate={handlePentHouseDataUpdate} />
             ) : null}
           </div>
         </div>

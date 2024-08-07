@@ -1,28 +1,10 @@
 import { useMemo, useState } from "react";
 import dayjs from 'dayjs';
-//MRT Imports
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-  MRT_GlobalFilterTextField,
-  MRT_ToggleFiltersButton,
-} from "material-react-table";
+import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { useNavigate } from "react-router-dom";
-//Material UI Imports
-import {
-  Box,
-  Button,
-  Dialog,
-  ListItemIcon,
-  MenuItem,
-  Typography,
-  lighten,
-} from "@mui/material";
-import { Edit, Delete, AccountCircle, Send } from "@mui/icons-material";
-//Icons Imports
-import { FaTrash } from "react-icons/fa";
+import { Box, Button, Dialog, } from "@mui/material";
+import { Edit, Delete, FileCopy as CopyIcon } from "@mui/icons-material";
 import httpCommon from "../../../../http-common";
-import { toast, Toaster } from "sonner";
 
 function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedId, setSelectedId] = useState(null);
@@ -33,7 +15,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     const mainImage = attachments?.find(att => att.type === "Main");
     return mainImage
       ? httpCommon.defaults.baseURL + mainImage.attachment
-      : httpCommon.defaults.baseURL + '\defaultasset.jpg'; // Default image URL
+      : httpCommon.defaults.baseURL + '\defaultasset.jpg';
   };
 
   const capitalizeFirstLetter = (string) => {
@@ -135,6 +117,22 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
               onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
             >
               <Edit style={{ fontSize: 15 }} />
+            </Button>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              sx={{
+                minWidth: 0,
+                width: 20,
+                height: 20,
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onClick={() => navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`)}
+            >
+              <CopyIcon style={{ fontSize: 15 }} />
             </Button>
             <Button
               variant="contained"

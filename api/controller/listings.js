@@ -719,10 +719,10 @@ SET
 const getListItem = async (req, res) => {
 
   try {
-    // Fetch all records from ltg_mst
     const mstQuery = `
       SELECT RowID, ltg_type
-      FROM ltg_mst;
+      FROM ltg_mst
+      ORDER BY RowID DESC;
     `;
     const [mstResults] = await db.query(mstQuery);
 
