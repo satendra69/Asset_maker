@@ -71,20 +71,30 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     }
   };
 
+
   const formatText = (text) => {
-    if (text === "AssetMakers") {
-      return "Asset Makers";
+    // Add a check to ensure 'text' is defined before using replace()
+    if (text !== undefined) { 
+      if (text === "AssetMakers") {
+        return "Asset Makers";
+      }
+      return text.replace(/\b\w/g, char => char.toUpperCase());
+    } else {
+      // Handle the case where 'text' is undefined
+      return ""; // Or handle it differently based on your needs
     }
-    return text.replace(/\b\w/g, char => char.toUpperCase());
   };
 
   const formatSalePrice = (price) => {
     if (!price) return '';
     const strPrice = price.toString();
     const lastThreeDigits = strPrice.slice(-3);
-    const otherDigits = strPrice.slice(0, -3);
-    const formattedOtherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
-    return otherDigits.length > 0 ? formattedOtherDigits + ',' + lastThreeDigits : lastThreeDigits;
+    let otherDigits = strPrice.slice(0, -3); // Initialize otherDigits 
+    if (otherDigits.length > 0) {
+      otherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
+    }
+    return otherDigits.length > 0 ? otherDigits + ',' + lastThreeDigits : lastThreeDigits;
+  
   };
 
   const columns = useMemo(
