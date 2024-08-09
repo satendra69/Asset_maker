@@ -5,7 +5,7 @@ import { FaBuilding, FaHamburger, FaHome } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { IoMdLogOut } from "react-icons/io";
 import { CiLogin, CiSaveDown2 } from "react-icons/ci";
-import { IoBuild, IoCreateOutline } from "react-icons/io5";
+import { IoCreateOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "sonner";
 import { signOutUserSuccess } from "../redux/userSlice";
@@ -130,6 +130,10 @@ function Header() {
     toast.success("Logout Successful");
   };
 
+  const goToSavedList = () => {
+    navigate("/saved-list", { state: { userId: currentUser.id } });
+  };
+
   return (
     <>
       <Toaster richColors />
@@ -245,19 +249,13 @@ function Header() {
                       Admin Panel
                     </Link>
                   )}
-                  <Link
+                  <div
                     className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                    to={"/saved-list"}
+                    onClick={goToSavedList}
                   >
-                    <CiSaveDown2 size={32} /> Saved List
-                  </Link>
-                  <Link
-                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                    to={"/my-list"}
-                  >
-                    <IoCreateOutline size={32} /> My List
-                  </Link>
-
+                    <CiSaveDown2 size={32} />
+                    Saved List
+                  </div>
                   <button
                     className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
                     onClick={handleLogout}
@@ -373,20 +371,13 @@ function Header() {
                           Admin Panel
                         </Link>
                       )}
-                      <Link
+                      <div
                         className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                        to={"/saved-list"}
+                        onClick={goToSavedList}
                       >
                         <CiSaveDown2 size={32} />
                         Saved List
-                      </Link>
-                      <Link
-                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                        to={"/my-list"}
-                      >
-                        <IoCreateOutline size={32} />
-                        My List
-                      </Link>
+                      </div>
                       <button
                         onClick={handleLogout}
                         className="flex items-center gap-2 text-slate-900 whitespace-nowrap"

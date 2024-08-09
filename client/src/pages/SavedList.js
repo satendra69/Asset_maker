@@ -1,22 +1,70 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import Container from "../component/Container";
-import SaveCard from "../component/saveCard/SaveCard";
-import axios from "axios";
+import Card from "../component/card/card";
+import httpCommon from "../http-common";
 
-function SavedList({ userId }) {
+function SavedList() {
+  const location = useLocation();
+  const { userId } = location.state || {};
   const [savedProperties, setSavedProperties] = useState([]);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  console.log(savedProperties, "savedProperties");
 
   useEffect(() => {
     const fetchSavedProperties = async () => {
       try {
-        const response = await axios.get(`/api/saved-list/${userId}`);
-        setSavedProperties(response.data);
+        if (!userId) {
+          throw new Error("User ID is not available.");
+        }
+
+        const savedListResponse = await httpCommon.get(`/saved-list/${userId}`);
+        const savedProperties = savedListResponse.data;
+
+        if (!savedProperties || savedProperties.length === 0) {
+          throw new Error("No saved properties found.");
+        }
+
+        // Fetch details for each saved property
+        const propertyDetailsPromises = savedProperties.map(async (savedItem) => {
+          try {
+            const propertyResponse = await httpCommon.get(`/list/property/${savedItem.property_id}`);
+            return propertyResponse?.data?.data;
+          } catch (error) {
+            console.error(`Failed to fetch details for property ID: ${savedItem.property_id}`, error);
+            return null; // Return null if fetching property details fails
+          }
+        });
+
+        const detailedProperties = await Promise.all(propertyDetailsPromises);
+        setSavedProperties(detailedProperties.filter(item => item !== null)); // Filter out null values
       } catch (error) {
-        console.error("Failed to fetch saved properties", error);
+        setError(error.message || "An unexpected error occurred.");
+      } finally {
+        setLoading(false);
       }
     };
+
     fetchSavedProperties();
   }, [userId]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return (
+      <Container className={"py-8 space-y-10"}>
+        <div className="space-y-2">
+          <h2>Error</h2>
+          <p>{error}</p>
+          <hr className="w-32 h-1 bg-red-500" />
+        </div>
+      </Container>
+    );
+  }
 
   return (
     <div>
@@ -26,9 +74,12 @@ function SavedList({ userId }) {
           <p>Best places to live in India</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
         </div>
-        {savedProperties.map((item) => (
-          <SaveCard key={item.id} item={item} />
+        {savedProperties?.map((item) => (
+          <Card key={item.RowID} item={item} />
         ))}
+        {savedProperties.length === 0 && (
+          <p>No saved properties found.</p>
+        )}
       </Container>
     </div>
   );

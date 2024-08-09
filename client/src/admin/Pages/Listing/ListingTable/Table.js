@@ -71,17 +71,14 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     }
   };
 
-
   const formatText = (text) => {
-    // Add a check to ensure 'text' is defined before using replace()
-    if (text !== undefined) { 
+    if (text !== undefined) {
       if (text === "AssetMakers") {
         return "Asset Makers";
       }
       return text.replace(/\b\w/g, char => char.toUpperCase());
     } else {
-      // Handle the case where 'text' is undefined
-      return ""; // Or handle it differently based on your needs
+      return "";
     }
   };
 
@@ -89,12 +86,12 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     if (!price) return '';
     const strPrice = price.toString();
     const lastThreeDigits = strPrice.slice(-3);
-    let otherDigits = strPrice.slice(0, -3); // Initialize otherDigits 
+    let otherDigits = strPrice.slice(0, -3);
     if (otherDigits.length > 0) {
       otherDigits = otherDigits.replace(/\B(?=(\d{2})+(?!\d))/g, ",");
     }
     return otherDigits.length > 0 ? otherDigits + ',' + lastThreeDigits : lastThreeDigits;
-  
+
   };
 
   const columns = useMemo(
@@ -299,7 +296,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
 
   const tableData = useMemo(() => data.map((item, index) => ({
     ...item,
-    RowID: index + 1 // Adding a unique RowID for each item
+    RowID: index + 1
   })), [data]);
 
   const table = useMaterialReactTable({
@@ -314,7 +311,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     enableRowSelection: true,
 
     initialState: {
-      // showColumnFilters: true,
       density: 'compact',
       pagination: { pageSize: 5 },
       showGlobalFilter: true,

@@ -29,7 +29,6 @@ import AdminMessages from "./admin/Pages/Message/AdminMessages";
 import SingleUserMessages from "./admin/Pages/Message/SingleUserMessages";
 
 import City from "./admin/Pages/City/City";
-import MyList from "./pages/MyList";
 import SavedList from "./pages/SavedList";
 import SideBar from "./admin/Component/Sidebar/SideBar";
 import SingleCity from "./admin/Pages/City/SingleCity";
@@ -115,10 +114,6 @@ const router = createBrowserRouter([
       {
         path: "/about-us",
         element: <AboutUs />,
-      },
-      {
-        path: "/my-list",
-        element: <MyList />,
       },
       {
         path: "/saved-list",

@@ -7,6 +7,7 @@ const {
   deleteListItem,
   uploadListItem,
   getListItemId,
+  getPropertyItemId,
   getAllImages,
   getsinglePageImg,
   deleteImagesByRowID,
@@ -40,6 +41,7 @@ router.delete("/files/:RowID", deleteBrochureFile);
 
 /* get listItem */
 router.get("/:listingID", getListItemId);
+router.get('/property/:id', getPropertyItemId);
 router.get("/:listingID/:type", getListItemId);
 
 /* update listItem */

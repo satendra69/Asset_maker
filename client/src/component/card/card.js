@@ -1,5 +1,5 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import "./card.scss";
+import { useSelector } from "react-redux";
 import { useState } from "react";
 import DialogProperty from "./DialogProperty";
 import { useMutation } from "@tanstack/react-query";
@@ -7,11 +7,11 @@ import { toast, Toaster } from "sonner";
 import axios from "axios";
 import httpCommon from "../../http-common";
 import { queryClient } from "../..";
+import "./card.scss";
 
 function Card({ key, item }) {
-
+  const { currentUser } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
-
   const handleClose = () => {
     setOpen(false);
   };
@@ -42,6 +42,35 @@ function Card({ key, item }) {
       toast.error("Internal error at Sending Message");
     },
   });
+
+  // Function to send a save request
+  const saveToSavedList = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    try {
+      const res = await axios.post(`${process.env.REACT_APP_URL}/saved-list/add`, {
+        userId: currentUser.id,
+        propertyId: item.RowID,
+      });
+      toast.success(res.data.message);
+    } catch (error) {
+      console.error(error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          toast.error("User ID and Property ID are required");
+        } else if (status === 409) {
+          toast.error("Property is already in the saved list");
+        } else {
+          toast.error(data.message || "Internal error at Saving Property");
+        }
+      } else {
+        toast.error("Internal error at Saving Property");
+      }
+    }
+  };
 
   const getImageAttachments = (attachments) => {
     if (!attachments) {
@@ -181,9 +210,9 @@ function Card({ key, item }) {
               </>
               )}
             <div className="icons">
-              <Link to={"/saved-list"} className="icon">
+              <div className="icon" onClick={saveToSavedList}>
                 <img src="/save.png" alt="" />
-              </Link>
+              </div>
               <div className="icon" onClick={() => setOpen(true)}>
                 <img src="/chat.png" alt="" />
               </div>

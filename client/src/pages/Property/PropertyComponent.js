@@ -25,7 +25,7 @@ function PropertyComponent({ defaultType }) {
                 params: filterParams
             });
 
-            // console.log(response, "response____AllProperties");
+            console.log(response, "response____AllProperties");
 
             if (response.data.status === "success") {
                 const properties = response.data.data;

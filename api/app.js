@@ -11,8 +11,8 @@ var cityRouter = require("./routes/city");
 var messageRouter = require("./routes/message");
 var categoriesRouter = require("./routes/categories");
 var regionRoutes = require("./routes/regions");
-var contactRoutes = require("./routes/contactRoutes");
-// var savedListRoutes = require("./routes/savedListRoutes");
+var contactRoutes = require("./routes/contact");
+var savedListRoutes = require("./routes/savedList");
 var cors = require("cors");
 const db = require("./connect");
 
@@ -55,7 +55,7 @@ app.use("/api/message", messageRouter);
 app.use("/api/categories", categoriesRouter);
 app.use('/api/regions', regionRoutes);
 app.use('/api/contact', contactRoutes);
-// app.use('/api/saved-list', savedListRoutes);
+app.use('/api/saved-list', savedListRoutes);
 
 
 // Consolidated error handler

@@ -717,7 +717,6 @@ SET
 };
 
 const getListItem = async (req, res) => {
-
   try {
     const mstQuery = `
       SELECT RowID, ltg_type
@@ -883,6 +882,111 @@ const getListingbyType = async (req, res) => {
     res.status(500).json({ message: "Error fetching properties", status: "error" });
   }
 };
+
+//
+const getPropertyItemId = async (req, res) => {
+  const propertyId = req.params.id;
+
+  try {
+    // First, fetch the property type and basic info from `ltg_mst`
+    const mstQuery = `
+      SELECT RowID, ltg_type
+      FROM ltg_mst
+      WHERE RowID = ?;
+    `;
+    const [mstResults] = await db.query(mstQuery, [propertyId]);
+
+    if (mstResults.length === 0) {
+      return res.status(404).json({ message: 'Property not found', status: 'error' });
+    }
+
+    const { RowID, ltg_type } = mstResults[0];
+
+    // Determine the details table based on type
+    let detailsTable;
+    switch (ltg_type) {
+      case 'Plots':
+        detailsTable = 'ltg_det_plots';
+        break;
+      case 'RowHouses':
+        detailsTable = 'ltg_det_row_houses';
+        break;
+      case 'Villaments':
+        detailsTable = 'ltg_det_villaments';
+        break;
+      case 'CommercialProperties':
+        detailsTable = 'ltg_det_commercial_properties';
+        break;
+      case 'PentHouses':
+        detailsTable = 'ltg_det_penthouses';
+        break;
+      case 'Apartment':
+        detailsTable = 'ltg_det'; // Specific for apartments
+        break;
+      default:
+        detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+    }
+
+    // Construct the query dynamically based on the determined details table
+    const detailQuery = `
+      SELECT 
+          mst.*,
+          det.*,
+          ref_agg.file_names,
+          ref_agg.attachments,
+          ref_agg.attachment_types
+      FROM 
+          ltg_mst mst
+      JOIN 
+          ${detailsTable} det ON mst.RowID = det.ltg_det_mstRowID
+      LEFT JOIN (
+          SELECT 
+              ltg_mstRowID,
+              GROUP_CONCAT(file_name SEPARATOR ', ') AS file_names,
+              GROUP_CONCAT(attachment SEPARATOR ', ') AS attachments,
+              GROUP_CONCAT(type SEPARATOR ', ') AS attachment_types
+          FROM 
+              ltg_ref
+          GROUP BY 
+              ltg_mstRowID
+      ) ref_agg ON mst.RowID = ref_agg.ltg_mstRowID
+      WHERE 
+          mst.RowID = ?;
+    `;
+
+    // Execute the detail query
+    const [detailResults] = await db.query(detailQuery, [RowID]);
+
+    if (detailResults.length > 0) {
+      const detailResult = detailResults[0];
+
+      if (detailResult.attachments) {
+        const attachmentsArray = detailResult.attachments.split(', ');
+        const attachmentTypesArray = detailResult.attachment_types.split(', ');
+
+        detailResult.attachments = attachmentsArray.map((attachment, index) => ({
+          file_name: detailResult.file_names.split(', ')[index],
+          attachment: attachment,
+          type: attachmentTypesArray[index]
+        }));
+
+        // Remove unnecessary properties
+        delete detailResult.attachment_types;
+        delete detailResult.file_names;
+      } else {
+        detailResult.attachments = [];
+      }
+
+      return res.status(200).json({ message: 'Property fetched successfully', status: 'success', data: detailResult });
+    } else {
+      return res.status(404).json({ message: 'Property details not found', status: 'error' });
+    }
+  } catch (error) {
+    console.error('Error fetching property details:', error);
+    return res.status(500).json({ message: 'Internal server error, Error fetching property details', status: 'error' });
+  }
+};
+
 
 // get SingleList Item by ID
 const getListItemId = async (req, res) => {
@@ -1258,6 +1362,7 @@ module.exports = {
   deleteListImage,
   updateListImage,
   getListItemId,
+  getPropertyItemId,
   getAllImages,
   getsinglePageImg,
   deleteImagesByRowID,
