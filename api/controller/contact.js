@@ -11,14 +11,14 @@ const setupMailTransporter = () => {
     });
 };
 
-const sendUserConfirmationEmail = async (firstName, email) => {
+const sendUserConfirmationEmail = async (name, email) => {
     const mailTransporter = setupMailTransporter();
 
     const mailDetails = {
         from: process.env.EMAIL_USER,
         to: email,
         subject: "Property Inquiry",
-        html: `<h3>Hello ${firstName},</h3>
+        html: `<h3>Hello ${name},</h3>
                <p>Thank you for your inquiry. We will respond shortly.</p>`,
     };
 
@@ -33,13 +33,14 @@ const sendAdminNotificationEmail = async (inquiryDetails) => {
         to: process.env.EMAIL_USER,
         subject: "New Property Inquiry",
         html: `<h3>New Inquiry Details:</h3>
-               <p><strong>First Name:</strong> ${inquiryDetails.firstName}</p>
-               <p><strong>Last Name:</strong> ${inquiryDetails.lastName}</p>
+               <p><strong>Name:</strong> ${inquiryDetails.name}</p>
                <p><strong>Email:</strong> ${inquiryDetails.email}</p>
                <p><strong>Phone:</strong> ${inquiryDetails.phone}</p>
                <p><strong>Message:</strong> ${inquiryDetails.message}</p>
+               <p><strong>Address:</strong> ${inquiryDetails.address}</p>
+               <p><strong>Purpose:</strong> ${inquiryDetails.purpose}</p>
                <p><strong>Listing Type:</strong> ${inquiryDetails.listingType}</p>
-               ${inquiryDetails.propertyId ? `<p><strong>Property ID:</strong> ${inquiryDetails.propertyId}</p>` : ''}
+               ${inquiryDetails.propertyDetails ? `<p><strong>Property Details:</strong> ${inquiryDetails.propertyDetails}</p>` : ''}
               `,
     };
 
@@ -67,15 +68,39 @@ const sendCityEnquiryNotificationEmail = async (inquiryDetails) => {
     await mailTransporter.sendMail(adminMailDetails);
 };
 
+const sendInquiryNotifyEmail = async (inquiryDetails) => {
+    const mailTransporter = setupMailTransporter();
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: process.env.EMAIL_USER,
+        subject: "Property Inquiry",
+        html: `
+          <h3>You have received a new property inquiry:</h3>
+          <p><strong>Name:</strong> ${inquiryDetails.name}</p>
+          <p><strong>Number:</strong> ${inquiryDetails.number}</p>
+          <p><strong>Email:</strong> ${inquiryDetails.email}</p>
+          <p><strong>User Details:</strong> ${inquiryDetails.userId}</p>
+          <p><strong>Purpose:</strong> ${inquiryDetails.purpose}</p>
+          <p><strong>Address:</strong> ${inquiryDetails.address}</p>
+          <p><strong>Message:</strong> ${inquiryDetails.message}</p>
+          <p><strong>Property Details:</strong> ${inquiryDetails.propertyDetails}</p>
+          <p>Please get back to them shortly. Thank you.</p>
+        `,
+    };
+
+    await mailTransporter.sendMail(mailOptions);
+};
+
 const submitEnquiryForm = async (req, res) => {
-    const { firstName, lastName, email, phone, message, listingType, propertyId } = req.body;
+    const { name, email, phone, message, listingType, userId, propertyId, propertyDetails, address, purpose } = req.body;
 
     try {
-        await db.query('INSERT INTO inquiries (first_name, last_name, email, phone, message, listing_type, property_id) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [firstName, lastName, email, phone, message, listingType, propertyId]);
+        await db.query('INSERT INTO inquiries (name, email, phone, message, listing_type, user_id, property_id, address, purpose) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+            [name, email, phone, message, listingType, userId, propertyId, address, purpose]);
 
-        await sendUserConfirmationEmail(firstName, email);
-        await sendAdminNotificationEmail({ firstName, lastName, email, phone, message, listingType, propertyId });
+        await sendUserConfirmationEmail(name, email);
+        await sendAdminNotificationEmail({ name, email, phone, message, listingType, userId, propertyDetails, address, purpose });
 
         return res.status(200).json({ message: "Inquiry submitted successfully" });
     } catch (error) {
@@ -99,11 +124,11 @@ const submitContactForm = async (req, res) => {
 };
 
 const submitCityEnquiryForm = async (req, res) => {
-    const { inquiryType, namePrefix, name, email, phone, message, maxPrice, minSize, listingType, propertyId } = req.body;
+    const { inquiryType, namePrefix, name, email, phone, message, maxPrice, minSize, listingType } = req.body;
 
     try {
         await sendUserConfirmationEmail(name, email);
-        await sendCityEnquiryNotificationEmail({ inquiryType, name, email, phone, message, maxPrice, minSize, listingType, propertyId });
+        await sendCityEnquiryNotificationEmail({ inquiryType, name, email, phone, message, maxPrice, minSize, listingType });
 
         return res.status(200).json({ message: "Inquiry submitted successfully" });
     } catch (error) {

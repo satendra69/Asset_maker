@@ -304,8 +304,6 @@ const transformData = (propertyData, propertyImages) => {
   if (!propertyData) return {};
   if (!propertyImages || !Array.isArray(propertyImages)) propertyImages = [];
 
-  console.log("propertyData", propertyData);
-
   const mapCommonFields = (data) => ({
     id: data.RowID,
     type: data.ltg_type,

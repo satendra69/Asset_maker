@@ -16,7 +16,6 @@ const EnquiryChoose = () => {
     phone: "",
     message: "",
     listingType: "",
-    propertyId: "",
   });
 
   const [successMessage, setSuccessMessage] = useState("");
@@ -42,7 +41,6 @@ const EnquiryChoose = () => {
         phone: "",
         message: "",
         listingType: "",
-        propertyId: "",
       });
     } catch (error) {
       console.error("Error submitting form:", error);

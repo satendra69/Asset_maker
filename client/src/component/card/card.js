@@ -41,7 +41,7 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const sendMessage = async (data) => {
     try {
-      const res = await httpCommon.post(`/message/add`, data);
+      const res = await httpCommon.post(`/contact/enquiry`, data);
       return res.data;
     } catch (error) {
       toast.error("Internal error at Sending Message");
@@ -51,10 +51,10 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const mutation = useMutation({
     mutationFn: sendMessage,
-    onSuccess: (success) => {
-      toast.success(success);
+    onSuccess: (data) => {
+      toast.success(data?.message);
       queryClient.invalidateQueries({ queryKey: "messages" });
-      setOpen(false);
+      handleClose();
     },
     onError: (error) => {
       console.log(error);
@@ -122,10 +122,11 @@ function Card({ key, item, onPropertyRemoved }) {
     if (!attachments) {
       return [];
     }
-    return attachments?.filter(att => att.type === "Main");
+    return attachments.filter(att => att.type === "Main");
   };
 
-  const imageAttachments = getImageAttachments(item.attachments);
+  const imageAttachments = item ? getImageAttachments(item.attachments) : [];
+
   const priceMapping = {
     Plots: item.ltg_det_plot_sale_price,
     Villas: item.ltg_det_sale_price,
@@ -160,6 +161,18 @@ function Card({ key, item, onPropertyRemoved }) {
   };
 
   const bathrooms = bathroomMapping[item.ltg_type] || item.ltg_det_pmts_bth_rom;
+
+  const addressMapping = {
+    Plots: item?.ltg_det_plot_address,
+    Villas: item?.ltg_det_address,
+    Apartments: item?.ltg_det_address,
+    RowHouses: item?.ltg_det_row_house_address,
+    Villaments: item?.ltg_det_villaments_address,
+    PentHouses: item?.ltg_det_penthouses_address,
+    CommercialProperties: item?.ltg_det_comm_prop_address,
+  };
+
+  const address = item ? addressMapping[item.ltg_type] || item.ltg_det_address : "Address not available";
 
   function formatIndianNumber(num) {
     let str = num.toString();
@@ -206,21 +219,7 @@ function Card({ key, item, onPropertyRemoved }) {
           </h2>
           <p className="cardAddress">
             <img src="/pin.png" alt="" />
-            <span>
-              {item.ltg_type === "Plots"
-                ? item.ltg_det_plot_address
-                : ["Villa", "Apartment"].includes(item.ltg_type)
-                  ? item.ltg_det_address
-                  : item.ltg_type === "RowHouses"
-                    ? item.ltg_det_row_house_address
-                    : item.ltg_type === "CommercialProperties"
-                      ? item.ltg_det_comm_prop_address
-                      : item.ltg_type === "Villaments"
-                        ? item.ltg_det_villaments_address
-                        : item.ltg_type === "PentHouses"
-                          ? item.ltg_det_penthouses_address
-                          : item.ltg_det_address}
-            </span>
+            <span>{address}</span>
           </p>
           <p className="price">₹{formattedPrice}</p>
           <div className="bottom">

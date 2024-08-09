@@ -263,13 +263,9 @@ function SinglePage() {
     setOpen(false);
   };
 
-  // get properties Listing data by id
   const getSinglepropertiesData = async (RowID, TypeGet) => {
     try {
-      //const response = await httpCommon.get(`/list/${RowID}`);
       const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
-      // console.log("response____getLabel", response);
-
       if (response.data.status === "success") {
         setsinglePageData(response.data.data);
       }
@@ -277,8 +273,6 @@ function SinglePage() {
       console.error("Error fetching data:", error);
     }
   };
-
-  console.log(singlePageData);
 
   const singlePageImg = async (RowID) => {
     try {
@@ -305,19 +299,12 @@ function SinglePage() {
   };
 
   function formatIndianNumber(num) {
-    // Convert the number to a string
     let str = num.toString();
-    // Split the number into integer and decimal parts (if any)
     let [intPart, decimalPart] = str.split('.');
-
-    // Format the integer part using a regular expression
     intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
-
-    // Combine the formatted integer part and the decimal part (if any)
     return decimalPart ? `${intPart}.${decimalPart}` : intPart;
   }
 
-  // console.log(singlePageImgData)
   return (
     <Container className={"py-20"}>
       <DialogProperty
@@ -534,7 +521,7 @@ function SinglePage() {
 
       {/* InquiryForm */}
       <section className="mt-10">
-        <InquiryForm propertyId={RowID} listingType={TypeGet} />
+        <InquiryForm propertyId={RowID} listingType={TypeGet} item={singlePageData} />
       </section>
       <Social />
     </Container>
