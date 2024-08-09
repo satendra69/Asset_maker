@@ -11,6 +11,8 @@ var cityRouter = require("./routes/city");
 var messageRouter = require("./routes/message");
 var categoriesRouter = require("./routes/categories");
 var regionRoutes = require("./routes/regions");
+var contactRoutes = require("./routes/contactRoutes");
+// var savedListRoutes = require("./routes/savedListRoutes");
 var cors = require("cors");
 const db = require("./connect");
 
@@ -52,6 +54,8 @@ app.use("/api/city", cityRouter);
 app.use("/api/message", messageRouter);
 app.use("/api/categories", categoriesRouter);
 app.use('/api/regions', regionRoutes);
+app.use('/api/contact', contactRoutes);
+// app.use('/api/saved-list', savedListRoutes);
 
 
 // Consolidated error handler
@@ -71,10 +75,9 @@ app.use(function (err, req, res, next) {
 // Start server
 const PORT = 8000;
 
-app.listen(PORT || process.env.PORT, async () => {
-  console.log(
-    `API server running at http://localhost:${process.env.PORT || PORT}`
-  );
+app.listen(PORT, async () => {
+  console.log(`API server running at http://localhost:${PORT}`);
+
   try {
     await db.query("SELECT 1");
     console.log("Connected to MySQL database");

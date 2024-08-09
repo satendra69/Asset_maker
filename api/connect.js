@@ -1,4 +1,4 @@
-const mysql = require("mysql2");
+const mysql = require("mysql2/promise");
 
 const db = mysql.createPool({
   host: "localhost",
@@ -11,12 +11,13 @@ const db = mysql.createPool({
   connectTimeout: 10000,
 });
 
-db.getConnection((err, connection) => {
-  if (err) {
-    console.error("Error getting database connection:");
-  } else {
-    connection.release();
-  }
-});
 
-module.exports = db.promise();
+db.getConnection()
+  .then((connection) => {
+    connection.release();
+  })
+  .catch((err) => {
+    console.error("Error getting database connection:", err);
+  });
+
+module.exports = db;

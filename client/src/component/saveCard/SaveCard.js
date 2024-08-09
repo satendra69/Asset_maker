@@ -1,17 +1,28 @@
 import { Link } from "react-router-dom";
-import "./savecard.scss";
 import { MdDelete } from "react-icons/md";
-
 import { useState } from "react";
 import DialogProperty from "../card/DialogProperty";
 import { Tooltip } from "@mui/material";
+import axios from "axios";
 
 function SaveCard({ item }) {
-  console.log(item, "hii");
   const [open, setOpen] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleDelete = async () => {
+    try {
+      await axios.delete('/api/saved-list/remove', {
+        data: { userId: item.userId, propertyId: item.id }
+      });
+      // Optionally, remove the deleted item from UI or refetch saved properties
+    } catch (error) {
+      console.error("Failed to remove property from saved list", error);
+    }
+  };
+
   return (
     <>
       <DialogProperty
@@ -20,7 +31,7 @@ function SaveCard({ item }) {
         item={item}
         handleClose={handleClose}
       />
-      <div className="cardProperty flex gap-7">
+      <div className="flex cardProperty gap-7">
         <Link to={`/${item.id}`} className="imageContainer">
           <img src={item.img} alt="" />
         </Link>
@@ -51,7 +62,7 @@ function SaveCard({ item }) {
                 </div>
               </Tooltip>
               <Tooltip title="Delete">
-                <div className="icon" onClick={() => setOpen(true)}>
+                <div className="icon" onClick={handleDelete}>
                   <MdDelete size={22} className="text-red-600" />
                 </div>
               </Tooltip>
@@ -62,4 +73,5 @@ function SaveCard({ item }) {
     </>
   );
 }
+
 export default SaveCard;

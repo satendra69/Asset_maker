@@ -64,7 +64,7 @@ const AdminLayout = () => {
 
   const navigate = useNavigate();
   useEffect(() => {
-    if (!currentUser) navigate("/");
+    if (!currentUser || currentUser.admin !== 1) navigate("/");
   }, [currentUser]);
 
   return (

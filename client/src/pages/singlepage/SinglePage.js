@@ -8,6 +8,7 @@ import "./singlePage.scss";
 import Slider from "../../component/slider/slider";
 import Map from "../../component/map/map";
 import Container from "../../component/Container";
+import InquiryForm from './InquiryForm';
 import DialogProperty from "../../component/card/DialogProperty";
 import Social from "../../component/Social";
 import PropertyDetails from "../../component/propertyDetail/PropertyDetail";
@@ -529,6 +530,11 @@ function SinglePage() {
       {/* Mortgage Calculator section */}
       <section className="mt-10">
         <MortgageCalculator />
+      </section>
+
+      {/* InquiryForm */}
+      <section className="mt-10">
+        <InquiryForm propertyId={RowID} listingType={TypeGet} />
       </section>
       <Social />
     </Container>
