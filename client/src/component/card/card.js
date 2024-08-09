@@ -1,10 +1,9 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState } from "react";
 import DialogProperty from "./DialogProperty";
 import { useMutation } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
-import axios from "axios";
 import httpCommon from "../../http-common";
 import { queryClient } from "../..";
 import "./card.scss";
@@ -12,6 +11,7 @@ import "./card.scss";
 function Card({ key, item }) {
   const { currentUser } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -19,10 +19,7 @@ function Card({ key, item }) {
 
   const sendMessage = async (data) => {
     try {
-      const res = await axios.post(
-        `${process.env.REACT_APP_URL}/message/add`,
-        data
-      );
+      const res = await httpCommon.post(`/message/add`, data);
       return res.data;
     } catch (error) {
       toast.error("Internal error at Sending Message");
@@ -50,7 +47,7 @@ function Card({ key, item }) {
       return;
     }
     try {
-      const res = await axios.post(`${process.env.REACT_APP_URL}/saved-list/add`, {
+      const res = await httpCommon.post(`/saved-list/add`, {
         userId: currentUser.id,
         propertyId: item.RowID,
       });
