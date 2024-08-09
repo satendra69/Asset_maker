@@ -7,7 +7,6 @@ const {
 
 const router = express.Router();
 
-
 // Get saved properties for a user
 router.get('/:userId', getSavedProperties);
 

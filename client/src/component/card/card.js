@@ -1,21 +1,43 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import DialogProperty from "./DialogProperty";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
 import httpCommon from "../../http-common";
 import { queryClient } from "../..";
 import "./card.scss";
 
-function Card({ key, item }) {
+function Card({ key, item, onPropertyRemoved }) {
   const { currentUser } = useSelector((state) => state.user);
   const [open, setOpen] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const navigate = useNavigate();
+
+  const fetchSavedProperties = async () => {
+    if (!currentUser) return [];
+    const res = await httpCommon.get(`/saved-list/${currentUser.id}`);
+    return res.data;
+  };
+
+  const { data: savedProperties } = useQuery({
+    queryKey: ["savedProperties", currentUser?.id],
+    queryFn: fetchSavedProperties,
+    enabled: !!currentUser,
+  });
+
+  useEffect(() => {
+    if (savedProperties) {
+      setIsSaved(savedProperties.some((property) => property.property_id === item.RowID));
+    }
+  }, [savedProperties, item.RowID]);
 
   const handleClose = () => {
     setOpen(false);
   };
-  const navigate = useNavigate();
 
   const sendMessage = async (data) => {
     try {
@@ -40,7 +62,6 @@ function Card({ key, item }) {
     },
   });
 
-  // Function to send a save request
   const saveToSavedList = async () => {
     if (!currentUser) {
       navigate("/login");
@@ -52,20 +73,48 @@ function Card({ key, item }) {
         propertyId: item.RowID,
       });
       toast.success(res.data.message);
+      setIsSaved(true);
     } catch (error) {
       console.error(error);
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          toast.error("User ID and Property ID are required");
-        } else if (status === 409) {
-          toast.error("Property is already in the saved list");
-        } else {
-          toast.error(data.message || "Internal error at Saving Property");
-        }
-      } else {
-        toast.error("Internal error at Saving Property");
+      handleError(error);
+    }
+  };
+
+  const removeFromSavedList = async () => {
+    if (!currentUser) {
+      navigate("/login");
+      return;
+    }
+    try {
+      await httpCommon.delete(`/saved-list/remove`, {
+        data: {
+          userId: currentUser.id,
+          propertyId: item.RowID,
+        },
+      });
+      toast.success("Property removed from saved list");
+      setIsSaved(false);
+      if (onPropertyRemoved) {
+        onPropertyRemoved();
       }
+    } catch (error) {
+      console.error(error);
+      handleError(error);
+    }
+  };
+
+  const handleError = (error) => {
+    if (error.response) {
+      const { status, data } = error.response;
+      if (status === 400) {
+        toast.error("User ID and Property ID are required");
+      } else if (status === 404) {
+        toast.error("Property not found in saved list");
+      } else {
+        toast.error(data.message || "Internal error");
+      }
+    } else {
+      toast.error("Internal error");
     }
   };
 
@@ -76,10 +125,7 @@ function Card({ key, item }) {
     return attachments?.filter(att => att.type === "Main");
   };
 
-  // Filter attachments
   const imageAttachments = getImageAttachments(item.attachments);
-  console.log(imageAttachments)
-
   const priceMapping = {
     Plots: item.ltg_det_plot_sale_price,
     Villas: item.ltg_det_sale_price,
@@ -91,7 +137,6 @@ function Card({ key, item }) {
   };
 
   const price = priceMapping[item.ltg_type] || item.ltg_det_sale_price;
-  //const formattedPrice = price.toLocaleString('en-IN');
   const formattedPrice = formatIndianNumber(price != null ? price.toLocaleString('en-IN') : '0');
 
   const bedroomMapping = {
@@ -101,10 +146,8 @@ function Card({ key, item }) {
     RowHouses: item.ltg_det_row_house_pmts_bed_rooms,
     Villaments: item.ltg_det_villaments_pmts_bed_rooms,
     PentHouses: item.ltg_det_penthouses_pmts_bed_rooms,
-
   };
 
-  // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
   const bedrooms = bedroomMapping[item.ltg_type] || item.ltg_det_pmts_bed_rom;
 
   const bathroomMapping = {
@@ -116,19 +159,12 @@ function Card({ key, item }) {
     PentHouses: item.ltg_det_penthouses_pmts_bath_rooms,
   };
 
-  // Fallback to item.ltg_det_pmts_bed_rom if the type doesn't match any key in the mapping
   const bathrooms = bathroomMapping[item.ltg_type] || item.ltg_det_pmts_bth_rom;
 
   function formatIndianNumber(num) {
-    // Convert the number to a string
     let str = num.toString();
-    // Split the number into integer and decimal parts (if any)
     let [intPart, decimalPart] = str.split('.');
-
-    // Format the integer part using a regular expression
     intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
-
-    // Combine the formatted integer part and the decimal part (if any)
     return decimalPart ? `${intPart}.${decimalPart}` : intPart;
   }
 
@@ -145,7 +181,6 @@ function Card({ key, item }) {
 
       <div className="cardProperty">
         <div className="cardImageContainer">
-          {/* <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}> */}
           <Link
             to={`/Property/details`}
             state={{ id: item.RowID, ltg_type: item.ltg_type }}
@@ -162,7 +197,6 @@ function Card({ key, item }) {
         </div>
         <div className="cardTextContainer">
           <h2 className="cardTitle">
-            {/* <Link to={`/Property/property/${item.RowID}/${item.ltg_type}`}> */}
             <Link
               to={`/Property/details`}
               state={{ id: item.RowID, ltg_type: item.ltg_type }}
@@ -172,7 +206,6 @@ function Card({ key, item }) {
           </h2>
           <p className="cardAddress">
             <img src="/pin.png" alt="" />
-
             <span>
               {item.ltg_type === "Plots"
                 ? item.ltg_det_plot_address
@@ -191,9 +224,10 @@ function Card({ key, item }) {
           </p>
           <p className="price">₹{formattedPrice}</p>
           <div className="bottom">
-            {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ?
-              <span></span> :
-              (<>
+            {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (
+              <span></span>
+            ) : (
+              <>
                 <div className="features">
                   <div className="feature">
                     <img src="/bed.png" alt="" />
@@ -205,13 +239,13 @@ function Card({ key, item }) {
                   </div>
                 </div>
               </>
-              )}
+            )}
             <div className="icons">
-              <div className="icon" onClick={saveToSavedList}>
-                <img src="/save.png" alt="" />
+              <div className="icon" onClick={isSaved ? removeFromSavedList : saveToSavedList}>
+                {isSaved ? <FaBookmark /> : <FaRegBookmark />}
               </div>
               <div className="icon" onClick={() => setOpen(true)}>
-                <img src="/chat.png" alt="" />
+                <IoChatboxEllipsesOutline />
               </div>
             </div>
           </div>

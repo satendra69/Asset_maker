@@ -59,39 +59,8 @@ const removeFromSavedList = async (req, res) => {
     }
 };
 
-// Function to check if a property is saved for a user
-const checkSavedPropertyQQ = async (req, res) => {
-    const { userId, propertyId } = req.query;
-    console.log("User ID:", userId, "Property ID:", propertyId);
-
-    if (!userId || !propertyId) {
-        return res.status(400).json({ message: 'User ID and Property ID are required' });
-    }
-
-    try {
-        const query = `
-            SELECT EXISTS(
-                SELECT 1
-                FROM saved_properties
-                WHERE user_id = ? AND property_id = ?
-            ) AS isSaved
-        `;
-        console.log(query, [userId, propertyId]);
-
-        const [[{ isSaved }]] = await db.execute(query, [userId, propertyId]);
-        console.log(JSON.stringify({ isSaved: !!isSaved }));
-        console.log(isSaved);
-
-        return res.json({ isSaved: !!isSaved });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: 'Internal server error' });
-    }
-};
-
 module.exports = {
     getSavedProperties,
     addToSavedList,
     removeFromSavedList,
-    checkSavedPropertyQQ,
 };
