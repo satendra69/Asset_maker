@@ -3,7 +3,7 @@ const {
     getSavedProperties,
     addToSavedList,
     removeFromSavedList,
-} = require('../controller/savedListController');
+} = require('../controller/savedList');
 
 const router = express.Router();
 
