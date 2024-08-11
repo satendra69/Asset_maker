@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { FaBars, FaHome, FaUser, FaFileAlt, FaListAlt, FaCity, FaBlog, FaBlogger, FaMicroblog, FaTags, FaMapMarkerAlt } from "react-icons/fa";
+import { FaBars, FaHome, FaUser, FaFileAlt, FaListAlt, FaCity, FaBlog, FaBlogger, FaMicroblog, FaTags, FaMapMarkerAlt, FaQuoteLeft } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
 import { BiSearch } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
@@ -52,6 +52,11 @@ const SideBar = ({ children }) => {
             path: "/admin/property/regions",
             name: "Regions",
             icon: <FaMapMarkerAlt size={24} />,
+          },
+          {
+            path: "/admin/property/testimonials",
+            name: "Testimonials",
+            icon: <FaQuoteLeft size={24} />,
           },
         ],
       },
