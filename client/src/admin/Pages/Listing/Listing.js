@@ -30,7 +30,8 @@ function NewListingPage({ action }) {
   const [listingType, setListingType] = useState("");
   const [featured, setFeatured] = useState(false);
   const [selectedOwner, setSelectedOwner] = useState("");
-
+  const [regions, setRegions] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState("");
   const [selectedRegions, setSelectedRegions] = useState("");
   const [CustomLabel, setCustomLabel] = useState([]);
@@ -45,7 +46,6 @@ function NewListingPage({ action }) {
 
   /* pdf start*/
   const createPDFBtn = async () => {
-
     const listingData = {
       Apartments: ApartmentData,
       Villas: VillaData,
@@ -66,20 +66,32 @@ function NewListingPage({ action }) {
       CustomLabel: JSON.stringify(CustomLabel),
       ListingData: listingData[listingType],
     };
-
     setCreatePDFData({ createPDFInsert });
   };
 
   /* pdf end*/
 
-  // Fetch property details if in update mode
   useEffect(() => {
-    if (listingId) {
-      fetchProperty(listingId);
-    }
+    const fetchRegionsAndCategories = async () => {
+      try {
+        const regionsResponse = await httpCommon.get('/regions');
+        const categoriesResponse = await httpCommon.get('/categories');
+
+        setRegions(regionsResponse.data);
+        setCategories(categoriesResponse.data);
+
+        if (listingId) {
+          // Pass the fetched data directly to fetchProperty
+          fetchProperty(listingId, regionsResponse.data, categoriesResponse.data);
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchRegionsAndCategories();
   }, [listingId]);
 
-  const fetchProperty = async (listingId) => {
+  const fetchProperty = async (listingId, regionsData, categoriesData) => {
     try {
       const response = await httpCommon.get(`/list/${listingId}`);
       const listingData = response.data.data[0];
@@ -88,8 +100,17 @@ function NewListingPage({ action }) {
       setListingType(listingData.ltg_type);
       setFeatured(listingData.ltg_mark_as_featured === "true");
       setSelectedOwner(listingData.ltg_owner);
-      setSelectedCategories(listingData.ltg_categories);
-      setSelectedRegions(listingData.ltg_regions);
+
+      const region = regionsData.find(region => region.name === listingData.ltg_regions);
+      const category = categoriesData.find(category => category.name === listingData.ltg_categories);
+
+      if (region) {
+        setSelectedRegions(region.name);
+      }
+      if (category) {
+        setSelectedCategories(category.name);
+      }
+
       const cleanedLabels = listingData.ltg_labels.replace(/^"|"$/g, '');
       setCustomLabel(JSON.parse(cleanedLabels));
     } catch (error) {
@@ -107,7 +128,6 @@ function NewListingPage({ action }) {
     setSelectedRegions(event.target.value);
   };
 
-  // Function to handle Category radio button change
   const handleCategoryChange = (event) => {
     setSelectedCategories(event.target.value);
   };
@@ -450,66 +470,21 @@ function NewListingPage({ action }) {
             <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Regions</h2>
             <div className="flex items-center mt-4">
-              {/* Radio buttons for regions */}
               <div className="flex flex-wrap items-center">
-
-                {/* Bengaluru */}
-                <label
-                  htmlFor="bengaluru"
-                  className="inline-flex items-center mb-2 mr-6"
-                >
-                  <input
-                    type="radio"
-                    id="bengaluru"
-                    name="region"
-                    value="bengaluru"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
-                    onChange={handleRegionChange}
-                    checked={selectedRegions === "bengaluru"}
-                  />
-                  <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Bengaluru
-                  </span>
-                </label>
-
-                {/* Hyderabad */}
-                <label
-                  htmlFor="hyderabad"
-                  className="inline-flex items-center mb-2 mr-6"
-                >
-                  <input
-                    type="radio"
-                    id="hyderabad"
-                    name="region"
-                    value="hyderabad"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
-                    onChange={handleRegionChange}
-                    checked={selectedRegions === "hyderabad"}
-                  />
-                  <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Hyderabad
-                  </span>
-                </label>
-
-                {/* Tirupati */}
-                <label
-                  htmlFor="tirupati"
-                  className="inline-flex items-center mb-2 mr-6"
-                >
-                  <input
-                    type="radio"
-                    id="tirupati"
-                    name="region"
-                    value="tirupati"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
-                    onChange={handleRegionChange}
-                    checked={selectedRegions === "tirupati"}
-                  />
-                  <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Tirupati
-                  </span>
-                </label>
-
+                {regions.map((region) => (
+                  <label key={region.id} htmlFor={region.name} className="inline-flex items-center mb-2 mr-6">
+                    <input
+                      type="radio"
+                      id={region.name}
+                      name="region"
+                      value={region.name}
+                      className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                      onChange={handleRegionChange}
+                      checked={selectedRegions === region.name}
+                    />
+                    <span className="ml-2 text-sm leading-6 text-gray-900">{region.name}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
@@ -519,42 +494,26 @@ function NewListingPage({ action }) {
             <hr className="my-8 border-gray-400" />
             <h2 className="text-xl font-semibold">Categories</h2>
             <div className="flex items-center mt-4">
-              {/* Radio buttons for categories */}
               <div className="flex flex-wrap items-center">
-                <label htmlFor="buy" className="inline-flex items-center mb-2 mr-6">
-                  <input
-                    type="radio"
-                    id="buy"
-                    name="category"
-                    value="buy"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
-                    onChange={handleCategoryChange}
-                    checked={selectedCategories === "buy"}
-                  />
-                  <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Buy
-                  </span>
-                </label>
-                <label htmlFor="rent" className="inline-flex items-center mb-2">
-                  <input
-                    type="radio"
-                    id="rent"
-                    name="category"
-                    value="rent"
-                    className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
-                    onChange={handleCategoryChange}
-                    checked={selectedCategories === "rent"}
-                  />
-                  <span className="ml-2 text-sm leading-6 text-gray-900">
-                    Rent
-                  </span>
-                </label>
+                {categories.map((category) => (
+                  <label key={category.id} htmlFor={category.name} className="inline-flex items-center mb-2 mr-6">
+                    <input
+                      type="radio"
+                      id={category.name}
+                      name="category"
+                      value={category.name}
+                      className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-radio"
+                      onChange={handleCategoryChange}
+                      checked={selectedCategories === category.name}
+                    />
+                    <span className="ml-2 text-sm leading-6 text-gray-900">{category.name}</span>
+                  </label>
+                ))}
               </div>
             </div>
           </div>
 
           {/* Labels Section */}
-          {/* <CustomLabel onRowClick={handleRowLabe} /> */}
           <AddCustomLabel
             initialLabels={CustomLabel}
             onRowClick={(newLabels) => setCustomLabel(newLabels)}
