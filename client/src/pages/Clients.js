@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import { ArrowBackIos, ArrowForwardIos } from "@mui/icons-material";
-import httpCommon from "../http-common"; // Assuming you have http-common setup for API calls
+import httpCommon from "../http-common";
 import Container from "../component/Container";
 import Social from "../component/Social";
+import { FaStar } from "react-icons/fa"; // Import star icon for ratings
 
 const responsive = {
   superLargeDesktop: { breakpoint: { max: 4000, min: 3000 }, items: 2 },
@@ -21,9 +22,12 @@ const CustomRightArrow = ({ onClick }) => (
       position: "absolute",
       zIndex: 1,
       right: 0,
+      background: "transparent",
+      border: "none",
+      cursor: "pointer",
     }}
   >
-    <ArrowForwardIos fontSize="large" />
+    <ArrowForwardIos fontSize="large" style={{ color: "#007BFF" }} />
   </button>
 );
 
@@ -35,9 +39,12 @@ const CustomLeftArrow = ({ onClick }) => (
       position: "absolute",
       zIndex: 1,
       left: 0,
+      background: "transparent",
+      border: "none",
+      cursor: "pointer",
     }}
   >
-    <ArrowBackIos fontSize="large" />
+    <ArrowBackIos fontSize="large" style={{ color: "#007BFF" }} />
   </button>
 );
 
@@ -60,7 +67,7 @@ function Clients() {
   return (
     <section className="clients bg-[#F0F9FF]">
       <Container className="py-20 space-y-10">
-        <h2 className="text-4xl text-center">Our Clients Say</h2>
+        <h2 className="text-4xl font-bold text-center">Our Clients Say</h2>
         <Carousel
           swipeable={true}
           draggable={true}
@@ -80,12 +87,12 @@ function Clients() {
           customLeftArrow={<CustomLeftArrow />}
         >
           {testimonials.map((item) => (
-            <div className="ml-5 space-y-5 card" key={item.id}>
-              <div className="flex gap-3 item">
+            <div className="p-5 ml-5 space-y-5 bg-white rounded-lg shadow-md card" key={item.id}>
+              <div className="flex items-center gap-3">
                 <div className="rounded-full border-2 border-blue-600 p-1 overflow-hidden md:w-[64px] md:h-[64px] w-[40px] h-[40px]">
                   <img
                     alt="profile"
-                    className="w-full h-full border border-black rounded-full"
+                    className="object-cover w-full h-full border border-black rounded-full"
                     src={
                       item.photo
                         ? `data:image/jpeg;base64,${item.photo}`
@@ -94,11 +101,16 @@ function Clients() {
                   />
                 </div>
                 <div>
-                  <h2>{item.name}</h2>
+                  <h2 className="text-lg font-semibold">{item.name}</h2>
                   <p className="text-gray-500">{item.designation}</p>
+                  <div className="flex items-center">
+                    {[...Array(item.rating)].map((_, index) => (
+                      <FaStar key={index} className="text-yellow-500" />
+                    ))}
+                  </div>
                 </div>
               </div>
-              <p className="px-10">{item.message}</p>
+              <p className="px-1 text-gray-700">{item.message}</p>
             </div>
           ))}
         </Carousel>
