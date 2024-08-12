@@ -218,6 +218,7 @@ function Card({ key, item, onPropertyRemoved }) {
       return "N/A";
     }
 
+    
     if (numericPrice < 1000) {
       return numericPrice;
     } else if (numericPrice < 100000) {
