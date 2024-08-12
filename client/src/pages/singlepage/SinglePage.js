@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FaChevronCircleDown } from "react-icons/fa";
 import httpCommon from "../../http-common";
 import Slider from "../../component/slider/slider";
 import Container from "../../component/Container";
@@ -8,7 +9,6 @@ import DialogProperty from "../../component/card/DialogProperty";
 import Social from "../../component/Social";
 import PropertyDetails from "../../component/propertyDetail/PropertyDetail";
 import MortgageCalculator from "./MortgageCalculator";
-import { FaChevronCircleDown } from "react-icons/fa";
 
 function SinglePage() {
   const location = useLocation();
@@ -114,40 +114,45 @@ function SinglePage() {
       </div>
 
       {/* Details Section */}
-      <div className="mb-10">
-        <div className="mb-5">
-          {singlePageData?.[0]?.ltg_title && (
-            <h1 className="text-3xl font-bold">{singlePageData[0].ltg_title}</h1>
-          )}
-          <div className="flex items-center mt-2 text-gray-600">
-            <img src="/pin.png" alt="" className="w-5 h-5 mr-2" />
-            {singlePageData?.[0]?.ltg_det_plot_address || singlePageData?.[0]?.ltg_det_address}
-          </div>
-          <div className="mt-2 text-xl font-semibold">
-            ₹
-            {singlePageData && singlePageData[0]?.ltg_type && (
-              <span>
-                {singlePageData[0].ltg_type === 'Plots' && formatPrice(singlePageData[0].ltg_det_plot_sale_price)}
-                {singlePageData[0].ltg_type === 'Villas' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                {singlePageData[0].ltg_type === 'Apartments' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                {singlePageData[0].ltg_type === 'RowHouses' && formatPrice(singlePageData[0].ltg_det_row_house_sale_price)}
-                {singlePageData[0].ltg_type === 'CommercialProperties' && formatPrice(singlePageData[0].ltg_det_comm_prop_sale_price)}
-                {singlePageData[0].ltg_type === 'Villaments' && formatPrice(singlePageData[0].ltg_det_villaments_sale_price)}
-                {singlePageData[0].ltg_type === 'PentHouses' && formatPrice(singlePageData[0].ltg_det_penthouses_sale_price)}
-              </span>
+      <div className="p-4 mb-10">
+        <div className="flex items-start justify-between mb-5">
+          <div>
+            {singlePageData?.[0]?.ltg_title && (
+              <h1 className="text-3xl font-bold">{singlePageData[0].ltg_title}</h1>
             )}
+            <div className="flex items-center mt-2 text-gray-600">
+              <img src="/pin.png" alt="Location Pin" className="w-5 h-5 mr-2" />
+              {singlePageData?.[0]?.ltg_det_plot_address || singlePageData?.[0]?.ltg_det_address}
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="mt-2 text-xl font-semibold">
+              ₹
+              {singlePageData && singlePageData[0]?.ltg_type && (
+                <span>
+                  {singlePageData[0].ltg_type === 'Plots' && formatPrice(singlePageData[0].ltg_det_plot_sale_price)}
+                  {singlePageData[0].ltg_type === 'Villas' && formatPrice(singlePageData[0].ltg_det_sale_price)}
+                  {singlePageData[0].ltg_type === 'Apartments' && formatPrice(singlePageData[0].ltg_det_sale_price)}
+                  {singlePageData[0].ltg_type === 'RowHouses' && formatPrice(singlePageData[0].ltg_det_row_house_sale_price)}
+                  {singlePageData[0].ltg_type === 'CommercialProperties' && formatPrice(singlePageData[0].ltg_det_comm_prop_sale_price)}
+                  {singlePageData[0].ltg_type === 'Villaments' && formatPrice(singlePageData[0].ltg_det_villaments_sale_price)}
+                  {singlePageData[0].ltg_type === 'PentHouses' && formatPrice(singlePageData[0].ltg_det_penthouses_sale_price)}
+                </span>
+              )}
+            </div>
+            <button className="flex items-center gap-2 mt-2 text-blue-600" onClick={scrollToCalculator}>
+              Est. Mortgage Calculator <FaChevronCircleDown />
+            </button>
           </div>
         </div>
-        <button className="flex items-center gap-2 mb-5 text-blue-600" onClick={scrollToCalculator}>
-          Est. Mortgage Calculator <FaChevronCircleDown />
-        </button>
       </div>
+
 
       {/* Property Details Section */}
       <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />
 
       {/* Mortgage Calculator Section */}
-      <section className="mt-10">
+      <section id="mortgage-calculator" className="mt-10">
         <MortgageCalculator />
       </section>
 

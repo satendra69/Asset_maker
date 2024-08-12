@@ -76,7 +76,7 @@ const MortgageCalculator = () => {
     }, [totalAmount, downPayment, interestRate, amortizationPeriod, paymentPeriod]);
 
     return (
-        <div id="mortgage-calculator" className="flex p-4 mt-4 border rounded-lg shadow-lg">
+        <div className="flex p-4 mt-4 border rounded-lg shadow-lg">
             <div className="w-1/2 pr-4">
                 <h2 className="mb-4 text-2xl font-bold">Mortgage Calculator</h2>
                 <label

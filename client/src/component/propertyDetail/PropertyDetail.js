@@ -45,8 +45,7 @@ import {
   LandscapeOutlined as PlotAreaIcon,
 } from "@mui/icons-material";
 import ImageModal from '../../admin/Pages/Listing/Component/ImageModal';
-import { SquareFoot, Construction } from "@mui/icons-material";
-import { FaRupeeSign, FaBath, FaBed, FaParking } from "react-icons/fa";
+import Map from "../map/GoogleMap";
 
 const getIcon = (label) => {
   switch (label) {
@@ -719,6 +718,39 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const transformedProperty = transformData(property[0]);
 
+  const locationMapping = {
+    Plots: {
+      lat: property[0]?.ltg_det_plot_latitude,
+      lng: property[0]?.ltg_det_plot_longitude
+    },
+    Villas: {
+      lat: property[0]?.ltg_det_latitude,
+      lng: property[0]?.ltg_det_longitude
+    },
+    Apartments: {
+      lat: property[0]?.ltg_det_latitude,
+      lng: property[0]?.ltg_det_longitude
+    },
+    RowHouses: {
+      lat: property[0]?.ltg_det_row_house_latitude,
+      lng: property[0]?.ltg_det_row_house_longitude
+    },
+    CommercialProperties: {
+      lat: property[0]?.ltg_det_comm_prop_latitude,
+      lng: property[0]?.ltg_det_comm_prop_longitude
+    },
+    Villaments: {
+      lat: property[0]?.ltg_det_villaments_latitude,
+      lng: property[0]?.ltg_det_villaments_longitude
+    },
+    PentHouses: {
+      lat: property[0]?.ltg_det_penthouses_latitude,
+      lng: property[0]?.ltg_det_penthouses_longitude
+    },
+  };
+
+  const location = property[0] ? locationMapping[property[0].ltg_type] || { lat: property[0]?.ltg_det_latitude, lng: property[0]?.ltg_det_longitude } : { lat: null, lng: null };
+
   const handleFileClick = (pdfUrl) => {
     setModalPdfUrl(pdfUrl);
     setModalIsOpen(true);
@@ -738,6 +770,9 @@ const PropertyDetails = ({ property, images, brochure }) => {
   const openFloorAreaPlanModal = (index) => {
     setSelectedFloorAreaPlanImageIndex(index);
   };
+
+  console.log("latitude", property[0].ltg_det_latitude);
+  console.log("longitude", property[0].ltg_det_longitude);
 
   const brochureFiles = brochure?.filter(file => file.type === 'Brochure');
   const pdfFiles = brochureFiles?.filter(file => file.file_name.endsWith('.pdf'));
@@ -764,13 +799,21 @@ const PropertyDetails = ({ property, images, brochure }) => {
           )}
         </div>
 
-        <div className="p-4 rounded shadow">
-          <h2 className="text-lg font-semibold">Description</h2>
-          <div className="mt-2 text-gray-700">
-            {transformedProperty?.description && (
-              <div dangerouslySetInnerHTML={{ __html: transformedProperty?.description }} />
-            )}
-          </div>
+        <div>
+          <h2 className="mb-4 text-xl font-bold">Description</h2>
+          {transformedProperty?.description && (
+            <div className="p-4 text-gray-700 rounded shadow" dangerouslySetInnerHTML={{ __html: transformedProperty?.description }} />
+          )}
+        </div>
+
+        {/* "Location" section */}
+        <h2 className="text-xl font-bold">Location</h2>
+        <div className="mapContainer">
+          <Map
+            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+            lat={location?.lat}
+            lng={location?.lng}
+          />
         </div>
 
         <div className="">
