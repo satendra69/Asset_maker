@@ -1,7 +1,9 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { FaBookmark, FaRegBookmark } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaBath, FaBed } from "react-icons/fa";
+import { SlSizeFullscreen } from "react-icons/sl";
+import { MdRealEstateAgent } from "react-icons/md";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import DialogProperty from "./DialogProperty";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -138,7 +140,7 @@ function Card({ key, item, onPropertyRemoved }) {
   };
 
   const price = priceMapping[item.ltg_type] || item.ltg_det_sale_price;
-  const formattedPrice = formatIndianNumber(price != null ? price.toLocaleString('en-IN') : '0');
+  const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
 
   const bedroomMapping = {
     Plots: item.ltg_det_pmts_bed_rom,
@@ -174,11 +176,57 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const address = item ? addressMapping[item.ltg_type] || item.ltg_det_address : "Address not available";
 
-  function formatIndianNumber(num) {
-    let str = num.toString();
-    let [intPart, decimalPart] = str.split('.');
-    intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
-    return decimalPart ? `${intPart}.${decimalPart}` : intPart;
+  const areaMapping = {
+    Plots: item?.ltg_det_plot_pmts_area_dts,
+    Villas: item?.ltg_det_pmts_area_dts,
+    Apartments: item?.ltg_det_pmts_area_dts,
+    RowHouses: item?.ltg_det_row_house_pmts_area_dts,
+    Villaments: item?.ltg_det_villaments_pmts_area_dts,
+    PentHouses: item?.ltg_det_penthouses_pmts_area_dts,
+    CommercialProperties: item?.ltg_det_comm_prop_pmts_area_dts,
+  };
+
+  const area = item ? areaMapping[item.ltg_type] || item.ltg_det_pmts_area_dts : "Area not available";
+
+  const statusMapping = {
+    Plots: item?.ltg_det_plot_pmts_status,
+    Villas: item?.ltg_det_pmts_status,
+    Apartments: item?.ltg_det_pmts_status,
+    RowHouses: item?.ltg_det_row_house_pmts_status,
+    Villaments: item?.ltg_det_villaments_pmts_status,
+    PentHouses: item?.ltg_det_penthouses_pmts_status,
+    CommercialProperties: item?.ltg_det_comm_prop_pmts_status,
+  };
+
+  const status = item ? statusMapping[item.ltg_type] || item.ltg_det_pmts_status : "Status not available";
+
+  // function formatIndianNumber(num) {
+  //   let str = num.toString();
+  //   let [intPart, decimalPart] = str.split('.');
+  //   intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
+  //   return decimalPart ? `${intPart}.${decimalPart}` : intPart;
+  // }
+
+  function formatPrice(price) {
+    if (price == null) {
+      return "N/A";
+    }
+
+    const numericPrice = parseFloat(price.replace(/,/g, ""));
+
+    if (isNaN(numericPrice)) {
+      return "N/A";
+    }
+
+    if (numericPrice < 1000) {
+      return numericPrice;
+    } else if (numericPrice < 100000) {
+      return `${(numericPrice / 1000).toFixed(0)}k`;
+    } else if (numericPrice < 10000000) {
+      return `${(numericPrice / 100000).toFixed(0)}L`;
+    } else {
+      return `${(numericPrice / 10000000).toFixed(0)}CR`;
+    }
   }
 
   return (
@@ -223,22 +271,30 @@ function Card({ key, item, onPropertyRemoved }) {
           </p>
           <p className="price">₹{formattedPrice}</p>
           <div className="bottom">
-            {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (
-              <span></span>
-            ) : (
-              <>
-                <div className="features">
+            <div className="features">
+              {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (
+                <span></span>
+              ) : (
+                <>
                   <div className="feature">
-                    <img src="/bed.png" alt="" />
+                    <FaBed />
                     <span>{bedrooms} bedroom</span>
                   </div>
                   <div className="feature">
-                    <img src="/bath.png" alt="" />
+                    <FaBath />
                     <span>{bathrooms} bathrooms</span>
                   </div>
-                </div>
-              </>
-            )}
+                </>
+              )}
+              <div className="feature">
+                <SlSizeFullscreen />
+                <span>{area}</span>
+              </div>
+              <div className="feature">
+                <MdRealEstateAgent />
+                <span>{status}</span>
+              </div>
+            </div>
             <div className="icons">
               <div className="icon" onClick={isSaved ? removeFromSavedList : saveToSavedList}>
                 {isSaved ? <FaBookmark /> : <FaRegBookmark />}

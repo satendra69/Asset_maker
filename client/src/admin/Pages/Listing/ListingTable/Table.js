@@ -274,7 +274,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         accessorFn: (row) => row[getDynamicFields(row.ltg_type).area],
         header: "Size",
         size: 50,
-        Cell: ({ renderedCellValue }) => <span>{renderedCellValue} sqrt</span>,
+        Cell: ({ renderedCellValue }) => <span>{renderedCellValue}</span>,
       },
       {
         id: "ltg_create_date",

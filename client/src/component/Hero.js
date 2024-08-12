@@ -9,14 +9,14 @@ import cloufLottie from "../public/wave.json";
 function Hero() {
   const [properties, setProperties] = useState([]);
   const [propertyCounts, setPropertyCounts] = useState({
-    bengaluru: 0,
-    hyderabad: 0,
-    tirupati: 0,
+    Bengaluru: 0,
+    Hyderabad: 0,
+    Tirupati: 0,
   });
   const [featuredPropertyCounts, setFeaturedPropertyCounts] = useState({
-    bengaluru: 0,
-    hyderabad: 0,
-    tirupati: 0,
+    Bengaluru: 0,
+    Hyderabad: 0,
+    Tirupati: 0,
   });
 
   // Fetch properties data
@@ -36,15 +36,15 @@ function Hero() {
 
   const updatePropertyCounts = (properties) => {
     const counts = {
-      bengaluru: 0,
-      hyderabad: 0,
-      tirupati: 0,
+      Bengaluru: 0,
+      Hyderabad: 0,
+      Tirupati: 0,
     };
 
     properties.forEach((property) => {
-      if (property.ltg_regions === "bengaluru") counts.bengaluru += 1;
-      if (property.ltg_regions === "hyderabad") counts.hyderabad += 1;
-      if (property.ltg_regions === "tirupati") counts.tirupati += 1;
+      if (property.ltg_regions === "Bengaluru") counts.Bengaluru += 1;
+      if (property.ltg_regions === "Hyderabad") counts.Hyderabad += 1;
+      if (property.ltg_regions === "Tirupati") counts.Tirupati += 1;
     });
 
     setPropertyCounts(counts);
@@ -52,21 +52,21 @@ function Hero() {
 
   const updateFeaturedPropertyCounts = (properties) => {
     const counts = {
-      bengaluru: 0,
-      hyderabad: 0,
-      tirupati: 0,
+      Bengaluru: 0,
+      Hyderabad: 0,
+      Tirupati: 0,
     };
 
     const featuredProperties = properties?.filter(
       (property) =>
         property.ltg_mark_as_featured === "true" &&
-        ["bengaluru", "hyderabad", "tirupati"].includes(property.ltg_regions)
+        ["Bengaluru", "Hyderabad", "Tirupati"].includes(property.ltg_regions)
     );
 
     featuredProperties.forEach((property) => {
-      if (property.ltg_regions === "bengaluru") counts.bengaluru += 1;
-      if (property.ltg_regions === "hyderabad") counts.hyderabad += 1;
-      if (property.ltg_regions === "tirupati") counts.tirupati += 1;
+      if (property.ltg_regions === "Bengaluru") counts.Bengaluru += 1;
+      if (property.ltg_regions === "Hyderabad") counts.Hyderabad += 1;
+      if (property.ltg_regions === "Tirupati") counts.Tirupati += 1;
     });
 
     setFeaturedPropertyCounts(counts);
@@ -220,7 +220,7 @@ function Hero() {
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Bengaluru</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.bengaluru} properties</p>
+                <p className="text-xs font-light text-center">{propertyCounts.Bengaluru} properties</p>
               </div>
             </a>
             <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
@@ -241,7 +241,7 @@ function Hero() {
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Hyderabad</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.hyderabad} properties</p>
+                <p className="text-xs font-light text-center">{propertyCounts.Hyderabad} properties</p>
               </div>
             </a>
             <a href="Cities/Tirupati" className="place-link">
@@ -252,7 +252,7 @@ function Hero() {
                   className="object-cover w-full h-[60%] "
                 />
                 <h3 className="text-center">Tirupati</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.tirupati} properties</p>
+                <p className="text-xs font-light text-center">{propertyCounts.Tirupati} properties</p>
               </div>
             </a>
             <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
@@ -275,11 +275,11 @@ function Hero() {
           <hr className="bg-[#FECE51] w-32 h-1" />
 
           <div className="items-center collection md:flex md:gap-5">
-            {['bengaluru', 'hyderabad', 'tirupati'].map((region, index) => {
+            {['Bengaluru', 'Hyderabad', 'Tirupati'].map((region, index) => {
               const imageSrcMap = {
-                bengaluru: "https://images.moneycontrol.com/static-mcnews/2023/10/BeFunky-collage-2023-10-19T142541.707.jpg",
-                hyderabad: "https://qph.cf2.quoracdn.net/main-qimg-761eda8931ce2b553ae7618ae8424087.webp",
-                tirupati: "https://homebazaar-blog.s3.ap-south-1.amazonaws.com/knowledge/wp-content/uploads/2023/05/11104405/FeatureImage_Top-10-Cheapest-Cities-In-India-20231-732x375.jpg"
+                Bengaluru: "https://images.moneycontrol.com/static-mcnews/2023/10/BeFunky-collage-2023-10-19T142541.707.jpg",
+                Hyderabad: "https://qph.cf2.quoracdn.net/main-qimg-761eda8931ce2b553ae7618ae8424087.webp",
+                Tirupati: "https://homebazaar-blog.s3.ap-south-1.amazonaws.com/knowledge/wp-content/uploads/2023/05/11104405/FeatureImage_Top-10-Cheapest-Cities-In-India-20231-732x375.jpg"
               };
 
               const capitalizedRegion = region.charAt(0).toUpperCase() + region.slice(1);

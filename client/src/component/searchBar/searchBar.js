@@ -58,9 +58,9 @@ function SearchBar({ onFilterChange }) {
       <form onSubmit={handleSearch}>
         <select name="city" id="city" onChange={handleInputChange}>
           <option value="">Select City</option>
-          <option value="hyderabad">Hyderabad</option>
-          <option value="bengaluru">Bengaluru</option>
-          <option value="tirupati">Tirupati</option>
+          <option value="Hyderabad">Hyderabad</option>
+          <option value="Bengaluru">Bengaluru</option>
+          <option value="Tirupati">Tirupati</option>
         </select>
         <input
           type="number"
