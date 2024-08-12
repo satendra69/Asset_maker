@@ -105,7 +105,7 @@ function CommercialModule({ action, onDataUpdate }) {
 
       // Fetch images and brochures
       if (response.data.status === "success" && action !== 'clone') {
-        console.log("cloning");
+        // console.log("cloning");
         try {
           const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
           if (imgResponse.data.status === "success") {

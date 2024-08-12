@@ -712,7 +712,6 @@ const PropertyDetails = ({ property, images, brochure }) => {
   }, [modalIsOpen]);
 
   if (property === null || !Array.isArray(property) || property.length === 0) {
-    console.log("no data found");
     return <div className="mt-10 text-xl text-center">Property not found</div>;
   }
 
