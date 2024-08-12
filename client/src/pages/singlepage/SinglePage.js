@@ -84,11 +84,11 @@ function SinglePage() {
     if (numericPrice < 1000) {
       return numericPrice;
     } else if (numericPrice < 100000) {
-      return `${(numericPrice / 1000).toFixed(0)}k`;
+      return `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(0)}L`;
+      return `${(numericPrice / 100000).toFixed(0)} Lakh`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(0)}CR`;
+      return `${(numericPrice / 10000000).toFixed(0)} Crore`;
     }
   }
 
