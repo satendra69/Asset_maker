@@ -99,6 +99,31 @@ function SinglePage() {
     }
   };
 
+  const addressMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_address,
+    Villas: singlePageData?.[0]?.ltg_det_address,
+    Apartments: singlePageData?.[0]?.ltg_det_address,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_address,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_address,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_address,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_address,
+  };
+
+  const address = singlePageData?.[0] ? addressMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0].ltg_det_address : "Address not available";
+
+  const priceMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_sale_price,
+    Villas: singlePageData?.[0]?.ltg_det_sale_price,
+    Apartments: singlePageData?.[0]?.ltg_det_sale_price,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_sale_price,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_sale_price,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_sale_price,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_sale_price,
+  };
+
+  const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
+  const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+
   return (
     <Container className="py-10">
       <DialogProperty
@@ -122,23 +147,12 @@ function SinglePage() {
             )}
             <div className="flex items-center mt-2 text-gray-600">
               <img src="/pin.png" alt="Location Pin" className="w-5 h-5 mr-2" />
-              {singlePageData?.[0]?.ltg_det_plot_address || singlePageData?.[0]?.ltg_det_address}
+              {address}
             </div>
           </div>
           <div className="text-right">
             <div className="mt-2 text-xl font-semibold">
-              ₹
-              {singlePageData && singlePageData[0]?.ltg_type && (
-                <span>
-                  {singlePageData[0].ltg_type === 'Plots' && formatPrice(singlePageData[0].ltg_det_plot_sale_price)}
-                  {singlePageData[0].ltg_type === 'Villas' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                  {singlePageData[0].ltg_type === 'Apartments' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                  {singlePageData[0].ltg_type === 'RowHouses' && formatPrice(singlePageData[0].ltg_det_row_house_sale_price)}
-                  {singlePageData[0].ltg_type === 'CommercialProperties' && formatPrice(singlePageData[0].ltg_det_comm_prop_sale_price)}
-                  {singlePageData[0].ltg_type === 'Villaments' && formatPrice(singlePageData[0].ltg_det_villaments_sale_price)}
-                  {singlePageData[0].ltg_type === 'PentHouses' && formatPrice(singlePageData[0].ltg_det_penthouses_sale_price)}
-                </span>
-              )}
+              ₹{formattedPrice}
             </div>
             <button className="flex items-center gap-2 mt-2 text-blue-600" onClick={scrollToCalculator}>
               Est. Mortgage Calculator <FaChevronCircleDown />
@@ -146,7 +160,6 @@ function SinglePage() {
           </div>
         </div>
       </div>
-
 
       {/* Property Details Section */}
       <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />

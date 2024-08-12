@@ -309,7 +309,6 @@ const transformData = (propertyData, propertyImages) => {
     type: data.ltg_type,
     price: data.ltg_det_sale_price,
     title: data.ltg_title,
-    description: data.ltg_det_desc,
   });
 
   const mapApartmentFields = (data) => {
@@ -359,6 +358,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_about_project_buder,
         propertyVideo: data.ltg_det_property_video_url,
+        description: data.ltg_det_desc,
       },
     };
   };
@@ -403,6 +403,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_plot_about_project_builder,
         propertyVideo: data.ltg_det_plot_property_video_url,
+        description: data.ltg_det_plot_desc,
       },
     };
   };
@@ -456,6 +457,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_about_project_buder,
         propertyVideo: data.ltg_det_property_video_url,
+        description: data.ltg_det_desc,
       },
     };
   };
@@ -506,6 +508,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_row_house_about_project_builder,
         propertyVideo: data.ltg_det_row_house_property_video_url,
+        description: data.ltg_det_row_house_desc,
       },
     };
   };
@@ -556,6 +559,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_villaments_about_project_builder,
         propertyVideo: data.ltg_det_villaments_property_video_url,
+        description: data.ltg_det_villaments_desc,
       },
     };
   };
@@ -598,6 +602,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_comm_prop_about_project_builder,
         propertyVideo: data.ltg_det_comm_prop_property_video_url,
+        description: data.ltg_det_comm_prop_desc,
       },
     };
   };
@@ -648,6 +653,7 @@ const transformData = (propertyData, propertyImages) => {
         })) : [],
         aboutProject: data.ltg_det_penthouses_about_project_builder,
         propertyVideo: data.ltg_det_penthouses_property_video_url,
+        description: data.ltg_det_penthouses_desc,
       },
     };
   };
@@ -683,7 +689,7 @@ const transformData = (propertyData, propertyImages) => {
 
   transformedData.propertyImages = propertyImages.map(image => ({
     src: image,
-    alt: `Image for ${transformedData.title}`,
+    alt: `Image for ${transformedData?.title}`,
   }));
 
   return transformedData;
@@ -796,22 +802,27 @@ const PropertyDetails = ({ property, images, brochure }) => {
           )}
         </div>
 
-        <div>
-          <h2 className="mb-4 text-xl font-bold">Description</h2>
-          {transformedProperty?.description && (
-            <div className="p-4 text-gray-700 rounded shadow" dangerouslySetInnerHTML={{ __html: transformedProperty?.description }} />
-          )}
-        </div>
+        {/* Conditionally render "Description" section */}
+        {transformedProperty?.details?.description && (
+          <div>
+            <h2 className="mb-4 text-xl font-bold">Description</h2>
+            <div className="p-4 text-gray-700 rounded shadow" dangerouslySetInnerHTML={{ __html: transformedProperty?.details?.description }} />
+          </div>
+        )}
 
         {/* "Location" section */}
-        <h2 className="text-xl font-bold">Location</h2>
-        <div className="mapContainer">
-          <Map
-            googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-            lat={location?.lat}
-            lng={location?.lng}
-          />
-        </div>
+        {location && (
+          <div>
+            <h2 className="mb-4 text-xl font-bold">Location</h2>
+            <div className="mapContainer">
+              <Map
+                googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+                lat={location?.lat}
+                lng={location?.lng}
+              />
+            </div>
+          </div>
+        )}
 
         <div className="">
           {/* Conditionally render "Other Facts" section */}
