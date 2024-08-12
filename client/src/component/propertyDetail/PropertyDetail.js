@@ -771,8 +771,6 @@ const PropertyDetails = ({ property, images, brochure }) => {
     setSelectedFloorAreaPlanImageIndex(index);
   };
 
-  console.log("latitude", property[0].ltg_det_latitude);
-  console.log("longitude", property[0].ltg_det_longitude);
 
   const brochureFiles = brochure?.filter(file => file.type === 'Brochure');
   const pdfFiles = brochureFiles?.filter(file => file.file_name.endsWith('.pdf'));
