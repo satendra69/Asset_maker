@@ -756,9 +756,9 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="ready_to_move">Under Development</option>
-              <option value="under_construction">Ready for Construction</option>
-              <option value="upcoming">Upcoming</option>
+              <option value="Under Development">Under Development</option>
+              <option value="Ready for Construction">Ready for Construction</option>
+              <option value="Upcoming">Upcoming</option>
             </select>
           </div>
         </div>
