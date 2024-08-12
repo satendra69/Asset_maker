@@ -238,7 +238,10 @@ const router = createBrowserRouter([
         path: "/admin/settings/profile",
         element: <Profile />,
       },
-
+      {
+        path: "/admin/saved-list",
+        element: <SavedList />,
+      },
     ],
   },
 ]);
