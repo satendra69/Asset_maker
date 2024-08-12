@@ -86,9 +86,9 @@ function SinglePage() {
     } else if (numericPrice < 100000) {
       return `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(0)} Lakh`;
+      return `${(numericPrice / 100000).toFixed(0)} Laksh`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(0)} Crore`;
+      return `${(numericPrice / 10000000).toFixed(0)} Cr`;
     }
   }
 
