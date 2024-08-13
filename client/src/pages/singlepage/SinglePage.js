@@ -166,7 +166,7 @@ function SinglePage() {
 
       {/* Mortgage Calculator Section */}
       <section id="mortgage-calculator" className="mt-10">
-        <MortgageCalculator />
+        <MortgageCalculator price={price} />
       </section>
 
       {/* InquiryForm Section */}

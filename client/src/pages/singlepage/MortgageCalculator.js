@@ -5,9 +5,9 @@ import 'chart.js/auto';
 
 ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Title, Tooltip, Legend);
 
-const MortgageCalculator = () => {
-    const [totalAmount, setTotalAmount] = useState(7500000);
-    const [downPayment, setDownPayment] = useState(200000);
+const MortgageCalculator = ({ price }) => {
+    const [totalAmount, setTotalAmount] = useState(price || 7500000);
+    const [downPayment, setDownPayment] = useState(price ? price / 10 : 200000);
     const [interestRate, setInterestRate] = useState(12);
     const [amortizationPeriod, setAmortizationPeriod] = useState(15);
     const [paymentPeriod, setPaymentPeriod] = useState("Monthly");
@@ -26,7 +26,6 @@ const MortgageCalculator = () => {
             }
         ]
     });
-
     const [balanceData, setBalanceData] = useState([]);
 
     const calculateMortgage = () => {
@@ -72,8 +71,10 @@ const MortgageCalculator = () => {
     };
 
     useEffect(() => {
+        setTotalAmount(price ? price : 0);
+        setDownPayment(price ? price * 0.3 : 0);
         calculateMortgage();
-    }, [totalAmount, downPayment, interestRate, amortizationPeriod, paymentPeriod]);
+    }, [price, totalAmount, downPayment, interestRate, amortizationPeriod, paymentPeriod]);
 
     return (
         <div className="flex p-4 mt-4 border rounded-lg shadow-lg">
