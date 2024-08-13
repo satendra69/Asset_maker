@@ -109,6 +109,48 @@ const submitEnquiryForm = async (req, res) => {
     }
 };
 
+const getInquiries = async (req, res) => {
+    try {
+        const [inquiries] = await db.query('SELECT id, name, email, phone, message, listing_type AS listingType, user_id AS userId, property_id AS propertyId, address, purpose, created_at AS createdAt FROM inquiries ORDER BY created_at DESC');
+        return res.status(200).json(inquiries);
+    } catch (error) {
+        console.error("Error fetching inquiries:", error);
+        return res.status(500).json({ error: "Error fetching inquiries" });
+    }
+};
+
+const getInquiryById = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [inquiry] = await db.query('SELECT id, name, email, phone, message, listing_type AS listingType, user_id AS userId, property_id AS propertyId, address, purpose, created_at AS createdAt FROM inquiries WHERE id = ?', [id]);
+
+        if (inquiry.length === 0) {
+            return res.status(404).json({ message: "Inquiry not found" });
+        }
+
+        return res.status(200).json(inquiry[0]);
+    } catch (error) {
+        console.error("Error fetching inquiry:", error);
+        return res.status(500).json({ error: "Error fetching inquiry" });
+    }
+};
+
+const deleteInquiry = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const [result] = await db.query('DELETE FROM inquiries WHERE id = ?', [id]);
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ message: "Inquiry not found" });
+        }
+
+        return res.status(200).json({ message: "Inquiry deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting inquiry:", error);
+        return res.status(500).json({ error: "Error deleting inquiry" });
+    }
+};
+
 const submitContactForm = async (req, res) => {
     const { firstName, lastName, email, phone, message, listingType } = req.body;
 
@@ -137,4 +179,4 @@ const submitCityEnquiryForm = async (req, res) => {
     }
 };
 
-module.exports = { submitEnquiryForm, submitContactForm, submitCityEnquiryForm };
+module.exports = { submitEnquiryForm, getInquiries, getInquiryById, deleteInquiry, submitContactForm, submitCityEnquiryForm };

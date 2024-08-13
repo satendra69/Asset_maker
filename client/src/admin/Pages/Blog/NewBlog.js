@@ -1,27 +1,57 @@
-import React, { useState } from "react";
-import { EditorState } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
-import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
-import moment from "moment";
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
+import httpContent from '../../../http-content';
+import { EditorState, ContentState } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import moment from 'moment';
 
 const NewBlog = () => {
-    const state = useLocation().state;
-    const [title, setTitle] = useState(state?.title || "");
+    const { id } = useParams();
+    const navigate = useNavigate();
+    const [title, setTitle] = useState('');
+    const [content, setContent] = useState(EditorState.createEmpty());
+    const [status, setStatus] = useState('draft');
+    const [visibility, setVisibility] = useState('public');
+    const [rank, setRank] = useState(0);
+    const [date, setDate] = useState(moment().format('YYYY-MM-DDTHH:mm'));
     const [file, setFile] = useState(null);
-    const [status, setStatus] = useState(state?.status || "draft");
-    const [visibility, setVisibility] = useState(state?.visibility || "public");
-    const [rank, setRank] = useState(state?.rank || "");
-    const [date, setDate] = useState(moment().format("YYYY-MM-DDTHH:mm"));
-    const [editorState, setEditorState] = useState(
-        EditorState.createEmpty()
-    );
     const [previewImage, setPreviewImage] = useState(null);
     const [wordCount, setWordCount] = useState(0);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        if (id) {
+            const fetchBlog = async () => {
+                try {
+                    const res = await httpContent.get(`/blogs/${id}`);
+                    const blog = res.data;
+                    setTitle(blog?.title);
+
+                    const contentState = ContentState.createFromText(blog?.content);
+                    const editorState = EditorState.createWithContent(contentState);
+                    setContent(editorState);
+                    calculateWordCount(editorState);
+
+                    setStatus(blog?.status.charAt(0).toUpperCase() + blog?.status.slice(1));
+                    setVisibility(blog?.visibility.charAt(0).toUpperCase() + blog?.visibility.slice(1));
+                    setRank(blog?.rank);
+                    setDate(moment(blog?.date).format('YYYY-MM-DDTHH:mm'));
+
+                    if (blog?.imageUrl) {
+                        setPreviewImage(`${httpContent.defaults.baseURL}/images/${blog.imageUrl.split('/').pop()}`);
+                    }
+                } catch (error) {
+                    setError('Failed to fetch the blog. Please try again later.'); // Set error message
+                    console.error("Failed to fetch the blog:", error);
+                }
+            };
+            fetchBlog();
+        }
+    }, [id]);
 
     const handleEditorChange = (state) => {
-        setEditorState(state);
+        setContent(state);
         calculateWordCount(state);
     };
 
@@ -29,16 +59,6 @@ const NewBlog = () => {
         const plainText = state.getCurrentContent().getPlainText('');
         const wordsArray = plainText.match(/\b\w+\b/g) || [];
         setWordCount(wordsArray.length);
-    };
-
-    const upload = async () => {
-        try {
-            const formData = new FormData();
-            formData.append("file", file);
-            // send file
-        } catch (err) {
-            console.log(err);
-        }
     };
 
     const handleFileChange = (e) => {
@@ -53,155 +73,131 @@ const NewBlog = () => {
         }
     };
 
-    const handleDragOver = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-    };
+        const formData = new FormData();
+        formData.append('title', title);
+        formData.append('content', content.getCurrentContent().getPlainText(''));
+        formData.append('status', status);
+        formData.append('visibility', visibility);
+        formData.append('rank', rank);
+        formData.append('date', date);
+        if (file) {
+            formData.append('file', file);
+        } else if (previewImage) {
+            formData.append('existingImageUrl', previewImage.split('/').pop());
+        }
 
-    const handleDrop = (e) => {
-        e.preventDefault();
-        const droppedFile = e.dataTransfer.files[0];
-        setFile(droppedFile);
-        if (droppedFile) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreviewImage(reader.result);
-            };
-            reader.readAsDataURL(droppedFile);
+        try {
+            if (id) {
+                await httpContent.put(`/blogs/${id}`, formData);
+            } else {
+                await httpContent.post('/blogs', formData);
+            }
+            navigate('/admin/blog');
+        } catch (error) {
+            setError('An error occurred while submitting the form. Please try again.');
+            console.error("Error during submission:", error);
         }
     };
 
-    const handleClick = async (e) => {
-        e.preventDefault();
-    };
-
     return (
-        <div className="px-4 py-8 h-[98vh] overflow-y-scroll">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-                <div className="md:col-span-2 bg-white shadow-md rounded-lg p-6">
-                    <h1 className="text-lg font-semibold mb-2">Add New Post</h1>
-                    <input
-                        type="text"
-                        placeholder="Title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        className="w-full p-2 mb-4 border border-gray-300 rounded focus:outline-none focus:border-blue-400"
-                    />
-                    <div className="editorContainer mb-4 border border-gray-300 rounded p-2">
-                        <Editor
-                            placeholder="Enter Description"
-                            editorState={editorState}
-                            toolbarClassName="toolbar-class"
-                            wrapperClassName="wrapper-class"
-                            editorClassName="editor-class"
-                            onEditorStateChange={handleEditorChange}
-                            wrapperStyle={{ minHeight: "20em" }}
-                        />
-                        <div className="text-right text-gray-600">Word Count: {wordCount}</div>
-                    </div>
+        <div className="p-8 w-full h-[94vh] overflow-y-scroll">
+            <h1 className="mb-6 text-3xl font-semibold text-gray-800">{id ? 'Edit Blog' : 'Create New Blog'}</h1>
+            {error && (
+                <div className="p-4 mb-4 text-red-700 bg-red-200 rounded">
+                    {error}
                 </div>
-                <div className="bg-white shadow-md rounded-lg p-6">
-                    <h1 className="text-lg font-semibold mb-2">Publish</h1>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Status:
-                        </label>
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-400"
-                        >
-                            <option value="draft">Draft</option>
-                            <option value="published">Published</option>
-                        </select>
+            )}
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Title</label>
+                        <input
+                            type="text"
+                            value={title}
+                            onChange={(e) => setTitle(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Enter blog title"
+                        />
                     </div>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Visibility:
-                        </label>
-                        <select
-                            value={visibility}
-                            onChange={(e) => setVisibility(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-400"
-                        >
-                            <option value="public">Public</option>
-                            <option value="private">Private</option>
-                        </select>
-                    </div>
-                    <div className="mb-4">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                            Publish immediately:
-                        </label>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Publish Date</label>
                         <input
                             type="datetime-local"
                             value={date}
                             onChange={(e) => setDate(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-400"
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                     </div>
-                    <div className="flex space-x-4 mt-4">
-                        <button className="bg-gray-200 px-4 py-2 rounded">
-                            Save as a draft
-                        </button>
-                        <button
-                            onClick={handleClick}
-                            className="bg-blue-500 text-white px-4 py-2 rounded"
-                        >
-                            Publish
-                        </button>
-                    </div>
                 </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-                <div className="col-span-2 bg-white shadow-md rounded-lg p-8 mb-4 mr-2">
-                    <h1 className="text-lg font-semibold mb-2">Rank Position</h1>
-                    <input
-                        type="rank"
-                        placeholder="Rank"
-                        value={rank}
-                        onChange={(e) => setRank(e.target.value)}
-                        className="w-full p-2 mb-4 border rounded"
+
+                <div>
+                    <label className="block mb-1 text-sm font-medium text-gray-700">Content</label>
+                    <Editor
+                        editorState={content}
+                        toolbarClassName="toolbar-class"
+                        wrapperClassName="wrapper-class border border-gray-300 rounded-md shadow-sm"
+                        editorClassName="editor-class p-3 h-60"
+                        onEditorStateChange={handleEditorChange}
                     />
+                    <div className="mt-2 text-sm text-right text-gray-600">Word Count: {wordCount}</div>
                 </div>
-                <div className="bg-white shadow-md rounded-lg p-8 mb-4 items-center justify-center ml-2">
-                    <div
-                        className="w-full relative border-2 border-gray-300 border-dashed rounded-lg p-6"
-                        id="dropzone"
-                        onDragOver={handleDragOver}
-                        onDrop={handleDrop}
-                    >
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Status</label>
+                        <select
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="Draft">Draft</option>
+                            <option value="Published">Published</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Visibility</label>
+                        <select
+                            value={visibility}
+                            onChange={(e) => setVisibility(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        >
+                            <option value="Public">Public</option>
+                            <option value="Private">Private</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Rank</label>
+                        <input
+                            type="number"
+                            value={rank}
+                            onChange={(e) => setRank(e.target.value)}
+                            className="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            placeholder="Set blog rank"
+                        />
+                    </div>
+                    <div>
+                        <label className="block mb-1 text-sm font-medium text-gray-700">Image</label>
                         <input
                             type="file"
-                            className="absolute inset-0 w-full h-full opacity-0 z-50"
                             onChange={handleFileChange}
+                            accept=".jpg, .jpeg, .png, .webp"
+                            className="block w-full p-3 text-sm text-gray-900 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
-                        <div className="text-center">
-                            {previewImage ? (
-                                <img src={previewImage} alt="Preview" className="mx-auto h-32 w-32 object-cover" />
-                            ) : (
-                                <img
-                                    src="https://www.svgrepo.com/show/357902/image-upload.svg"
-                                    alt="Upload"
-                                    className="mx-auto h-12 w-12"
-                                />
-                            )}
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">
-                                <label htmlFor="file-upload" className="relative cursor-pointer">
-                                    <span>Drag and drop</span>
-                                    <span className="text-indigo-600"> or browse</span>
-                                    <span> to upload</span>
-                                    <input id="file-upload" name="file-upload" type="file" className="sr-only" />
-                                </label>
-                            </h3>
-                            <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                        </div>
-
-                        <img src="" className="mt-4 mx-auto max-h-40 hidden" id="preview" />
+                        {previewImage && <img src={previewImage} alt="Preview" className="object-cover w-full h-48 mt-4 rounded-md" />}
                     </div>
                 </div>
-            </div>
+
+                <button
+                    type="submit"
+                    className="px-6 py-3 font-medium text-white transition-colors bg-blue-500 rounded-md shadow-sm hover:bg-blue-600"
+                >
+                    {id ? 'Update Blog' : 'Create Blog'}
+                </button>
+            </form>
         </div>
     );
-}
-
+};
 
 export default NewBlog;

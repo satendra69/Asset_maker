@@ -13,7 +13,8 @@ var categoriesRouter = require("./routes/categories");
 var regionRoutes = require("./routes/regions");
 var contactRoutes = require("./routes/contact");
 var savedListRoutes = require("./routes/savedList");
-const testimonialRoutes = require('./routes/testimonial');
+var testimonialRoutes = require('./routes/testimonial');
+var blogRoutes = require('./routes/blogs');
 var cors = require("cors");
 const db = require("./connect");
 
@@ -58,6 +59,7 @@ app.use('/api/regions', regionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/saved-list', savedListRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Consolidated error handler
 app.use(function (err, req, res, next) {
