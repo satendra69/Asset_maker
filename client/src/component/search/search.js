@@ -21,6 +21,8 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   };
 
   const [formData, setFormData] = useState(initialState);
+  const [showFields, setShowFields] = useState(false);
+  const formRef = useRef(null);
 
   useEffect(() => {
     if (defaultProperty) {
@@ -31,36 +33,28 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
     }
   }, [defaultProperty]);
 
-  const [showFields, setShowFields] = useState(false);
-  const formRef = useRef(null);
-
   const handleQuery = () => {
     if (query) {
-      console.log("Current Query:", query);
       const updatedData = {
         ...formData,
         type: query.type || formData.type,
         city: query.city ? query.city.charAt(0).toUpperCase() + query.city.slice(1) : formData.city,
         price: {
-          min: query.price.min !== undefined ? query.price.min : formData.price.min,
-          max: query.price.max !== undefined ? query.price.max : formData.price.max,
+          min: query.price?.min !== undefined ? query.price.min : formData.price.min,
+          max: query.price?.max !== undefined ? query.price.max : formData.price.max,
         },
       };
-      console.log("Current Form Data:", updatedData);
       setFormData(updatedData);
-      console.log("Current Form Data:", formData);
       onFilterChange(updatedData);
     }
   };
-
-  console.log(formData, defaultProperty, "formdata");
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
       const newAmenities = checked
         ? [...formData.amenities, value]
-        : formData.amenities?.filter((amenity) => amenity !== value);
+        : formData.amenities.filter((amenity) => amenity !== value);
       setFormData({
         ...formData,
         amenities: newAmenities,
@@ -122,29 +116,15 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   }, []);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (query) {
-        console.log(query);
-        handleQuery();
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    if (query) {
+      handleQuery();
+    }
   }, [query]);
 
   useEffect(() => {
-    const handler = setTimeout(() => {
-      if (formData.property !== "any" && formData.property) {
-        console.log(formData);
-        onFilterChange(formData);
-      }
-    }, 300);
-
-    return () => {
-      clearTimeout(handler);
-    };
+    if (formData.property !== "any" && formData.property) {
+      onFilterChange(formData);
+    }
   }, [formData]);
 
   return (
@@ -181,16 +161,22 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
               </div>
               {!showFields && (
                 <div className="flex flex-row items-center justify-center gap-4 mt-4 sm:gap-2 sm:mt-0">
-                  <button className="px-8 py-3 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="px-8 py-3 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring"
+                  >
                     Reset
                   </button>
-                  <button className="px-8 py-3 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring">
+                  <button
+                    type="submit"
+                    className="px-8 py-3 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring"
+                  >
                     Search
                   </button>
                 </div>
               )}
             </div>
-
 
             {showFields && (
               <div className="grid grid-cols-1 gap-6 mt-5">
@@ -251,111 +237,14 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                       className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="any">Any</option>
-                      <option value="Apartments">Apartment</option>
-                      <option value="CommercialProperties">Commercial Property</option>
-                      <option value="PentHouses">Pent House</option>
-                      <option value="RowHouses">Row House</option>
-                      <option value="Plots">Plot</option>
-                      <option value="Villas">Villa</option>
-                      <option value="Villaments">Villament</option>
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label className="text-sm font-medium text-stone-600">
-                      Price
-                    </label>
-                    <div className="flex mt-2 space-x-2">
-                      <input
-                        type="number"
-                        id="minPrice"
-                        name="minPrice"
-                        value={formData.price.min}
-                        onChange={handleChange}
-                        placeholder="Min"
-                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      />
-                      <input
-                        type="number"
-                        id="maxPrice"
-                        name="maxPrice"
-                        value={formData.price.max}
-                        onChange={handleChange}
-                        placeholder="Max"
-                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label className="text-sm font-medium text-stone-600">
-                      Area (Sq-Ft/Sq-Yrd)
-                    </label>
-                    <div className="flex mt-2 space-x-2">
-                      <input
-                        type="number"
-                        id="minArea"
-                        name="minArea"
-                        value={formData.area.min}
-                        onChange={handleChange}
-                        placeholder="Min"
-                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      />
-                      <input
-                        type="number"
-                        id="maxArea"
-                        name="maxArea"
-                        value={formData.area.max}
-                        onChange={handleChange}
-                        placeholder="Max"
-                        className="flex-1 block w-full px-2 py-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="bedRooms"
-                      className="text-sm font-medium text-stone-600"
-                    >
-                      Bed Rooms
-                    </label>
-                    <select
-                      id="bedRooms"
-                      name="bedRooms"
-                      value={formData.bedRooms}
-                      onChange={handleChange}
-                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    >
-                      <option value="">Not Selected</option>
-                      {[...Array(25).keys()].map((value) => (
-                        <option key={value} value={value + 1}>
-                          {value + 1}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className="flex flex-col">
-                    <label
-                      htmlFor="bathRooms"
-                      className="text-sm font-medium text-stone-600"
-                    >
-                      Bath Rooms
-                    </label>
-                    <select
-                      id="bathRooms"
-                      name="bathRooms"
-                      value={formData.bathRooms}
-                      onChange={handleChange}
-                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                    >
-                      <option value="">Not Selected</option>
-                      {[...Array(25).keys()].map((value) => (
-                        <option key={value} value={value + 1}>
-                          {value + 1}
-                        </option>
-                      ))}
+                      <option value="Apartments">Apartments</option>
+                      <option value="CommercialProperties">
+                        Commercial Properties
+                      </option>
+                      <option value="PentHouses">PentHouses</option>
+                      <option value="RowHouses">Row Houses</option>
+                      <option value="Plots">Plots</option>
+                      <option value="Villaments">Villaments</option>
                     </select>
                   </div>
 
@@ -374,12 +263,119 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                       className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
                     >
                       <option value="">Not Selected</option>
-                      <option value="ready_to_move">Ready to Move</option>
-                      <option value="under_construction">Under Construction</option>
-                      <option value="upcoming">Upcoming</option>
+                      <option value="Under Construction">
+                        Under Construction
+                      </option>
+                      <option value="Ready to move">Ready to move</option>
+                      <option value="Rented">Rented</option>
                     </select>
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="minPrice"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Min Price
+                    </label>
+                    <input
+                      type="number"
+                      id="minPrice"
+                      name="minPrice"
+                      value={formData.price.min}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="maxPrice"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Max Price
+                    </label>
+                    <input
+                      type="number"
+                      id="maxPrice"
+                      name="maxPrice"
+                      value={formData.price.max}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="minArea"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Min Area (sqft)
+                    </label>
+                    <input
+                      type="number"
+                      id="minArea"
+                      name="minArea"
+                      value={formData.area.min}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="maxArea"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Max Area (sqft)
+                    </label>
+                    <input
+                      type="number"
+                      id="maxArea"
+                      name="maxArea"
+                      value={formData.area.max}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="bedRooms"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Bedrooms
+                    </label>
+                    <input
+                      type="number"
+                      id="bedRooms"
+                      name="bedRooms"
+                      value={formData.bedRooms}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label
+                      htmlFor="bathRooms"
+                      className="text-sm font-medium text-stone-600"
+                    >
+                      Bathrooms
+                    </label>
+                    <input
+                      type="number"
+                      id="bathRooms"
+                      name="bathRooms"
+                      value={formData.bathRooms}
+                      onChange={handleChange}
+                      className="block w-full px-2 py-2 mt-2 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
+                    />
+                  </div>
+                </div>
+
                 <div className="flex flex-col space-y-6">
                   <label className="text-sm font-medium text-stone-600">
                     Amenities
@@ -424,24 +420,22 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                     ))}
                   </div>
                 </div>
-              </div>
-            )}
 
-            {showFields && (
-              <div className="grid justify-end w-full grid-cols-2 mt-6 space-x-4 md:flex">
-                <button
-                  type="button"
-                  onClick={handleReset}
-                  className="px-8 py-2 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring"
-                >
-                  Reset
-                </button>
-                <button
-                  type="submit"
-                  className="px-8 py-2 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring"
-                >
-                  Search
-                </button>
+                <div className="grid justify-end w-full grid-cols-2 mt-6 space-x-4 md:flex">
+                  <button
+                    type="button"
+                    onClick={handleReset}
+                    className="px-8 py-2 font-medium text-gray-700 bg-gray-200 rounded-lg outline-none hover:opacity-80 focus:ring"
+                  >
+                    Reset
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-8 py-2 font-medium text-white bg-blue-600 rounded-lg outline-none hover:opacity-80 focus:ring"
+                  >
+                    Search
+                  </button>
+                </div>
               </div>
             )}
           </form>
@@ -449,6 +443,6 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
       </div>
     </div>
   );
-};
+}
 
 export default SearchForm;
