@@ -752,13 +752,12 @@ const getListItem = async (req, res) => {
           detailsTable = 'ltg_det_penthouses';
           break;
         case 'Apartment':
-          detailsTable = 'ltg_det'; // Specific for apartments
+          detailsTable = 'ltg_det';
           break;
         default:
-          detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+          detailsTable = 'ltg_det';
       }
 
-      // Construct the query dynamically based on the determined details table
       const detailQuery = `
             SELECT 
                 mst.*,

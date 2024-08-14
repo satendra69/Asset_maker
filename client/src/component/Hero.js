@@ -189,7 +189,6 @@ function Hero() {
 
       // Get the property details based on the type
       const details = getPropertyDetails(item.ltg_type, item);
-      console.log("details", details);
 
       return {
         key: item.ltg_det_mstRowID,

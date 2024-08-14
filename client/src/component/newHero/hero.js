@@ -31,7 +31,6 @@ function HomePage() {
   ];
 
   const handleSearch = (query) => {
-    console.log('handleSearch:', query);
     navigate('/Property', { state: { query } });
   };
 
