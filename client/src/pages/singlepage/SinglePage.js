@@ -16,8 +16,8 @@ function SinglePage() {
   const { id: RowID, ltg_type: TypeGet } = location.state || {};
   const [open, setOpen] = useState(false);
 
-  const [singlePageData, setsinglePageData] = useState([]);
-  const [singlePageImgData, setsinglePageImgData] = useState([]);
+  const [singlePageData, setSinglePageData] = useState([]);
+  const [singlePageImgData, setSinglePageImgData] = useState([]);
   const [brochureData, setBrochureData] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ function SinglePage() {
       navigate('/Property');
       return;
     }
-
     getSinglepropertiesData(RowID, TypeGet);
     singlePageImg(RowID);
     getBrochureData(RowID);
@@ -39,7 +38,7 @@ function SinglePage() {
     try {
       const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
       if (response.data.status === "success") {
-        setsinglePageData(response.data.data);
+        setSinglePageData(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -51,7 +50,7 @@ function SinglePage() {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
       if (response.data.status === "success") {
         const filteredData = response.data.data?.filter(item => item.type !== 'Brochure');
-        setsinglePageImgData(filteredData);
+        setSinglePageImgData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -69,6 +68,7 @@ function SinglePage() {
       console.error("Error fetching brochure data:", error);
     }
   };
+
 
   function formatPrice(price) {
     if (price == null) {
@@ -123,6 +123,8 @@ function SinglePage() {
 
   const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
   const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+
+  console.log(singlePageData);
 
   return (
     <Container className="py-10">
