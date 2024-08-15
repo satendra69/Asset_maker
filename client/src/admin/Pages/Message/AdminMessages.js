@@ -55,7 +55,7 @@ function AdminMessages() {
     const mainImage = attachments?.find(att => att.type === "Main");
     return mainImage
       ? httpCommon.defaults.baseURL + mainImage.attachment
-      : httpCommon.defaults.baseURL + "/defaultasset.jpg";
+      : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
   };
 
   const enrichedMessages = messages.map((message) => {

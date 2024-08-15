@@ -45,14 +45,14 @@ const addWatermark = async (req, res, next) => {
         // Resize watermark proportionally only if necessary
         const watermarkResized = watermark.clone().resize(inputImage.bitmap.width / 4, Jimp.AUTO);
 
-        // Position watermark at bottom right corner
-        const x = inputImage.bitmap.width - watermarkResized.bitmap.width - 10;
-        const y = inputImage.bitmap.height - watermarkResized.bitmap.height - 10;
+        // Calculate the position to center the watermark
+        // const x = (inputImage.bitmap.width / 2) - (watermarkResized.bitmap.width / 2);
+        // const y = (inputImage.bitmap.height / 2) - (watermarkResized.bitmap.height / 2);
 
         // Apply watermark
-        inputImage.composite(watermarkResized, x, y, {
+        inputImage.composite(watermarkResized, 10, 10, {
           mode: Jimp.BLEND_MULTIPLY,
-          opacitySource: 0.5,
+          opacitySource: 0.8,
         });
 
         await inputImage.writeAsync(watermarkedFilePath);

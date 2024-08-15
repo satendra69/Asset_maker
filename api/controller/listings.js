@@ -1289,7 +1289,8 @@ const uploadListItem = async (req, res) => {
 
     const values = files.map(file => {
       const originalName = file.originalname;
-      const url = file.path.replace('public', '');
+      console.log("path", file.path);
+      const url = `\\images\\${path.basename(file.path)}`;
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
 

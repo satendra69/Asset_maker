@@ -185,7 +185,7 @@ function Hero() {
 
       const imgUrl = mainImage.length > 0
         ? httpCommon.defaults.baseURL + mainImage[0].attachment
-        : httpCommon.defaults.baseURL + '/images/defaultasset.jpeg';
+        : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
 
       // Get the property details based on the type
       const details = getPropertyDetails(item.ltg_type, item);
