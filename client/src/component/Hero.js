@@ -3,7 +3,6 @@ import Container from "./Container";
 import Lottie from "lottie-react";
 import MultiCrousel from "./MultiCrousel";
 import httpCommon from "../http-common";
-import cityLottie from "../public/top-cities.json";
 import cloufLottie from "../public/wave.json";
 
 function Hero() {
@@ -105,6 +104,9 @@ function Hero() {
           parking: item.ltg_det_comm_prop_pmts_car_parking,
           area: item.ltg_det_comm_prop_pmts_area_dts,
           address: item.ltg_det_comm_prop_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
       case 'PentHouses':
         return {
@@ -115,6 +117,9 @@ function Hero() {
           parking: item.ltg_det_penthouses_pmts_car_parking,
           area: item.ltg_det_penthouses_pmts_area_dts,
           address: item.ltg_det_penthouses_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
       case 'Plots':
         return {
@@ -125,6 +130,9 @@ function Hero() {
           parking: '', // empty for Plots
           area: item.ltg_det_plot_pmts_area_dts,
           address: item.ltg_det_plot_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
       case 'RowHouses':
         return {
@@ -135,6 +143,9 @@ function Hero() {
           parking: item.ltg_det_row_house_pmts_car_parking,
           area: item.ltg_det_row_house_pmts_area_dts,
           address: item.ltg_det_row_house_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
       case 'Villaments':
         return {
@@ -145,6 +156,9 @@ function Hero() {
           parking: item.ltg_det_villaments_pmts_car_parking,
           area: item.ltg_det_villaments_pmts_area_dts,
           address: item.ltg_det_villaments_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
       default:
         return {
@@ -155,29 +169,34 @@ function Hero() {
           parking: item.ltg_det_pmts_car_park,
           area: item.ltg_det_pmts_area_dts,
           address: item.ltg_det_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
         };
     }
   };
 
-  const Featured = properties.map((item) => {
-    const mainImage = Array.isArray(item.attachments)
-      ? item.attachments?.filter(att => att.type === "Main")
-      : [];
+  const Featured = properties
+    .filter(item => item.ltg_mark_as_featured === "true")
+    .map((item) => {
+      const mainImage = Array.isArray(item.attachments)
+        ? item.attachments?.filter(att => att.type === "Main")
+        : [];
 
-    const imgUrl = mainImage.length > 0
-      ? httpCommon.defaults.baseURL + mainImage[0].attachment
-      : httpCommon.defaults.baseURL + '/images/defaultasset.jpeg';
+      const imgUrl = mainImage.length > 0
+        ? httpCommon.defaults.baseURL + mainImage[0].attachment
+        : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
 
-    // Get the property details based on the type
-    const details = getPropertyDetails(item.ltg_type, item);
+      // Get the property details based on the type
+      const details = getPropertyDetails(item.ltg_type, item);
 
-    return {
-      key: item.ltg_det_mstRowID,
-      title: item.ltg_title,
-      imgUrl: imgUrl,
-      ...details,
-    };
-  });
+      return {
+        key: item.ltg_det_mstRowID,
+        title: item.ltg_title,
+        imgUrl: imgUrl,
+        ...details,
+      };
+    });
 
   useEffect(() => {
     getPropertiesData();

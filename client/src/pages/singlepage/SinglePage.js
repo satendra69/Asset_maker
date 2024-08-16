@@ -16,8 +16,8 @@ function SinglePage() {
   const { id: RowID, ltg_type: TypeGet } = location.state || {};
   const [open, setOpen] = useState(false);
 
-  const [singlePageData, setsinglePageData] = useState([]);
-  const [singlePageImgData, setsinglePageImgData] = useState([]);
+  const [singlePageData, setSinglePageData] = useState([]);
+  const [singlePageImgData, setSinglePageImgData] = useState([]);
   const [brochureData, setBrochureData] = useState([]);
 
   useEffect(() => {
@@ -25,7 +25,6 @@ function SinglePage() {
       navigate('/Property');
       return;
     }
-
     getSinglepropertiesData(RowID, TypeGet);
     singlePageImg(RowID);
     getBrochureData(RowID);
@@ -39,7 +38,7 @@ function SinglePage() {
     try {
       const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
       if (response.data.status === "success") {
-        setsinglePageData(response.data.data);
+        setSinglePageData(response.data.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -51,7 +50,7 @@ function SinglePage() {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
       if (response.data.status === "success") {
         const filteredData = response.data.data?.filter(item => item.type !== 'Brochure');
-        setsinglePageImgData(filteredData);
+        setSinglePageImgData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -69,6 +68,7 @@ function SinglePage() {
       console.error("Error fetching brochure data:", error);
     }
   };
+
 
   function formatPrice(price) {
     if (price == null) {
@@ -99,6 +99,33 @@ function SinglePage() {
     }
   };
 
+  const addressMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_address,
+    Villas: singlePageData?.[0]?.ltg_det_address,
+    Apartments: singlePageData?.[0]?.ltg_det_address,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_address,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_address,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_address,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_address,
+  };
+
+  const address = singlePageData?.[0] ? addressMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0].ltg_det_address : "Address not available";
+
+  const priceMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_sale_price,
+    Villas: singlePageData?.[0]?.ltg_det_sale_price,
+    Apartments: singlePageData?.[0]?.ltg_det_sale_price,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_sale_price,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_sale_price,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_sale_price,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_sale_price,
+  };
+
+  const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
+  const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+
+  console.log(singlePageData);
+
   return (
     <Container className="py-10">
       <DialogProperty
@@ -122,23 +149,12 @@ function SinglePage() {
             )}
             <div className="flex items-center mt-2 text-gray-600">
               <img src="/pin.png" alt="Location Pin" className="w-5 h-5 mr-2" />
-              {singlePageData?.[0]?.ltg_det_plot_address || singlePageData?.[0]?.ltg_det_address}
+              {address}
             </div>
           </div>
           <div className="text-right">
             <div className="mt-2 text-xl font-semibold">
-              ₹
-              {singlePageData && singlePageData[0]?.ltg_type && (
-                <span>
-                  {singlePageData[0].ltg_type === 'Plots' && formatPrice(singlePageData[0].ltg_det_plot_sale_price)}
-                  {singlePageData[0].ltg_type === 'Villas' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                  {singlePageData[0].ltg_type === 'Apartments' && formatPrice(singlePageData[0].ltg_det_sale_price)}
-                  {singlePageData[0].ltg_type === 'RowHouses' && formatPrice(singlePageData[0].ltg_det_row_house_sale_price)}
-                  {singlePageData[0].ltg_type === 'CommercialProperties' && formatPrice(singlePageData[0].ltg_det_comm_prop_sale_price)}
-                  {singlePageData[0].ltg_type === 'Villaments' && formatPrice(singlePageData[0].ltg_det_villaments_sale_price)}
-                  {singlePageData[0].ltg_type === 'PentHouses' && formatPrice(singlePageData[0].ltg_det_penthouses_sale_price)}
-                </span>
-              )}
+              ₹{formattedPrice}
             </div>
             <button className="flex items-center gap-2 mt-2 text-blue-600" onClick={scrollToCalculator}>
               Est. Mortgage Calculator <FaChevronCircleDown />
@@ -147,13 +163,12 @@ function SinglePage() {
         </div>
       </div>
 
-
       {/* Property Details Section */}
       <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />
 
       {/* Mortgage Calculator Section */}
       <section id="mortgage-calculator" className="mt-10">
-        <MortgageCalculator />
+        <MortgageCalculator price={price} />
       </section>
 
       {/* InquiryForm Section */}

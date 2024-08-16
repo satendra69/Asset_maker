@@ -219,6 +219,10 @@ const router = createBrowserRouter([
         element: <NewBlog />,
       },
       {
+        path: "/admin/blog/edit/:id",
+        element: <NewBlog />,
+      },
+      {
         path: "/admin/blog",
         element: <Blog />,
       },
@@ -238,7 +242,10 @@ const router = createBrowserRouter([
         path: "/admin/settings/profile",
         element: <Profile />,
       },
-
+      {
+        path: "/admin/saved-list",
+        element: <SavedList />,
+      },
     ],
   },
 ]);

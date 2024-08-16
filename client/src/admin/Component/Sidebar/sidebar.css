@@ -19,7 +19,7 @@ main {
   background: rgb(1, 5, 41);
   color: white;
   height: 100vh;
-  overflow-y: hidden;
+  overflow-y: auto;
 
   /* position: fixed;
   top: 0;

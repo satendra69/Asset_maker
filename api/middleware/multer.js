@@ -1,77 +1,73 @@
 const multer = require('multer');
 const Jimp = require('jimp');
 const path = require('path');
-const fs = require('fs')
+const fs = require('fs');
 
+// Multer storage configuration
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './public/images');
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname);
-  },
+  destination: (req, file, cb) => cb(null, './public/images'),
+  filename: (req, file, cb) => cb(null, file.originalname),
 });
 
 const upload = multer({ storage: storage });
 
 const addWatermark = async (req, res, next) => {
-  try {
-    if (req.files && req.files.length > 0) {
-      const watermarkPath = path.resolve(__dirname, '../public/images/watermark.png');
-
-      for (const file of req.files) {
-        const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
-        const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
-
-        if (fs.existsSync(originalFilePath) && fs.existsSync(watermarkedFilePath)) {
-          console.log(`Files already exist: ${file.originalname}`);
-          continue;
-        }
-
-        console.log(`Processing file: ${file.path} (Type: ${file.mimetype})`);
-
-        const inputPath = file.path;
-        const outputPath = path.join(path.dirname(inputPath), `watermarked-${path.basename(inputPath)}`);
-
-        try {
-          if (file.mimetype.startsWith('image')) {
-            console.log("Starting watermark processing for:", file.originalname);
-            const inputImage = await Jimp.read(inputPath);
-            const watermark = await Jimp.read(watermarkPath);
-
-            const width = inputImage.bitmap.width;
-            const height = inputImage.bitmap.height;
-
-            watermark.resize(width / 4, Jimp.AUTO);
-
-            inputImage.composite(watermark, 10, 10, {
-              mode: Jimp.BLEND_SOURCE_OVER,
-              opacitySource: 0.5,
-            });
-
-            await inputImage.writeAsync(outputPath);
-
-            file.path = outputPath;
-            file.filename = `watermarked-${file.originalname}`;
-
-            console.log("Watermark processing completed successfully.");
-            console.log(file.path);
-            console.log(file.filename);
-          } else if (file.mimetype === 'application/pdf') {
-            console.log("Saving PDF file:", file.originalname);
-          } else {
-            console.log(`Skipping unsupported file type: ${file.originalname}`);
-          }
-        } catch (fileProcessingError) {
-          console.error(`Error processing file ${file.originalname}:`, fileProcessingError);
-        }
-      }
-    }
-    next();
-  } catch (error) {
-    console.error('Error processing files:', error);
-    res.status(500).send('Internal Server Error');
+  if (!req.files || req.files.length === 0) {
+    return next();
   }
+
+  const watermarkPath = path.resolve(__dirname, '../public/images/watermark.png');
+  let watermark;
+
+  try {
+    // Load watermark once to avoid repeated loading
+    watermark = await Jimp.read(watermarkPath);
+  } catch (error) {
+    console.error('Error loading watermark:', error);
+    return res.status(500).send('Internal Server Error');
+  }
+
+  await Promise.all(req.files.map(async (file) => {
+    const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
+    const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
+
+    if (fs.existsSync(watermarkedFilePath)) {
+      console.log(`Watermarked file already exists: ${file.originalname}`);
+      return;
+    }
+
+    console.log(`Processing file: ${file.originalname} (Type: ${file.mimetype})`);
+
+    if (file.mimetype.startsWith('image')) {
+      try {
+        const inputImage = await Jimp.read(file.path);
+
+        // Resize watermark proportionally only if necessary
+        const watermarkResized = watermark.clone().resize(inputImage.bitmap.width / 3, Jimp.AUTO);
+
+        // Apply watermark
+        inputImage.composite(watermarkResized, 10, 10, {
+          mode: Jimp.BLEND_MULTIPLY,
+          opacitySource: 0.8,
+        });
+
+        await inputImage.writeAsync(watermarkedFilePath);
+
+        file.path = watermarkedFilePath;
+        file.filename = `watermarked-${file.originalname}`;
+
+        console.log(`Watermark applied successfully to: ${file.originalname}`);
+      } catch (error) {
+        console.error(`Error processing image ${file.originalname}:`, error);
+      }
+    } else if (file.mimetype === 'application/pdf') {
+      console.log(`Skipping PDF file: ${file.originalname}`);
+    } else {
+      console.log(`Skipping unsupported file type: ${file.originalname}`);
+    }
+  }));
+
+  next();
 };
 
 module.exports = { upload, addWatermark };

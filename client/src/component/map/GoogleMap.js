@@ -15,8 +15,6 @@ function Map({ googleMapsApiKey, lat, lng }) {
         lng: parsedLng || 0,
     };
 
-    console.log("center", center);
-
     return (
         <LoadScript
             googleMapsApiKey={googleMapsApiKey}

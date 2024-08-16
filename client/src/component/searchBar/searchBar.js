@@ -5,7 +5,6 @@ import { FaSearch } from 'react-icons/fa';
 const types = ['buy', 'rent'];
 
 function SearchBar({ onFilterChange }) {
-  console.log('onFilterChange:', onFilterChange);
   const [query, setQuery] = useState({
     type: 'buy',
     city: '',
