@@ -224,9 +224,9 @@ function Card({ key, item, onPropertyRemoved }) {
     } else if (numericPrice < 100000) {
       return `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(0)} Lakhs`;
+      return `${(numericPrice / 100000).toFixed(1)} Lakhs`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(0)} Cr`;
+      return `${(numericPrice / 10000000).toFixed(2)} Cr`;
     }
   }
 
