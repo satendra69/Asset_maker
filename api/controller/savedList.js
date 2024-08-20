@@ -3,7 +3,6 @@ const db = require('../connect');
 // Get saved properties for a user
 const getSavedProperties = async (req, res) => {
     const { userId } = req.params;
-
     try {
         const [savedProperties] = await db.query('SELECT * FROM saved_properties WHERE user_id = ?', [userId]);
         res.json(savedProperties);
