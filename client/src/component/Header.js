@@ -137,13 +137,7 @@ function Header() {
 
   // Routes to check for dropdown visibility
   const propertyRoutes = [
-    "/Property/Apartments",
-    "/Property/Villas",
-    "/Property/Plots",
-    "/Property/RowHouses",
-    "/Property/Villaments",
-    "/Property/CommercialProperties",
-    "/Property/PentHouses",
+    "/Property/details"
   ];
 
   const showDropdown = !propertyRoutes.includes(location.pathname);

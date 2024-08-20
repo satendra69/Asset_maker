@@ -659,7 +659,6 @@ CREATE TABLE `saved_properties` (
 
 LOCK TABLES `saved_properties` WRITE;
 /*!40000 ALTER TABLE `saved_properties` DISABLE KEYS */;
-INSERT INTO `saved_properties` VALUES (16,31,43);
 /*!40000 ALTER TABLE `saved_properties` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -735,4 +734,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-08-20 20:30:44
+-- Dump completed on 2024-08-20 20:57:31

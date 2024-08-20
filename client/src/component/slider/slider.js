@@ -3,10 +3,18 @@ import httpCommon from "../../http-common";
 import ArrowBackIosNewIcon from "@mui/icons-material/ArrowBackIosNew";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
 
 function Slider({ images }) {
   const [imageIndex, setImageIndex] = useState(null);
+  const [zoomLevel, setZoomLevel] = useState(1);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
+  const [translatePos, setTranslatePos] = useState({ x: 0, y: 0 });
+
   const sliderRef = useRef(null);
+  const imageRef = useRef(null);
 
   const mainImage = images ? images?.filter(item => item.type === "Main") : [];
   const sliderData = images ? images?.filter(item => item.type !== "Main") : [];
@@ -19,11 +27,46 @@ function Slider({ images }) {
     } else {
       setImageIndex(imageIndex === images.length - 1 ? 0 : imageIndex + 1);
     }
+    setZoomLevel(1);
+    setTranslatePos({ x: 0, y: 0 });
   };
 
   const handleOutsideClick = (event) => {
     if (sliderRef.current && !sliderRef.current.contains(event.target)) {
       setImageIndex(null);
+    }
+  };
+
+  const handleZoom = (direction) => {
+    setZoomLevel(prev => direction === "in" ? Math.min(prev + 0.25, 3) : Math.max(prev - 0.25, 1));
+  };
+
+  const handleMouseDown = (event) => {
+    setIsDragging(true);
+    setStartPos({ x: event.clientX, y: event.clientY });
+  };
+
+  const handleMouseMove = (event) => {
+    if (isDragging && imageRef.current) {
+      const dx = event.clientX - startPos.x;
+      const dy = event.clientY - startPos.y;
+      setTranslatePos(prev => ({
+        x: prev.x + dx,
+        y: prev.y + dy
+      }));
+      setStartPos({ x: event.clientX, y: event.clientY });
+    }
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+  };
+
+  const handleScrollZoom = (event) => {
+    if (event.deltaY < 0) {
+      handleZoom("in");
+    } else {
+      handleZoom("out");
     }
   };
 
@@ -34,39 +77,75 @@ function Slider({ images }) {
     };
   }, []);
 
+  useEffect(() => {
+    if (imageIndex !== null) {
+      document.addEventListener("wheel", handleScrollZoom);
+    } else {
+      document.removeEventListener("wheel", handleScrollZoom);
+    }
+    return () => {
+      document.removeEventListener("wheel", handleScrollZoom);
+    };
+  }, [imageIndex]);
+
   return (
     <div className="relative flex flex-col md:flex-row w-full gap-4 h-full max-h-[51vh] overflow-hidden">
       {imageIndex !== null && (
         <div
           ref={sliderRef}
-          className="fixed inset-0 z-50 flex items-center justify-between p-4 bg-black bg-opacity-80"
-          style={{ paddingTop: '100px' }}
+          className="fixed inset-0 z-50 flex items-center justify-between bg-black bg-opacity-90"
         >
           <button
-            className="p-2 text-white transition-transform transform hover:scale-110"
+            className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
             onClick={() => changeSlide("left")}
           >
-            <ArrowBackIosNewIcon className="w-10 h-10 md:h-8 md:w-8" />
+            <ArrowBackIosNewIcon className="w-8 h-8 md:w-10 md:h-10" />
           </button>
-          <div className="flex items-center justify-center flex-1">
+          <div
+            className="relative flex items-center justify-center flex-1 h-full overflow-hidden"
+            onMouseDown={handleMouseDown}
+            onMouseMove={handleMouseMove}
+            onMouseUp={handleMouseUp}
+            onMouseLeave={handleMouseUp}
+          >
             <img
+              ref={imageRef}
               src={httpCommon.defaults.baseURL + combinedImages[imageIndex].attachment}
               alt=""
-              className="object-contain w-full rounded-lg shadow-lg h-80 md:h-96"
+              style={{
+                transform: `scale(${zoomLevel}) translate(${translatePos.x}px, ${translatePos.y}px)`,
+                cursor: isDragging ? 'grabbing' : 'grab',
+                transition: isDragging ? 'none' : 'transform 0.3s ease'
+              }}
+              className="object-contain w-full max-h-[80vh] rounded-lg shadow-lg"
             />
           </div>
           <button
-            className="p-2 text-white transition-transform transform hover:scale-110"
+            className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
             onClick={() => changeSlide("right")}
           >
-            <ArrowForwardIosIcon className="w-10 h-10 md:h-8 md:w-8" />
+            <ArrowForwardIosIcon className="w-8 h-8 md:w-10 md:h-10" />
           </button>
           <button
-            className="absolute text-3xl text-white transition-colors top-32 right-10 hover:text-red-500"
+            className="absolute p-2 text-white transition-colors top-10 right-10 hover:text-red-500 focus:outline-none"
             onClick={() => setImageIndex(null)}
           >
-            <CloseIcon className="w-8 h-8 md:h-6 md:w-6" />
+            <CloseIcon className="w-10 h-10 md:w-12 md:h-12" />
           </button>
+          <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-10 left-1/2">
+            <button
+              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              onClick={() => handleZoom("out")}
+            >
+              <ZoomOutIcon className="w-8 h-8 md:w-10 md:h-10" />
+            </button>
+            <button
+              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              onClick={() => handleZoom("in")}
+            >
+              <ZoomInIcon className="w-8 h-8 md:w-10 md:h-10" />
+            </button>
+          </div>
         </div>
       )}
       <div className="flex-1">
