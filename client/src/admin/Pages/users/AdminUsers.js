@@ -13,6 +13,7 @@ const AdminUsers = () => {
     email: "",
     password: "",
     avatar: "",
+    phoneno: "",
     admin: false,
   });
   const [loading, setLoading] = useState(true);
@@ -52,6 +53,7 @@ const AdminUsers = () => {
       username: user.username,
       email: user.email,
       avatar: user.avatar,
+      phoneno: user.phoneno || "",
       password: "",
       admin: user.admin || false,
     });
@@ -78,7 +80,7 @@ const AdminUsers = () => {
       });
       setSuccessMessage(res.data);
       setEditingUser(null);
-      setFormData({ username: "", email: "", password: "", avatar: "", admin: false });
+      setFormData({ username: "", email: "", password: "", avatar: "", phoneno: "", admin: false });
       const updatedUsers = users.map((user) =>
         user.id === editingUser.id ? { ...user, ...updatedData } : user
       );
@@ -128,6 +130,7 @@ const AdminUsers = () => {
               <div>
                 <p className="text-lg font-semibold">{user.username}</p>
                 <p className="text-gray-600">{user.email}</p>
+                <p className="text-gray-600">{user.phoneno}</p>
                 <p className={`text-sm ${user.admin ? 'text-green-500' : 'text-red-500'}`}>
                   {user.admin ? 'Admin' : 'User'}
                 </p>
@@ -170,6 +173,14 @@ const AdminUsers = () => {
               onChange={handleChange}
               placeholder="Email"
               required
+              className="w-full p-2 mb-4 border border-gray-300 rounded"
+            />
+            <input
+              type="text"
+              name="phoneno"
+              value={formData.phoneno}
+              onChange={handleChange}
+              placeholder="Phone Number"
               className="w-full p-2 mb-4 border border-gray-300 rounded"
             />
             <input

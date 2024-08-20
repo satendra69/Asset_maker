@@ -102,6 +102,11 @@ const updateUser = async (req, res, next) => {
     values.push(updatedUserData.phoneno);
   }
 
+  if (updatedUserData.admin) {
+    fields.push("admin = ?");
+    values.push(updatedUserData.admin);
+  }
+
   if (updatedUserData.password) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(updatedUserData.password, salt);

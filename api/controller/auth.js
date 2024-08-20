@@ -13,7 +13,7 @@ function generateOTP() {
 // Registration endpoint
 const registerP = async (req, res) => {
   console.log("Register endpoint hit");
-  const { email, username, password } = req.body;
+  const { email, username, password, phoneno } = req.body;
 
   try {
     // Check if username or email already exists
@@ -32,7 +32,7 @@ const registerP = async (req, res) => {
 
     // Generate OTP and store it
     const otp = generateOTP();
-    otpStore[email] = { otp, username, password };
+    otpStore[email] = { otp, username, password, phoneno };
 
     console.log("OTP generated:", otp);
 
@@ -85,16 +85,15 @@ const verifyP = async (req, res) => {
   const storedData = otpStore[email];
 
   if (storedData && storedData.otp === otp) {
-    const { username, password } = storedData;
+    const { username, password, phoneno } = storedData;
 
-    // Hash the password and insert the user into the database
     const salt = bcrypt.genSaltSync(10);
     const hashedPassword = bcrypt.hashSync(password, salt);
 
-    const qInsert = "INSERT INTO users (`username`, `email`, `password`) VALUES (?, ?, ?)";
-    await db.query(qInsert, [username, email, hashedPassword]);
+    const qInsert = "INSERT INTO users (`username`, `email`, `password`, `phoneno`) VALUES (?, ?, ?, ?)";
+    await db.query(qInsert, [username, email, hashedPassword, phoneno || null]);
 
-    delete otpStore[email]; // Clear the stored data
+    delete otpStore[email];
     console.log("Email verified and user registered successfully");
     return res.status(200).json({
       msg: "Email verified successfully and user registered.",

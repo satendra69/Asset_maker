@@ -16,8 +16,8 @@ function Slider({ images }) {
   const sliderRef = useRef(null);
   const imageRef = useRef(null);
 
-  const mainImage = images ? images?.filter(item => item.type === "Main") : [];
-  const sliderData = images ? images?.filter(item => item.type !== "Main") : [];
+  const mainImage = images ? images.filter(item => item.type === "Main") : [];
+  const sliderData = images ? images.filter(item => item.type !== "Main") : [];
 
   let combinedImages = mainImage.concat(sliderData);
 
@@ -96,11 +96,13 @@ function Slider({ images }) {
           className="fixed inset-0 z-50 flex items-center justify-between bg-black bg-opacity-90"
         >
           <button
-            className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+            aria-label="Previous Slide"
+            className="absolute z-50 p-3 text-white transition-transform transform -translate-y-1/2 hover:scale-110 focus:outline-none left-4 top-1/2"
             onClick={() => changeSlide("left")}
           >
             <ArrowBackIosNewIcon className="w-8 h-8 md:w-10 md:h-10" />
           </button>
+
           <div
             className="relative flex items-center justify-center flex-1 h-full overflow-hidden"
             onMouseDown={handleMouseDown}
@@ -121,16 +123,11 @@ function Slider({ images }) {
             />
           </div>
           <button
-            className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+            aria-label="Next Slide"
+            className="absolute p-3 text-white transition-transform transform -translate-y-1/2 hover:scale-110 focus:outline-none right-4 top-1/2"
             onClick={() => changeSlide("right")}
           >
             <ArrowForwardIosIcon className="w-8 h-8 md:w-10 md:h-10" />
-          </button>
-          <button
-            className="absolute p-2 text-white transition-colors top-10 right-10 hover:text-red-500 focus:outline-none"
-            onClick={() => setImageIndex(null)}
-          >
-            <CloseIcon className="w-10 h-10 md:w-12 md:h-12" />
           </button>
           <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-10 left-1/2">
             <button
@@ -144,6 +141,12 @@ function Slider({ images }) {
               onClick={() => handleZoom("in")}
             >
               <ZoomInIcon className="w-8 h-8 md:w-10 md:h-10" />
+            </button>
+            <button
+              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              onClick={() => setImageIndex(null)}
+            >
+              <CloseIcon className="w-8 h-8 md:w-10 md:h-10" />
             </button>
           </div>
         </div>
