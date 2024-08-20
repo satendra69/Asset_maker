@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import httpCommon from "../../../../http-common";
 
-const FileModal = ({ documents, currentIndex, isStored, onClose, modalPdfUrl }) => {
+const FileModal = ({ documents = [], currentIndex, isStored, onClose, modalPdfUrl }) => {
     const [currentDocumentIndex, setCurrentDocumentIndex] = useState(currentIndex);
+    const [pdfLoaded, setPdfLoaded] = useState(true);
     const modalRef = useRef(null);
 
     useEffect(() => {
@@ -36,46 +37,53 @@ const FileModal = ({ documents, currentIndex, isStored, onClose, modalPdfUrl }) 
         }
     };
 
-    const documentUrl = isStored
-        ? httpCommon.defaults.baseURL + documents[currentDocumentIndex].attachment
-        : modalPdfUrl;
+    const currentDocument = documents[currentDocumentIndex];
+    const documentUrl = isStored && currentDocument
+        ? httpCommon.defaults.baseURL + currentDocument.attachment.replace(/\\/g, '/')
+        : modalPdfUrl.replace(/\\/g, '/');
 
-    // const documentUrl = isStored
-    // ? documents[currentDocumentIndex].attachment
-    // : URL.createObjectURL(documents[currentDocumentIndex]);
+    // Function to handle PDF load errors
+    const handleObjectError = () => {
+        setPdfLoaded(false);
+    };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-auto p-10">
-            <div className="modal-overlay fixed inset-0 bg-gray-500 opacity-50" onClick={closeModal}></div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-10 overflow-auto">
+            <div className="fixed inset-0 bg-gray-500 opacity-50 modal-overlay" onClick={closeModal}></div>
             <div
-                className="modal-container bg-white rounded-md max-w-4xl w-full h-full overflow-hidden relative"
+                className="relative w-full h-full max-w-4xl overflow-hidden bg-white rounded-md modal-container"
                 tabIndex={-1}
                 ref={modalRef}
                 onKeyDown={handleKeyDown}
             >
                 <button
-                    className="modal-close absolute top-0 right-0 cursor-pointer text-white font-bold text-3xl m-4 z-50"
+                    className="absolute z-50 text-3xl font-bold text-white cursor-pointer top-2 right-28 modal-close"
                     onClick={closeModal}
                     aria-label="Close modal"
                 >
                     &times;
                 </button>
 
-                <div className="document-viewer h-full w-full">
-                    <iframe
-                        src={documentUrl}
-                        width="100%"
-                        height="100%"
-                        title="PDF Viewer"
-                        frameBorder="0"
-                    ></iframe>
+                <div className="flex items-center justify-center w-full h-full document-viewer">
+                    {pdfLoaded ? (
+                        <object
+                            data={`${documentUrl}#navpanes=0&scrollbar=0`}
+                            type="application/pdf"
+                            width="100%"
+                            height="100%"
+                            aria-label="PDF Viewer"
+                            onError={handleObjectError}
+                        >
+                            <div className="flex items-center justify-center w-full h-full">
+                                <p>Your browser does not support PDFs. <a href={documentUrl} target="_blank" rel="noopener noreferrer">Download the PDF</a>.</p>
+                            </div>
+                        </object>
+                    ) : (
+                        <div className="flex items-center justify-center w-full h-full">
+                            <p>Your browser does not support PDFs. <a href={documentUrl} target="_blank" rel="noopener noreferrer">Download the PDF</a>.</p>
+                        </div>
+                    )}
                 </div>
-
-                {documents[currentDocumentIndex] && (
-                    <div className="modal-caption text-center py-4 text-gray-400" id="document-modal-title">
-                        {documents[currentDocumentIndex].name || documents[currentDocumentIndex].file_name}
-                    </div>
-                )}
             </div>
         </div>
     );
