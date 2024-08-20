@@ -62,16 +62,25 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
     const imageUrl = getImageUrl(images[currentImageIndex]);
 
     const zoomIn = () => {
-        setZoomLevel(prevZoom => Math.min(prevZoom + 0.1, 2));
+        setZoomLevel(prevZoom => Math.min(prevZoom + 0.3, 10));
     };
 
     const zoomOut = () => {
-        setZoomLevel(prevZoom => Math.max(prevZoom - 0.1, 1));
+        setZoomLevel(prevZoom => Math.max(prevZoom - 0.3, 1));
     };
 
     const resetZoom = () => {
         setZoomLevel(1);
         setTranslate({ x: 0, y: 0 });
+    };
+
+    const handleWheel = (e) => {
+        e.preventDefault();
+        if (e.deltaY < 0) {
+            zoomIn();
+        } else {
+            zoomOut();
+        }
     };
 
     const startDragging = (e) => {
@@ -127,6 +136,7 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
                     onMouseMove={handleDragging}
                     onMouseUp={stopDragging}
                     onMouseLeave={stopDragging}
+                    onWheel={handleWheel} // Added for mouse scroll zoom
                 >
                     <div className="slide active">
                         {imageUrl && (
