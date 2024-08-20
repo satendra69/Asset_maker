@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AiFillCaretDown, AiFillPropertySafety } from "react-icons/ai";
 import { FaBuilding, FaHamburger, FaHome } from "react-icons/fa";
 import { motion } from "framer-motion";
@@ -63,6 +63,7 @@ function Header() {
 
   const cityDropdownRef = useRef(null);
   const propDropdownRef = useRef(null);
+  const location = useLocation();
   const navigate = useNavigate();
 
   const isActive = () => {
@@ -133,6 +134,19 @@ function Header() {
   const goToSavedList = () => {
     navigate("/saved-list", { state: { userId: currentUser.id } });
   };
+
+  // Routes to check for dropdown visibility
+  const propertyRoutes = [
+    "/Property/Apartments",
+    "/Property/Villas",
+    "/Property/Plots",
+    "/Property/RowHouses",
+    "/Property/Villaments",
+    "/Property/CommercialProperties",
+    "/Property/PentHouses",
+  ];
+
+  const showDropdown = !propertyRoutes.includes(location.pathname);
 
   return (
     <>
@@ -401,7 +415,7 @@ function Header() {
           </ul>
         </motion.div>
 
-        {active && (
+        {showDropdown && active && (
           <motion.div
             className=" shadow-md bg-[#F7F7F8] hidden md:block"
             animate={active ? "open" : "closed"}
@@ -419,7 +433,8 @@ function Header() {
                 Villas
               </Link>
               <Link to={"/Property/Plots"} className="flex items-center gap-1 text-slate-900">
-                <MdGrass size={25} /> Plots
+                <MdGrass size={25} />
+                Plots
               </Link>
               <Link to={"/Property/RowHouses"} className="flex items-center gap-1 text-slate-900">
                 <MdHouseSiding size={25} />
