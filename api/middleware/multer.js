@@ -57,6 +57,10 @@ const addWatermark = async (req, res, next) => {
 
         await inputImage.writeAsync(watermarkedFilePath);
 
+        // Remove the original file after watermarking
+        fs.unlinkSync(originalFilePath);
+
+        // Update file properties
         file.path = watermarkedFilePath;
         file.filename = `watermarked-${file.originalname}`;
 
