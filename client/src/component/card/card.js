@@ -65,21 +65,22 @@ function Card({ key, item, onPropertyRemoved }) {
   });
 
   const saveToSavedList = async () => {
-    if (!currentUser) {
-      navigate("/login");
-      return;
-    }
-    try {
-      const res = await httpCommon.post(`/saved-list/add`, {
-        userId: currentUser.id,
-        propertyId: item.RowID,
-      });
-      toast.success(res.data.message);
-      setIsSaved(true);
-    } catch (error) {
-      console.error(error);
-      handleError(error);
-    }
+    // if (!currentUser) {
+    //   navigate("/login");
+    //   return;
+    // }
+    // try {
+    //   const res = await httpCommon.post(`/saved-list/add`, {
+    //     userId: currentUser.id,
+    //     propertyId: item.RowID,
+    //   });
+    //   toast.success(res.data.message);
+    //   setIsSaved(true);
+    // } catch (error) {
+    //   console.error(error);
+    //   handleError(error);
+    // }
+    console.log("saved list");
   };
 
   const removeFromSavedList = async () => {
