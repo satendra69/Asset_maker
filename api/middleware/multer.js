@@ -16,64 +16,85 @@ const addWatermark = async (req, res, next) => {
     return next();
   }
 
-  const watermarkPath = path.resolve(__dirname, '../public/images/watermark.png');
-  let watermark;
+  const watermarkDarkPath = path.resolve(__dirname, '../public/images/watermark_dark.png');
+  const watermarkBrightPath = path.resolve(__dirname, '../public/images/watermark_bright.png');
+
+  let watermarkDark, watermarkBright;
 
   try {
-    // Load watermark once to avoid repeated loading
-    watermark = await Jimp.read(watermarkPath);
+    // Load both watermarks
+    watermarkDark = await Jimp.read(watermarkDarkPath);
+    watermarkBright = await Jimp.read(watermarkBrightPath);
   } catch (error) {
     console.error('Error loading watermark:', error);
     return res.status(500).send('Internal Server Error');
   }
 
-  await Promise.all(req.files.map(async (file) => {
+  const supportedImageFormats = ['image/png', 'image/jpeg', 'image/jpg'];
+
+  // Filter out files that are not images or are not supported formats
+  const filesToProcess = req.files.filter(file => supportedImageFormats.includes(file.mimetype));
+
+  await Promise.all(filesToProcess.map(async (file) => {
     const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
     const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
 
+    // Check if the watermarked file already exists
     if (fs.existsSync(watermarkedFilePath)) {
-      console.log(`Watermarked file already exists: ${file.originalname}`);
+      console.log(`Watermarked file already exists, skipping: ${file.originalname}`);
+      fs.unlinkSync(originalFilePath);
+      file.path = watermarkedFilePath;
+      file.filename = `watermarked-${file.originalname}`;
       return;
     }
 
     console.log(`Processing file: ${file.originalname} (Type: ${file.mimetype})`);
 
-    if (file.mimetype.startsWith('image')) {
-      try {
-        const inputImage = await Jimp.read(file.path);
+    try {
+      const inputImage = await Jimp.read(file.path);
 
-        // Resize watermark proportionally only if necessary
-        const watermarkResized = watermark.clone().resize(inputImage.bitmap.width / 3, Jimp.AUTO);
+      // Calculate the brightness of the image by averaging pixel values
+      let totalBrightness = 0;
+      inputImage.scan(0, 0, inputImage.bitmap.width, inputImage.bitmap.height, function (x, y, idx) {
+        const red = this.bitmap.data[idx];
+        const green = this.bitmap.data[idx + 1];
+        const blue = this.bitmap.data[idx + 2];
 
-        /// Calculate the center position
-        const x = (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2;
-        const y = (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2;
+        const brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
+        totalBrightness += brightness;
+      });
 
-        // Apply watermark
-        inputImage.composite(watermarkResized, x, y, {
-          mode: Jimp.BLEND_MULTIPLY,
-          opacitySource: 0.8,
-        });
+      const averageBrightness = totalBrightness / (inputImage.bitmap.width * inputImage.bitmap.height);
+      console.log(`Average brightness: ${averageBrightness}`);
 
-        await inputImage.writeAsync(watermarkedFilePath);
+      const selectedWatermark = averageBrightness > 0.3 ? watermarkDark : watermarkBright;
+      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 3, Jimp.AUTO);
 
-        // Remove the original file after watermarking
-        fs.unlinkSync(originalFilePath);
+      const x = (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2;
+      const y = (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2;
 
-        // Update file properties
-        file.path = watermarkedFilePath;
-        file.filename = `watermarked-${file.originalname}`;
+      inputImage.composite(watermarkResized, x, y, {
+        mode: Jimp.BLEND_SOURCE_OVER,
+        opacitySource: 0.7,
+      });
 
-        console.log(`Watermark applied successfully to: ${file.originalname}`);
-      } catch (error) {
-        console.error(`Error processing image ${file.originalname}:`, error);
-      }
-    } else if (file.mimetype === 'application/pdf') {
-      console.log(`Skipping PDF file: ${file.originalname}`);
-    } else {
-      console.log(`Skipping unsupported file type: ${file.originalname}`);
+      await inputImage.writeAsync(watermarkedFilePath);
+
+      // Remove the original file after watermarking
+      fs.unlinkSync(originalFilePath);
+
+      // Update file properties
+      file.path = watermarkedFilePath;
+      file.filename = `watermarked-${file.originalname}`;
+
+      console.log(`Watermark applied successfully to: ${file.originalname}`);
+    } catch (error) {
+      console.error(`Error processing image ${file.originalname}:`, error);
     }
   }));
+
+  // Filter the req.files array to include only files that have been successfully watermarked
+  req.files = req.files.filter(file => file.filename.startsWith('watermarked-') || !supportedImageFormats.includes(file.mimetype));
 
   next();
 };

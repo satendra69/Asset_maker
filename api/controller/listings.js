@@ -1289,7 +1289,7 @@ const uploadListItem = async (req, res) => {
 
     const values = files.map(file => {
       const originalName = file.originalname;
-      console.log("path", file.path);
+      // console.log("path", file.path);
       const url = `\\images\\${path.basename(file.path)}`;
       const now = new Date();
       const formattedDate = now.toISOString().slice(0, 10);
@@ -1310,7 +1310,7 @@ const uploadListItem = async (req, res) => {
     });
   } catch (error) {
     await connection.rollback();
-    console.erro('Error uploading files:', error);
+    console.error('Error uploading files:', error);
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
     connection.release();
