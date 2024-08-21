@@ -9,7 +9,8 @@ export default function SignUp() {
     username: "",
     email: "",
     password: "",
-    confirmPassword: "", // Added confirm password field
+    confirmPassword: "",
+    phoneno: "",
   });
   const [loading, setLoading] = useState(false);
   const [otpOpen, setOtpOpen] = useState(false);
@@ -17,7 +18,7 @@ export default function SignUp() {
   const [currentOtp, setCurrentOtp] = useState(null);
   const [otpSent, setOtpSent] = useState(false);
   const [otpActiveIndex, setOtpActiveIndex] = useState(0);
-  const [errorMessage, setErrorMessage] = useState(""); // State for error messages
+  const [errorMessage, setErrorMessage] = useState("");
   const inputRef = useRef();
 
   useEffect(() => {
@@ -29,7 +30,7 @@ export default function SignUp() {
       ...formData,
       [e.target.id]: e.target.value,
     });
-    setErrorMessage(""); // Clear error message on input change
+    setErrorMessage("");
   };
 
   const handleChangeOtp = (e, index) => {
@@ -123,6 +124,13 @@ export default function SignUp() {
             required
           />
           <input
+            type="text"
+            placeholder="phone number (optional)"
+            className="p-3 border rounded-lg"
+            id="phoneno"
+            onChange={handleChange}
+          />
+          <input
             type="password"
             placeholder="password"
             className="p-3 border rounded-lg"
@@ -132,14 +140,14 @@ export default function SignUp() {
           />
           <input
             type="password"
-            placeholder="confirm password" // Confirm password field
+            placeholder="confirm password"
             className="p-3 border rounded-lg"
             id="confirmPassword"
             onChange={handleChange}
             required
           />
           {errorMessage && (
-            <div className="text-red-500">{errorMessage}</div> // Display error message
+            <div className="text-red-500">{errorMessage}</div>
           )}
           <button
             disabled={loading}

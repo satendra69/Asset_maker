@@ -13,6 +13,7 @@ const Profile = () => {
         username: "",
         email: "",
         avatar: "",
+        phoneno: "",
         password: "",
         confirmPassword: "",
     });
@@ -38,6 +39,7 @@ const Profile = () => {
                     username: res.data.username,
                     email: res.data.email,
                     avatar: res.data.avatar,
+                    phoneno: res.data.phoneno || "",
                     password: "",
                     confirmPassword: "",
                 });
@@ -63,6 +65,7 @@ const Profile = () => {
                 username: formData.username,
                 email: formData.email,
                 avatar: formData.avatar,
+                phoneno: formData.phoneno || "",
             };
 
             if (formData.password) {
@@ -135,6 +138,14 @@ const Profile = () => {
                     value={formData.avatar}
                     onChange={handleChange}
                     placeholder="Avatar URL"
+                    className="w-full p-2 mb-4 border border-gray-300 rounded"
+                />
+                <input
+                    type="text"
+                    name="phoneno"
+                    value={formData.phoneno}
+                    onChange={handleChange}
+                    placeholder="Phone Number"
                     className="w-full p-2 mb-4 border border-gray-300 rounded"
                 />
                 <input
