@@ -68,14 +68,21 @@ const addWatermark = async (req, res, next) => {
       console.log(`Average brightness: ${averageBrightness}`);
 
       const selectedWatermark = averageBrightness > 0.3 ? watermarkDark : watermarkBright;
-      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 3, Jimp.AUTO);
+      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 6, Jimp.AUTO);
 
-      const x = (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2;
-      const y = (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2;
+      // Define the positions for watermark placement
+      const positions = [
+        { x: 0, y: 0 },
+        { x: (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2, y: (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2 },
+        { x: inputImage.bitmap.width - watermarkResized.bitmap.width, y: inputImage.bitmap.height - watermarkResized.bitmap.height },
+      ];
 
-      inputImage.composite(watermarkResized, x, y, {
-        mode: Jimp.BLEND_SOURCE_OVER,
-        opacitySource: 0.7,
+      // Apply the watermark at each position
+      positions.forEach(pos => {
+        inputImage.composite(watermarkResized, pos.x, pos.y, {
+          mode: Jimp.BLEND_SOURCE_OVER,
+          opacitySource: 0.7,
+        });
       });
 
       await inputImage.writeAsync(watermarkedFilePath);
