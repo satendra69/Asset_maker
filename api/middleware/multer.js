@@ -70,11 +70,18 @@ const addWatermark = async (req, res, next) => {
       const selectedWatermark = averageBrightness > 0.3 ? watermarkDark : watermarkBright;
       const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 6, Jimp.AUTO);
 
-      // Define the positions for watermark placement
+      const margin = Math.floor(inputImage.bitmap.width * 0.05);
+
       const positions = [
-        { x: 0, y: 0 },
-        { x: (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2, y: (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2 },
-        { x: inputImage.bitmap.width - watermarkResized.bitmap.width, y: inputImage.bitmap.height - watermarkResized.bitmap.height },
+        { x: 0, y: margin },
+        {
+          x: (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2,
+          y: (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2
+        },
+        {
+          x: inputImage.bitmap.width - watermarkResized.bitmap.width,
+          y: inputImage.bitmap.height - watermarkResized.bitmap.height - margin
+        }
       ];
 
       // Apply the watermark at each position
