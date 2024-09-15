@@ -153,7 +153,7 @@ function SinglePage() {
             </div>
           </div>
           <div className="text-right">
-            <div className="mt-2 text-xl font-semibold">
+            <div className="mt-2 text-3xl font-semibold">
               ₹{formattedPrice}
             </div>
             <button className="flex items-center gap-2 mt-2 text-blue-600" onClick={scrollToCalculator}>

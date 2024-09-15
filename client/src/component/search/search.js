@@ -125,6 +125,8 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
     }
   };
 
+  // console.log("property", formData.property);
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     if (type === "checkbox") {
@@ -198,9 +200,7 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
   }, [query]);
 
   useEffect(() => {
-    if (formData.property !== "any" && formData.property) {
-      onFilterChange(formData);
-    }
+    onFilterChange(formData);
   }, [formData]);
 
   return (
@@ -314,13 +314,12 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                     >
                       <option value="any">Any</option>
                       <option value="Apartments">Apartments</option>
-                      <option value="CommercialProperties">
-                        Commercial Properties
-                      </option>
+                      <option value="CommercialProperties">Commercial Properties</option>
                       <option value="PentHouses">PentHouses</option>
                       <option value="RowHouses">Row Houses</option>
                       <option value="Plots">Plots</option>
                       <option value="Villaments">Villaments</option>
+                      <option value="Villas">Villas</option>
                     </select>
                   </div>
 

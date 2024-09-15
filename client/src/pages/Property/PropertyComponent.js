@@ -44,19 +44,21 @@ function PropertyComponent({ defaultType }) {
 
     // Handle filter changes
     const handleFilterChange = (formData) => {
+
         if (!formData || Object.keys(formData).length === 0) {
             setAllProperties(originalProperties);
             return;
         }
+        // console.log("formData", formData);
 
-        let filteredProperties = originalProperties || [];
+        let filteredProperties = [...originalProperties] || [];
 
         if (filteredProperties.length === 0) {
             setAllProperties(filteredProperties);
             return;
         }
 
-        if (formData.search) {
+        if (formData.search && formData.search.trim() !== '') {
             filteredProperties = filteredProperties.filter((item) =>
                 item.ltg_regions?.toLowerCase().includes(formData.search.toLowerCase()) ||
                 item.ltg_categories?.toLowerCase().includes(formData.search.toLowerCase())

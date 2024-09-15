@@ -780,6 +780,14 @@ const PropertyDetails = ({ property, images, brochure }) => {
   const brochureFiles = brochure?.filter(file => file.type === 'Brochure');
   const pdfFiles = brochureFiles?.filter(file => file.file_name.endsWith('.pdf'));
 
+  const capitalizeLabel = (label) => {
+    return label
+      .toLowerCase()
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   return (
     <div className="container p-4 mx-auto">
       <div className="-mt-24 space-y-16">
@@ -792,7 +800,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
                   fact.value && (
                     <div key={index} className="flex items-center p-4 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-2 font-semibold">{fact.label}:</span>
+                      <span className="ml-2 font-semibold">{capitalizeLabel(fact.label)}:</span>
                       <span className="ml-2 text-gray-700">{fact.value}</span>
                     </div>
                   )
