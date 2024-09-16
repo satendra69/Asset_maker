@@ -843,7 +843,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
                   .map((fact, index) => (
                     <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-1 text-sm font-semibold long-label">{fact.label}:</span>
+                      <span className="ml-1 text-sm font-semibold long-label">{capitalizeLabel(fact.label)}:</span>
                       <span className="ml-1 text-sm text-gray-700">{fact.value}</span>
                     </div>
                   ))}
