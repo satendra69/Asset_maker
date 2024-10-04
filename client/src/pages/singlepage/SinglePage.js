@@ -9,6 +9,7 @@ import DialogProperty from "../../component/card/DialogProperty";
 import Social from "../../component/Social";
 import PropertyDetails from "../../component/propertyDetail/PropertyDetail";
 import MortgageCalculator from "./MortgageCalculator";
+import MultiCrousel from "../../component/MultiCrousel";
 
 function SinglePage() {
   const location = useLocation();
@@ -16,7 +17,9 @@ function SinglePage() {
   const { id: RowID, ltg_type: TypeGet } = location.state || {};
   const [open, setOpen] = useState(false);
 
+  const [properties, setProperties] = useState([]);
   const [singlePageData, setSinglePageData] = useState([]);
+  const [similarProperties, setSimilarProperties] = useState([]);
   const [singlePageImgData, setSinglePageImgData] = useState([]);
   const [brochureData, setBrochureData] = useState([]);
 
@@ -25,13 +28,45 @@ function SinglePage() {
       navigate('/Property');
       return;
     }
+    getPropertiesData();
     getSinglepropertiesData(RowID, TypeGet);
     singlePageImg(RowID);
     getBrochureData(RowID);
   }, [RowID, TypeGet, navigate]);
 
+  useEffect(() => {
+    if (properties.length && singlePageData.length) {
+      const matchedType = singlePageData[0]?.ltg_type;
+      const matchedCategory = singlePageData[0]?.ltg_categories;
+      const matchedRowID = singlePageData[0]?.RowID;
+
+      const similar = properties.filter(property =>
+        property.ltg_type === matchedType &&
+        property.ltg_categories === matchedCategory &&
+        property.RowID !== matchedRowID
+      );
+      setSimilarProperties(similar);
+    }
+  }, [properties, singlePageData]);
+
+  // console.log(similarProperties, "similarProperties");
+
   const handleClose = () => {
     setOpen(false);
+  };
+
+  // Fetch properties data
+  const getPropertiesData = async () => {
+    try {
+      const response = await httpCommon.get("/list");
+      if (response.data.status === "success") {
+        const allProperties = response.data.data;
+        setProperties(allProperties);
+        // console.log("allProperties", allProperties);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const getSinglepropertiesData = async (RowID, TypeGet) => {
@@ -124,7 +159,110 @@ function SinglePage() {
   const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
   const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
 
-  console.log(singlePageData);
+  const getPropertyDetails = (type, item) => {
+    switch (type) {
+      case 'CommercialProperties':
+        return {
+          description: item.ltg_det_comm_prop_desc,
+          price: formatPrice(item.ltg_det_comm_prop_sale_price),
+          bedroom: '', // empty for CommercialProperties
+          bathroom: '', // empty for CommercialProperties
+          parking: item.ltg_det_comm_prop_pmts_car_parking,
+          area: item.ltg_det_comm_prop_pmts_area_dts,
+          address: item.ltg_det_comm_prop_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+      case 'PentHouses':
+        return {
+          description: item.ltg_det_penthouses_desc,
+          price: formatPrice(item.ltg_det_penthouses_sale_price),
+          bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
+          bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
+          parking: item.ltg_det_penthouses_pmts_car_parking,
+          area: item.ltg_det_penthouses_pmts_area_dts,
+          address: item.ltg_det_penthouses_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+      case 'Plots':
+        return {
+          description: item.ltg_det_plot_desc,
+          price: formatPrice(item.ltg_det_plot_sale_price),
+          bedroom: '', // empty for Plots
+          bathroom: '', // empty for Plots
+          parking: '', // empty for Plots
+          area: item.ltg_det_plot_pmts_area_dts,
+          address: item.ltg_det_plot_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+      case 'RowHouses':
+        return {
+          description: item.ltg_det_row_house_desc,
+          price: formatPrice(item.ltg_det_row_house_sale_price),
+          bedroom: item.ltg_det_row_house_pmts_bed_rooms,
+          bathroom: item.ltg_det_row_house_pmts_bath_rooms,
+          parking: item.ltg_det_row_house_pmts_car_parking,
+          area: item.ltg_det_row_house_pmts_area_dts,
+          address: item.ltg_det_row_house_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+      case 'Villaments':
+        return {
+          description: item.ltg_det_villaments_desc,
+          price: formatPrice(item.ltg_det_villaments_sale_price),
+          bedroom: item.ltg_det_villaments_pmts_bed_rooms,
+          bathroom: item.ltg_det_villaments_pmts_bath_rooms,
+          parking: item.ltg_det_villaments_pmts_car_parking,
+          area: item.ltg_det_villaments_pmts_area_dts,
+          address: item.ltg_det_villaments_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+      default:
+        return {
+          description: item.ltg_det_desc,
+          price: formatPrice(item.ltg_det_sale_price),
+          bedroom: item.ltg_det_pmts_bed_rom,
+          bathroom: item.ltg_det_pmts_bth_rom,
+          parking: item.ltg_det_pmts_car_park,
+          area: item.ltg_det_pmts_area_dts,
+          address: item.ltg_det_address,
+          RowID: item.ltg_det_mstRowID,
+          type: item.ltg_type,
+          featured: item.ltg_mark_as_featured,
+        };
+    }
+  };
+
+  const Featured = similarProperties
+    .filter(item => item.ltg_mark_as_featured === "true")
+    .map((item) => {
+      const mainImage = Array.isArray(item.attachments)
+        ? item.attachments?.filter(att => att.type === "Main")
+        : [];
+
+      const imgUrl = mainImage.length > 0
+        ? httpCommon.defaults.baseURL + mainImage[0].attachment
+        : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
+
+      // Get the property details based on the type
+      const details = getPropertyDetails(item.ltg_type, item);
+
+      return {
+        key: item.ltg_det_mstRowID,
+        title: item.ltg_title,
+        imgUrl: imgUrl,
+        ...details,
+      };
+    });
 
   return (
     <Container className="py-10">
@@ -165,6 +303,12 @@ function SinglePage() {
 
       {/* Property Details Section */}
       <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />
+
+      {/* Similar Properties */}
+      <section>
+        <h2 className="mb-4 ml-2 text-2xl font-bold">Similar Properties</h2>
+        <MultiCrousel data={Featured} details={true} />
+      </section>
 
       {/* Mortgage Calculator Section */}
       <section id="mortgage-calculator" className="mt-10">
