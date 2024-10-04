@@ -204,7 +204,7 @@ function Hero() {
 
   return (
     <>
-      <section className="relative mt-8 bg-white featured-listings padingm">
+      <section className="relative h-5 bg-white featured-listings padingm">
         <Container>
           <Lottie
             animationData={cloufLottie}
@@ -213,6 +213,7 @@ function Hero() {
           />
         </Container>
       </section>
+
       <section className="relative featured-listings">
         <Container className={"space-y-5  md:pt-80 pt-20"}>
           <h2 className="text-center ">Discover Our Featured Listings</h2>

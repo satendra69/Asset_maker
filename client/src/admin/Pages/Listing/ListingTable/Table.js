@@ -12,7 +12,10 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const navigate = useNavigate();
 
   const getMainImageUrl = (attachments) => {
-    const mainImage = attachments?.find(att => att.type === "Main");
+    if (!attachments || !Array.isArray(attachments)) {
+      return httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
+    }
+    const mainImage = attachments.find(att => att.type === "Main");
     return mainImage
       ? httpCommon.defaults.baseURL + mainImage.attachment
       : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
@@ -294,10 +297,11 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       },
     ], [navigate, setOpen]);
 
-  const tableData = useMemo(() => data.map((item, index) => ({
+  const tableData = useMemo(() => (data || []).map((item, index) => ({
     ...item,
     RowID: index + 1
   })), [data]);
+
 
   const table = useMaterialReactTable({
     columns,
@@ -309,6 +313,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     enableColumnPinning: true,
     enableFacetedValues: true,
     enableRowSelection: true,
+    enableStickyHeader: true,
+    enableStickyFooter: true,
 
     initialState: {
       density: 'compact',

@@ -854,14 +854,14 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="east">East</option>
-              <option value="west">West</option>
-              <option value="north">North</option>
-              <option value="south">South</option>
-              <option value="north-west">North-West</option>
-              <option value="north-east">North-East</option>
-              <option value="south-west">South-West</option>
-              <option value="south-east">South-East</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="North-West">North-West</option>
+              <option value="North-East">North-East</option>
+              <option value="South-West">South-West</option>
+              <option value="South-East">South-East</option>
             </select>
           </div>
         </div>
@@ -883,8 +883,8 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
         </div>
@@ -906,8 +906,8 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
         </div>
@@ -929,8 +929,8 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
         </div>
@@ -998,8 +998,8 @@ function PlotsModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="excluded">Excluded</option>
-              <option value="included">Included</option>
+              <option value="Excluded">Excluded</option>
+              <option value="Included">Included</option>
             </select>
           </div>
         </div>

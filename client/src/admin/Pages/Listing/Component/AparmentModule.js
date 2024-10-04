@@ -47,12 +47,12 @@ function ApartmentModule({ action, onDataUpdate }) {
     { value: "Study Room", label: "Study Room" },
     { value: "Store Room", label: "Store Room" },
     { value: "Servant Room", label: "Servant Room" },
-    { value: "drawing_room", label: "Drawing Room" },
-    { value: "private_garden", label: "Private Garden" },
-    { value: "terrace_garden", label: "Terrace Garden" },
-    { value: "private_pool", label: "Private Pool" },
-    { value: "private_jacuzzi", label: "Private Jacuzzi" },
-    { value: "vaastu_compliant", label: "Vaastu Compliant" },
+    { value: "Drawing Room", label: "Drawing Room" },
+    { value: "Private Garden", label: "Private Garden" },
+    { value: "Terrace Garden", label: "Terrace Garden" },
+    { value: "Private Pool", label: "Private Pool" },
+    { value: "Private Jacuzzi", label: "Private Jacuzzi" },
+    { value: "Vaastu Compliant", label: "Vaastu Compliant" },
   ];
   const [totalFloors, setTotalFloors] = useState("");
   const [transactionType, setTransactionType] = useState("");

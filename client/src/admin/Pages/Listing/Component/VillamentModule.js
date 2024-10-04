@@ -54,16 +54,16 @@ function VillamentModule({ action, onDataUpdate }) {
   const [overLooking, setOverLooking] = useState("");
   const [otherAdvantages, setOtherAdvantages] = useState([]);
   const advantagesOptions = [
-    { value: "pooja_room", label: "Pooja Room" },
-    { value: "study_room", label: "Study Room" },
-    { value: "store_room", label: "Store Room" },
-    { value: "servant_room", label: "Servant Room" },
-    { value: "drawing_room", label: "Drawing Room" },
-    { value: "private_garden", label: "Private Garden" },
-    { value: "terrace_garden", label: "Terrace Garden" },
-    { value: "private_pool", label: "Private Pool" },
-    { value: "private_jacuzzi", label: "Private Jacuzzi" },
-    { value: "vaastu_compliant", label: "Vaastu Compliant" },
+    { value: "Pooja Room", label: "Pooja Room" },
+    { value: "Study Room", label: "Study Room" },
+    { value: "Store Room", label: "Store Room" },
+    { value: "Servant Room", label: "Servant Room" },
+    { value: "Drawing Room", label: "Drawing Room" },
+    { value: "Private Garden", label: "Private Garden" },
+    { value: "Terrace Garden", label: "Terrace Garden" },
+    { value: "Private Pool", label: "Private Pool" },
+    { value: "Private Jacuzzi", label: "Private Jacuzzi" },
+    { value: "Vaastu Compliant", label: "Vaastu Compliant" },
   ];
   const [transactionType, setTransactionType] = useState("");
   const [availableFrom, setAvailableFrom] = useState("");
@@ -999,14 +999,14 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="east">East</option>
-              <option value="west">West</option>
-              <option value="north">North</option>
-              <option value="south">South</option>
-              <option value="north-west">North-West</option>
-              <option value="north-east">North-East</option>
-              <option value="south-west">South-West</option>
-              <option value="south-east">South-East</option>
+              <option value="East">East</option>
+              <option value="West">West</option>
+              <option value="North">North</option>
+              <option value="South">South</option>
+              <option value="North-West">North-West</option>
+              <option value="North-East">North-East</option>
+              <option value="South-West">South-West</option>
+              <option value="South-East">South-East</option>
             </select>
           </div>
         </div>
@@ -1028,8 +1028,8 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
         </div>
@@ -1051,8 +1051,8 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
           </div>
         </div>
@@ -1142,9 +1142,9 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="fully-furnished">Fully Furnished</option>
-              <option value="semi-furnished">Semi Furnished</option>
-              <option value="un-furnished">Un-Furnished</option>
+              <option value="Fully Furnished">Fully Furnished</option>
+              <option value="Semi Furnished">Semi Furnished</option>
+              <option value="Un-Furnished">Un-Furnished</option>
             </select>
           </div>
         </div>
@@ -1275,8 +1275,8 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              <option value="excluded">Excluded</option>
-              <option value="included">Included</option>
+              <option value="Excluded">Excluded</option>
+              <option value="Included">Included</option>
             </select>
           </div>
         </div>

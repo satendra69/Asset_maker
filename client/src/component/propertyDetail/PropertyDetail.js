@@ -723,34 +723,44 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const transformedProperty = transformData(property[0]);
 
+  console.log(property[0]);
+
   const locationMapping = {
     Plots: {
       lat: property[0]?.ltg_det_plot_latitude,
-      lng: property[0]?.ltg_det_plot_longitude
+      lng: property[0]?.ltg_det_plot_longitude,
+      address: property[0]?.ltg_det_plot_location
     },
     Villas: {
       lat: property[0]?.ltg_det_latitude,
-      lng: property[0]?.ltg_det_longitude
+      lng: property[0]?.ltg_det_longitude,
+      address: property[0]?.ltg_det_location
     },
     Apartments: {
       lat: property[0]?.ltg_det_latitude,
-      lng: property[0]?.ltg_det_longitude
+      lng: property[0]?.ltg_det_longitude,
+      address: property[0]?.ltg_det_location
     },
     RowHouses: {
       lat: property[0]?.ltg_det_row_house_latitude,
       lng: property[0]?.ltg_det_row_house_longitude
+      ,
+      address: property[0]?.ltg_det_row_house_location
     },
     CommercialProperties: {
       lat: property[0]?.ltg_det_comm_prop_latitude,
-      lng: property[0]?.ltg_det_comm_prop_longitude
+      lng: property[0]?.ltg_det_comm_prop_longitude,
+      address: property[0]?.ltg_det_comm_prop_location
     },
     Villaments: {
       lat: property[0]?.ltg_det_villaments_latitude,
-      lng: property[0]?.ltg_det_villaments_longitude
+      lng: property[0]?.ltg_det_villaments_longitude,
+      address: property[0]?.ltg_det_villaments_location
     },
     PentHouses: {
       lat: property[0]?.ltg_det_penthouses_latitude,
-      lng: property[0]?.ltg_det_penthouses_longitude
+      lng: property[0]?.ltg_det_penthouses_longitude,
+      address: property[0]?.ltg_det_penthouses_location
     },
   };
 
@@ -800,8 +810,8 @@ const PropertyDetails = ({ property, images, brochure }) => {
                   fact.value && (
                     <div key={index} className="flex items-center p-4 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-2 font-semibold">{capitalizeLabel(fact.label)}:</span>
-                      <span className="ml-2 text-gray-700">{fact.value}</span>
+                      <span className="ml-2 text-gray-700">{capitalizeLabel(fact.label)}:</span>
+                      <span className="ml-2 font-semibold">{fact.value}</span>
                     </div>
                   )
                 ))}
@@ -827,6 +837,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
                 googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
                 lat={location?.lat}
                 lng={location?.lng}
+                address={location?.address}
               />
             </div>
           </div>
