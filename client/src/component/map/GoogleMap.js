@@ -1,11 +1,11 @@
 import React from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { FaDirections } from "react-icons/fa";  // Icon for the "Get Directions" button
+import { FaDirections } from "react-icons/fa";
 
 const containerStyle = {
     width: "100%",
     height: "400px",
-    position: "relative", // Ensures the card is positioned relative to the map
+    position: "relative",
 };
 
 const cardStyle = {
@@ -16,7 +16,7 @@ const cardStyle = {
     padding: "15px",
     boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)",
     borderRadius: "8px",
-    zIndex: "10", // Ensures the card stays on top of the map
+    zIndex: "10",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",

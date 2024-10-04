@@ -723,8 +723,6 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const transformedProperty = transformData(property[0]);
 
-  console.log(property[0]);
-
   const locationMapping = {
     Plots: {
       lat: property[0]?.ltg_det_plot_latitude,
