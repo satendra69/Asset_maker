@@ -228,10 +228,7 @@ function Header() {
 
           {/* Login/Register and Sell Property for big screens */}
           {currentUser ? (
-            <button
-              onClick={() => setProfile(!profile)}
-              className="relative hidden sm:inline"
-            >
+            <div onClick={() => setProfile(!profile)} className="relative hidden sm:inline">
               <div className="flex items-center gap-2">
                 <button className="flex items-center gap-2 px-3 py-2 text-white bg-red-700 rounded-lg">
                   <span>Sell Property</span>
@@ -274,7 +271,7 @@ function Header() {
                   </button>
                 </motion.div>
               )}
-            </button>
+            </div>
           ) : (
             <div className="items-center justify-center hidden gap-3 sm:flex">
               <Link to={"/sign-in"} className="flex items-center gap-1">

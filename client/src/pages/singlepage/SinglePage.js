@@ -242,8 +242,7 @@ function SinglePage() {
     }
   };
 
-  const Featured = similarProperties
-    .filter(item => item.ltg_mark_as_featured === "true")
+  const SimilarP = similarProperties
     .map((item) => {
       const mainImage = Array.isArray(item.attachments)
         ? item.attachments?.filter(att => att.type === "Main")
@@ -305,10 +304,12 @@ function SinglePage() {
       <PropertyDetails property={singlePageData} images={singlePageImgData} brochure={brochureData} />
 
       {/* Similar Properties */}
-      <section>
-        <h2 className="mb-4 ml-2 text-2xl font-bold">Similar Properties</h2>
-        <MultiCrousel data={Featured} details={true} />
-      </section>
+      {SimilarP && SimilarP.length > 0 && (
+        <section>
+          <h2 className="mb-4 ml-2 text-2xl font-bold">Similar Properties</h2>
+          <MultiCrousel data={SimilarP} details={true} />
+        </section>
+      )}
 
       {/* Mortgage Calculator Section */}
       <section id="mortgage-calculator" className="mt-10">
