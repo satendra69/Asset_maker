@@ -334,10 +334,12 @@ function NewListingPage({ action }) {
               <p>{listing.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
             </div>
-            <button onClick={createPDFBtn} className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
+
+            {/* <button onClick={createPDFBtn} className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
               Create PDF
             </button>
-            {createPDFData && <CreatePDF createPDFInsert={createPDFData.createPDFInsert} storedGalleryImages={createPDFData.storedGalleryImages} />}
+            {createPDFData && <CreatePDF createPDFInsert={createPDFData.createPDFInsert} storedGalleryImages={createPDFData.storedGalleryImages} />} */}
+
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}

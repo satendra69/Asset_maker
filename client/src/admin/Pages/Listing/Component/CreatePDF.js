@@ -2,14 +2,14 @@ import { useEffect } from 'react';
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'; // Import StandardFonts
 import httpCommon from '../../../../http-common';
 
-const CreatePDF = ({ createPDFInsert }) => {
-    console.log('createPDFInsert:', createPDFInsert);
+const CreatePDF = ({ open, onClose, data }) => {
+    console.log('createPDFInsert data:', data);
 
     useEffect(() => {
         const createPdfDocument = async () => {
             try {
                 // Validate createPDFInsert
-                if (!createPDFInsert || Object.keys(createPDFInsert).length === 0) {
+                if (!data || data.length === 0) {
                     console.error('Error: createPDFInsert is invalid or empty.');
                     return;
                 }
@@ -83,7 +83,7 @@ const CreatePDF = ({ createPDFInsert }) => {
 
                 // Draw type-specific fields
                 const drawTypeSpecificFields = (listingData) => {
-                    switch (createPDFInsert.listingType) {
+                    switch (data.ltg_type) {
                         case 'Apartments':
                             if (listingData.ratePerSqFt || listingData.selectedBedRooms || listingData.selectedBathRooms || listingData.totalFloors) {
                                 if (listingData.ratePerSqFt) {
@@ -172,7 +172,7 @@ const CreatePDF = ({ createPDFInsert }) => {
                             break;
 
                         default:
-                            console.warn('Unknown listing type:', createPDFInsert.listingType);
+                            console.warn('Unknown listing type:', data.ltg_type);
                     }
                 };
 
@@ -264,12 +264,9 @@ const CreatePDF = ({ createPDFInsert }) => {
                     }
                 };
 
-                y = drawBoldText(`Title: ${createPDFInsert.title}`, 50, y, 20, true);
+                y = drawBoldText(`Title: ${data.ltg_title}`, 50, y, 20, true);
 
-                const mainImages = [
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.mainImage) ? createPDFInsert.ListingData.combinedImages.mainImage : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.storedMainImage) ? createPDFInsert.ListingData.combinedImages.storedMainImage : [])
-                ];
+                const mainImages = data?.attachments.filter(image => image.type === "Main");
 
                 if (mainImages.length > 0) {
                     y = await addImagesToPdf(mainImages, y);
@@ -279,30 +276,23 @@ const CreatePDF = ({ createPDFInsert }) => {
 
                 // Draw initial fields
                 y = drawBoldText(`Property Owner:`, 50, y, fontSize);
-                y = drawTextWithWrap(`${createPDFInsert.selectedOwner}`, 50, y, fontSize);
+                y = drawTextWithWrap(`${data.ltg_owner}`, 50, y, fontSize);
                 y = drawBoldText(`Type:`, 50, y, fontSize);
-                y = drawTextWithWrap(`${createPDFInsert.listingType}${createPDFInsert.featured ? ' *' : ''}`, 50, y, fontSize);
+                y = drawTextWithWrap(`${data.ltg_type}${data.ltg_mark_as_featured === "true" ? ' *' : ''}`, 50, y, fontSize);
                 y = drawBoldText(`Region:`, 50, y, fontSize);
-                y = drawTextWithWrap(`${createPDFInsert.selectedRegions}`, 50, y, fontSize);
+                y = drawTextWithWrap(`${data.ltg_regions}`, 50, y, fontSize);
                 y = drawBoldText(`Category:`, 50, y, fontSize);
-                y = drawTextWithWrap(`${createPDFInsert.selectedCategories}`, 50, y, fontSize);
+                y = drawTextWithWrap(`${data.ltg_categories}`, 50, y, fontSize);
 
                 // Check for Listing Data
-                const listingData = createPDFInsert.ListingData;
+                const listingData = data;
                 if (listingData) {
                     drawCommonFields(listingData);
                     drawTypeSpecificFields(listingData);
                 }
 
                 // Gather images
-                const images = [
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.galleryImages) ? createPDFInsert.ListingData.combinedImages.galleryImages : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.masterPlanImages) ? createPDFInsert.ListingData.combinedImages.masterPlanImages : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.floorAreaPlanImages) ? createPDFInsert.ListingData.combinedImages.floorAreaPlanImages : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.storedGalleryImages) ? createPDFInsert.ListingData.combinedImages.storedGalleryImages : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.storedMasterPlanImages) ? createPDFInsert.ListingData.combinedImages.storedMasterPlanImages : []),
-                    ...(Array.isArray(createPDFInsert?.ListingData?.combinedImages?.storedFloorAreaPlanImages) ? createPDFInsert.ListingData.combinedImages.storedFloorAreaPlanImages : [])
-                ];
+                const images = data?.attachments.filter(image => image.type !== "Main");
 
                 if (images.length > 0) {
                     y = await addImagesToPdf(images, y);
@@ -310,7 +300,8 @@ const CreatePDF = ({ createPDFInsert }) => {
                     console.warn('Warning: No valid images available to add to the PDF.');
                 }
 
-                const brochures = createPDFInsert.ListingData?.combinedBrochure?.storedBrochure || [];
+                const brochures = data.attachments.filter(doc => doc.type === 'Brochure');
+
                 if (brochures.length > 0) {
                     await addBrochureToPdf(brochures);
                 } else {
@@ -318,7 +309,7 @@ const CreatePDF = ({ createPDFInsert }) => {
                 }
 
                 // Add footer for property details pages
-                if (createPDFInsert.featured) {
+                if (data?.ltg_mark_as_featured === "true") {
                     const footerText = "* Featured Property";
                     page.drawText(footerText, { x: 50, y: 20, size: fontSize, font: helveticaFont });
                 }
@@ -335,7 +326,7 @@ const CreatePDF = ({ createPDFInsert }) => {
                 const blob = new Blob([pdfBytes], { type: 'application/pdf' });
                 const link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
-                link.download = `${createPDFInsert.title || 'document'}.pdf`;
+                link.download = `${data.ltg_title || 'document'}.pdf`;
                 link.click();
             } catch (error) {
                 console.error('Error creating PDF:', error);
@@ -343,7 +334,7 @@ const CreatePDF = ({ createPDFInsert }) => {
         };
 
         createPdfDocument();
-    }, [createPDFInsert]);
+    }, [data]);
 
     return null;
 };
