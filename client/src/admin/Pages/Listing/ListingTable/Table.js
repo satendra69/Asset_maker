@@ -262,6 +262,12 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
+        accessorKey: "ltg_type",
+        header: "Type",
+        size: 60,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
+      },
+      {
         accessorFn: (row) => row[getDynamicFields(row.ltg_type).address],
         header: "Address",
         size: 80,
@@ -301,7 +307,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     ...item,
     RowID: index + 1
   })), [data]);
-
 
   const table = useMaterialReactTable({
     columns,

@@ -18,6 +18,7 @@ function Card({ key, item, onPropertyRemoved }) {
   const [isSaved, setIsSaved] = useState(false);
 
   const navigate = useNavigate();
+  const defaultImage = httpCommon.defaults.baseURL + '/images/defaultasset.jpg';
 
   const fetchSavedProperties = async () => {
     if (!currentUser) return [];
@@ -80,7 +81,6 @@ function Card({ key, item, onPropertyRemoved }) {
       console.error(error);
       handleError(error);
     }
-    // console.log("saved list");
   };
 
   const removeFromSavedList = async () => {
@@ -250,11 +250,15 @@ function Card({ key, item, onPropertyRemoved }) {
           >
             {imageAttachments.length > 0 ? (
               <img
-                src={httpCommon.defaults.baseURL + imageAttachments[0].attachment}
+                src={
+                  imageAttachments[0].attachment
+                    ? httpCommon.defaults.baseURL + imageAttachments[0].attachment
+                    : defaultImage
+                }
                 alt="attachment"
               />
             ) : (
-              <p>No images available</p>
+              <img src={defaultImage} alt="default attachment" />
             )}
           </Link>
         </div>
