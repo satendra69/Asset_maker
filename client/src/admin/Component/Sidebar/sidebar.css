@@ -111,3 +111,26 @@ main {
   padding-left: 20px;
   border-bottom: #fff 0.5px solid;
 }
+
+/* Apply the custom cursor only to the links */
+/* .sidebar .link {
+  cursor: url("../../../../public/hand.png"), pointer;
+}
+
+.sidebar .link .icon {
+  cursor: url("../../../../public/hand.png"), pointer;
+}
+
+.sidebar .link .link_text {
+  cursor: urlurl("../../../../public/hand.png"), pointer;
+}
+
+/* Optionally, you can add this for sub-routes */
+/* .sidebar .subRoute {
+  cursor: url("../../../../public/hand.png"), pointer;
+}
+
+.sidebar .link:hover,
+.sidebar .link:active {
+  cursor: url("../../../../public/hand.png"), pointer;
+} */

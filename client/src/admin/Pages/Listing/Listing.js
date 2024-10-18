@@ -360,52 +360,6 @@ function NewListingPage({ action }) {
         </div>
         <div className="full-data">
           <h2 className="text-xl font-semibold">Property</h2>
-          <div className="flex flex-wrap items-center">
-            {/* Title */}
-            <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-2/3 sm:mb-0">
-              <label
-                htmlFor="title"
-                className="block text-sm font-semibold leading-6 text-gray-900"
-              >
-                Title
-              </label>
-              <div className="mt-1">
-                <input
-                  type="text"
-                  id="title"
-                  value={title}
-                  placeholder="Auto Draft"
-                  onChange={(e) => setTitle(e.target.value)}
-                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                />
-              </div>
-            </div>
-
-            {/* Listing Owner select dropdown */}
-            <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
-              <label
-                htmlFor="owner"
-                className="block text-sm font-semibold leading-6 text-gray-900"
-              >
-                Property Owner
-              </label>
-              <div className="mt-1">
-                <select
-                  id="owner"
-                  value={selectedOwner}
-                  onChange={(e) => setSelectedOwner(e.target.value)}
-                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                >
-                  <option value="" disabled>
-                    Select Property Owner
-                  </option>
-                  <option value="type1">Not Selected</option>
-                  <option value="Master">Master</option>
-                  <option value="AssetMakers">Asset Makers</option>
-                </select>
-              </div>
-            </div>
-          </div>
 
           {/* Listing Type and Mark as Featured */}
           <div className="flex flex-wrap items-center mt-4 space-x-4">
@@ -464,6 +418,53 @@ function NewListingPage({ action }) {
               >
                 Mark as Featured
               </label>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center mt-4">
+            {/* Title */}
+            <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-2/3 sm:mb-0">
+              <label
+                htmlFor="title"
+                className="block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Title
+              </label>
+              <div className="mt-1">
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  placeholder="Auto Draft"
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                />
+              </div>
+            </div>
+
+            {/* Listing Owner select dropdown */}
+            <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+              <label
+                htmlFor="owner"
+                className="block text-sm font-semibold leading-6 text-gray-900"
+              >
+                Property Owner
+              </label>
+              <div className="mt-1">
+                <select
+                  id="owner"
+                  value={selectedOwner}
+                  onChange={(e) => setSelectedOwner(e.target.value)}
+                  className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                >
+                  <option value="" disabled>
+                    Select Property Owner
+                  </option>
+                  <option value="type1">Not Selected</option>
+                  <option value="Master">Master</option>
+                  <option value="AssetMakers">Asset Makers</option>
+                </select>
+              </div>
             </div>
           </div>
 

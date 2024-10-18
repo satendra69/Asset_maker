@@ -14,8 +14,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const [openPdfDialog, setOpenPdfDialog] = useState(false);
   const navigate = useNavigate();
 
-  console.log("data", data);
-
   const getMainImageUrl = (attachments) => {
     if (!attachments || !Array.isArray(attachments)) {
       return httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
