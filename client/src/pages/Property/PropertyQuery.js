@@ -20,7 +20,7 @@ function PropertyQuery() {
     const location = useLocation();
     const query = location.state?.query || "";
 
-    console.log("query", query);
+    console.log("httpCommon", httpCommon);
 
     const fetchAllProperties = async (filterParams = {}) => {
         setLoading(true);
@@ -29,7 +29,7 @@ function PropertyQuery() {
             const response = await httpCommon.get(`/list`, {
                 params: filterParams
             });
-            // console.log("response____AllProperties", response);
+            console.log("response____AllProperties", response);
 
             if (response.data.status === "success") {
                 const properties = response.data.data;

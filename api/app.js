@@ -54,7 +54,7 @@ app.use("/api/categories", categoriesRouter);
 app.use('/api/regions', regionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/saved-list', savedListRoutes);
-app.use('/api/testimonials', testimonialRoutes);
+//app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/blogs', blogRoutes);
 
 // Root endpoint for testing
