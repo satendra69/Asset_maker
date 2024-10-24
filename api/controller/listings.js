@@ -408,6 +408,14 @@ const updateListItem = async (req, res) => {
   const listingID = req.params.listingID;
   const customLabels = JSON.stringify(req.body.CustomLabel);
 
+  console.log("Raw body:", req.body);
+
+  // Check if ListingData exists
+  if (!req.body || !req.body.ListingData) {
+    console.error("ListingData is not provided.");
+    return res.status(400).json({ error: "ListingData is required." });
+  }
+
   const q =
     `UPDATE ltg_mst 
     SET
@@ -459,6 +467,10 @@ const updateListItem = async (req, res) => {
           ltg_det_pmts_main_dor_facing = '${req.body.ListingData.mainDoorFacing}',
           ltg_det_pmts_property_flrg = '${req.body.ListingData.propertyFlooring}',
           ltg_det_pmts_balconies = '${req.body.ListingData.balconies}',
+          ltg_det_pmts_totalFlatsInSociety = '${req.body.ListingData.totalFlatsInSociety}',
+          ltg_det_pmts_duplex = '${req.body.ListingData.isDuplex}',
+          ltg_det_pmts_triplex = '${req.body.ListingData.isTriplex}',
+          ltg_det_pmts_plot_facing = '${req.body.ListingData.plotFacing}',
           ltg_det_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}',
           ltg_det_pmts_furnishing = '${req.body.ListingData.furnishing}',
           ltg_det_pmts_stamp_duty = '${req.body.ListingData.stampDutyAndRegistrationCharges}',
@@ -560,6 +572,10 @@ SET
     ltg_det_row_house_pmts_corner_rowhouse = '${req.body.ListingData.isCornerRowhouse}', 
     ltg_det_row_house_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
     ltg_det_row_house_pmts_balconies = '${req.body.ListingData.balconies}', 
+    ltg_det_row_house_pmts_duplex = '${req.body.ListingData.isDuplex}',
+    ltg_det_row_house_pmts_triplex = '${req.body.ListingData.isTriplex}',
+    ltg_det_row_house_pmts_total_floors = '${req.body.ListingData.totalFloors}',
+    ltg_det_row_house_pmts_property_facing = '${req.body.ListingData.propertyFacing}', 
     ltg_det_row_house_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
     ltg_det_row_house_pmts_approaching_road_width = '${req.body.ListingData.approachingRoadWidth}', 
     ltg_det_row_house_pmts_furnishing = '${req.body.ListingData.furnishing}', 
@@ -610,6 +626,13 @@ SET
     ltg_det_comm_prop_pmts_furnishing = '${req.body.ListingData.furnishing}', 
     ltg_det_comm_prop_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
     ltg_det_comm_prop_pmts_total_floors = '${req.body.ListingData.totalFloors}', 
+    ltg_det_comm_prop_pmts_plot_area = '${req.body.ListingData.plotArea}',
+    ltg_det_comm_prop_pmts_plot_facing = '${req.body.ListingData.plotFacing}',
+    ltg_det_comm_prop_pmts_corner_property = '${req.body.ListingData.isCornerProperty}',
+    ltg_det_comm_prop_pmts_plot_dimensions = '${req.body.ListingData.plotDimensions}',
+    ltg_det_comm_prop_pmts_uds = '${req.body.ListingData.uds}',
+    ltg_det_comm_prop_pmts_tenanted = '${req.body.ListingData.isTenanted}',
+    ltg_det_comm_prop_pmts_total_built_up_area = '${req.body.ListingData.totalBuiltUpArea}',
     ltg_det_comm_prop_pmts_property_on_floor = '${req.body.ListingData.propertyOnFloor}', 
     ltg_det_comm_prop_pmts_total_units = '${req.body.ListingData.totalUnits}', 
     ltg_det_comm_prop_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
@@ -668,6 +691,10 @@ SET
     ltg_det_villaments_pmts_furnishing = '${req.body.ListingData.furnishing}', 
     ltg_det_villaments_pmts_property_flooring = '${req.body.ListingData.propertyFlooring}', 
     ltg_det_villaments_pmts_other_advantages = '${req.body.ListingData.advantagesAsString}', 
+    ltg_det_villaments_pmts_triplex = '${req.body.ListingData.selectedTriplex}',
+    ltg_det_villaments_pmts_total_floors = '${req.body.ListingData.totalFloors}',
+    ltg_det_villaments_pmts_property_facing = '${req.body.ListingData.propertyFacing}',
+    ltg_det_villaments_pmts_total_villaments = '${req.body.ListingData.totalVillaments}',
     ltg_det_villaments_pmts_available_from = '${req.body.ListingData.availableFrom}', 
     ltg_det_villaments_pmts_total_project_extent = '${req.body.ListingData.totalProjectExtent}', 
     ltg_det_villaments_pmts_transaction_type = '${req.body.ListingData.transactionType}', 
@@ -712,6 +739,14 @@ SET
     ltg_det_penthouses_pmts_car_parking = '${req.body.ListingData.selectedCarParking}', 
     ltg_det_penthouses_pmts_year_built = '${req.body.ListingData.yearBuilt}', 
     ltg_det_penthouses_pmts_duplex = '${req.body.ListingData.selectedDuplex}', 
+    ltg_det_penthouses_pmts_triplex = '${req.body.ListingData.selectedTriplex}',
+    ltg_det_penthouses_pmts_total_floors = '${req.body.ListingData.totalFloors}',
+    ltg_det_penthouses_pmts_penthouse_on_floor = '${req.body.ListingData.penthouseOnFloor}',
+    ltg_det_penthouses_pmts_private_terrace = '${req.body.ListingData.isPrivateTerrace}',
+    ltg_det_penthouses_pmts_lifts_in_tower = '${req.body.ListingData.liftsInTower}',
+    ltg_det_penthouses_pmts_total_blocks = '${req.body.ListingData.totalBlocks}',
+    ltg_det_penthouses_pmts_total_towers_in_society = '${req.body.ListingData.totalTowersInSociety}',
+    ltg_det_penthouses_pmts_total_flats_in_society = '${req.body.ListingData.totalFlatsInSociety}',
     ltg_det_penthouses_pmts_main_door_facing = '${req.body.ListingData.mainDoorFacing}', 
     ltg_det_penthouses_pmts_gated_community = '${req.body.ListingData.isInGatedCommunity}', 
     ltg_det_penthouses_pmts_corner_penthouse = '${req.body.ListingData.isCornerPenthouse}', 
