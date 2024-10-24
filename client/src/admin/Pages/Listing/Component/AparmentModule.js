@@ -952,20 +952,20 @@ function ApartmentModule({ action, onDataUpdate }) {
             </div>
           </div>
 
-          {/* Rate Per Sq-Ft/Yrd */}
+          {/* Rate Per Sq-Ft */}
           <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label
               htmlFor="ratePerSqFt"
               className="block text-sm font-semibold leading-6 text-gray-900"
             >
-              Rate Per Sq-Ft/Yrd
+              Rate Per Sq-Ft
             </label>
             <div className="mt-2.5 mb-7">
               <input
                 type="text"
                 id="ratePerSqFt"
                 value={ratePerSqFt}
-                placeholder="Enter Rate per Sq-Ft/Yrd"
+                placeholder="Enter Rate per Sq-Ft"
                 onChange={(e) => setRatePerSqFt(e.target.value)}
                 onBlur={handleDataUpdate}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"

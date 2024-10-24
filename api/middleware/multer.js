@@ -68,7 +68,7 @@ const addWatermark = async (req, res, next) => {
       console.log(`Average brightness: ${averageBrightness}`);
 
       const selectedWatermark = averageBrightness > 0.3 ? watermarkDark : watermarkBright;
-      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 6, Jimp.AUTO);
+      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 2, Jimp.AUTO);
 
       const margin = Math.floor(inputImage.bitmap.width * 0.05);
 
