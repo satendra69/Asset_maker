@@ -257,7 +257,10 @@ const SideBar = ({ children }) => {
               damping: 10,
             },
           }}
-          className={`sidebar `}
+          className={`sidebar`}
+          style={{
+            cursor: 'url("/hand.png"), pointer',
+          }}
         >
           <div className="top_section">
             <AnimatePresence>

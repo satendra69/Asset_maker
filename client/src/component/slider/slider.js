@@ -17,7 +17,7 @@ function Slider({ images }) {
   const imageRef = useRef(null);
 
   const mainImage = images ? images.filter(item => item.type === "Main") : [];
-  const sliderData = images ? images.filter(item => item.type !== "Main") : [];
+  const sliderData = images ? images.filter(item => item.type === "Gallery") : [];
 
   let combinedImages = mainImage.concat(sliderData);
 

@@ -307,7 +307,6 @@ const transformData = (propertyData, propertyImages) => {
   const mapCommonFields = (data) => ({
     id: data.RowID,
     type: data.ltg_type,
-    price: data.ltg_det_sale_price,
     title: data.ltg_title,
   });
 
@@ -852,8 +851,8 @@ const PropertyDetails = ({ property, images, brochure }) => {
                   .map((fact, index) => (
                     <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-1 text-sm font-semibold long-label">{capitalizeLabel(fact.label)}:</span>
-                      <span className="ml-1 text-sm text-gray-700">{fact.value}</span>
+                      <span className="ml-1 text-sm text-gray-700 long-label">{capitalizeLabel(fact.label)}:</span>
+                      <span className="ml-1 text-sm font-semibold">{fact.value}</span>
                     </div>
                   ))}
               </div>

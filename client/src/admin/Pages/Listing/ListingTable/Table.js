@@ -2,13 +2,16 @@ import { useMemo, useState } from "react";
 import dayjs from 'dayjs';
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { useNavigate } from "react-router-dom";
-import { Box, Button, Dialog, } from "@mui/material";
-import { Edit, Delete, FileCopy as CopyIcon } from "@mui/icons-material";
+import { Box, Button, Dialog, Tooltip } from "@mui/material";
+import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf } from "@mui/icons-material";
 import httpCommon from "../../../../http-common";
+import CreatePDF from '../Component/CreatePDF';
 
 function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
+  const [pdfData, setPdfData] = useState(null);
+  const [openPdfDialog, setOpenPdfDialog] = useState(false);
   const navigate = useNavigate();
 
   const getMainImageUrl = (attachments) => {
@@ -104,66 +107,100 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         header: "",
         size: 10,
         Cell: ({ row }) => (
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'row',
-              gap: 1,
-              alignItems: 'center',
-            }}
-          >
-            <Button
-              variant="contained"
-              color="primary"
-              size="small"
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+            <Box
               sx={{
-                minWidth: 0,
-                width: 20,
-                height: 20,
                 display: 'flex',
-                justifyContent: 'center',
+                flexDirection: 'row',
+                gap: 1,
                 alignItems: 'center',
               }}
-              onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
             >
-              <Edit style={{ fontSize: 15 }} />
-            </Button>
-            <Button
-              variant="contained"
-              color="secondary"
-              size="small"
-              sx={{
-                minWidth: 0,
-                width: 20,
-                height: 20,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onClick={() => navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`)}
-            >
-              <CopyIcon style={{ fontSize: 15 }} />
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              size="small"
-              sx={{
-                minWidth: 0,
-                width: 20,
-                height: 20,
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-              }}
-              onClick={() => {
-                setSelectedId(row.original.ltg_det_mstRowID);
-                setSelectedType(row.original.ltg_type);
-                setOpen(true);
-              }}
-            >
-              <Delete style={{ fontSize: 15 }} />
-            </Button>
+              <Tooltip title="Edit Property">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    width: 20,
+                    height: 20,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
+                >
+                  <Edit style={{ fontSize: 15 }} />
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Clone Property">
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    width: 20,
+                    height: 20,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`)}
+                >
+                  <CopyIcon style={{ fontSize: 15 }} />
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="Delete Property">
+                <Button
+                  variant="contained"
+                  color="error"
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    width: 20,
+                    height: 20,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => {
+                    setSelectedId(row.original.ltg_det_mstRowID);
+                    setSelectedType(row.original.ltg_type);
+                    setOpen(true);
+                  }}
+                >
+                  <Delete style={{ fontSize: 15 }} />
+                </Button>
+              </Tooltip>
+            </Box>
+
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <Tooltip title="Create PDF">
+                <Button
+                  variant="contained"
+                  color="success"
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    width: 30,
+                    height: 30,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}
+                  onClick={() => {
+                    setPdfData(row.original);
+                    setOpenPdfDialog(true);
+                  }}
+                >
+                  <PictureAsPdf style={{ fontSize: 22 }} />
+                </Button>
+              </Tooltip>
+            </Box>
           </Box>
         ),
       },
@@ -262,6 +299,12 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
       {
+        accessorKey: "ltg_type",
+        header: "Type",
+        size: 60,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
+      },
+      {
         accessorFn: (row) => row[getDynamicFields(row.ltg_type).address],
         header: "Address",
         size: 80,
@@ -301,7 +344,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     ...item,
     RowID: index + 1
   })), [data]);
-
 
   const table = useMaterialReactTable({
     columns,
@@ -371,6 +413,10 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           </div>
         </div>
       </Dialog>
+
+      {/* Create PDF Dialog */}
+      <CreatePDF open={openPdfDialog} onClose={() => setOpenPdfDialog(false)} data={pdfData} />
+
       <MaterialReactTable
         table={table}
       />
