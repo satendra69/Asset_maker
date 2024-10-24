@@ -408,7 +408,7 @@ const updateListItem = async (req, res) => {
   const listingID = req.params.listingID;
   const customLabels = JSON.stringify(req.body.CustomLabel);
 
-  console.log("Raw body:", req.body);
+  // console.log("Raw body:", req.body);
 
   // Check if ListingData exists
   if (!req.body || !req.body.ListingData) {
