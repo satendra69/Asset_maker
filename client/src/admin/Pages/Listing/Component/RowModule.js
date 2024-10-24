@@ -46,6 +46,10 @@ function RowModule({ action, onDataUpdate }) {
   const [mainDoorFacing, setMainDoorFacing] = useState("");
   const [isCornerRowhouse, setIsCornerRowhouse] = useState("");
   const [landUDSArea, setLandUDSArea] = useState("");
+  const [isDuplex, setIsDuplex] = useState("");
+  const [isTriplex, setIsTriplex] = useState("");
+  const [totalFloors, setTotalFloors] = useState("");
+  const [propertyFacing, setPropertyFacing] = useState("");
   const [balconies, setBalconies] = useState("");
   const [furnishing, setFurnishing] = useState("");
   const [propertyFlooring, setPropertyFlooring] = useState("");
@@ -184,6 +188,10 @@ function RowModule({ action, onDataUpdate }) {
         setAvailableFrom(listingData.ltg_det_row_house_pmts_available_from);
         setPropertyAddressDetails(listingData.ltg_det_row_house_property_address_details);
         setLandUDSArea(listingData.ltg_det_row_house_pmts_land_uds_area);
+        setIsDuplex(listingData.ltg_det_row_house_pmts_duplex);
+        setIsTriplex(listingData.ltg_det_row_house_pmts_triplex);
+        setTotalFloors(listingData.ltg_det_row_house_pmts_total_floors);
+        setPropertyFacing(listingData.ltg_det_row_house_pmts_property_facing);
         setIsCornerRowhouse(listingData.ltg_det_row_house_pmts_corner_rowhouse);
 
         setLocationData({
@@ -568,6 +576,10 @@ function RowModule({ action, onDataUpdate }) {
       mainDoorFacing,
       isCornerRowhouse,
       landUDSArea,
+      isDuplex,
+      isTriplex,
+      totalFloors,
+      propertyFacing,
       balconies,
       furnishing,
       propertyFlooring,
@@ -629,9 +641,9 @@ function RowModule({ action, onDataUpdate }) {
     selectedStatus, selectedCarParking, amenitiesAsString, videoUrl, selectedBedRooms, selectedBathRooms,
     yearBuilt, plotDimensions, noOfOpenSides, mainDoorFacing, isCornerRowhouse, landUDSArea, balconies,
     furnishing, propertyFlooring, approachingRoadWidth, isInGatedCommunity, overLooking, advantagesAsString,
-    transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority,
-    totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails, deletedFiles,
-    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
+    transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority, isDuplex, isTriplex,
+    totalFloors, propertyFacing, totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails,
+    deletedFiles, brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
   return (
@@ -770,6 +782,73 @@ function RowModule({ action, onDataUpdate }) {
           </div>
         </div>
 
+        {/* Duplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="isDuplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Duplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="isDuplex"
+              value={isDuplex}
+              onChange={(e) => setIsDuplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Triplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="isTriplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Triplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="isTriplex"
+              value={isTriplex}
+              onChange={(e) => setIsTriplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Total Floors */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalFloors"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Floors
+          </label>
+          <div className="mt-2.5 mr-3 mb-7">
+            <input
+              type="text"
+              id="totalFloors"
+              value={totalFloors}
+              placeholder="Enter Total Floors"
+              onChange={(e) => setTotalFloors(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
         {/* Bed Rooms */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
@@ -842,6 +921,27 @@ function RowModule({ action, onDataUpdate }) {
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+          </div>
+        </div>
+
+        {/* Property Facing */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="propertyFacing"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Property Facing
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="propertyFacing"
+              value={propertyFacing}
+              placeholder="Enter Property Facing"
+              onChange={(e) => setPropertyFacing(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
           </div>
         </div>
 

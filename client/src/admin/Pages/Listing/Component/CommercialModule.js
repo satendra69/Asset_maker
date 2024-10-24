@@ -35,6 +35,13 @@ function CommercialModule({ action, onDataUpdate }) {
   const [yearBuilt, setYearBuilt] = useState("");
   const [balconies, setBalconies] = useState("");
   const [furnishing, setFurnishing] = useState("");
+  const [plotArea, setPlotArea] = useState("");
+  const [plotFacing, setPlotFacing] = useState("");
+  const [isCornerProperty, setIsCornerProperty] = useState("");
+  const [plotDimensions, setPlotDimensions] = useState("");
+  const [uds, setUds] = useState("");
+  const [isTenanted, setIsTenanted] = useState("");
+  const [totalBuiltUpArea, setTotalBuiltUpArea] = useState("");
   const [propertyFlooring, setPropertyFlooring] = useState("");
   const [approachingRoadWidth, setApproachingRoadWidth] = useState("");
   const [propertyOnFloor, setPropertyOnFloor] = useState("");
@@ -167,6 +174,13 @@ function CommercialModule({ action, onDataUpdate }) {
         setVideoUrl(listingData.ltg_det_comm_prop_property_video_url);
         setOtherAdvantages(listingData.ltg_det_comm_prop_pmts_other_advantages.split(", "));
         setSelectedAmenities(listingData.ltg_det_comm_prop_amenities.split(", "));
+        setPlotArea(listingData.ltg_det_comm_prop_pmts_plot_area);
+        setPlotFacing(listingData.ltg_det_comm_prop_pmts_plot_facing);
+        setIsCornerProperty(listingData.ltg_det_comm_prop_pmts_corner_property);
+        setPlotDimensions(listingData.ltg_det_comm_prop_pmts_plot_dimensions);
+        setUds(listingData.ltg_det_comm_prop_pmts_uds);
+        setIsTenanted(listingData.ltg_det_comm_prop_pmts_tenanted);
+        setTotalBuiltUpArea(listingData.ltg_det_comm_prop_pmts_total_built_up_area);
 
         setLocationData({
           location: listingData.ltg_det_comm_prop_location || "",
@@ -541,6 +555,13 @@ function CommercialModule({ action, onDataUpdate }) {
       selectedCarParking,
       yearBuilt,
       balconies,
+      plotArea,
+      plotFacing,
+      isCornerProperty,
+      plotDimensions,
+      uds,
+      isTenanted,
+      totalBuiltUpArea,
       furnishing,
       propertyFlooring,
       approachingRoadWidth,
@@ -597,10 +618,11 @@ function CommercialModule({ action, onDataUpdate }) {
 
   useEffect(() => {
     handleDataUpdate();
-  }, [salePrice, suffixPrice, content, locationData, areaDetails, ratePerSqFt, selectedStatus,
-    selectedCarParking, yearBuilt, balconies, furnishing, propertyFlooring, approachingRoadWidth,
-    propertyOnFloor, totalFloors, transactionType, stampDutyAndRegistrationCharges, approvalAuthority,
-    totalProjectExtent, totalUnits, totalPhases, advantagesAsString, projectBuilderDetails, amenitiesAsString, videoUrl,
+  }, [salePrice, suffixPrice, content, locationData, areaDetails, ratePerSqFt, selectedStatus, plotArea, plotFacing,
+    isCornerProperty, plotDimensions, uds, isTenanted, totalBuiltUpArea, selectedCarParking, yearBuilt, balconies,
+    furnishing, propertyFlooring, approachingRoadWidth, propertyOnFloor, totalFloors, transactionType,
+    stampDutyAndRegistrationCharges, approvalAuthority, totalProjectExtent, totalUnits, totalPhases,
+    advantagesAsString, projectBuilderDetails, amenitiesAsString, videoUrl,
     brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages, deletedFiles,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
@@ -901,6 +923,27 @@ function CommercialModule({ action, onDataUpdate }) {
             </div>
           </div>
 
+          {/* Plot Area */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="plotArea"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Plot Area
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="plotArea"
+                value={plotArea}
+                placeholder="Enter Plot Area"
+                onChange={(e) => setPlotArea(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
           {/* Total Floors */}
           <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label
@@ -916,6 +959,71 @@ function CommercialModule({ action, onDataUpdate }) {
                 value={totalFloors}
                 placeholder="Enter Total Floors"
                 onChange={(e) => setTotalFloors(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Plot Facing */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="plotFacing"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Plot Facing
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="plotFacing"
+                value={plotFacing}
+                placeholder="Enter Plot Facing"
+                onChange={(e) => setPlotFacing(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
+          {/* Corner Property */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="isCornerProperty"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Corner Property
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="isCornerProperty"
+                value={isCornerProperty}
+                onChange={(e) => setIsCornerProperty(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Plot Dimensions */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="plotDimensions"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Plot Dimensions
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="plotDimensions"
+                value={plotDimensions}
+                placeholder="Enter Plot Dimensions"
+                onChange={(e) => setPlotDimensions(e.target.value)}
                 onBlur={handleDataUpdate}
                 className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
@@ -943,6 +1051,27 @@ function CommercialModule({ action, onDataUpdate }) {
             </div>
           </div>
 
+          {/* UDS */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="uds"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              UDS
+            </label>
+            <div className="mt-2.5 mr-3 mb-7">
+              <input
+                type="text"
+                id="uds"
+                value={uds}
+                placeholder="Enter UDS"
+                onChange={(e) => setUds(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
           {/* Furnishing */}
           <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label
@@ -963,6 +1092,29 @@ function CommercialModule({ action, onDataUpdate }) {
                 <option value="Fully Furnished">Fully Furnished</option>
                 <option value="Semi Furnished">Semi Furnished</option>
                 <option value="Un-Furnished">Un-Furnished</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Tenanted */}
+          <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="isTenanted"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Tenanted
+            </label>
+            <div className="mt-1 mr-3 mb-7">
+              <select
+                id="isTenanted"
+                value={isTenanted}
+                onChange={(e) => setIsTenanted(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="">Not Selected</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
               </select>
             </div>
           </div>
@@ -1058,6 +1210,28 @@ function CommercialModule({ action, onDataUpdate }) {
               />
             </div>
           </div>
+
+          {/* Total Built Up Area */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label
+              htmlFor="totalBuiltUpArea"
+              className="block text-sm font-semibold leading-6 text-gray-900"
+            >
+              Total Built Up Area
+            </label>
+            <div className="mt-2.5 mb-7">
+              <input
+                type="text"
+                id="totalBuiltUpArea"
+                value={totalBuiltUpArea}
+                placeholder="Enter Total Built Up Area"
+                onChange={(e) => setTotalBuiltUpArea(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
+            </div>
+          </div>
+
 
           {/* Rate Per Sq-Ft/Yrd */}
           <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
