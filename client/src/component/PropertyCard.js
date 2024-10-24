@@ -18,8 +18,10 @@ function PropertyCard({ card }) {
             alt={card.title}
             className="object-cover w-full h-full rounded-t-lg"
           />
-          <div className="absolute space-y-1 -left-2 top-2">
-            <img src="/Tagline.png" className="object-contain w-16 shadow-md" />
+          <div className="absolute top-0">
+            {card.featured === "true" && (
+              <img src="/Tagline.png" className="object-contain w-16 shadow-md" />
+            )}
             <img src="/sale.png" className="object-contain w-16 shadow-md" />
           </div>
         </div>
