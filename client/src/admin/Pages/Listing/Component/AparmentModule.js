@@ -1660,7 +1660,7 @@ function ApartmentModule({ action, onDataUpdate }) {
               type="file"
               id="masterPlan-upload"
               name="masterPlan-upload"
-              accept=".jpg,.jpeg,.png"
+              accept=".jpg,.jpeg,.png,.pdf"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
@@ -1752,7 +1752,7 @@ function ApartmentModule({ action, onDataUpdate }) {
               type="file"
               id="floorAreaPlan-upload"
               name="floorAreaPlan-upload"
-              accept=".jpg,.jpeg,.png"
+              accept=".jpg,.jpeg,.png,.pdf"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}
