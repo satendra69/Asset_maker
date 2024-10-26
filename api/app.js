@@ -41,6 +41,7 @@ const corsOptions = {
   optionsSuccessStatus: 204,
 };
 
+
 app.use(cors(corsOptions));
 app.use("/api/images", express.static(path.join(__dirname, "public", "images")));
 
