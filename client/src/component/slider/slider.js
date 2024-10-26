@@ -16,16 +16,19 @@ function Slider({ images }) {
   const sliderRef = useRef(null);
   const imageRef = useRef(null);
 
+  console.log(images, "images");
+
   const mainImage = images ? images.filter(item => item.type === "Main") : [];
   const sliderData = images ? images.filter(item => item.type === "Gallery") : [];
 
   let combinedImages = mainImage.concat(sliderData);
 
   const changeSlide = (direction) => {
+    const totalImages = combinedImages.length;
     if (direction === "left") {
-      setImageIndex(imageIndex === 0 ? images.length - 1 : imageIndex - 1);
+      setImageIndex((prevIndex) => (prevIndex - 1 + totalImages) % totalImages);
     } else {
-      setImageIndex(imageIndex === images.length - 1 ? 0 : imageIndex + 1);
+      setImageIndex((prevIndex) => (prevIndex + 1) % totalImages);
     }
     setZoomLevel(1);
     setTranslatePos({ x: 0, y: 0 });
