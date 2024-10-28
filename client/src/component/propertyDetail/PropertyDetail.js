@@ -1206,38 +1206,50 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Master Plan" section */}
-          {images?.some(image => image.type === 'MasterPlan') && (
+          {images?.some((image) => image.type === "MasterPlan") && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Master Plan</h2>
-              <div className="flex flex-wrap gap-10">
-                {images?.filter(image => image.type === 'MasterPlan').map((image, index) => (
-                  <div key={index} className="relative flex flex-col items-center">
-                    {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                      <img
-                        src={image?.attachment
-                          ? `${httpCommon.defaults.baseURL}${image?.attachment}`
-                          : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`}
-                        alt={image?.file_name || 'Master Plan'}
-                        className="object-cover w-64 h-48 rounded cursor-pointer"
-                        onClick={() => openMasterPlanModal(index)}
-                      />
-                    ) : image?.file_name.match(/\.pdf$/i) ? (
-                      <div
-                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                        onClick={() => window.open(`${httpCommon.defaults.baseURL}${image?.attachment}`, '_blank')}
-                      >
+              <div className="flex flex-wrap gap-6">
+                {images
+                  ?.filter((image) => image.type === "MasterPlan")
+                  .map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative flex flex-col items-center w-48 h-48"
+                    >
+                      {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
                         <img
-                          src="/pdf-file.svg"
-                          alt={`PDF ${image.file_name}`}
-                          className="w-16 h-16 mb-2"
+                          src={
+                            image?.attachment
+                              ? `${httpCommon.defaults.baseURL}${image?.attachment}`
+                              : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`
+                          }
+                          alt={image?.file_name || "Master Plan"}
+                          className="object-contain w-48 h-48 rounded cursor-pointer"
+                          onClick={() => openMasterPlanModal(index)}
                         />
-                        <span className="text-sm font-medium text-indigo-600">
-                          {image.file_name}
-                        </span>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+                      ) : image?.file_name.match(/\.pdf$/i) ? (
+                        <div
+                          className="flex flex-col items-center justify-center w-48 h-48 p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                          onClick={() =>
+                            window.open(
+                              `${httpCommon.defaults.baseURL}${image?.attachment}`,
+                              "_blank"
+                            )
+                          }
+                        >
+                          <img
+                            src="/pdf-file.svg"
+                            alt={`PDF ${image.file_name}`}
+                            className="w-32 h-32 mb-1"
+                          />
+                          <span className="font-serif text-sm text-center text-indigo-600 truncate">
+                            {image.file_name}
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  ))}
               </div>
             </section>
           )}
@@ -1245,38 +1257,50 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Floor/Area Plan" section */}
-          {images?.some(image => image.type === 'FloorAreaPlan') && (
+          {images?.some((image) => image.type === "FloorAreaPlan") && (
             <section>
               <h2 className="mb-4 text-2xl font-bold">Floor/Area Plan</h2>
-              <div className="flex flex-wrap gap-10">
-                {images?.filter(image => image.type === 'FloorAreaPlan').map((image, index) => (
-                  <div key={index} className="relative flex flex-col items-center">
-                    {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                      <img
-                        src={image?.attachment
-                          ? `${httpCommon.defaults.baseURL}${image?.attachment}`
-                          : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`}
-                        alt={image?.file_name || 'Floor/Area Plan'}
-                        className="object-cover w-64 h-48 rounded cursor-pointer"
-                        onClick={() => openFloorAreaPlanModal(index)}
-                      />
-                    ) : image?.file_name.match(/\.pdf$/i) ? (
-                      <div
-                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                        onClick={() => window.open(`${httpCommon.defaults.baseURL}${image?.attachment}`, '_blank')}
-                      >
+              <div className="flex flex-wrap gap-6">
+                {images
+                  ?.filter((image) => image.type === "FloorAreaPlan")
+                  .map((image, index) => (
+                    <div
+                      key={index}
+                      className="relative flex flex-col items-center w-48 h-48"
+                    >
+                      {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
                         <img
-                          src="/pdf-file.svg"
-                          alt={`PDF ${image.file_name}`}
-                          className="w-16 h-16 mb-2"
+                          src={
+                            image?.attachment
+                              ? `${httpCommon.defaults.baseURL}${image?.attachment}`
+                              : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`
+                          }
+                          alt={image?.file_name || "Floor/Area Plan"}
+                          className="object-contain w-48 h-48 rounded cursor-pointer"
+                          onClick={() => openFloorAreaPlanModal(index)}
                         />
-                        <span className="text-sm font-medium text-indigo-600">
-                          {image.file_name}
-                        </span>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
+                      ) : image?.file_name.match(/\.pdf$/i) ? (
+                        <div
+                          className="flex flex-col items-center justify-center w-48 h-48 p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                          onClick={() =>
+                            window.open(
+                              `${httpCommon.defaults.baseURL}${image?.attachment}`,
+                              "_blank"
+                            )
+                          }
+                        >
+                          <img
+                            src="/pdf-file.svg"
+                            alt={`PDF ${image.file_name}`}
+                            className="w-32 h-32 mb-1"
+                          />
+                          <span className="font-serif text-sm text-center text-indigo-600 truncate">
+                            {image.file_name}
+                          </span>
+                        </div>
+                      ) : null}
+                    </div>
+                  ))}
               </div>
             </section>
           )}
@@ -1301,9 +1325,9 @@ const PropertyDetails = ({ property, images, brochure }) => {
                     <img
                       src="/pdf-file.svg"
                       alt={`PDF ${file?.file_name || 'Unnamed Brochure'}`}
-                      className="w-16 h-16 mt-2 mb-2"
+                      className="w-32 h-32 mt-2 mb-2"
                     />
-                    <span className="mb-2 text-sm font-medium text-indigo-600">
+                    <span className="mb-2 text-base text-indigo-600 font-base">
                       {file?.file_name || 'Unnamed Brochure'}
                     </span>
                   </div>
@@ -1337,7 +1361,11 @@ const PropertyDetails = ({ property, images, brochure }) => {
         {/* Image Modals */}
         {selectedMasterPlanImageIndex !== null && (
           <ImageModal
-            images={images.filter(image => image.type === 'MasterPlan')}
+            images={images.filter(
+              (image) =>
+                image.type === 'MasterPlan' &&
+                image.file_name.match(/\.(jpg|jpeg|png|gif)$/i)
+            )}
             currentIndex={selectedMasterPlanImageIndex}
             onClose={closeModal}
           />
@@ -1345,7 +1373,11 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         {selectedFloorAreaPlanImageIndex !== null && (
           <ImageModal
-            images={images.filter(image => image.type === 'FloorAreaPlan')}
+            images={images.filter(
+              (image) =>
+                image.type === "FloorAreaPlan" &&
+                image.file_name.match(/\.(jpg|jpeg|png|gif)$/i)
+            )}
             currentIndex={selectedFloorAreaPlanImageIndex}
             onClose={closeModal}
           />
