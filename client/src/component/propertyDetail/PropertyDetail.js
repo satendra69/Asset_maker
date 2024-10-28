@@ -986,15 +986,17 @@ const PropertyDetails = ({ property, images, brochure }) => {
           {transformedProperty?.details?.properties.some(fact => fact.value) && (
             <section>
               <div className="grid grid-cols-3 gap-4 mb-5">
-                {transformedProperty?.details?.properties.map((fact, index) => (
-                  fact.value && (
-                    <div key={index} className="flex items-center p-4 border border-gray-200 rounded shadow-sm">
-                      {getIcon(fact.label)}
-                      <span className="ml-2 text-gray-700">{capitalizeLabel(fact.label)}:</span>
-                      <span className="ml-2 font-semibold">{fact.value}</span>
-                    </div>
-                  )
-                ))}
+                {transformedProperty?.details?.properties
+                  .filter(fact => fact.value !== undefined && fact.value !== '' && fact.value !== null && fact.value !== 'undefined')
+                  .map((fact, index) => (
+                    fact.value && (
+                      <div key={index} className="flex items-center p-4 border border-gray-200 rounded shadow-sm">
+                        {getIcon(fact.label)}
+                        <span className="ml-2 text-gray-700">{capitalizeLabel(fact.label)}:</span>
+                        <span className="ml-2 font-semibold">{fact.value}</span>
+                      </div>
+                    )
+                  ))}
               </div>
             </section>
           )}
@@ -1007,11 +1009,11 @@ const PropertyDetails = ({ property, images, brochure }) => {
               <h2 className="mb-4 text-xl font-bold">Other Facts</h2>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
                 {transformedProperty.details.otherFacts
-                  .filter(fact => fact.value !== undefined && fact.value !== '')
+                  .filter(fact => fact.value !== undefined && fact.value !== '' && fact.value !== null && fact.value !== 'undefined')
                   .map((fact, index) => (
                     <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-1 text-sm text-gray-700 long-label">{capitalizeLabel(fact.label)}:</span>
+                      <span className="ml-1 text-sm text-gray-700">{capitalizeLabel(fact.label)}:</span>
                       <span className="ml-1 text-sm font-semibold">{fact.value}</span>
                     </div>
                   ))}
@@ -1209,17 +1211,32 @@ const PropertyDetails = ({ property, images, brochure }) => {
               <h2 className="mb-4 text-2xl font-bold">Master Plan</h2>
               <div className="flex flex-wrap gap-10">
                 {images?.filter(image => image.type === 'MasterPlan').map((image, index) => (
-                  <img
-                    key={index}
-                    src={
-                      image?.attachment
-                        ? `${httpCommon.defaults.baseURL}${image?.attachment}`
-                        : `${httpCommon.defaults.baseURL}${'\\images\\defaultasset.jpg'}`
-                    }
-                    alt={image?.file_name || 'Master Plan'}
-                    className="object-cover w-64 h-48 rounded cursor-pointer"
-                    onClick={() => openMasterPlanModal(index)}
-                  />
+                  <div key={index} className="relative flex flex-col items-center">
+                    {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                      <img
+                        src={image?.attachment
+                          ? `${httpCommon.defaults.baseURL}${image?.attachment}`
+                          : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`}
+                        alt={image?.file_name || 'Master Plan'}
+                        className="object-cover w-64 h-48 rounded cursor-pointer"
+                        onClick={() => openMasterPlanModal(index)}
+                      />
+                    ) : image?.file_name.match(/\.pdf$/i) ? (
+                      <div
+                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                        onClick={() => window.open(`${httpCommon.defaults.baseURL}${image?.attachment}`, '_blank')}
+                      >
+                        <img
+                          src="/pdf-file.svg"
+                          alt={`PDF ${image.file_name}`}
+                          className="w-16 h-16 mb-2"
+                        />
+                        <span className="text-sm font-medium text-indigo-600">
+                          {image.file_name}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
                 ))}
               </div>
             </section>
@@ -1233,17 +1250,32 @@ const PropertyDetails = ({ property, images, brochure }) => {
               <h2 className="mb-4 text-2xl font-bold">Floor/Area Plan</h2>
               <div className="flex flex-wrap gap-10">
                 {images?.filter(image => image.type === 'FloorAreaPlan').map((image, index) => (
-                  <img
-                    key={index}
-                    src={
-                      image?.attachment
-                        ? `${httpCommon.defaults.baseURL}${image?.attachment}`
-                        : `${httpCommon.defaults.baseURL}${'\\images\\defaultasset.jpg'}`
-                    }
-                    alt={image?.file_name || 'Floor/Area Plan'}
-                    className="object-cover w-64 h-48 rounded cursor-pointer"
-                    onClick={() => openFloorAreaPlanModal(index)}
-                  />
+                  <div key={index} className="relative flex flex-col items-center">
+                    {image?.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                      <img
+                        src={image?.attachment
+                          ? `${httpCommon.defaults.baseURL}${image?.attachment}`
+                          : `${httpCommon.defaults.baseURL}\\images\\defaultasset.jpg`}
+                        alt={image?.file_name || 'Floor/Area Plan'}
+                        className="object-cover w-64 h-48 rounded cursor-pointer"
+                        onClick={() => openFloorAreaPlanModal(index)}
+                      />
+                    ) : image?.file_name.match(/\.pdf$/i) ? (
+                      <div
+                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                        onClick={() => window.open(`${httpCommon.defaults.baseURL}${image?.attachment}`, '_blank')}
+                      >
+                        <img
+                          src="/pdf-file.svg"
+                          alt={`PDF ${image.file_name}`}
+                          className="w-16 h-16 mb-2"
+                        />
+                        <span className="text-sm font-medium text-indigo-600">
+                          {image.file_name}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
                 ))}
               </div>
             </section>
@@ -1259,20 +1291,27 @@ const PropertyDetails = ({ property, images, brochure }) => {
                 {pdfFiles.map((file, index) => (
                   <div
                     key={index}
-                    className="relative flex flex-col items-center justify-center overflow-hidden transition duration-300 transform border rounded-lg shadow-lg cursor-pointer hover:scale-105"
+                    className="relative flex flex-col items-center justify-center mb-2 overflow-hidden transition duration-300 transform border rounded-lg shadow-lg cursor-pointer hover:scale-105"
                     onClick={() =>
                       file?.attachment &&
                       handleFileClick(`${httpCommon.defaults.baseURL}${file?.attachment}`)
                     }
                   >
-                    <p className="text-center text-black">{file?.file_name || 'Unnamed Brochure'}</p>
+                    {/* <p className="text-center text-black">{file?.file_name || 'Unnamed Brochure'}</p> */}
+                    <img
+                      src="/pdf-file.svg"
+                      alt={`PDF ${file?.file_name || 'Unnamed Brochure'}`}
+                      className="w-16 h-16 mt-2 mb-2"
+                    />
+                    <span className="mb-2 text-sm font-medium text-indigo-600">
+                      {file?.file_name || 'Unnamed Brochure'}
+                    </span>
                   </div>
                 ))}
               </div>
             </section>
           )}
         </div>
-
 
         {/* PDF Modal */}
         {modalIsOpen && (
