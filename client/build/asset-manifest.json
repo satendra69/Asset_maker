@@ -15,8 +15,5 @@
     "main.a5873086.js.map": "http://142.93.213.221:8004/static/js/main.a5873086.js.map",
     "453.3f732b94.chunk.js.map": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js.map"
   },
-  "entrypoints": [
-    "static/css/main.b5823e33.css",
-    "static/js/main.a5873086.js"
-  ]
+  "entrypoints": ["static/css/main.b5823e33.css", "static/js/main.a5873086.js"]
 }
