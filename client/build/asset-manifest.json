@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "http://142.93.213.221:8004/static/css/main.a9252b4f.css",
-    "main.js": "http://142.93.213.221:8004/static/js/main.e5cce21f.js",
+    "main.js": "http://142.93.213.221:8004/static/js/main.ba9777ec.js",
     "static/js/453.3f732b94.chunk.js": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js",
     "static/media/hero2.jpg": "http://142.93.213.221:8004/static/media/hero2.78297e832f2beabde0c8.jpg",
     "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
@@ -12,11 +12,11 @@
     "static/media/revicons.woff": "http://142.93.213.221:8004/static/media/revicons.e8746a624ed098489406.woff",
     "index.html": "http://142.93.213.221:8004/index.html",
     "main.a9252b4f.css.map": "http://142.93.213.221:8004/static/css/main.a9252b4f.css.map",
-    "main.e5cce21f.js.map": "http://142.93.213.221:8004/static/js/main.e5cce21f.js.map",
+    "main.ba9777ec.js.map": "http://142.93.213.221:8004/static/js/main.ba9777ec.js.map",
     "453.3f732b94.chunk.js.map": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a9252b4f.css",
-    "static/js/main.e5cce21f.js"
+    "static/js/main.ba9777ec.js"
   ]
 }

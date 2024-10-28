@@ -13,7 +13,7 @@ var regionRoutes = require("./routes/regions");
 var contactRoutes = require("./routes/contact");
 var savedListRoutes = require("./routes/savedList");
 var testimonialRoutes = require('./routes/testimonial');
-var blogRoutes = require('./routes/blogs');
+//var blogRoutes = require('./routes/blogs');
 var cors = require("cors");
 const db = require("./connect");
 
@@ -26,7 +26,6 @@ const corsOptions = {
   credentials: true,
   optionsSuccessStatus: 204,
 };
-
 
 // Middleware
 app.use(cors(corsOptions));
@@ -55,8 +54,8 @@ app.use("/api/categories", categoriesRouter);
 app.use('/api/regions', regionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/saved-list', savedListRoutes);
-//app.use('/api/testimonials', testimonialRoutes);
-app.use('/api/blogs', blogRoutes);
+app.use('/api/testimonials', testimonialRoutes);
+//app.use('/api/blogs', blogRoutes);
 
 // Root endpoint for testing
 app.get("/api", function (req, res) {
