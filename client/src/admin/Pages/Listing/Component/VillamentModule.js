@@ -1642,7 +1642,7 @@ function VillamentModule({ action, onDataUpdate }) {
                   <span> to upload</span>
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
           </div>
         </div>
@@ -1736,7 +1736,7 @@ function VillamentModule({ action, onDataUpdate }) {
                   {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
@@ -1846,7 +1846,7 @@ function VillamentModule({ action, onDataUpdate }) {
                   {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
@@ -1978,7 +1978,7 @@ function VillamentModule({ action, onDataUpdate }) {
                   {/* <input id="floorAreaPlan-upload" name="floorAreaPlan-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
