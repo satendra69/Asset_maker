@@ -94,6 +94,7 @@ const sendInquiryNotifyEmail = async (inquiryDetails) => {
 
 const submitEnquiryForm = async (req, res) => {
     const { name, email, phone, message, listingType, userId, propertyId, propertyDetails, address, purpose } = req.body;
+    console.log("purpose", purpose);
 
     try {
         await db.query('INSERT INTO inquiries (name, email, phone, message, listing_type, user_id, property_id, address, purpose) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',

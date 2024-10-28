@@ -48,6 +48,10 @@ function VillamentModule({ action, onDataUpdate }) {
   const [selectedDuplex, setSelectedDuplex] = useState("");
   const [balconies, setBalconies] = useState("");
   const [furnishing, setFurnishing] = useState("");
+  const [selectedTriplex, setSelectedTriplex] = useState("");
+  const [totalFloors, setTotalFloors] = useState("");
+  const [propertyFacing, setPropertyFacing] = useState("");
+  const [totalVillaments, setTotalVillaments] = useState("");
   const [propertyFlooring, setPropertyFlooring] = useState("");
   const [approachingRoadWidth, setApproachingRoadWidth] = useState("");
   const [isInGatedCommunity, setIsInGatedCommunity] = useState("");
@@ -189,6 +193,10 @@ function VillamentModule({ action, onDataUpdate }) {
         setLandUDSArea(listingData.ltg_det_villaments_pmts_land_uds_area);
         setSelectedDuplex(listingData.ltg_det_villaments_pmts_duplex);
         setIsCornerVillament(listingData.ltg_det_villaments_pmts_corner_villament);
+        setSelectedTriplex(listingData.ltg_det_villaments_pmts_triplex);
+        setTotalFloors(listingData.ltg_det_villaments_pmts_total_floors);
+        setPropertyFacing(listingData.ltg_det_villaments_pmts_property_facing);
+        setTotalVillaments(listingData.ltg_det_villaments_pmts_total_villaments);
 
         setLocationData({
           location: listingData.ltg_det_villaments_location || "",
@@ -573,6 +581,10 @@ function VillamentModule({ action, onDataUpdate }) {
       landUDSArea,
       selectedDuplex,
       balconies,
+      selectedTriplex,
+      totalFloors,
+      propertyFacing,
+      totalVillaments,
       furnishing,
       propertyFlooring,
       approachingRoadWidth,
@@ -629,9 +641,9 @@ function VillamentModule({ action, onDataUpdate }) {
 
   useEffect(() => {
     handleDataUpdate();
-  }, [salePrice, suffixPrice, areaDetails, ratePerSqFt, content, locationData,
-    propertyAddressDetails, selectedStatus, selectedCarParking, amenitiesAsString,
-    videoUrl, selectedBedRooms, selectedBathRooms, yearBuilt, noOfOpenSides, deletedFiles,
+  }, [salePrice, suffixPrice, areaDetails, ratePerSqFt, content, locationData, selectedTriplex, totalFloors,
+    propertyFacing, totalVillaments, propertyAddressDetails, selectedStatus, selectedCarParking,
+    amenitiesAsString, videoUrl, selectedBedRooms, selectedBathRooms, yearBuilt, noOfOpenSides, deletedFiles,
     mainDoorFacing, isCornerVillament, landUDSArea, selectedDuplex, balconies, furnishing,
     propertyFlooring, approachingRoadWidth, isInGatedCommunity, overLooking, advantagesAsString,
     transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority,
@@ -791,13 +803,53 @@ function VillamentModule({ action, onDataUpdate }) {
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
               <option value="">Not Selected</option>
-              {[...Array(25).keys()].map((value) => (
-                <option key={value} value={value + 1}>
-                  {value + 1}
-                </option>
-              ))}
-              <option value="">More than 25</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
+          </div>
+        </div>
+
+        {/* Triplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="selectedTriplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Triplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="selectedTriplex"
+              value={selectedTriplex}
+              onChange={(e) => setSelectedTriplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Total Floors */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalFloors"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Floors
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalFloors"
+              value={totalFloors}
+              placeholder="Enter Total Floors"
+              onChange={(e) => setTotalFloors(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
           </div>
         </div>
 
@@ -873,6 +925,27 @@ function VillamentModule({ action, onDataUpdate }) {
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+          </div>
+        </div>
+
+        {/* Property Facing */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="propertyFacing"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Property Facing
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="propertyFacing"
+              value={propertyFacing}
+              placeholder="Enter Property Facing"
+              onChange={(e) => setPropertyFacing(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
           </div>
         </div>
 
@@ -1083,20 +1156,20 @@ function VillamentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
-        {/* Rate Per Sq-Ft/Yrd */}
+        {/* Rate Per Sq-Ft */}
         <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="ratePerSqFt"
             className="block text-sm font-semibold leading-6 text-gray-900"
           >
-            Rate Per Sq-Ft/Yrd
+            Rate Per Sq-Ft
           </label>
           <div className="mt-2.5 mb-7">
             <input
               type="text"
               id="ratePerSqFt"
               value={ratePerSqFt}
-              placeholder="Enter Rate per Sq-Ft/Yrd"
+              placeholder="Enter Rate per Sq-Ft"
               onChange={(e) => setRatePerSqFt(e.target.value)}
               onBlur={handleDataUpdate}
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -1266,13 +1339,34 @@ function VillamentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
+        {/* Total Villaments */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalVillaments"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Villaments
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalVillaments"
+              value={totalVillaments}
+              placeholder="Enter Total Villaments"
+              onChange={(e) => setTotalVillaments(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
         {/* Approval Authority */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="approvalAuthority"
             className="block text-sm font-semibold leading-6 text-gray-900"
           >
-            Approval Authority
+            Approved By
           </label>
           <div className="mt-1 mr-3 mb-7">
             <input

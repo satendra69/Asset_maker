@@ -11,7 +11,7 @@ const InquiryForm = ({ propertyId, listingType, item }) => {
         phone: "",
         message: "",
         address: "",
-        purpose: "buy",
+        purpose: "Buy",
     });
     const [submitSuccess, setSubmitSuccess] = useState(false);
     const [namePrefix, setNamePrefix] = useState("Mr");
@@ -126,9 +126,10 @@ const InquiryForm = ({ propertyId, listingType, item }) => {
                         onChange={handleChange}
                         className="w-full px-3 py-2 bg-gray-200 rounded-md focus:outline-none focus:bg-white"
                     >
-                        <option value="buy">Buy</option>
-                        <option value="rent">Rent</option>
-                        <option value="lease">Lease</option>
+                        <option value="Buy">Buy</option>
+                        <option value="Sell">Sell</option>
+                        <option value="Rent">Rent</option>
+                        {/* <option value="lease">Lease</option> */}
                     </select>
                 </div>
                 <div className="">

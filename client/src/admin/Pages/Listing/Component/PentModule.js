@@ -49,6 +49,14 @@ function PentModule({ action, onDataUpdate }) {
   const [approachingRoadWidth, setApproachingRoadWidth] = useState("");
   const [isInGatedCommunity, setIsInGatedCommunity] = useState("");
   const [selectedDuplex, setSelectedDuplex] = useState("");
+  const [selectedTriplex, setSelectedTriplex] = useState("");
+  const [totalFloors, setTotalFloors] = useState("");
+  const [penthouseOnFloor, setPenthouseOnFloor] = useState("");
+  const [isPrivateTerrace, setIsPrivateTerrace] = useState("");
+  const [liftsInTower, setLiftsInTower] = useState("");
+  const [totalBlocks, setTotalBlocks] = useState("");
+  const [totalTowersInSociety, setTotalTowersInSociety] = useState("");
+  const [totalFlatsInSociety, setTotalFlatsInSociety] = useState("");
   const [overLooking, setOverLooking] = useState("");
   const [otherAdvantages, setOtherAdvantages] = useState([]);
   const advantagesOptions = [
@@ -187,6 +195,14 @@ function PentModule({ action, onDataUpdate }) {
         setPropertyAddressDetails(listingData.ltg_det_penthouses_property_address_details);
         setSelectedDuplex(listingData.ltg_det_penthouses_pmts_duplex);
         setIsCornerPenthouse(listingData.ltg_det_penthouses_pmts_corner_penthouse);
+        setSelectedTriplex(listingData.ltg_det_penthouses_pmts_triplex);
+        setTotalFloors(listingData.ltg_det_penthouses_pmts_total_floors);
+        setPenthouseOnFloor(listingData.ltg_det_penthouses_pmts_penthouse_on_floor);
+        setIsPrivateTerrace(listingData.ltg_det_penthouses_pmts_private_terrace);
+        setLiftsInTower(listingData.ltg_det_penthouses_pmts_lifts_in_tower);
+        setTotalBlocks(listingData.ltg_det_penthouses_pmts_total_blocks);
+        setTotalTowersInSociety(listingData.ltg_det_penthouses_pmts_total_towers_in_society);
+        setTotalFlatsInSociety(listingData.ltg_det_penthouses_pmts_total_flats_in_society);
 
         setLocationData({
           location: listingData.ltg_det_penthouses_location || "",
@@ -645,6 +661,14 @@ function PentModule({ action, onDataUpdate }) {
       mainDoorFacing,
       isCornerPenthouse,
       balconies,
+      selectedTriplex,
+      penthouseOnFloor,
+      totalFloors,
+      isPrivateTerrace,
+      liftsInTower,
+      totalBlocks,
+      totalFlatsInSociety,
+      totalTowersInSociety,
       furnishing,
       propertyFlooring,
       approachingRoadWidth,
@@ -706,7 +730,8 @@ function PentModule({ action, onDataUpdate }) {
     selectedStatus, selectedCarParking, amenitiesAsString, videoUrl, brochure, selectedBedRooms,
     selectedBathRooms, yearBuilt, mainDoorFacing, isCornerPenthouse, balconies, deletedImages,
     furnishing, propertyFlooring, approachingRoadWidth, isInGatedCommunity, selectedDuplex,
-    overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom, deletedFiles,
+    selectedTriplex, penthouseOnFloor, totalFloors, isPrivateTerrace, liftsInTower, totalBlocks, totalFlatsInSociety,
+    totalTowersInSociety, overLooking, advantagesAsString, transactionType, noOfOpenSides, availableFrom, deletedFiles,
     stampDutyAndRegistrationCharges, approvalAuthority, totalProjectExtent, totalUnits, totalPhases,
     selectedOptions, projectBuilderDetails, brochure, galleryImages, masterPlanImages, floorAreaPlanImages,
     storedBrochure, mainImage, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
@@ -870,7 +895,28 @@ function PentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
-
+        {/* Triplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="selectedTriplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Triplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="selectedTriplex"
+              value={selectedTriplex}
+              onChange={(e) => setSelectedTriplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
 
         {/* Bed Rooms */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
@@ -975,6 +1021,48 @@ function PentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
+        {/* Penthouse On Floor */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="penthouseOnFloor"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Penthouse On Floor
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="penthouseOnFloor"
+              value={penthouseOnFloor}
+              placeholder="Enter Penthouse On Floor"
+              onChange={(e) => setPenthouseOnFloor(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        {/* Total Floors */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalFloors"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Floors
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalFloors"
+              value={totalFloors}
+              placeholder="Enter Total Floors"
+              onChange={(e) => setTotalFloors(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
         {/* Main Door Facing */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
@@ -1030,6 +1118,29 @@ function PentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
+        {/* Private Terrace  */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="isPrivateTerrace"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Private Terrace
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="isPrivateTerrace"
+              value={isPrivateTerrace}
+              onChange={(e) => setIsPrivateTerrace(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
         {/* Furnishing */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
@@ -1054,20 +1165,20 @@ function PentModule({ action, onDataUpdate }) {
           </div>
         </div>
 
-        {/* Rate Per Sq-Ft/Yrd */}
+        {/* Rate Per Sq-Ft */}
         <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="ratePerSqFt"
             className="block text-sm font-semibold leading-6 text-gray-900"
           >
-            Rate Per Sq-Ft/Yrd
+            Rate Per Sq-Ft
           </label>
           <div className="mt-2.5 mb-7">
             <input
               type="text"
               id="ratePerSqFt"
               value={ratePerSqFt}
-              placeholder="Enter Rate per Sq-Ft/Yrd"
+              placeholder="Enter Rate per Sq-Ft"
               onChange={(e) => setRatePerSqFt(e.target.value)}
               onBlur={handleDataUpdate}
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -1090,6 +1201,27 @@ function PentModule({ action, onDataUpdate }) {
               value={propertyFlooring}
               placeholder="Enter Property Flooring"
               onChange={(e) => setPropertyFlooring(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        {/* Lifts In The Tower */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="liftsInTower"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Lifts In The Tower
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="liftsInTower"
+              value={liftsInTower}
+              placeholder="Enter Lifts In The Tower"
+              onChange={(e) => setLiftsInTower(e.target.value)}
               onBlur={handleDataUpdate}
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
@@ -1132,6 +1264,69 @@ function PentModule({ action, onDataUpdate }) {
               value={totalProjectExtent}
               placeholder="Enter Total Project Extent"
               onChange={(e) => setTotalProjectExtent(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        {/* Total Blocks */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalBlocks"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Blocks
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalBlocks"
+              value={totalBlocks}
+              placeholder="Enter Total Blocks"
+              onChange={(e) => setTotalBlocks(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        {/* Total Towers in Society */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalTowersInSociety"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Towers in Society
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalTowersInSociety"
+              value={totalTowersInSociety}
+              placeholder="Enter Total Towers in Society"
+              onChange={(e) => setTotalTowersInSociety(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
+          </div>
+        </div>
+
+        {/* Total Flats in Society */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="totalFlatsInSociety"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Total Flats in Society
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="totalFlatsInSociety"
+              value={totalFlatsInSociety}
+              placeholder="Enter Total Flats in Society"
+              onChange={(e) => setTotalFlatsInSociety(e.target.value)}
               onBlur={handleDataUpdate}
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />

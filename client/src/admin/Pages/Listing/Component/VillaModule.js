@@ -45,6 +45,9 @@ function VillaModule({ action, onDataUpdate }) {
   const [noOfOpenSides, setNoOfOpenSides] = useState("");
   const [mainDoorFacing, setMainDoorFacing] = useState("");
   const [isCornerVilla, setIsCornerVilla] = useState("");
+  const [isDuplex, setIsDuplex] = useState("");
+  const [isTriplex, setIsTriplex] = useState("");
+  const [plotFacing, setPlotFacing] = useState("");
   const [plotArea, setPlotArea] = useState("");
   const [balconies, setBalconies] = useState("");
   const [furnishing, setFurnishing] = useState("");
@@ -187,6 +190,9 @@ function VillaModule({ action, onDataUpdate }) {
         setIsInGatedCommunity(listingData.ltg_det_gated_community);
         setAvailableFrom(listingData.ltg_det_available_from);
         setPropertyAddressDetails(listingData.ltg_det_property_address_details);
+        setIsDuplex(listingData.ltg_det_pmts_duplex);
+        setIsTriplex(listingData.ltg_det_pmts_triplex);
+        setPlotFacing(listingData.ltg_det_pmts_plot_facing);
 
         setLocationData({
           location: listingData.ltg_det_location || "",
@@ -571,6 +577,9 @@ function VillaModule({ action, onDataUpdate }) {
       noOfOpenSides,
       mainDoorFacing,
       isCornerVilla,
+      isDuplex,
+      isTriplex,
+      plotFacing,
       plotArea,
       balconies,
       furnishing,
@@ -635,8 +644,8 @@ function VillaModule({ action, onDataUpdate }) {
     yearBuilt, plotDimensions, noOfOpenSides, mainDoorFacing, isCornerVilla, plotArea, balconies, furnishing,
     propertyFlooring, approachingRoadWidth, isInGatedCommunity, overLooking, advantagesAsString, totalFloors,
     transactionType, availableFrom, stampDutyAndRegistrationCharges, approvalAuthority, deletedFiles,
-    totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails,
-    brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
+    totalProjectExtent, totalUnits, totalPhases, selectedOptions, projectBuilderDetails, isDuplex, isTriplex,
+    plotFacing, brochure, mainImage, galleryImages, masterPlanImages, floorAreaPlanImages, deletedImages,
     storedBrochure, storedMainImage, storedGalleryImages, storedMasterPlanImages, storedFloorAreaPlanImages]);
 
   return (
@@ -774,6 +783,52 @@ function VillaModule({ action, onDataUpdate }) {
           </div>
         </div>
 
+        {/* Duplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="isDuplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Duplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="isDuplex"
+              value={isDuplex}
+              onChange={(e) => setIsDuplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Triplex */}
+        <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="isTriplex"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Triplex
+          </label>
+          <div className="mt-1 mr-3 mb-7">
+            <select
+              id="isTriplex"
+              value={isTriplex}
+              onChange={(e) => setIsTriplex(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            >
+              <option value="">Not Selected</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </div>
+        </div>
+
         {/* Total Floors */}
         <div className="w-full mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
@@ -867,6 +922,27 @@ function VillaModule({ action, onDataUpdate }) {
               <option value="Yes">Yes</option>
               <option value="No">No</option>
             </select>
+          </div>
+        </div>
+
+        {/* Plot Facing */}
+        <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+          <label
+            htmlFor="plotFacing"
+            className="block text-sm font-semibold leading-6 text-gray-900"
+          >
+            Plot Facing
+          </label>
+          <div className="mt-2.5 mb-7">
+            <input
+              type="text"
+              id="plotFacing"
+              value={plotFacing}
+              placeholder="Enter Plot Facing"
+              onChange={(e) => setPlotFacing(e.target.value)}
+              onBlur={handleDataUpdate}
+              className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            />
           </div>
         </div>
 
@@ -1098,20 +1174,20 @@ function VillaModule({ action, onDataUpdate }) {
           </div>
         </div>
 
-        {/* Rate Per Sq-Ft/Yrd */}
+        {/* Rate Per Sq-Ft */}
         <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
           <label
             htmlFor="ratePerSqFt"
             className="block text-sm font-semibold leading-6 text-gray-900"
           >
-            Rate Per Sq-Ft/Yrd
+            Rate Per Sq-Ft
           </label>
           <div className="mt-2.5 mb-7">
             <input
               type="text"
               id="ratePerSqFt"
               value={ratePerSqFt}
-              placeholder="Enter Rate per Sq-Ft/Yrd"
+              placeholder="Enter Rate per Sq-Ft"
               onChange={(e) => setRatePerSqFt(e.target.value)}
               onBlur={handleDataUpdate}
               className="block w-full rounded-md border-0 px-3.5 py-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
