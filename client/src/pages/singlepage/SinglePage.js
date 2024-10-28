@@ -281,8 +281,11 @@ function SinglePage() {
       <div className="p-4 mb-10">
         <div className="flex items-start justify-between mb-5">
           <div>
+            {singlePageData?.[0]?.ltg_projectName && (
+              <h1 className="text-2xl font-semibold">{singlePageData[0].ltg_projectName}</h1>
+            )}
             {singlePageData?.[0]?.ltg_title && (
-              <h1 className="text-3xl font-bold">{singlePageData[0].ltg_title}</h1>
+              <h2 className="text-3xl font-bold">{singlePageData[0].ltg_title}</h2>
             )}
             <div className="flex items-center mt-2 text-gray-600">
               <img src="/pin.png" alt="Location Pin" className="w-5 h-5 mr-2" />

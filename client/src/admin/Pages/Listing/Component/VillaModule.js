@@ -1628,7 +1628,7 @@ function VillaModule({ action, onDataUpdate }) {
             />
             <div className="text-center">
               <img
-                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                src="/image-upload.svg"
                 alt="Upload"
                 className="w-12 h-12 mx-auto"
               />
@@ -1639,7 +1639,7 @@ function VillaModule({ action, onDataUpdate }) {
                   <span> to upload</span>
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
           </div>
         </div>
@@ -1721,7 +1721,7 @@ function VillaModule({ action, onDataUpdate }) {
             />
             <div className="text-center">
               <img
-                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                src="/image-upload.svg"
                 alt="Upload"
                 className="w-12 h-12 mx-auto"
               />
@@ -1733,7 +1733,7 @@ function VillaModule({ action, onDataUpdate }) {
                   {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
@@ -1824,14 +1824,14 @@ function VillaModule({ action, onDataUpdate }) {
               type="file"
               id="masterPlan-upload"
               name="masterPlan-upload"
-              accept=".jpg,.jpeg,.png"
+              accept=".jpg,.jpeg,.png,.pdf"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setMasterPlanImages)}
             />
             <div className="text-center">
               <img
-                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                src="/image-upload.svg"
                 alt="Upload"
                 className="w-12 h-12 mx-auto"
               />
@@ -1843,7 +1843,7 @@ function VillaModule({ action, onDataUpdate }) {
                   {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
@@ -1854,24 +1854,43 @@ function VillaModule({ action, onDataUpdate }) {
             {storedMasterPlanImages.length > 0 && (
               <div className="flex flex-row">
                 {storedMasterPlanImages.map((file, index) => (
-                  <div key={index} className="relative m-2">
+                  <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID, 'masterPlan')}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
                     >
                       X
                     </button>
-                    <img
-                      src={httpCommon.defaults.baseURL + file.attachment}
-                      alt={`Stored Image ${file.file_name}`}
-                      className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => openMasterPlanModal(index)}
-                    />
+                    {file.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                      <img
+                        src={httpCommon.defaults.baseURL + file.attachment}
+                        alt={`Stored: ${file.file_name}`}
+                        className="object-cover w-32 h-32 rounded cursor-pointer"
+                        onClick={() => {
+                          openMasterPlanModal(index);
+                        }}
+                      />
+                    ) : file.file_name.match(/\.pdf$/i) ? (
+                      <div
+                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                        onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
+                      >
+                        <img
+                          src="/pdf-file.svg"
+                          alt={`PDF ${file.file_name}`}
+                          className="w-16 h-20 mb-2"
+                        />
+                        <span className="text-sm font-medium text-indigo-600">
+                          {file.file_name}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </div>
             )}
 
+            {/* Displaying Uploaded Master Plan Images */}
             {masterPlanImages.map((image, index) => (
               <div key={index} className="relative m-2">
                 <button
@@ -1880,12 +1899,33 @@ function VillaModule({ action, onDataUpdate }) {
                 >
                   X
                 </button>
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded Image ${index + 1}`}
-                  className="object-cover w-32 h-32 rounded cursor-pointer"
-                  onClick={() => openMasterPlanModal(index)}
-                />
+                {image.type.match(/image\/*/) ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Uploaded: ${index + 1}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => {
+                      openMasterPlanModal(index);
+                    }}
+                  />
+                ) : image.type.match(/application\/pdf/) ? (
+                  <div
+                    className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                    onClick={() => {
+                      const pdfUrl = URL.createObjectURL(image);
+                      window.open(pdfUrl, '_blank');
+                    }}
+                  >
+                    <img
+                      src="/pdf-file.svg"
+                      alt={`Uploaded PDF ${index + 1}`}
+                      className="w-16 h-20 mb-2"
+                    />
+                    <span className="text-sm font-medium text-indigo-600">
+                      Uploaded PDF {index + 1}
+                    </span>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>
@@ -1916,14 +1956,14 @@ function VillaModule({ action, onDataUpdate }) {
               type="file"
               id="floorAreaPlan-upload"
               name="floorAreaPlan-upload"
-              accept=".jpg,.jpeg,.png"
+              accept=".jpg,.jpeg,.png,.pdf"
               multiple
               className="absolute inset-0 z-50 w-full h-full opacity-0"
               onChange={(e) => handleImageUpload(e, setFloorAreaPlanImages)}
             />
             <div className="text-center">
               <img
-                src="https://www.svgrepo.com/show/357902/image-upload.svg"
+                src="/image-upload.svg"
                 alt="Upload"
                 className="w-12 h-12 mx-auto"
               />
@@ -1935,7 +1975,7 @@ function VillaModule({ action, onDataUpdate }) {
                   {/* <input id="floorAreaPlan-upload" name="floorAreaPlan-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
-              <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
             {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
@@ -1946,19 +1986,37 @@ function VillaModule({ action, onDataUpdate }) {
             {storedFloorAreaPlanImages.length > 0 && (
               <div className="flex flex-row">
                 {storedFloorAreaPlanImages.map((file, index) => (
-                  <div key={index} className="relative m-2">
+                  <div key={file.RowID} className="relative m-2">
                     <button
                       onClick={() => handleStoredImageDelete(file.RowID, 'floorAreaPlan')}
                       className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
                     >
                       X
                     </button>
-                    <img
-                      src={httpCommon.defaults.baseURL + file.attachment}
-                      alt={`Stored Image ${file.file_name}`}
-                      className="object-cover w-32 h-32 rounded cursor-pointer"
-                      onClick={() => openFloorAreaPlanModal(index)}
-                    />
+                    {file.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
+                      <img
+                        src={httpCommon.defaults.baseURL + file.attachment}
+                        alt={`Stored: ${file.file_name}`}
+                        className="object-cover w-32 h-32 rounded cursor-pointer"
+                        onClick={() => {
+                          openMasterPlanModal(index);
+                        }}
+                      />
+                    ) : file.file_name.match(/\.pdf$/i) ? (
+                      <div
+                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                        onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
+                      >
+                        <img
+                          src="/pdf-file.svg"
+                          alt={`PDF ${file.file_name}`}
+                          className="w-16 h-20 mb-2"
+                        />
+                        <span className="text-sm font-medium text-indigo-600">
+                          {file.file_name}
+                        </span>
+                      </div>
+                    ) : null}
                   </div>
                 ))}
               </div>
@@ -1972,12 +2030,33 @@ function VillaModule({ action, onDataUpdate }) {
                 >
                   X
                 </button>
-                <img
-                  src={URL.createObjectURL(image)}
-                  alt={`Uploaded Image ${index + 1}`}
-                  className="object-cover w-32 h-32 rounded cursor-pointer"
-                  onClick={() => openFloorAreaPlanModal(index)}
-                />
+                {image.type.match(/image\/*/) ? (
+                  <img
+                    src={URL.createObjectURL(image)}
+                    alt={`Uploaded: ${index + 1}`}
+                    className="object-cover w-32 h-32 rounded cursor-pointer"
+                    onClick={() => {
+                      openMasterPlanModal(index);
+                    }}
+                  />
+                ) : image.type.match(/application\/pdf/) ? (
+                  <div
+                    className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                    onClick={() => {
+                      const pdfUrl = URL.createObjectURL(image);
+                      window.open(pdfUrl, '_blank');
+                    }}
+                  >
+                    <img
+                      src="/pdf-file.svg"
+                      alt={`Uploaded PDF ${index + 1}`}
+                      className="w-16 h-20 mb-2"
+                    />
+                    <span className="text-sm font-medium text-indigo-600">
+                      Uploaded PDF {index + 1}
+                    </span>
+                  </div>
+                ) : null}
               </div>
             ))}
           </div>

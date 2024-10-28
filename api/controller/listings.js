@@ -18,9 +18,10 @@ const addListings = async (req, res) => {
 
   const q =
     `INSERT INTO ltg_mst
-    (ltg_title, ltg_owner, ltg_type, ltg_mark_as_featured, ltg_regions, ltg_categories, ltg_labels, ltg_audit_user, ltg_create_date, ltg_update_date)
+    (ltg_title, ltg_projectName, ltg_owner, ltg_type, ltg_mark_as_featured, ltg_regions, ltg_categories, ltg_labels, ltg_audit_user, ltg_create_date, ltg_update_date)
     VALUES
-    ('${req.body.title}', 
+    ('${req.body.title}',
+    '${req.body.projectName}',
     '${req.body.selectedOwner}', 
     '${req.body.listingType}', 
     '${req.body.featured}', 
@@ -420,6 +421,7 @@ const updateListItem = async (req, res) => {
     `UPDATE ltg_mst 
     SET
       ltg_title = '${req.body.title}',
+      ltg_projectName = '${req.body.projectName}',
       ltg_owner = '${req.body.selectedOwner}',
       ltg_type = '${req.body.listingType}',
       ltg_mark_as_featured = '${req.body.featured}',

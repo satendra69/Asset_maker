@@ -17,6 +17,8 @@ function Card({ key, item, onPropertyRemoved }) {
   const [open, setOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
+  console.log("item", item);
+
   const navigate = useNavigate();
   const defaultImage = httpCommon.defaults.baseURL + '/images/defaultasset.jpg';
 
@@ -263,6 +265,16 @@ function Card({ key, item, onPropertyRemoved }) {
           </Link>
         </div>
         <div className="cardTextContainer">
+          {item.ltg_projectName && (
+            <h3 className="cardProjectName">
+              <Link
+                to={`/Property/details`}
+                state={{ id: item.RowID, ltg_type: item.ltg_type }}
+              >
+                {item.ltg_projectName}
+              </Link>
+            </h3>
+          )}
           <h2 className="cardTitle">
             <Link
               to={`/Property/details`}
