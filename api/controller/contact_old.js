@@ -1,25 +1,48 @@
-const sgMail = require('@sendgrid/mail');
+const nodemailer = require('nodemailer');
 const db = require('../connect');
 
-// Set the SendGrid API key
-sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+// const setupMailTransporter = () => {
+//     return nodemailer.createTransport({
+//         service: "gmail",
+//         auth: {
+//             user: process.env.EMAIL_USER,
+//             pass: process.env.EMAIL_PASS,
+//         },
+//     });
+// };
+
+const setupMailTransporter = () => {
+    return nodemailer.createTransport({
+        host: "smtp.office365.com",
+        port: 587,
+        secure: false,
+        auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+        },
+    });
+};
 
 const sendUserConfirmationEmail = async (name, email) => {
-    const msg = {
-        to: email,
+    const mailTransporter = setupMailTransporter();
+
+    const mailDetails = {
         from: process.env.EMAIL_USER,
+        to: email,
         subject: "Property Inquiry",
         html: `<h3>Hello ${name},</h3>
                <p>Thank you for your inquiry. We will respond shortly.</p>`,
     };
 
-    await sgMail.send(msg);
+    await mailTransporter.sendMail(mailDetails);
 };
 
 const sendAdminNotificationEmail = async (inquiryDetails) => {
-    const msg = {
-        to: process.env.EMAIL_MASTER,
+    const mailTransporter = setupMailTransporter();
+
+    const adminMailDetails = {
         from: process.env.EMAIL_USER,
+        to: [process.env.EMAIL_MASTER, process.env.EMAIL_USER].join(','),
         subject: "New Property Inquiry",
         html: `<h3>New Inquiry Details:</h3>
                <p><strong>Name:</strong> ${inquiryDetails.name}</p>
@@ -33,13 +56,15 @@ const sendAdminNotificationEmail = async (inquiryDetails) => {
               `,
     };
 
-    await sgMail.send(msg);
+    await mailTransporter.sendMail(adminMailDetails);
 };
 
 const sendCityEnquiryNotificationEmail = async (inquiryDetails) => {
-    const msg = {
-        to: process.env.EMAIL_MASTER,
+    const mailTransporter = setupMailTransporter();
+
+    const adminMailDetails = {
         from: process.env.EMAIL_USER,
+        to: [process.env.EMAIL_MASTER, process.env.EMAIL_USER].join(','),
         subject: "New Property Inquiry",
         html: `<h3>New Inquiry Details:</h3>
                <p><strong>Inquiry Type:</strong> ${inquiryDetails.inquiryType}</p>
@@ -52,7 +77,31 @@ const sendCityEnquiryNotificationEmail = async (inquiryDetails) => {
                <p><strong>Listing Type:</strong> ${inquiryDetails.listingType}</p>`,
     };
 
-    await sgMail.send(msg);
+    await mailTransporter.sendMail(adminMailDetails);
+};
+
+const sendInquiryNotifyEmail = async (inquiryDetails) => {
+    const mailTransporter = setupMailTransporter();
+
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: [process.env.EMAIL_MASTER, process.env.EMAIL_USER].join(','),
+        subject: "Property Inquiry",
+        html: `
+          <h3>You have received a new property inquiry:</h3>
+          <p><strong>Name:</strong> ${inquiryDetails.name}</p>
+          <p><strong>Number:</strong> ${inquiryDetails.number}</p>
+          <p><strong>Email:</strong> ${inquiryDetails.email}</p>
+          <p><strong>User Details:</strong> ${inquiryDetails.userId}</p>
+          <p><strong>Purpose:</strong> ${inquiryDetails.purpose}</p>
+          <p><strong>Address:</strong> ${inquiryDetails.address}</p>
+          <p><strong>Message:</strong> ${inquiryDetails.message}</p>
+          <p><strong>Property Details:</strong> ${inquiryDetails.propertyDetails}</p>
+          <p>Please get back to them shortly. Thank you.</p>
+        `,
+    };
+
+    await mailTransporter.sendMail(mailOptions);
 };
 
 const submitEnquiryForm = async (req, res) => {

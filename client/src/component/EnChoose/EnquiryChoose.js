@@ -27,6 +27,7 @@ const EnquiryChoose = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // console.log("Submitting data:", formData);
     try {
       const response = await httpCommon.post('/contact/cityEnquiry', formData);
       console.log(response.data.message);
@@ -68,6 +69,7 @@ const EnquiryChoose = () => {
                     name="inquiryType"
                     value={formData.inquiryType}
                     onChange={handleChange}
+                    required
                     className="block w-full px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded focus:outline-none"
                   >
                     <option>Select</option>
@@ -89,6 +91,7 @@ const EnquiryChoose = () => {
                       name="listingType"
                       value={formData.listingType}
                       onChange={handleChange}
+                      required
                       className="block w-full px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded focus:outline-none"
                     >
                       <option>Select Listing Type</option>
@@ -114,8 +117,10 @@ const EnquiryChoose = () => {
                         name="namePrefix"
                         value={formData.namePrefix}
                         onChange={handleChange}
+                        required
                         className="block w-1/3 px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded-l"
                       >
+                        <option>N/A</option>
                         <option>Mr</option>
                         <option>Ms</option>
                         <option>Mrs</option>
@@ -126,6 +131,7 @@ const EnquiryChoose = () => {
                         type="text"
                         value={formData.name}
                         onChange={handleChange}
+                        required
                         className="block w-2/3 px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded-r"
                         placeholder="Your Name"
                       />
@@ -141,6 +147,7 @@ const EnquiryChoose = () => {
                       name="phone"
                       value={formData.phone}
                       onChange={handleChange}
+                      required
                       className="block w-full px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded-r"
                       placeholder="Your Phone Number"
                     />
@@ -155,6 +162,7 @@ const EnquiryChoose = () => {
                       type="email"
                       value={formData.email}
                       onChange={handleChange}
+                      required
                       className="block w-full px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded"
                       placeholder="Your Email"
                     />
@@ -198,7 +206,6 @@ const EnquiryChoose = () => {
                     onChange={handleChange}
                     placeholder="Enter Your Message"
                     className="block w-full px-4 py-3 leading-tight text-gray-700 bg-white border border-gray-400 rounded"
-                    required
                   ></textarea>
                 </div>
 

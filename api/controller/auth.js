@@ -1,7 +1,10 @@
+const sgMail = require('@sendgrid/mail');
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const db = require("../connect");
-const nodemailer = require("nodemailer");
+
+// Set the SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 let otpStore = {};
 
@@ -36,18 +39,10 @@ const registerP = async (req, res) => {
 
     console.log("OTP generated:", otp);
 
-    // Send mail
-    let mailTransporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
-    let mailDetails = {
-      from: process.env.EMAIL_USER,
+    // Send mail using SendGrid
+    const msg = {
       to: email,
+      from: process.env.EMAIL_USER,
       subject: "Account Verification",
       html: `<h3>Hello,</h3>
         <p>Welcome to our platform! To verify your account, please use the following 6-digit OTP (One-Time Password):</p>
@@ -55,7 +50,7 @@ const registerP = async (req, res) => {
         <p>Please enter this OTP in the verification form to complete the process.</p>`,
     };
 
-    await mailTransporter.sendMail(mailDetails);
+    await sgMail.send(msg);
     console.log("Mail sent successfully");
     return res.status(200).json({
       message: "User has been created. Please check your email for the OTP.",

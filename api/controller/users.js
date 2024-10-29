@@ -3,7 +3,10 @@ const db = require("../connect");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { logoutP } = require("./auth");
-const nodemailer = require("nodemailer");
+const sgMail = require('@sendgrid/mail');
+
+// Set the SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
 // Function to get users
 const getUsers = async (req, res, next) => {
@@ -146,32 +149,22 @@ const forgotPassword = async (req, res, next) => {
     }
 
     const user = results[0];
-
-    // Generate a reset token
     const token = jwt.sign({ id: user.id }, process.env.JWT_KEY, { expiresIn: "1h" });
-
-    // Send the reset link via email
-    const transporter = nodemailer.createTransport({
-      service: "Gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-
     const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
-    const mailOptions = {
-      from: process.env.EMAIL_USER,
+    const msg = {
       to: email,
+      from: process.env.EMAIL_USER,
       subject: "Password Reset Request",
-      text: `To reset your password, please click the following link: ${resetLink}`,
+      html: `<p>To reset your password, please click the following link:</p>
+             <a href="${resetLink}">${resetLink}</a>`,
     };
 
-    await transporter.sendMail(mailOptions);
+    await sgMail.send(msg);
 
     res.status(200).send("Password reset link has been sent to your email.");
   } catch (error) {
+    console.error("Error sending password reset email:", error);
     return next(createError(500, "Error processing request"));
   }
 };
