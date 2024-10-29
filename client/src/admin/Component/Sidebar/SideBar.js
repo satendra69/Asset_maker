@@ -1,19 +1,31 @@
 import { NavLink } from "react-router-dom";
 import { FaBars, FaHome, FaUser, FaFileAlt, FaListAlt, FaCity, FaBlog, FaBlogger, FaMicroblog, FaTags, FaMapMarkerAlt, FaQuoteLeft } from "react-icons/fa";
 import { MdMessage } from "react-icons/md";
-import { BiSearch } from "react-icons/bi";
+import { BiSearch, BiLogOut } from "react-icons/bi";
 import { BiCog } from "react-icons/bi";
 import { AiFillHeart } from "react-icons/ai";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SidebarMenu from "./SidebarMenu";
+import { signOutUserSuccess } from "../../../redux/userSlice";
 import { FaFileCirclePlus } from "react-icons/fa6";
 import "./sidebar.css";
 import { GiVillage } from "react-icons/gi";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 const SideBar = ({ children }) => {
   const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // Handle logout function
+  const handleLogout = () => {
+    dispatch(signOutUserSuccess());
+    navigate("/");
+    toast.success("Logout Successful");
+  };
 
   const routes = currentUser && currentUser.id
     ? currentUser.admin
@@ -338,6 +350,27 @@ const SideBar = ({ children }) => {
                 </NavLink>
               );
             })}
+            {/* Logout button */}
+            {currentUser && (
+              <div onClick={handleLogout} className="link" style={{ cursor: 'pointer' }}>
+                <div className="icon">
+                  <BiLogOut size={24} />
+                </div>
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      variants={showAnimation}
+                      initial="hidden"
+                      animate="show"
+                      exit="hidden"
+                      className="link_text"
+                    >
+                      Logout
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
           </section>
         </motion.div>
 

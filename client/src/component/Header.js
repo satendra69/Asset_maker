@@ -5,7 +5,6 @@ import { FaBuilding, FaHamburger, FaHome } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { IoMdLogOut } from "react-icons/io";
 import { CiLogin, CiSaveDown2 } from "react-icons/ci";
-import { IoCreateOutline } from "react-icons/io5";
 import { useDispatch, useSelector } from "react-redux";
 import { Toaster, toast } from "sonner";
 import { signOutUserSuccess } from "../redux/userSlice";
@@ -22,18 +21,6 @@ const variants = {
 const variants2 = {
   open: { opacity: 1, x: 0 },
   closed: { opacity: 0, x: "-100%" },
-};
-
-const glowVariants = {
-  glow: {
-    boxShadow: `0 0 0 10px rgba(255, 255, 255, 0.3)`,
-    transition: {
-      duration: 1,
-      ease: "easeInOut",
-      repeat: Infinity,
-      repeatType: "reverse",
-    },
-  },
 };
 
 const pendulumVariants = {
@@ -245,14 +232,15 @@ function Header() {
               {profile && (
                 <motion.div className="absolute right-0 p-5 space-y-3 bg-white rounded-lg shadow-md ">
                   {currentUser.admin === 1 && (
-                    <Link
+                    <a
+                      href="/admin"
+                      target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                      to={"/admin"}
                     >
-                      {" "}
                       <MdOutlineAdminPanelSettings size={32} />
                       Admin Panel
-                    </Link>
+                    </a>
                   )}
                   <div
                     className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
@@ -368,13 +356,15 @@ function Header() {
                       className={`${profile ? "block" : "hidden"} transition-all text-left duration-1000 mt-2`}
                     >
                       {currentUser.admin === 1 && (
-                        <Link
+                        <a
+                          href="/admin"
+                          target="_blank"
+                          rel="noopener noreferrer"
                           className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                          to={"/admin"}
                         >
                           <MdOutlineAdminPanelSettings size={32} />
                           Admin Panel
-                        </Link>
+                        </a>
                       )}
                       <div
                         className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
