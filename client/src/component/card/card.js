@@ -17,7 +17,7 @@ function Card({ key, item, onPropertyRemoved }) {
   const [open, setOpen] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
 
-  console.log("item", item);
+  // console.log("item", item);
 
   const navigate = useNavigate();
   const defaultImage = httpCommon.defaults.baseURL + '/images/defaultasset.jpg';
@@ -143,7 +143,21 @@ function Card({ key, item, onPropertyRemoved }) {
   };
 
   const price = priceMapping[item.ltg_type] || item.ltg_det_sale_price;
-  const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+  const { numeric: numericPrice, formatted: formattedPrice } = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+
+  const suffixPriceMapping = {
+    Plots: item?.ltg_det_plot_suffix_price,
+    Villas: item?.ltg_det_suffix_price,
+    Apartments: item?.ltg_det_suffix_price,
+    RowHouses: item?.ltg_det_row_house_suffix_price,
+    CommercialProperties: item?.ltg_det_comm_prop_suffix_price,
+    Villaments: item?.ltg_det_villaments_suffix_price,
+    PentHouses: item?.ltg_det_penthouses_suffix_price,
+  };
+
+  const suffixPrice = suffixPriceMapping[item?.ltg_type] || item?.ltg_det_suffix_price;
+  const { numeric: numericSuffixPrice, formatted: formattedSuffixPrice } = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
+
 
   const bedroomMapping = {
     Plots: item.ltg_det_pmts_bed_rom,
@@ -212,25 +226,28 @@ function Card({ key, item, onPropertyRemoved }) {
 
   function formatPrice(price) {
     if (price == null) {
-      return "N/A";
+      return { numeric: 0, formatted: "N/A" };
     }
 
     const numericPrice = parseFloat(price.replace(/,/g, ""));
 
     if (isNaN(numericPrice)) {
-      return "N/A";
+      return { numeric: 0, formatted: "N/A" };
     }
 
-
+    // Create formatted string based on numeric value
+    let formatted;
     if (numericPrice < 1000) {
-      return numericPrice;
+      formatted = numericPrice.toString();
     } else if (numericPrice < 100000) {
-      return `${(numericPrice / 1000).toFixed(0)} Thousand`;
+      formatted = `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      formatted = `${(numericPrice / 100000).toFixed(1)} Lakhs`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
     }
+
+    return { numeric: numericPrice, formatted };
   }
 
   return (
@@ -243,13 +260,13 @@ function Card({ key, item, onPropertyRemoved }) {
         handleClose={handleClose}
         mutation={mutation}
       />
-
-      <div className="cardProperty">
-        <div className="cardImageContainer">
-          <Link
-            to={`/Property/details`}
-            state={{ id: item.RowID, ltg_type: item.ltg_type }}
-          >
+      <Link
+        to={`/Property/details`}
+        state={{ id: item.RowID, ltg_type: item.ltg_type }}
+        className="cardPropertyLink"
+      >
+        <div className="cardProperty">
+          <div className="cardImageContainer">
             {imageAttachments.length > 0 ? (
               <img
                 src={
@@ -262,68 +279,84 @@ function Card({ key, item, onPropertyRemoved }) {
             ) : (
               <img src={defaultImage} alt="default attachment" />
             )}
-          </Link>
-        </div>
-        <div className="cardTextContainer">
-          {item.ltg_projectName && (
-            <h3 className="cardProjectName">
+          </div>
+          <div className="cardTextContainer">
+            {item.ltg_projectName && (
+              <h3 className="cardProjectName">{item.ltg_projectName}</h3>
+            )}
+            <h2 className="cardTitle">
               <Link
                 to={`/Property/details`}
                 state={{ id: item.RowID, ltg_type: item.ltg_type }}
               >
-                {item.ltg_projectName}
+                {item.ltg_title}
               </Link>
-            </h3>
-          )}
-          <h2 className="cardTitle">
-            <Link
-              to={`/Property/details`}
-              state={{ id: item.RowID, ltg_type: item.ltg_type }}
-            >
-              {item.ltg_title}
-            </Link>
-          </h2>
-          <p className="cardAddress">
-            <img src="/pin.png" alt="" />
-            <span>{address}</span>
-          </p>
-          <p className="price">₹{formattedPrice}</p>
-          <div className="bottom">
-            <div className="features">
-              {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (
-                <span></span>
-              ) : (
-                <>
-                  <div className="feature">
-                    <FaBed />
-                    <span>{bedrooms} bedroom</span>
-                  </div>
-                  <div className="feature">
-                    <FaBath />
-                    <span>{bathrooms} bathrooms</span>
-                  </div>
-                </>
+            </h2>
+            <p className="cardAddress">
+              <img src="/pin.png" alt="" />
+              <span>{address}</span>
+            </p>
+            <div className="card-pricing">
+              <span className="current-price">{formattedPrice}</span>
+              {suffixPrice > 0 && (
+                <span className="suffix-price" style={{ textDecoration: 'line-through', color: 'red', marginLeft: '10px' }}>
+                  {formattedSuffixPrice}
+                </span>
               )}
-              <div className="feature">
-                <SlSizeFullscreen />
-                <span>{area}</span>
-              </div>
-              <div className="feature">
-                <MdRealEstateAgent />
-                <span>{status}</span>
-              </div>
             </div>
-            <div className="icons">
-              <div className="icon" onClick={isSaved ? removeFromSavedList : saveToSavedList}>
-                {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+            {/* <p className="price">₹{formattedPrice}</p>
+            {numericSuffixPrice > 0 && (
+              <p className="price">₹{formattedSuffixPrice}</p>
+            )} */}
+            <div className="bottom">
+              <div className="features">
+                {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (
+                  <span></span>
+                ) : (
+                  <>
+                    <div className="feature">
+                      <FaBed />
+                      <span>{bedrooms} bedroom</span>
+                    </div>
+                    <div className="feature">
+                      <FaBath />
+                      <span>{bathrooms} bathrooms</span>
+                    </div>
+                  </>
+                )}
+                <div className="feature">
+                  <SlSizeFullscreen />
+                  <span>{area}</span>
+                </div>
+                <div className="feature">
+                  <MdRealEstateAgent />
+                  <span>{status}</span>
+                </div>
               </div>
-              <div className="icon" onClick={() => setOpen(true)}>
-                <IoChatboxEllipsesOutline />
+              <div className="icons">
+                <div
+                  className="icon"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    isSaved ? removeFromSavedList() : saveToSavedList();
+                  }}
+                >
+                  {isSaved ? <FaBookmark /> : <FaRegBookmark />}
+                </div>
+                <div
+                  className="icon"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setOpen(true);
+                  }}
+                >
+                  <IoChatboxEllipsesOutline />
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </>
   );
 }

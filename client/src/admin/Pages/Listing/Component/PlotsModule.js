@@ -497,6 +497,26 @@ function PlotsModule({ action, onDataUpdate }) {
     }
   };
 
+  // Check if all layout basic amenities are selected
+  const areAllLayoutBasicAmenitiesSelected = amenityCategories[
+    "Layout Basic Amenities"
+  ].every((amenity) => selectedAmenities.includes(amenity));
+
+  // Handle "Select All" for Layout Basic Amenities
+  const toggleLayoutBasicAmenities = (e) => {
+    const layoutBasicAmenities = amenityCategories["Layout Basic Amenities"];
+    if (e.target.checked) {
+      // Select all layout basic amenities if not already selected
+      setSelectedAmenities((prev) => [...new Set([...prev, ...layoutBasicAmenities])]);
+    } else {
+      // Remove all layout basic amenities from the selection
+      setSelectedAmenities((prev) =>
+        prev.filter((item) => !layoutBasicAmenities.includes(item))
+      );
+    }
+  };
+
+
   const amenitiesAsString = selectedAmenities.join(', ');
 
   const [editorState, setEditorState] = useState(() => {
@@ -1248,6 +1268,21 @@ function PlotsModule({ action, onDataUpdate }) {
               </label>
             )}
 
+            {/* Select All for Layout Basic Amenities */}
+            {category === "Layout Basic Amenities" && (
+              <label className="inline-flex items-center mt-4 mb-4">
+                <input
+                  type="checkbox"
+                  checked={areAllLayoutBasicAmenitiesSelected}
+                  onChange={toggleLayoutBasicAmenities}
+                  className="w-5 h-5 text-indigo-600 transition duration-150 ease-in-out form-checkbox"
+                />
+                <span className="ml-2 text-sm leading-6 text-gray-900">
+                  Select All
+                </span>
+              </label>
+            )}
+
             <div className="grid grid-cols-2 gap-4 mt-4 md:grid-cols-3 lg:grid-cols-4">
               {amenities.map((amenity, index) => (
                 <label
@@ -1273,6 +1308,7 @@ function PlotsModule({ action, onDataUpdate }) {
           </div>
         ))}
       </div>
+
 
       {/* About Project/Builder Section */}
 

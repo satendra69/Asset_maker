@@ -107,25 +107,30 @@ function SinglePage() {
 
   function formatPrice(price) {
     if (price == null) {
-      return "N/A";
+      return { numeric: 0, formatted: "N/A" };
     }
 
     const numericPrice = parseFloat(price.replace(/,/g, ""));
 
     if (isNaN(numericPrice)) {
-      return "N/A";
+      return { numeric: 0, formatted: "N/A" };
     }
 
+    // Create formatted string based on numeric value
+    let formatted;
     if (numericPrice < 1000) {
-      return numericPrice;
+      formatted = numericPrice.toString();
     } else if (numericPrice < 100000) {
-      return `${(numericPrice / 1000).toFixed(0)} Thousand`;
+      formatted = `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      formatted = `${(numericPrice / 100000).toFixed(1)} Lakhs`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
     }
+
+    return { numeric: numericPrice, formatted };
   }
+
 
   const scrollToCalculator = () => {
     const element = document.getElementById('mortgage-calculator');
@@ -157,7 +162,22 @@ function SinglePage() {
   };
 
   const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
-  const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+  // const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+  const { numeric: numericPrice, formatted: formattedPrice } = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
+
+  const suffixPriceMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_suffix_price,
+    Villas: singlePageData?.[0]?.ltg_det_suffix_price,
+    Apartments: singlePageData?.[0]?.ltg_det_suffix_price,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_suffix_price,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_suffix_price,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_suffix_price,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_suffix_price,
+  };
+
+  const suffixPrice = suffixPriceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_suffix_price;
+  // const formattedSuffixPrice = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
+  const { numeric: numericSuffixPrice, formatted: formattedSuffixPrice } = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
 
   const getPropertyDetails = (type, item) => {
     switch (type) {
@@ -165,6 +185,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_comm_prop_desc,
           price: formatPrice(item.ltg_det_comm_prop_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price),
           bedroom: '', // empty for CommercialProperties
           bathroom: '', // empty for CommercialProperties
           parking: item.ltg_det_comm_prop_pmts_car_parking,
@@ -178,6 +199,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_penthouses_desc,
           price: formatPrice(item.ltg_det_penthouses_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price),
           bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
           bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
           parking: item.ltg_det_penthouses_pmts_car_parking,
@@ -191,6 +213,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_plot_desc,
           price: formatPrice(item.ltg_det_plot_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_plot_suffix_price),
           bedroom: '', // empty for Plots
           bathroom: '', // empty for Plots
           parking: '', // empty for Plots
@@ -204,6 +227,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_row_house_desc,
           price: formatPrice(item.ltg_det_row_house_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price),
           bedroom: item.ltg_det_row_house_pmts_bed_rooms,
           bathroom: item.ltg_det_row_house_pmts_bath_rooms,
           parking: item.ltg_det_row_house_pmts_car_parking,
@@ -217,6 +241,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_villaments_desc,
           price: formatPrice(item.ltg_det_villaments_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price),
           bedroom: item.ltg_det_villaments_pmts_bed_rooms,
           bathroom: item.ltg_det_villaments_pmts_bath_rooms,
           parking: item.ltg_det_villaments_pmts_car_parking,
@@ -230,6 +255,7 @@ function SinglePage() {
         return {
           description: item.ltg_det_desc,
           price: formatPrice(item.ltg_det_sale_price),
+          suffixPrice: formatPrice(item.ltg_det_suffix_price),
           bedroom: item.ltg_det_pmts_bed_rom,
           bathroom: item.ltg_det_pmts_bth_rom,
           parking: item.ltg_det_pmts_car_park,
@@ -293,10 +319,18 @@ function SinglePage() {
             </div>
           </div>
           <div className="text-right">
-            <div className="mt-2 text-3xl font-semibold">
+            <span className="text-3xl font-semibold text-gray-500">
               ₹{formattedPrice}
-            </div>
-            <button className="flex items-center gap-2 mt-2 text-blue-600" onClick={scrollToCalculator}>
+            </span>
+            {numericSuffixPrice > 0 && (
+              <span className="relative ml-2 text-3xl font-semibold text-red-600 line-through-red">
+                ₹{formattedSuffixPrice}
+              </span>
+            )}
+            <button
+              className="flex items-center gap-2 mt-2 text-blue-600"
+              onClick={scrollToCalculator}
+            >
               Est. Mortgage Calculator <FaChevronCircleDown />
             </button>
           </div>

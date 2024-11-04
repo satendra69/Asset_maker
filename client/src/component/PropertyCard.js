@@ -6,6 +6,7 @@ import { LuScale3D } from "react-icons/lu";
 import { CiLocationOn } from "react-icons/ci";
 
 function PropertyCard({ card }) {
+  // console.log("card", card);
   return (
     <div className="relative p-4 m-2 transition-shadow duration-300 bg-white border rounded-lg shadow-md hover:shadow-lg">
       <Link
@@ -38,7 +39,9 @@ function PropertyCard({ card }) {
           </div>
           <div className="flex items-center gap-1 text-xl font-medium text-red-600">
             <FaRupeeSign />
-            <p>{card.price}</p>
+            {card.price && (
+              <p>{card.price}</p>
+            )}
           </div>
           <div className="flex justify-between text-sm text-gray-600">
             <div className="flex items-center gap-1">

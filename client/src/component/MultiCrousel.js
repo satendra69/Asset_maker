@@ -3,7 +3,6 @@ import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 import PropertyCard from "./PropertyCard";
 import TopPropertyCard from "./TopPropertyCard";
-import { FaArrowLeft, FaArrowRight } from 'react-icons/fa'; // You can use any icon library
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 const CustomLeftArrow = ({ onClick }) => {

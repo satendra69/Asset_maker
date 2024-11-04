@@ -353,7 +353,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -425,7 +429,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'total-units-icon', label: 'TOTAL UNITS', value: data.ltg_det_plot_pmts_total_units },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_plot_pmts_other_advtages ? data.ltg_det_plot_pmts_other_advtages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -508,7 +516,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_pmts_status },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_pmts_other_advtages ? data.ltg_det_pmts_other_advtages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -591,7 +603,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_row_house_pmts_status },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_row_house_pmts_other_advantages ? data.ltg_det_row_house_pmts_other_advantages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -673,7 +689,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_villaments_pmts_status },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_villaments_pmts_other_advantages ? data.ltg_det_villaments_pmts_other_advantages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -746,7 +766,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_comm_prop_pmts_status },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_comm_prop_pmts_other_advantages ? data.ltg_det_comm_prop_pmts_other_advantages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -828,7 +852,11 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_penthouses_pmts_bath_rooms },
         ],
         otherFacts: filteredOtherFacts,
-        amenities: categorizedAmenities,
+        // amenities: categorizedAmenities,
+        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+          icon: 'tickmark-icon',
+          label: amenity.trim(),
+        })) : [],
         otherAdvantages: data.ltg_det_penthouses_pmts_other_advantages ? data.ltg_det_penthouses_pmts_other_advantages.split(',').map(advantage => ({
           icon: 'tickmark-icon',
           label: advantage.trim(),
@@ -1002,6 +1030,38 @@ const PropertyDetails = ({ property, images, brochure }) => {
           )}
         </div>
 
+        <div className="mt-16">
+          {/* Conditionally render "Other Advantages" section */}
+          {transformedProperty?.details?.otherAdvantages?.length > 0 && (
+            <section>
+              <h2 className="mb-4 text-xl font-bold">Other Advantages</h2>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                {transformedProperty.details.otherAdvantages.map((advantage, index) => (
+                  <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="1.5rem"
+                      height="1.5rem"
+                      viewBox="0 0 24 24"
+                      className="mr-2 text-blue-700"
+                    >
+                      <path
+                        fill="currentColor"
+                        d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
+                      ></path>
+                      <path
+                        fill="currentColor"
+                        d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
+                      ></path>
+                    </svg>
+                    <span className="text-sm font-semibold">{advantage.label}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+        </div>
+
         <div className="">
           {/* Conditionally render "Details Other Facts" section */}
           {transformedProperty?.details?.otherFacts.some(fact => fact.value) && (
@@ -1046,12 +1106,12 @@ const PropertyDetails = ({ property, images, brochure }) => {
         )}
 
         <div className="mt-16">
-          {/* Conditionally render "Other Advantages" section */}
-          {transformedProperty?.details?.otherAdvantages?.length > 0 && (
+          {/* Conditionally render "Amenities" section */}
+          {transformedProperty?.details?.amenities?.length > 0 && (
             <section>
-              <h2 className="mb-4 text-xl font-bold">Other Advantages</h2>
+              <h2 className="mb-4 text-xl font-bold">Amenities</h2>
               <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                {transformedProperty.details.otherAdvantages.map((advantage, index) => (
+                {transformedProperty?.details.amenities.map((amenity, index) => (
                   <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1069,106 +1129,10 @@ const PropertyDetails = ({ property, images, brochure }) => {
                         d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
                       ></path>
                     </svg>
-                    <span className="text-sm font-semibold">{advantage.label}</span>
+                    <span className="text-sm font-semibold">{amenity.label}</span>
                   </div>
                 ))}
               </div>
-            </section>
-          )}
-        </div>
-
-        <div className="mt-16">
-          {/* Conditionally render "Amenities" section */}
-          {transformedProperty?.details?.amenities && (
-            <section>
-              <h2 className="mb-4 text-xl font-bold">Amenities</h2>
-              {/* Render Basic Amenities */}
-              {transformedProperty.details.amenities["Basic Amenities"]?.length > 0 && (
-                <div>
-                  <h3 className="mb-2 text-lg font-semibold text-green-500">Basic Amenities</h3>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                    {transformedProperty.details.amenities["Basic Amenities"].map((amenity, index) => (
-                      <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1.5rem"
-                          height="1.5rem"
-                          viewBox="0 0 24 24"
-                          className="mr-2 text-blue-700"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
-                          ></path>
-                        </svg>
-                        <span className="text-sm font-semibold">{amenity.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {/* Render Layout Basic Amenities (only if ltg_type is Plots) */}
-              {transformedProperty.type === 'Plots' && transformedProperty.details.amenities["Layout Basic Amenities"]?.length > 0 && (
-                <div>
-                  <h3 className="mb-2 text-lg font-semibold text-green-500">Layout Basic Amenities</h3>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                    {transformedProperty.details.amenities["Layout Basic Amenities"].map((amenity, index) => (
-                      <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1.5rem"
-                          height="1.5rem"
-                          viewBox="0 0 24 24"
-                          className="mr-2 text-blue-700"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
-                          ></path>
-                        </svg>
-                        <span className="text-sm font-semibold">{amenity.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {/* Render General Amenities */}
-              {transformedProperty.details.amenities["Amenities"]?.length > 0 && (
-                <div>
-                  <h3 className="mb-2 text-lg font-semibold text-green-500">Amenities</h3>
-                  <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
-                    {transformedProperty.details.amenities["Amenities"].map((amenity, index) => (
-                      <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="1.5rem"
-                          height="1.5rem"
-                          viewBox="0 0 24 24"
-                          className="mr-2 text-blue-700"
-                        >
-                          <path
-                            fill="currentColor"
-                            d="M18 20.75H6A2.75 2.75 0 0 1 3.25 18V6A2.75 2.75 0 0 1 6 3.25h8.86a.75.75 0 0 1 0 1.5H6A1.25 1.25 0 0 0 4.75 6v12A1.25 1.25 0 0 0 6 19.25h12A1.25 1.25 0 0 0 19.25 18v-7.71a.75.75 0 0 1 1.5 0V18A2.75 2.75 0 0 1 18 20.75"
-                          ></path>
-                          <path
-                            fill="currentColor"
-                            d="M10.5 15.25A.74.74 0 0 1 10 15l-3-3a.75.75 0 0 1 1-1l2.47 2.47L19 5a.75.75 0 0 1 1 1l-9 9a.74.74 0 0 1-.5.25"
-                          ></path>
-                        </svg>
-                        <span className="text-sm font-semibold">{amenity.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </section>
           )}
         </div>
