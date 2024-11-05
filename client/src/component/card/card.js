@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { FaBookmark, FaRegBookmark, FaBath, FaBed } from "react-icons/fa";
+import { FaBookmark, FaRegBookmark, FaBath, FaBed, FaRupeeSign } from "react-icons/fa";
 import { SlSizeFullscreen } from "react-icons/sl";
 import { MdRealEstateAgent } from "react-icons/md";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
@@ -297,17 +297,13 @@ function Card({ key, item, onPropertyRemoved }) {
               <span>{address}</span>
             </p>
             <div className="card-pricing">
-              <span className="current-price">{formattedPrice}</span>
+              <span className="current-price">₹ {formattedPrice}</span>
               {suffixPrice > 0 && (
                 <span className="suffix-price" style={{ textDecoration: 'line-through', color: 'red', marginLeft: '10px' }}>
-                  {formattedSuffixPrice}
+                  ₹ {formattedSuffixPrice}
                 </span>
               )}
             </div>
-            {/* <p className="price">₹{formattedPrice}</p>
-            {numericSuffixPrice > 0 && (
-              <p className="price">₹{formattedSuffixPrice}</p>
-            )} */}
             <div className="bottom">
               <div className="features">
                 {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (

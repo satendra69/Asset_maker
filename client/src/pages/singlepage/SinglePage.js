@@ -105,18 +105,16 @@ function SinglePage() {
   };
 
 
-  function formatPrice(price) {
+  function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
-      return { numeric: 0, formatted: "N/A" };
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
     const numericPrice = parseFloat(price.replace(/,/g, ""));
-
     if (isNaN(numericPrice)) {
-      return { numeric: 0, formatted: "N/A" };
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
-    // Create formatted string based on numeric value
     let formatted;
     if (numericPrice < 1000) {
       formatted = numericPrice.toString();
@@ -128,9 +126,8 @@ function SinglePage() {
       formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
     }
 
-    return { numeric: numericPrice, formatted };
+    return onlyFormatted ? formatted : { numeric: numericPrice, formatted };
   }
-
 
   const scrollToCalculator = () => {
     const element = document.getElementById('mortgage-calculator');
@@ -184,8 +181,8 @@ function SinglePage() {
       case 'CommercialProperties':
         return {
           description: item.ltg_det_comm_prop_desc,
-          price: formatPrice(item.ltg_det_comm_prop_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price),
+          price: formatPrice(item.ltg_det_comm_prop_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price, true),
           bedroom: '', // empty for CommercialProperties
           bathroom: '', // empty for CommercialProperties
           parking: item.ltg_det_comm_prop_pmts_car_parking,
@@ -198,8 +195,8 @@ function SinglePage() {
       case 'PentHouses':
         return {
           description: item.ltg_det_penthouses_desc,
-          price: formatPrice(item.ltg_det_penthouses_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price),
+          price: formatPrice(item.ltg_det_penthouses_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price, true),
           bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
           bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
           parking: item.ltg_det_penthouses_pmts_car_parking,
@@ -212,8 +209,8 @@ function SinglePage() {
       case 'Plots':
         return {
           description: item.ltg_det_plot_desc,
-          price: formatPrice(item.ltg_det_plot_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_plot_suffix_price),
+          price: formatPrice(item.ltg_det_plot_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_plot_suffix_price, true),
           bedroom: '', // empty for Plots
           bathroom: '', // empty for Plots
           parking: '', // empty for Plots
@@ -226,8 +223,8 @@ function SinglePage() {
       case 'RowHouses':
         return {
           description: item.ltg_det_row_house_desc,
-          price: formatPrice(item.ltg_det_row_house_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price),
+          price: formatPrice(item.ltg_det_row_house_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price, true),
           bedroom: item.ltg_det_row_house_pmts_bed_rooms,
           bathroom: item.ltg_det_row_house_pmts_bath_rooms,
           parking: item.ltg_det_row_house_pmts_car_parking,
@@ -240,8 +237,8 @@ function SinglePage() {
       case 'Villaments':
         return {
           description: item.ltg_det_villaments_desc,
-          price: formatPrice(item.ltg_det_villaments_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price),
+          price: formatPrice(item.ltg_det_villaments_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price, true),
           bedroom: item.ltg_det_villaments_pmts_bed_rooms,
           bathroom: item.ltg_det_villaments_pmts_bath_rooms,
           parking: item.ltg_det_villaments_pmts_car_parking,
@@ -254,8 +251,8 @@ function SinglePage() {
       default:
         return {
           description: item.ltg_det_desc,
-          price: formatPrice(item.ltg_det_sale_price),
-          suffixPrice: formatPrice(item.ltg_det_suffix_price),
+          price: formatPrice(item.ltg_det_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_suffix_price, true),
           bedroom: item.ltg_det_pmts_bed_rom,
           bathroom: item.ltg_det_pmts_bth_rom,
           parking: item.ltg_det_pmts_car_park,
@@ -322,11 +319,13 @@ function SinglePage() {
             <span className="text-3xl font-semibold text-gray-500">
               ₹{formattedPrice}
             </span>
+
             {numericSuffixPrice > 0 && (
               <span className="relative ml-2 text-3xl font-semibold text-red-600 line-through-red">
                 ₹{formattedSuffixPrice}
               </span>
             )}
+
             <button
               className="flex items-center gap-2 mt-2 text-blue-600"
               onClick={scrollToCalculator}
