@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/static/css/main.e29a7ec0.css",
-    "main.js": "/static/js/main.98d7f633.js",
-    "static/js/453.3f732b94.chunk.js": "/static/js/453.3f732b94.chunk.js",
-    "static/media/hero2.jpg": "/static/media/hero2.78297e832f2beabde0c8.jpg",
-    "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
-    "static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png": "/static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.721e5e6bc445cc990452.png",
-    "static/media/revicons.eot": "/static/media/revicons.a77de540a38981833f9e.eot",
-    "static/media/revicons.ttf": "/static/media/revicons.57fd05d4ae650374c8de.ttf",
-    "static/media/Godrej-Logo-Design-150x150.jpg": "/static/media/Godrej-Logo-Design-150x150.615aaae34cb82398cc61.jpg",
-    "static/media/revicons.woff": "/static/media/revicons.e8746a624ed098489406.woff",
-    "index.html": "/index.html",
-    "main.e29a7ec0.css.map": "/static/css/main.e29a7ec0.css.map",
-    "main.98d7f633.js.map": "/static/js/main.98d7f633.js.map",
-    "453.3f732b94.chunk.js.map": "/static/js/453.3f732b94.chunk.js.map"
+    "main.css": "http://142.93.213.221:8004/static/css/main.98256019.css",
+    "main.js": "http://142.93.213.221:8004/static/js/main.e7062344.js",
+    "static/js/453.3f732b94.chunk.js": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js",
+    "static/media/hero2.jpg": "http://142.93.213.221:8004/static/media/hero2.78297e832f2beabde0c8.jpg",
+    "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
+    "static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.721e5e6bc445cc990452.png",
+    "static/media/revicons.eot": "http://142.93.213.221:8004/static/media/revicons.a77de540a38981833f9e.eot",
+    "static/media/revicons.ttf": "http://142.93.213.221:8004/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/Godrej-Logo-Design-150x150.jpg": "http://142.93.213.221:8004/static/media/Godrej-Logo-Design-150x150.615aaae34cb82398cc61.jpg",
+    "static/media/revicons.woff": "http://142.93.213.221:8004/static/media/revicons.e8746a624ed098489406.woff",
+    "index.html": "http://142.93.213.221:8004/index.html",
+    "main.98256019.css.map": "http://142.93.213.221:8004/static/css/main.98256019.css.map",
+    "main.e7062344.js.map": "http://142.93.213.221:8004/static/js/main.e7062344.js.map",
+    "453.3f732b94.chunk.js.map": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e29a7ec0.css",
-    "static/js/main.98d7f633.js"
+    "static/css/main.98256019.css",
+    "static/js/main.e7062344.js"
   ]
 }
