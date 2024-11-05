@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FiZoomIn, FiZoomOut, FiChevronLeft, FiChevronRight, FiX } from 'react-icons/fi';
+import { FiZoomIn, FiZoomOut, FiChevronLeft, FiChevronRight, FiX, FiMaximize2, FiMinimize2 } from 'react-icons/fi';
 import httpCommon from "../../../../http-common";
 
 const ImageModal = ({ images, currentIndex, onClose }) => {
@@ -8,6 +8,7 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [translate, setTranslate] = useState({ x: 0, y: 0 });
+    const [isFullScreen, setIsFullScreen] = useState(false);
     const modalRef = useRef(null);
     const imageRef = useRef(null);
 
@@ -22,6 +23,13 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
             }
         };
     }, [currentImageIndex, images]);
+
+    useEffect(() => {
+        // Reset the position when zoom level is set back to 1 (original zoom)
+        if (zoomLevel === 1) {
+            setTranslate({ x: 0, y: 0 });
+        }
+    }, [zoomLevel]);
 
     const closeModal = () => {
         onClose();
@@ -71,7 +79,7 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
 
     const resetZoom = () => {
         setZoomLevel(1);
-        setTranslate({ x: 0, y: 0 });
+        setTranslate({ x: 0, y: 0 });  // Reset the image position to center
     };
 
     const handleWheel = (e) => {
@@ -86,7 +94,10 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
     const startDragging = (e) => {
         if (zoomLevel > 1) {
             setIsDragging(true);
-            setDragStart({ x: e.clientX - translate.x, y: e.clientY - translate.y });
+            setDragStart({
+                x: e.clientX - translate.x,
+                y: e.clientY - translate.y
+            });
         }
     };
 
@@ -98,10 +109,19 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
         if (isDragging && zoomLevel > 1) {
             const newTranslate = {
                 x: e.clientX - dragStart.x,
-                y: e.clientY - dragStart.y,
+                y: e.clientY - dragStart.y
             };
             setTranslate(newTranslate);
         }
+    };
+
+    const toggleFullScreen = () => {
+        if (!isFullScreen) {
+            modalRef.current.requestFullscreen().catch(console.error);
+        } else {
+            document.exitFullscreen().catch(console.error);
+        }
+        setIsFullScreen(!isFullScreen);
     };
 
     const handleOverlayClick = (e) => {
@@ -121,7 +141,10 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
             tabIndex={-1}
             ref={modalRef}
         >
-            <div className="relative mx-4 overflow-hidden bg-white rounded-lg shadow-lg modal-container max-w-7xl sm:max-w-3xl md:mx-auto">
+            <div
+                className={`relative mx-4 overflow-hidden bg-white rounded-lg shadow-lg modal-container max-w-7xl sm:max-w-3xl md:mx-auto ${isFullScreen ? 'w-full h-full' : ''
+                    }`}
+            >
                 <button
                     className="absolute top-0 right-0 z-50 p-2 m-4 text-2xl text-white bg-black rounded-full hover:bg-opacity-75"
                     onClick={closeModal}
@@ -129,14 +152,22 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
                 >
                     <FiX />
                 </button>
+                <button
+                    className="absolute top-0 left-0 z-50 p-2 m-4 text-2xl text-white bg-black rounded-full hover:bg-opacity-75"
+                    onClick={toggleFullScreen}
+                    aria-label="Toggle full screen"
+                >
+                    {isFullScreen ? <FiMinimize2 /> : <FiMaximize2 />}
+                </button>
 
                 <div
-                    className="relative flex items-center justify-center p-4 bg-gray-800"
+                    className={`relative flex items-center justify-center p-4 bg-gray-800 ${isFullScreen ? 'w-full h-full' : ''
+                        }`}
                     onMouseDown={startDragging}
                     onMouseMove={handleDragging}
                     onMouseUp={stopDragging}
                     onMouseLeave={stopDragging}
-                    onWheel={handleWheel} // Added for mouse scroll zoom
+                    onWheel={handleWheel}
                 >
                     <div className="slide active">
                         {imageUrl && (
@@ -146,11 +177,12 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
                                 className="object-contain transition-transform duration-300"
                                 style={{
                                     transform: `scale(${zoomLevel}) translate(${translate.x}px, ${translate.y}px)`,
-                                    maxHeight: '80vh',
-                                    maxWidth: '100%',
+                                    maxHeight: isFullScreen ? '100vh' : '80vh',
+                                    maxWidth: isFullScreen ? '100vw' : '100%',
                                     cursor: zoomLevel > 1 ? 'grab' : 'auto',
                                 }}
                                 ref={imageRef}
+                                onDragStart={(e) => e.preventDefault()}
                             />
                         )}
                     </div>
