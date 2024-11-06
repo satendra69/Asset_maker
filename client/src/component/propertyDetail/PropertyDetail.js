@@ -439,6 +439,7 @@ const transformData = (propertyData, propertyImages) => {
           label: advantage.trim(),
         })) : [],
         aboutProject: data.ltg_det_plot_about_project_builder,
+        propertyAddress: data.ltg_det_plot_property_address_details,
         propertyVideo: data.ltg_det_plot_property_video_url,
         description: data.ltg_det_plot_desc,
       },
@@ -526,6 +527,7 @@ const transformData = (propertyData, propertyImages) => {
           label: advantage.trim(),
         })) : [],
         aboutProject: data.ltg_det_about_project_buder,
+        propertyAddress: data.ltg_det_property_address_details,
         propertyVideo: data.ltg_det_property_video_url,
         description: data.ltg_det_desc,
       },
@@ -613,6 +615,7 @@ const transformData = (propertyData, propertyImages) => {
           label: advantage.trim(),
         })) : [],
         aboutProject: data.ltg_det_row_house_about_project_builder,
+        propertyAddress: data.ltg_det_row_house_property_address_details,
         propertyVideo: data.ltg_det_row_house_property_video_url,
         description: data.ltg_det_row_house_desc,
       },
@@ -699,6 +702,7 @@ const transformData = (propertyData, propertyImages) => {
           label: advantage.trim(),
         })) : [],
         aboutProject: data.ltg_det_villaments_about_project_builder,
+        propertyAddress: data.ltg_det_villaments_property_address_details,
         propertyVideo: data.ltg_det_villaments_property_video_url,
         description: data.ltg_det_villaments_desc,
       },
@@ -862,6 +866,7 @@ const transformData = (propertyData, propertyImages) => {
           label: advantage.trim(),
         })) : [],
         aboutProject: data.ltg_det_penthouses_about_project_builder,
+        propertyAddress: data.ltg_det_penthouses_property_address_details,
         propertyVideo: data.ltg_det_penthouses_property_video_url,
         description: data.ltg_det_penthouses_desc,
       },
@@ -1143,6 +1148,16 @@ const PropertyDetails = ({ property, images, brochure }) => {
             <section>
               <h2 className="mb-4 text-2xl font-bold">About Project/Builder</h2>
               <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty?.details.aboutProject}</p>
+            </section>
+          )}
+        </div>
+
+        <div className="mt-16">
+          {/* Conditionally render "About Project/Builder" section */}
+          {transformedProperty?.details?.propertyAddress && (
+            <section>
+              <h2 className="mb-4 text-2xl font-bold">Property Address</h2>
+              <p className="p-4 border border-gray-200 rounded-md shadow-sm">{transformedProperty?.details.propertyAddress}</p>
             </section>
           )}
         </div>

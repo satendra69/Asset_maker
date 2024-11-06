@@ -41,7 +41,17 @@ function Slider({ images }) {
   };
 
   const handleZoom = (direction) => {
-    setZoomLevel(prev => direction === "in" ? Math.min(prev + 0.25, 3) : Math.max(prev - 0.25, 1));
+    setZoomLevel(prevZoom => {
+      if (direction === "in") {
+        return Math.min(prevZoom + 0.25, 3);
+      } else {
+        if (prevZoom <= 1.25) {
+          setTranslatePos({ x: 0, y: 0 });
+          return 1;
+        }
+        return Math.max(prevZoom - 0.25, 1);
+      }
+    });
   };
 
   const handleMouseDown = (event) => {
@@ -68,7 +78,7 @@ function Slider({ images }) {
   const handleScrollZoom = (event) => {
     if (event.deltaY < 0) {
       handleZoom("in");
-    } else {
+    } else if (zoomLevel > 1) {
       handleZoom("out");
     }
   };
