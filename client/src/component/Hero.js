@@ -71,34 +71,40 @@ function Hero() {
     setFeaturedPropertyCounts(counts);
   };
 
-  function formatPrice(price) {
+  function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
-      return "N/A";
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
     const numericPrice = parseFloat(price.replace(/,/g, ""));
-
     if (isNaN(numericPrice)) {
-      return "N/A";
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
+    let formatted;
     if (numericPrice < 1000) {
-      return numericPrice;
+      formatted = numericPrice.toString();
     } else if (numericPrice < 100000) {
-      return `${(numericPrice / 1000).toFixed(0)} Thousand`;
+      formatted = `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      return `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      const lakhs = numericPrice / 100000;
+      formatted = lakhs % 1 === 0 ? `${lakhs.toFixed(0)} Lakhs` : `${lakhs.toFixed(1)} Lakhs`;
     } else {
-      return `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      const crores = numericPrice / 10000000;
+      formatted = crores % 1 === 0 ? `${crores.toFixed(0)} Cr` : `${crores.toFixed(2)} Cr`;
     }
+
+    return onlyFormatted ? formatted : { numeric: numericPrice, formatted };
   }
+
 
   const getPropertyDetails = (type, item) => {
     switch (type) {
       case 'CommercialProperties':
         return {
           description: item.ltg_det_comm_prop_desc,
-          price: formatPrice(item.ltg_det_comm_prop_sale_price),
+          price: formatPrice(item.ltg_det_comm_prop_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price, true),
           bedroom: '', // empty for CommercialProperties
           bathroom: '', // empty for CommercialProperties
           parking: item.ltg_det_comm_prop_pmts_car_parking,
@@ -111,7 +117,8 @@ function Hero() {
       case 'PentHouses':
         return {
           description: item.ltg_det_penthouses_desc,
-          price: formatPrice(item.ltg_det_penthouses_sale_price),
+          price: formatPrice(item.ltg_det_penthouses_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price, true),
           bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
           bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
           parking: item.ltg_det_penthouses_pmts_car_parking,
@@ -124,7 +131,8 @@ function Hero() {
       case 'Plots':
         return {
           description: item.ltg_det_plot_desc,
-          price: formatPrice(item.ltg_det_plot_sale_price),
+          price: formatPrice(item.ltg_det_plot_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_plot_suffix_price, true),
           bedroom: '', // empty for Plots
           bathroom: '', // empty for Plots
           parking: '', // empty for Plots
@@ -137,7 +145,8 @@ function Hero() {
       case 'RowHouses':
         return {
           description: item.ltg_det_row_house_desc,
-          price: formatPrice(item.ltg_det_row_house_sale_price),
+          price: formatPrice(item.ltg_det_row_house_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price, true),
           bedroom: item.ltg_det_row_house_pmts_bed_rooms,
           bathroom: item.ltg_det_row_house_pmts_bath_rooms,
           parking: item.ltg_det_row_house_pmts_car_parking,
@@ -150,7 +159,8 @@ function Hero() {
       case 'Villaments':
         return {
           description: item.ltg_det_villaments_desc,
-          price: formatPrice(item.ltg_det_villaments_sale_price),
+          price: formatPrice(item.ltg_det_villaments_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price, true),
           bedroom: item.ltg_det_villaments_pmts_bed_rooms,
           bathroom: item.ltg_det_villaments_pmts_bath_rooms,
           parking: item.ltg_det_villaments_pmts_car_parking,
@@ -163,7 +173,8 @@ function Hero() {
       default:
         return {
           description: item.ltg_det_desc,
-          price: formatPrice(item.ltg_det_sale_price),
+          price: formatPrice(item.ltg_det_sale_price, true),
+          suffixPrice: formatPrice(item.ltg_det_suffix_price, true),
           bedroom: item.ltg_det_pmts_bed_rom,
           bathroom: item.ltg_det_pmts_bth_rom,
           parking: item.ltg_det_pmts_car_park,
