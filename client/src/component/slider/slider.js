@@ -55,12 +55,14 @@ function Slider({ images }) {
   };
 
   const handleMouseDown = (event) => {
-    setIsDragging(true);
-    setStartPos({ x: event.clientX, y: event.clientY });
+    if (zoomLevel > 1) {
+      setIsDragging(true);
+      setStartPos({ x: event.clientX, y: event.clientY });
+    }
   };
 
   const handleMouseMove = (event) => {
-    if (isDragging && imageRef.current) {
+    if (isDragging && zoomLevel > 1 && imageRef.current) {
       const dx = event.clientX - startPos.x;
       const dy = event.clientY - startPos.y;
       setTranslatePos(prev => ({
@@ -78,7 +80,7 @@ function Slider({ images }) {
   const handleScrollZoom = (event) => {
     if (event.deltaY < 0) {
       handleZoom("in");
-    } else if (zoomLevel > 1) {
+    } else {
       handleZoom("out");
     }
   };

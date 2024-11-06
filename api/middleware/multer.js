@@ -74,10 +74,6 @@ const addWatermark = async (req, res, next) => {
 
       const positions = [
         { x: 0, y: margin },
-        // {
-        //   x: (inputImage.bitmap.width - watermarkResized.bitmap.width) / 2,
-        //   y: (inputImage.bitmap.height - watermarkResized.bitmap.height) / 2
-        // },
         {
           x: inputImage.bitmap.width - watermarkResized.bitmap.width,
           y: inputImage.bitmap.height - watermarkResized.bitmap.height - margin

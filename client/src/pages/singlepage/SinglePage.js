@@ -121,9 +121,13 @@ function SinglePage() {
     } else if (numericPrice < 100000) {
       formatted = `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      formatted = `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      // formatted = `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      const lakhs = numericPrice / 100000;
+      formatted = lakhs % 1 === 0 ? `${lakhs.toFixed(0)} Lakhs` : `${lakhs.toFixed(1)} Lakhs`;
     } else {
-      formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      // formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      const crores = numericPrice / 10000000;
+      formatted = crores % 1 === 0 ? `${crores.toFixed(0)} Cr` : `${crores.toFixed(2)} Cr`;
     }
 
     return onlyFormatted ? formatted : { numeric: numericPrice, formatted };
@@ -159,7 +163,6 @@ function SinglePage() {
   };
 
   const price = priceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_sale_price;
-  // const formattedPrice = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
   const { numeric: numericPrice, formatted: formattedPrice } = formatPrice(price != null ? price.toLocaleString('en-IN') : '0');
 
   const suffixPriceMapping = {
@@ -173,7 +176,6 @@ function SinglePage() {
   };
 
   const suffixPrice = suffixPriceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_suffix_price;
-  // const formattedSuffixPrice = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
   const { numeric: numericSuffixPrice, formatted: formattedSuffixPrice } = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
 
   const getPropertyDetails = (type, item) => {
@@ -304,7 +306,7 @@ function SinglePage() {
       <div className="p-4 mb-10">
         <div className="flex items-start justify-between mb-5">
           <div>
-            {singlePageData?.[0]?.ltg_projectName && (
+            {singlePageData && singlePageData[0]?.ltg_projectName && singlePageData[0].ltg_projectName !== 'undefined' && (
               <h1 className="text-2xl font-semibold">{singlePageData[0].ltg_projectName}</h1>
             )}
             {singlePageData?.[0]?.ltg_title && (
@@ -316,15 +318,18 @@ function SinglePage() {
             </div>
           </div>
           <div className="text-right">
-            <span className="text-3xl font-semibold text-gray-500">
-              ₹{formattedPrice}
-            </span>
-
-            {numericSuffixPrice > 0 && (
-              <span className="relative ml-2 text-3xl font-semibold text-red-600 line-through-red">
-                ₹{formattedSuffixPrice}
+            {/* Price Display */}
+            <div className="flex items-center justify-end">
+              <span className="p-2 text-3xl italic text-white shadow-md font-semiboldrounded-lg bg-gradient-to-r from-blue-500 to-teal-500">
+                ₹{formattedPrice}
               </span>
-            )}
+
+              {numericSuffixPrice > 0 && (
+                <span className="relative ml-4 text-xl font-semibold text-red-600 line-through">
+                  ₹{formattedSuffixPrice}
+                </span>
+              )}
+            </div>
 
             <button
               className="flex items-center gap-2 mt-2 text-blue-600"

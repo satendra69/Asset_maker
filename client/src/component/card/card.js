@@ -224,30 +224,29 @@ function Card({ key, item, onPropertyRemoved }) {
   //   return decimalPart ? `${intPart}.${decimalPart}` : intPart;
   // }
 
-  function formatPrice(price) {
+  function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
-      return { numeric: 0, formatted: "N/A" };
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
     const numericPrice = parseFloat(price.replace(/,/g, ""));
-
     if (isNaN(numericPrice)) {
-      return { numeric: 0, formatted: "N/A" };
+      return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
     }
 
-    // Create formatted string based on numeric value
     let formatted;
     if (numericPrice < 1000) {
       formatted = numericPrice.toString();
     } else if (numericPrice < 100000) {
       formatted = `${(numericPrice / 1000).toFixed(0)} Thousand`;
     } else if (numericPrice < 10000000) {
-      formatted = `${(numericPrice / 100000).toFixed(1)} Lakhs`;
+      const lakhs = numericPrice / 100000;
+      formatted = lakhs % 1 === 0 ? `${lakhs.toFixed(0)} Lakhs` : `${lakhs.toFixed(1)} Lakhs`;
     } else {
-      formatted = `${(numericPrice / 10000000).toFixed(2)} Cr`;
+      const crores = numericPrice / 10000000;
+      formatted = crores % 1 === 0 ? `${crores.toFixed(0)} Cr` : `${crores.toFixed(2)} Cr`;
     }
-
-    return { numeric: numericPrice, formatted };
+    return onlyFormatted ? formatted : { numeric: numericPrice, formatted };
   }
 
   return (
@@ -285,12 +284,7 @@ function Card({ key, item, onPropertyRemoved }) {
               <h3 className="cardProjectName">{item.ltg_projectName}</h3>
             )}
             <h2 className="cardTitle">
-              <Link
-                to={`/Property/details`}
-                state={{ id: item.RowID, ltg_type: item.ltg_type }}
-              >
-                {item.ltg_title}
-              </Link>
+              {item.ltg_title}
             </h2>
             <p className="cardAddress">
               <img src="/pin.png" alt="" />
@@ -298,7 +292,7 @@ function Card({ key, item, onPropertyRemoved }) {
             </p>
             <div className="card-pricing">
               <span className="current-price">₹ {formattedPrice}</span>
-              {suffixPrice > 0 && (
+              {numericSuffixPrice > 0 && (
                 <span className="suffix-price" style={{ textDecoration: 'line-through', color: 'red', marginLeft: '10px' }}>
                   ₹ {formattedSuffixPrice}
                 </span>

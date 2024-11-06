@@ -430,7 +430,7 @@ const transformData = (propertyData, propertyImages) => {
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
-        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        amenities: data.ltg_det_plot_amenities ? data.ltg_det_plot_amenities.split(',').map(amenity => ({
           icon: 'tickmark-icon',
           label: amenity.trim(),
         })) : [],
@@ -606,7 +606,7 @@ const transformData = (propertyData, propertyImages) => {
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
-        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        amenities: data.ltg_det_row_house_amenities ? data.ltg_det_row_house_amenities.split(',').map(amenity => ({
           icon: 'tickmark-icon',
           label: amenity.trim(),
         })) : [],
@@ -693,7 +693,7 @@ const transformData = (propertyData, propertyImages) => {
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
-        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        amenities: data.ltg_det_villaments_amenities ? data.ltg_det_villaments_amenities.split(',').map(amenity => ({
           icon: 'tickmark-icon',
           label: amenity.trim(),
         })) : [],
@@ -771,7 +771,7 @@ const transformData = (propertyData, propertyImages) => {
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
-        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        amenities: data.ltg_det_comm_prop_amenities ? data.ltg_det_comm_prop_amenities.split(',').map(amenity => ({
           icon: 'tickmark-icon',
           label: amenity.trim(),
         })) : [],
@@ -857,7 +857,7 @@ const transformData = (propertyData, propertyImages) => {
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
-        amenities: data.ltg_det_amenities ? data.ltg_det_amenities.split(',').map(amenity => ({
+        amenities: data.ltg_det_penthouses_amenities ? data.ltg_det_penthouses_amenities.split(',').map(amenity => ({
           icon: 'tickmark-icon',
           label: amenity.trim(),
         })) : [],
@@ -917,7 +917,6 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const [selectedMasterPlanImageIndex, setSelectedMasterPlanImageIndex] = useState(null);
   const [selectedFloorAreaPlanImageIndex, setSelectedFloorAreaPlanImageIndex] = useState(null);
-
 
   useEffect(() => {
     const handleClickOutside = (event) => {
