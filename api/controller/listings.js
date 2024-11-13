@@ -832,54 +832,44 @@ const getListItem = async (req, res) => {
           detailsTable = 'ltg_det';
       }
 
+      // Update the query to directly join ltg_ref and the details table
       const detailQuery = `
-            SELECT 
-                mst.*,
-                det.*,
-                ref_agg.file_names,
-                ref_agg.attachments,
-                ref_agg.attachment_types
-            FROM 
-                ltg_mst mst
-            JOIN 
-                ${detailsTable} det ON mst.RowID = det.ltg_det_mstRowID
-            LEFT JOIN (
-                SELECT 
-                    ltg_mstRowID,
-                    GROUP_CONCAT(file_name SEPARATOR ', ') AS file_names,
-                    GROUP_CONCAT(attachment SEPARATOR ', ') AS attachments,
-                    GROUP_CONCAT(type SEPARATOR ', ') AS attachment_types
-                FROM 
-                    ltg_ref
-                GROUP BY 
-                    ltg_mstRowID
-            ) ref_agg ON mst.RowID = ref_agg.ltg_mstRowID
-            WHERE 
-                mst.RowID = ?;
-        `;
+        SELECT 
+          mst.*, 
+          det.*, 
+          ref.file_name, 
+          ref.attachment, 
+          ref.type AS attachment_type
+        FROM 
+          ltg_mst mst
+        JOIN 
+          ${detailsTable} det ON mst.RowID = det.ltg_det_mstRowID
+        LEFT JOIN 
+          ltg_ref ref ON mst.RowID = ref.ltg_mstRowID
+        WHERE 
+          mst.RowID = ?;
+      `;
 
       // Execute the detail query
       const [detailResults] = await db.query(detailQuery, [RowID]);
 
       if (detailResults.length > 0) {
-        // Process the attachments and their types
         const detailResult = detailResults[0];
-        if (detailResult.attachments) {
-          const attachmentsArray = detailResult.attachments.split(', ');
-          const attachmentTypesArray = detailResult.attachment_types.split(', ');
 
-          detailResult.attachments = attachmentsArray.map((attachment, index) => ({
-            file_name: detailResult.file_names.split(', ')[index],
-            attachment: attachment,
-            type: attachmentTypesArray[index]
-          }));
+        // Separate the attachment rows from the rest of the result
+        const attachments = detailResults.map(item => ({
+          file_name: item.file_name,
+          attachment: item.attachment,
+          type: item.attachment_type
+        }));
 
-          // Remove attachment_types and file_names properties
-          delete detailResult.attachment_types;
-          delete detailResult.file_names;
-        } else {
-          detailResult.attachments = [];
-        }
+        // Remove attachment fields from the main detail result to avoid duplication
+        delete detailResult.file_name;
+        delete detailResult.attachment;
+        delete detailResult.attachment_type;
+
+        // Add the attachments array to the result
+        detailResult.attachments = attachments;
 
         return detailResult;
       } else {
@@ -1332,11 +1322,11 @@ const deleteListItem = async (req, res) => {
     console.error("Error deleting property: " + error.stack);
     res.status(500).json({ message: "Error deleting property", status: "error" });
   } finally {
-    if (connection) connection.release(); // Release the connection back to the pool
+    if (connection) connection.release();
   }
 };
 
-// upload files
+// Upload files and save information to the database
 const uploadListItem = async (req, res) => {
   const connection = await db.getConnection();
   try {
@@ -1352,8 +1342,6 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
     }
 
-    // console.log('Uploaded files for type :', type, files);
-
     await connection.beginTransaction();
 
     const insertQuery = `
@@ -1363,16 +1351,13 @@ const uploadListItem = async (req, res) => {
 
     const values = files.map(file => {
       const originalName = file.originalname;
-      // console.log("path", file.path);
       const url = `\\images\\${path.basename(file.path)}`;
-      const now = new Date();
-      const formattedDate = now.toISOString().slice(0, 10);
+      const formattedDate = new Date().toISOString().slice(0, 10);
 
       return [listingID, originalName, url, type, auditUser, formattedDate];
     });
 
     await connection.query(insertQuery, [values]);
-
     await connection.commit();
 
     res.status(200).json({

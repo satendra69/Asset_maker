@@ -340,6 +340,95 @@ function PlotsModule({ action, onDataUpdate }) {
     setSelectedFloorAreaPlanImageIndex(null);
   };
 
+  const confirmDeletion = (type) => {
+    const isConfirmed = window.confirm(`Are you sure you want to delete all ${type} images?`);
+    if (isConfirmed) {
+      if (type === 'stored') {
+        handleDeleteStoredGalleryImages();
+      } else {
+        handleDeleteUploadedGalleryImages();
+      }
+    }
+  };
+
+  // Function for deleting stored gallery images
+  const handleDeleteStoredGalleryImages = () => {
+    setStoredGalleryImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      gallery: [...prevState.gallery, ...storedGalleryImages.map(image => image.RowID)]
+    }));
+  };
+
+  // Function for deleting uploaded gallery images
+  const handleDeleteUploadedGalleryImages = () => {
+    setGalleryImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      gallery: [...prevState.gallery, ...galleryImages.map((_, index) => index)]
+    }));
+  };
+
+  // Function to handle confirmation of deletion
+  const confirmMasterPlanDeletion = (type) => {
+    const isConfirmed = window.confirm(`Are you sure you want to delete all ${type} master plan images?`);
+    if (isConfirmed) {
+      if (type === 'stored') {
+        handleDeleteStoredMasterPlanImages();
+      } else {
+        handleDeleteUploadedMasterPlanImages();
+      }
+    }
+  };
+
+  // Function for deleting stored master plan images
+  const handleDeleteStoredMasterPlanImages = () => {
+    setStoredMasterPlanImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      masterPlan: [...prevState.masterPlan, ...storedMasterPlanImages.map(image => image.RowID)]
+    }));
+  };
+
+  // Function for deleting uploaded master plan images
+  const handleDeleteUploadedMasterPlanImages = () => {
+    setMasterPlanImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      masterPlan: [...prevState.masterPlan, ...masterPlanImages.map((_, index) => index)]
+    }));
+  };
+
+  // Function to handle confirmation of deletion
+  const confirmFloorAreaPlanDeletion = (type) => {
+    const isConfirmed = window.confirm(`Are you sure you want to delete all ${type} floor plan images?`);
+    if (isConfirmed) {
+      if (type === 'stored') {
+        handleDeleteStoredFloorAreaPlanImages();
+      } else {
+        handleDeleteUploadedFloorAreaPlanImages();
+      }
+    }
+  };
+
+  // Function for deleting stored floor plan images
+  const handleDeleteStoredFloorAreaPlanImages = () => {
+    setStoredFloorAreaPlanImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      floorAreaPlan: [...prevState.floorAreaPlan, ...storedFloorAreaPlanImages.map(image => image.RowID)]
+    }));
+  };
+
+  // Function for deleting uploaded floor plan images
+  const handleDeleteUploadedFloorAreaPlanImages = () => {
+    setFloorAreaPlanImages([]);
+    setDeletedImages(prevState => ({
+      ...prevState,
+      floorAreaPlan: [...prevState.floorAreaPlan, ...floorAreaPlanImages.map((_, index) => index)]
+    }));
+  };
+
   // Function to handle drag over
   const handleDragOver = (e) => {
     e.preventDefault();
@@ -387,84 +476,84 @@ function PlotsModule({ action, onDataUpdate }) {
   // List of amenities
   const amenityCategories = {
     "Basic Amenities": [
+      "24 Hrs Backup",
       "CCTV Surveillance",
       "Children’s Play Area",
       "Community Hall",
-      "24 Hrs Backup",
       "Intercom",
       "Walking/Jogging Track",
     ],
     "Layout Basic Amenities": [
       "Black Top roads",
-      "Children’s Play Area",
       "CCTV Surveillance",
+      "Children’s Play Area",
       "Community Hall",
       "Footpaths",
-      "Walking/Jogging Track",
       "Rain Water Harvesting",
       "Society Boundary Wall",
       "Street Lights",
+      "Under Ground Drainage",
       "Under Ground Electricity",
       "Under Ground Water Supply",
-      "Under Ground Drainage",
+      "Walking/Jogging Track",
       "Water Overhead Tank",
     ],
     "Amenities": [
+      "24 Hrs Backup",
       "Amphie Theatre",
       "Acupressure Walkway",
-      "Basketball Court",
-      "Basement",
       "Badminton Court",
-      "Billiards",
       "Bar/Lounge",
+      "Basement",
+      "Basketball Court",
+      "Billiards",
+      "Black Top roads",
       "Cafeteria",
-      "Club House",
+      "CCTV Surveillance",
+      "Children’s Play Area",
       "Clinic",
+      "Club House",
+      "Community Hall",
       "Concrete Roads",
+      "Co-Working Space",
       "Creche",
       "Cricket Practice Pitch",
+      "Footpaths",
+      "Garden",
       "Gazebo",
       "Golf Course",
       "Gym",
-      "Garden",
       "Home Theatre",
-      "Library",
+      "Intercom",
       "Laundry Service",
+      "Library",
       "Mini Soccer Ground",
-      "Co-Working Space",
       "Outdoor Gym",
-      "Piped Gas",
       "Pets Allowed",
-      "Public Transport Available",
       "Pharmacy",
-      "Spa/ Saloon",
-      "Supermarket",
-      "Steam / Jaccuzi",
-      "Swimming Pool",
-      "Senior Citizen Seating Facilities",
+      "Piped Gas",
+      "Public Transport Available",
+      "Rain Water Harvesting",
       "Security Guards",
+      "Senior Citizen Seating Facilities",
+      "Society Boundary Wall",
+      "Spa/ Saloon",
       "Squash Court",
+      "Steam / Jaccuzi",
+      "Street Lights",
+      "Supermarket",
+      "Swimming Pool",
       "Table Tennis",
-      "Toddlers Pool",
       "Temple",
       "Tennis court",
-      "Volleyball Court",
-      "Yoga room",
-      "Black Top roads",
-      "Children’s Play Area",
-      "CCTV Surveillance",
-      "Community Hall",
-      "Footpaths",
-      "Walking/Jogging Track",
-      "Rain Water Harvesting",
-      "Society Boundary Wall",
-      "Street Lights",
+      "Toddlers Pool",
+      "Under Ground Drainage",
       "Under Ground Electricity",
       "Under Ground Water Supply",
-      "Under Ground Drainage",
+      "Volleyball Court",
+      "Walking/Jogging Track",
       "Water Overhead Tank",
-      "24 Hrs Backup",
-      "Intercom",
+      "Yoga room",
     ],
   };
 
@@ -1430,9 +1519,9 @@ function PlotsModule({ action, onDataUpdate }) {
 
       {/* Gallery Section */}
       <div>
-        <hr className="my-8 border-gray-400" />
-        <h2 className="mb-2 text-xl font-semibold">Gallery</h2>
-        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+        <hr className="my-8 border-gray-300" />
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">Gallery</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-lg">
           <div
             className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
             id="dropzone"
@@ -1452,67 +1541,84 @@ function PlotsModule({ action, onDataUpdate }) {
               <img
                 src="/image-upload.svg"
                 alt="Upload"
-                className="w-12 h-12 mx-auto"
+                className="w-16 h-16 mx-auto"
               />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 <label htmlFor="file-upload" className="relative">
                   <span>Drag and drop</span>
                   <span className="text-indigo-600"> or browse</span>
                   <span> to upload</span>
-                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
               <p className="mt-1 text-xs text-gray-500">PNG, JPG up to 10MB</p>
             </div>
-            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
         </div>
 
-
-        <div className="flex flex-wrap mt-4">
-
+        {/* Gallery Images Grid */}
+        <div className="grid grid-cols-2 gap-4 mt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
           {/* Displaying Stored Gallery Images */}
-          {storedGalleryImages.length > 0 && (
-            <div className="flex flex-row">
-              {storedGalleryImages.map((file, index) => (
-                <div key={index} className="relative m-2">
-                  <button
-                    onClick={() => handleStoredImageDelete(file.RowID, 'gallery')}
-                    className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
-                  >
-                    X
-                  </button>
-                  <img
-                    src={httpCommon.defaults.baseURL + file.attachment} // Adjust URL for stored images
-                    alt={`Stored Image ${file.file_name}`}
-                    className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => openGalleryModal(index)} // Implement modal opening for stored images
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+          {storedGalleryImages.length > 0 &&
+            storedGalleryImages.map((file, index) => (
+              <div key={file.RowID} className="relative flex flex-col items-center">
+                <button
+                  onClick={() => handleStoredImageDelete(file.RowID, 'gallery')}
+                  className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
+                >
+                  <span className="text-lg font-bold">X</span>
+                </button>
+                <img
+                  src={httpCommon.defaults.baseURL + file.attachment}
+                  alt={`Stored Gallery ${file.file_name}`}
+                  className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
+                  onClick={() => openGalleryModal(index)}
+                />
+              </div>
+            ))}
 
+          {/* Displaying Uploaded Gallery Images */}
           {galleryImages.map((image, index) => (
-            <div key={index} className="relative m-2">
+            <div key={index} className="relative flex flex-col items-center">
               <button
                 onClick={() => handleImageDelete(index, galleryImages, setGalleryImages)}
-                className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
               >
-                X
+                <span className="text-lg font-bold">X</span>
               </button>
               <img
                 src={URL.createObjectURL(image)}
-                alt={`Uploaded Image ${index + 1}`}
-                className="object-cover w-32 h-32 rounded cursor-pointer"
+                alt={`Uploaded Gallery ${index + 1}`}
+                className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
                 onClick={() => openGalleryModal(index)}
               />
             </div>
           ))}
-
         </div>
 
-        {/* Modal for displaying images */}
+        {/* Delete All Button for Gallery */}
+        <div className="mt-4 text-center">
+          {/* Delete Stored Gallery Images Button */}
+          {(storedGalleryImages.length > 0) && (
+            <button
+              onClick={() => confirmDeletion('stored')}
+              className="px-6 py-2 mr-4 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Stored Gallery Images
+            </button>
+          )}
+
+          {/* Delete Uploaded Gallery Images Button */}
+          {(galleryImages.length > 0) && (
+            <button
+              onClick={() => confirmDeletion('uploaded')}
+              className="px-6 py-2 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Uploaded Gallery Images
+            </button>
+          )}
+        </div>
+
+        {/* Image Modal */}
         {selectedGalleryImageIndex !== null && (
           <ImageModal
             images={[...storedGalleryImages, ...galleryImages]}
@@ -1540,9 +1646,9 @@ function PlotsModule({ action, onDataUpdate }) {
 
       {/* Master Plan Section */}
       <div>
-        <hr className="my-8 border-gray-400" />
-        <h2 className="mb-2 text-xl font-semibold">Master Plan</h2>
-        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+        <hr className="my-8 border-gray-300" />
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">Master Plan</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-lg">
           <div
             className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
             id="dropzone"
@@ -1562,119 +1668,135 @@ function PlotsModule({ action, onDataUpdate }) {
               <img
                 src="/image-upload.svg"
                 alt="Upload"
-                className="w-12 h-12 mx-auto"
+                className="w-16 h-16 mx-auto"
               />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 <label htmlFor="file-upload" className="relative">
                   <span>Drag and drop</span>
                   <span className="text-indigo-600"> or browse</span>
                   <span> to upload</span>
-                  {/* <input id="file-upload" name="file-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
               <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
-            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+        </div>
 
-          <div className="flex flex-wrap mt-4">
-
-            {/* Displaying Stored Master Plan Images */}
-            {storedMasterPlanImages.length > 0 && (
-              <div className="flex flex-row">
-                {storedMasterPlanImages.map((file, index) => (
-                  <div key={file.RowID} className="relative m-2">
-                    <button
-                      onClick={() => handleStoredImageDelete(file.RowID, 'masterPlan')}
-                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
-                    >
-                      X
-                    </button>
-                    {file.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                      <img
-                        src={httpCommon.defaults.baseURL + file.attachment}
-                        alt={`Stored: ${file.file_name}`}
-                        className="object-cover w-32 h-32 rounded cursor-pointer"
-                        onClick={() => {
-                          openMasterPlanModal(index);
-                        }}
-                      />
-                    ) : file.file_name.match(/\.pdf$/i) ? (
-                      <div
-                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                        onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
-                      >
-                        <img
-                          src="/pdf-file.svg"
-                          alt={`PDF ${file.file_name}`}
-                          className="w-16 h-20 mb-2"
-                        />
-                        <span className="text-sm font-medium text-indigo-600">
-                          {file.file_name}
-                        </span>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {/* Displaying Uploaded Master Plan Images */}
-            {masterPlanImages.map((image, index) => (
-              <div key={index} className="relative m-2">
+        {/* Master Plan Images Grid */}
+        <div className="grid grid-cols-2 gap-4 mt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {/* Displaying Stored Master Plan Images */}
+          {storedMasterPlanImages.length > 0 &&
+            storedMasterPlanImages.map((file, index) => (
+              <div key={file.RowID} className="relative flex flex-col items-center">
+                {/* Delete Button */}
                 <button
-                  onClick={() => handleImageDelete(index, masterPlanImages, setMasterPlanImages)}
-                  className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  onClick={() => handleStoredImageDelete(file.RowID, 'masterPlan')}
+                  className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
                 >
-                  X
+                  <span className="text-lg font-bold">X</span>
                 </button>
-                {image.type.match(/image\/*/) ? (
+                {file.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
                   <img
-                    src={URL.createObjectURL(image)}
-                    alt={`Uploaded: ${index + 1}`}
-                    className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => {
-                      openMasterPlanModal(index);
-                    }}
+                    src={httpCommon.defaults.baseURL + file.attachment}
+                    alt={`Stored Master Plan ${file.file_name}`}
+                    className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
+                    onClick={() => openMasterPlanModal(index)}
                   />
-                ) : image.type.match(/application\/pdf/) ? (
+                ) : file.file_name.match(/\.pdf$/i) ? (
                   <div
                     className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                    onClick={() => {
-                      const pdfUrl = URL.createObjectURL(image);
-                      window.open(pdfUrl, '_blank');
-                    }}
+                    onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
                   >
                     <img
                       src="/pdf-file.svg"
-                      alt={`Uploaded PDF ${index + 1}`}
+                      alt={`PDF ${file.file_name}`}
                       className="w-16 h-20 mb-2"
                     />
                     <span className="text-sm font-medium text-indigo-600">
-                      Uploaded PDF {index + 1}
+                      {file.file_name}
                     </span>
                   </div>
                 ) : null}
               </div>
             ))}
-          </div>
 
-          {/* Modal for displaying images */}
-          {selectedMasterPlanImageIndex !== null && (
-            <ImageModal
-              images={[...storedMasterPlanImages, ...masterPlanImages]}
-              currentIndex={selectedMasterPlanImageIndex}
-              onClose={closeImageModal}
-            />
+          {/* Displaying Uploaded Master Plan Images */}
+          {masterPlanImages.map((image, index) => (
+            <div key={index} className="relative flex flex-col items-center">
+              {/* Delete Button */}
+              <button
+                onClick={() => handleImageDelete(index, masterPlanImages, setMasterPlanImages)}
+                className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
+              >
+                <span className="text-lg font-bold">X</span>
+              </button>
+              {image.type.match(/image\/*/) ? (
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Master Plan ${index + 1}`}
+                  className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
+                  onClick={() => openMasterPlanModal(index)}
+                />
+              ) : image.type.match(/application\/pdf/) ? (
+                <div
+                  className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                  onClick={() => {
+                    const pdfUrl = URL.createObjectURL(image);
+                    window.open(pdfUrl, '_blank');
+                  }}
+                >
+                  <img
+                    src="/pdf-file.svg"
+                    alt={`Uploaded PDF ${index + 1}`}
+                    className="w-16 h-20 mb-2"
+                  />
+                  <span className="text-sm font-medium text-indigo-600">
+                    Uploaded PDF {index + 1}
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+
+        {/* Delete All Button for Master Plan */}
+        <div className="mt-4 text-center">
+          {/* Delete Stored Master Plan Images Button */}
+          {(storedMasterPlanImages.length > 0) && (
+            <button
+              onClick={() => confirmMasterPlanDeletion('stored')}
+              className="px-6 py-2 mr-4 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Stored Master Plan Images
+            </button>
+          )}
+
+          {/* Delete Uploaded Master Plan Images Button */}
+          {(masterPlanImages.length > 0) && (
+            <button
+              onClick={() => confirmMasterPlanDeletion('uploaded')}
+              className="px-6 py-2 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Uploaded Master Plan Images
+            </button>
           )}
         </div>
+
+        {/* Image Modal */}
+        {selectedMasterPlanImageIndex !== null && (
+          <ImageModal
+            images={[...storedMasterPlanImages, ...masterPlanImages]}
+            currentIndex={selectedMasterPlanImageIndex}
+            onClose={closeImageModal}
+          />
+        )}
       </div>
 
       {/* Floor/Area Plan Section */}
       <div>
-        <hr className="my-8 border-gray-400" />
-        <h2 className="mb-2 text-xl font-semibold">Floor/Area Plan</h2>
-        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-md">
+        <hr className="my-8 border-gray-300" />
+        <h2 className="mb-4 text-xl font-semibold text-gray-800">Floor/Area Plan</h2>
+        <div className="items-center justify-center p-8 mb-4 bg-white rounded-lg shadow-lg">
           <div
             className="relative w-full p-6 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer"
             id="dropzone"
@@ -1694,112 +1816,138 @@ function PlotsModule({ action, onDataUpdate }) {
               <img
                 src="/image-upload.svg"
                 alt="Upload"
-                className="w-12 h-12 mx-auto"
+                className="w-16 h-16 mx-auto"
               />
               <h3 className="mt-2 text-sm font-medium text-gray-900">
                 <label htmlFor="floorAreaPlan-upload" className="relative">
                   <span>Drag and drop</span>
                   <span className="text-indigo-600"> or browse</span>
                   <span> to upload</span>
-                  {/* <input id="floorAreaPlan-upload" name="floorAreaPlan-upload" type="file" className="sr-only" /> */}
                 </label>
               </h3>
               <p className="mt-1 text-xs text-gray-500">PNG, JPG, PDF up to 10MB</p>
             </div>
-            {/* <img src="" className="hidden mx-auto mt-4 max-h-40" id="preview" /> */}
           </div>
+        </div>
 
-          <div className="flex flex-wrap mt-4">
-
-            {/* Displaying Stored Floor Area Plan Images */}
-            {storedFloorAreaPlanImages.length > 0 && (
-              <div className="flex flex-row">
-                {storedFloorAreaPlanImages.map((file, index) => (
-                  <div key={file.RowID} className="relative m-2">
-                    <button
-                      onClick={() => handleStoredImageDelete(file.RowID, 'floorAreaPlan')}
-                      className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
-                    >
-                      X
-                    </button>
-                    {file.file_name.match(/\.(jpg|jpeg|png|gif)$/i) ? (
-                      <img
-                        src={httpCommon.defaults.baseURL + file.attachment}
-                        alt={`Stored: ${file.file_name}`}
-                        className="object-cover w-32 h-32 rounded cursor-pointer"
-                        onClick={() => {
-                          openMasterPlanModal(index);
-                        }}
-                      />
-                    ) : file.file_name.match(/\.pdf$/i) ? (
-                      <div
-                        className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                        onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
-                      >
-                        <img
-                          src="/pdf-file.svg"
-                          alt={`PDF ${file.file_name}`}
-                          className="w-16 h-20 mb-2"
-                        />
-                        <span className="text-sm font-medium text-indigo-600">
-                          {file.file_name}
-                        </span>
-                      </div>
-                    ) : null}
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {floorAreaPlanImages.map((image, index) => (
-              <div key={index} className="relative m-2">
+        {/* Floor/Area Plan Images Grid */}
+        <div className="grid grid-cols-2 gap-4 mt-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+          {/* Displaying Stored Floor Area Plan Images */}
+          {storedFloorAreaPlanImages.length > 0 &&
+            storedFloorAreaPlanImages.map((file, index) => (
+              <div key={file.RowID} className="relative flex flex-col items-center">
                 <button
-                  onClick={() => handleImageDelete(index, floorAreaPlanImages, setFloorAreaPlanImages)}
-                  className="absolute top-0 right-0 px-2 py-1 font-semibold text-white bg-red-500 rounded-full hover:bg-red-600"
+                  onClick={() => handleStoredImageDelete(file.RowID, 'floorAreaPlan')}
+                  className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
                 >
-                  X
+                  <span className="text-lg font-bold">X</span>
                 </button>
-                {image.type.match(/image\/*/) ? (
+                {file.file_name.match(/\.(jpg|jpeg|png)$/i) ? (
                   <img
-                    src={URL.createObjectURL(image)}
-                    alt={`Uploaded: ${index + 1}`}
-                    className="object-cover w-32 h-32 rounded cursor-pointer"
-                    onClick={() => {
-                      openMasterPlanModal(index);
-                    }}
+                    src={httpCommon.defaults.baseURL + file.attachment}
+                    alt={`Stored Floor/Area Plan ${file.file_name}`}
+                    className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
+                    onClick={() => openFloorAreaPlanModal(index)}
                   />
-                ) : image.type.match(/application\/pdf/) ? (
+                ) : file.file_name.match(/\.pdf$/i) ? (
                   <div
                     className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
-                    onClick={() => {
-                      const pdfUrl = URL.createObjectURL(image);
-                      window.open(pdfUrl, '_blank');
-                    }}
+                    onClick={() => window.open(httpCommon.defaults.baseURL + file.attachment, '_blank')}
                   >
                     <img
                       src="/pdf-file.svg"
-                      alt={`Uploaded PDF ${index + 1}`}
+                      alt={`PDF ${file.file_name}`}
                       className="w-16 h-20 mb-2"
                     />
                     <span className="text-sm font-medium text-indigo-600">
-                      Uploaded PDF {index + 1}
+                      {file.file_name}
                     </span>
                   </div>
                 ) : null}
               </div>
             ))}
-          </div>
 
-          {/* Modal for displaying images */}
-          {selectedFloorAreaPlanImageIndex !== null && (
-            <ImageModal
-              images={[...storedFloorAreaPlanImages, ...floorAreaPlanImages]}
-              currentIndex={selectedFloorAreaPlanImageIndex}
-              onClose={closeImageModal}
-            />
+          {/* Displaying Uploaded Floor/Area Plan Images */}
+          {floorAreaPlanImages.map((image, index) => (
+            <div key={index} className="relative flex flex-col items-center">
+              <button
+                onClick={() => handleImageDelete(index, floorAreaPlanImages, setFloorAreaPlanImages)}
+                className="absolute top-0 right-0 z-10 p-1 text-white bg-red-600 rounded-full"
+              >
+                <span className="text-lg font-bold">X</span>
+              </button>
+              {image.type.match(/image\/*/) ? (
+                <img
+                  src={URL.createObjectURL(image)}
+                  alt={`Uploaded Floor/Area Plan ${index + 1}`}
+                  className="object-cover w-full h-32 transition-transform duration-300 rounded-lg shadow-md hover:scale-105"
+                  onClick={() => openFloorAreaPlanModal(index)}
+                />
+              ) : image.type.match(/application\/pdf/) ? (
+                <div
+                  className="flex flex-col items-center p-2 border-2 border-gray-300 rounded-lg cursor-pointer"
+                  onClick={() => {
+                    const pdfUrl = URL.createObjectURL(image);
+                    window.open(pdfUrl, '_blank');
+                  }}
+                >
+                  <img
+                    src="/pdf-file.svg"
+                    alt={`Uploaded PDF ${index + 1}`}
+                    className="w-16 h-20 mb-2"
+                  />
+                  <span className="text-sm font-medium text-indigo-600">
+                    Uploaded PDF {index + 1}
+                  </span>
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+
+        {/* Delete All Button for Floor Plan */}
+        <div className="mt-4 text-center">
+          {/* Delete Stored Floor Plan Images Button */}
+          {(storedFloorAreaPlanImages.length > 0) && (
+            <button
+              onClick={() => confirmFloorAreaPlanDeletion('stored')}
+              className="px-6 py-2 mr-4 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Stored Floor Plan Images
+            </button>
+          )}
+
+          {/* Delete Uploaded Floor Plan Images Button */}
+          {(floorAreaPlanImages.length > 0) && (
+            <button
+              onClick={() => confirmFloorAreaPlanDeletion('uploaded')}
+              className="px-6 py-2 text-white transition-colors duration-200 bg-red-600 rounded-lg hover:bg-red-700"
+            >
+              Delete Uploaded Floor Plan Images
+            </button>
           )}
         </div>
+
+        {/* Image Modal */}
+        {selectedFloorAreaPlanImageIndex !== null && (
+          <ImageModal
+            images={[...storedFloorAreaPlanImages, ...floorAreaPlanImages]}
+            currentIndex={selectedFloorAreaPlanImageIndex}
+            onClose={closeImageModal}
+          />
+        )}
       </div>
+
+      {/* Footer Section for Copyright */}
+      <div className="py-4 mt-8 text-center text-gray-800 bg-white shadow-md">
+        <p className="text-sm">
+          &copy; {new Date().getFullYear()} Asset Makers. All rights reserved.
+        </p>
+        <p className="text-xs">
+          Images and files used on this site are provided by the respective creators.
+        </p>
+      </div>
+
     </div>
   );
 }

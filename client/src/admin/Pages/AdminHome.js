@@ -11,6 +11,7 @@ function AdminHome() {
   const getProperty = async () => {
     try {
       const res = await httpCommon.get(`/list`);
+      // console.log("Response Data", res.data.data[0]);
       return res.data;
     } catch (error) {
       console.log(error);
@@ -37,11 +38,7 @@ function AdminHome() {
 
   if (isLoading) return "Loading...";
   if (isError) return "Failed to fetch data";
-
-  // Check if not isError and data is defined and has a data property
   const propertiesData = !isError && data && data.data ? data.data : [];
-
-  console.log(propertiesData);
 
   return (
     <div className="h-[98vh] overflow-y-scroll">

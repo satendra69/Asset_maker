@@ -22,7 +22,6 @@ const addWatermark = async (req, res, next) => {
   let watermarkDark, watermarkBright;
 
   try {
-    // Load both watermarks
     watermarkDark = await Jimp.read(watermarkDarkPath);
     watermarkBright = await Jimp.read(watermarkBrightPath);
   } catch (error) {
@@ -31,15 +30,12 @@ const addWatermark = async (req, res, next) => {
   }
 
   const supportedImageFormats = ['image/png', 'image/jpeg', 'image/jpg'];
-
-  // Filter out files that are not images or are not supported formats
   const filesToProcess = req.files.filter(file => supportedImageFormats.includes(file.mimetype));
 
   await Promise.all(filesToProcess.map(async (file) => {
     const originalFilePath = path.join(__dirname, '../public/images', file.originalname);
     const watermarkedFilePath = path.join(__dirname, '../public/images', `watermarked-${file.originalname}`);
 
-    // Check if the watermarked file already exists
     if (fs.existsSync(watermarkedFilePath)) {
       console.log(`Watermarked file already exists, skipping: ${file.originalname}`);
       fs.unlinkSync(originalFilePath);
@@ -53,47 +49,54 @@ const addWatermark = async (req, res, next) => {
     try {
       const inputImage = await Jimp.read(file.path);
 
-      // Calculate the brightness of the image by averaging pixel values
-      let totalBrightness = 0;
-      inputImage.scan(0, 0, inputImage.bitmap.width, inputImage.bitmap.height, function (x, y, idx) {
-        const red = this.bitmap.data[idx];
-        const green = this.bitmap.data[idx + 1];
-        const blue = this.bitmap.data[idx + 2];
-
-        const brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
-        totalBrightness += brightness;
-      });
-
-      const averageBrightness = totalBrightness / (inputImage.bitmap.width * inputImage.bitmap.height);
-      console.log(`Average brightness: ${averageBrightness}`);
-
-      const selectedWatermark = averageBrightness > 0.3 ? watermarkDark : watermarkBright;
-      const watermarkResized = selectedWatermark.clone().resize(inputImage.bitmap.width / 2, Jimp.AUTO);
+      // Resize watermark according to image dimensions
+      const watermarkWidth = inputImage.bitmap.width / 3;
+      const watermarkHeight = inputImage.bitmap.height / 8;
+      const watermarkResizedDark = watermarkDark.clone().resize(watermarkWidth, watermarkHeight);
+      const watermarkResizedBright = watermarkBright.clone().resize(watermarkWidth, watermarkHeight);
 
       const margin = Math.floor(inputImage.bitmap.width * 0.05);
 
+      // Function to calculate average brightness of a specific area
+      const getAverageBrightness = (x, y, width, height) => {
+        let totalBrightness = 0;
+        inputImage.scan(x, y, width, height, function (px, py, idx) {
+          const red = this.bitmap.data[idx];
+          const green = this.bitmap.data[idx + 1];
+          const blue = this.bitmap.data[idx + 2];
+          const brightness = (red * 0.299 + green * 0.587 + blue * 0.114) / 255;
+          totalBrightness += brightness;
+        });
+        return totalBrightness / (width * height);
+      };
+
+      // Check brightness at top-left corner (10x10 area)
+      const topLeftBrightness = getAverageBrightness(0, 0, 10, 10);
+      const topLeftWatermark = topLeftBrightness < 0.3 ? watermarkResizedBright : watermarkResizedDark;
+
+      // Check brightness at bottom-right corner (10x10 area)
+      const bottomRightBrightness = getAverageBrightness(inputImage.bitmap.width - 10, inputImage.bitmap.height - 10, 10, 10);
+      const bottomRightWatermark = bottomRightBrightness < 0.3 ? watermarkResizedBright : watermarkResizedDark;
+
+      // Apply watermarks based on brightness calculations
       const positions = [
-        { x: 0, y: margin },
+        { x: margin, y: margin, watermark: topLeftWatermark },
         {
-          x: inputImage.bitmap.width - watermarkResized.bitmap.width,
-          y: inputImage.bitmap.height - watermarkResized.bitmap.height - margin
+          x: inputImage.bitmap.width - watermarkResizedBright.bitmap.width - margin,
+          y: inputImage.bitmap.height - watermarkResizedBright.bitmap.height - margin,
+          watermark: bottomRightWatermark
         }
       ];
 
-      // Apply the watermark at each position
       positions.forEach(pos => {
-        inputImage.composite(watermarkResized, pos.x, pos.y, {
+        inputImage.composite(pos.watermark, pos.x, pos.y, {
           mode: Jimp.BLEND_SOURCE_OVER,
           opacitySource: 0.7,
         });
       });
 
       await inputImage.writeAsync(watermarkedFilePath);
-
-      // Remove the original file after watermarking
       fs.unlinkSync(originalFilePath);
-
-      // Update file properties
       file.path = watermarkedFilePath;
       file.filename = `watermarked-${file.originalname}`;
 
@@ -103,7 +106,6 @@ const addWatermark = async (req, res, next) => {
     }
   }));
 
-  // Filter the req.files array to include only files that have been successfully watermarked
   req.files = req.files.filter(file => file.filename.startsWith('watermarked-') || !supportedImageFormats.includes(file.mimetype));
 
   next();

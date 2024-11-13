@@ -53,7 +53,20 @@ function NewListingPage({ action }) {
     if (!selectedOwner) newErrors.selectedOwner = "Property Owner is required.";
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+
+    // If there are errors, generate an alert
+    if (Object.keys(newErrors).length > 0) {
+      const errorMessages = Object.values(newErrors).join('\n');
+      Swal.fire({
+        icon: "warning",
+        title: "Form Validation Error",
+        text: errorMessages,
+        confirmButtonText: "Ok",
+      });
+      return false;
+    }
+
+    return true;
   };
 
   useEffect(() => {
@@ -177,9 +190,19 @@ function NewListingPage({ action }) {
         const listingId = responseData.RowID;
         const update = json_ListingInsert.update;
 
-        await uploadListingFiles(listingType, listingId, auditUser, listingData[listingType], update);
+        // Check file upload status
+        const uploadSuccess = await uploadListingFiles(listingType, listingId, auditUser, listingData[listingType], update);
 
-        console.log(json_ListingInsert.ListingData.deletedImages);
+        if (!uploadSuccess) {
+          console.error("File upload failed. Aborting success message.");
+          Swal.close();
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "File upload failed. Please try again.",
+          });
+          return;
+        }
 
         await deleteImagesFromDatabase(json_ListingInsert.ListingData.deletedImages);
         await deletedFilesFromDatabase(json_ListingInsert.ListingData.deletedFiles);
@@ -203,6 +226,11 @@ function NewListingPage({ action }) {
       }
     } catch (error) {
       console.error("Error publishing listing:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "An error occurred while submitting the form.",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -234,19 +262,25 @@ function NewListingPage({ action }) {
 
         try {
           const uploadResponse = await httpCommon.post(`/list/upload/${listingID}`, formData, {
-            headers: {
-              'Content-Type': 'multipart/form-data'
-            }
+            headers: { 'Content-Type': 'multipart/form-data' },
           });
 
           console.log(`Upload Response (${fileType.type}):`, uploadResponse.data);
+
+          // Check if the upload was unsuccessful
+          if (uploadResponse.data.status !== "SUCCESS") {
+            console.error(`Failed to upload ${fileType.type} files`);
+            return false;
+          }
         } catch (error) {
           console.error(`Error uploading ${fileType.type} files:`, error);
+          return false;
         }
       }
     }
 
     console.log('File upload process completed.');
+    return true;
   };
 
   const deleteImagesFromDatabase = async (deletedImages) => {
@@ -330,12 +364,6 @@ function NewListingPage({ action }) {
               <p>{listing.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
             </div>
-
-            {/* <button onClick={createPDFBtn} className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600">
-              Create PDF
-            </button>
-            {createPDFData && <CreatePDF createPDFInsert={createPDFData.createPDFInsert} storedGalleryImages={createPDFData.storedGalleryImages} />} */}
-
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}

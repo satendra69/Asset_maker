@@ -51,7 +51,13 @@ router.patch("/:listingID", updateListItem);
 router.delete("/delete/:listingID", verifyToken, deleteListItem);
 
 /* upload images and files */
-router.post('/upload/:listingID', upload.array('attachments'), addWatermark, uploadListItem);
+router.post('/upload/:listingID', upload.array('attachments'), addWatermark, (req, res) => {
+  if (req.files && req.files.length > 0) {
+    return uploadListItem(req, res);
+  } else {
+    return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded or watermarking failed.' });
+  }
+});
 
 module.exports = router;
 

@@ -85,12 +85,39 @@ function Slider({ images }) {
     }
   };
 
+  const handleKeyDown = (event) => {
+    if (imageIndex === null) return;
+
+    switch (event.key) {
+      case "ArrowLeft":
+        changeSlide("left");
+        break;
+      case "ArrowRight":
+        changeSlide("right");
+        break;
+      case "+":
+      case "=":
+        handleZoom("in");
+        break;
+      case "-":
+        handleZoom("out");
+        break;
+      case "Escape":
+        setImageIndex(null);
+        break;
+      default:
+        break;
+    }
+  };
+
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleKeyDown);
     };
-  }, []);
+  }, [imageIndex]);
 
   useEffect(() => {
     if (imageIndex !== null) {
@@ -102,6 +129,10 @@ function Slider({ images }) {
       document.removeEventListener("wheel", handleScrollZoom);
     };
   }, [imageIndex]);
+
+  useEffect(() => {
+    sliderRef.current?.focus();
+  }, []);
 
   return (
     <div className="relative flex flex-col md:flex-row w-full gap-4 h-full max-h-[51vh] overflow-hidden">

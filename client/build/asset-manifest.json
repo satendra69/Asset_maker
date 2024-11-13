@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "http://142.93.213.221:8004/static/css/main.7254ab49.css",
-    "main.js": "http://142.93.213.221:8004/static/js/main.66485c78.js",
+    "main.css": "http://142.93.213.221:8004/static/css/main.1d2a9d7d.css",
+    "main.js": "http://142.93.213.221:8004/static/js/main.a97239d8.js",
     "static/js/453.3f732b94.chunk.js": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js",
     "static/media/hero2.jpg": "http://142.93.213.221:8004/static/media/hero2.78297e832f2beabde0c8.jpg",
     "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
@@ -11,12 +11,12 @@
     "static/media/Godrej-Logo-Design-150x150.jpg": "http://142.93.213.221:8004/static/media/Godrej-Logo-Design-150x150.615aaae34cb82398cc61.jpg",
     "static/media/revicons.woff": "http://142.93.213.221:8004/static/media/revicons.e8746a624ed098489406.woff",
     "index.html": "http://142.93.213.221:8004/index.html",
-    "main.7254ab49.css.map": "http://142.93.213.221:8004/static/css/main.7254ab49.css.map",
-    "main.66485c78.js.map": "http://142.93.213.221:8004/static/js/main.66485c78.js.map",
+    "main.1d2a9d7d.css.map": "http://142.93.213.221:8004/static/css/main.1d2a9d7d.css.map",
+    "main.a97239d8.js.map": "http://142.93.213.221:8004/static/js/main.a97239d8.js.map",
     "453.3f732b94.chunk.js.map": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7254ab49.css",
-    "static/js/main.66485c78.js"
+    "static/css/main.1d2a9d7d.css",
+    "static/js/main.a97239d8.js"
   ]
 }
