@@ -157,19 +157,6 @@ const SideBar = ({ children }) => {
         {
           path: "/admin",
           name: "Property",
-          icon: <GiVillage size={26} />,
-          exact: true,
-          subRoutes: [
-            {
-              path: "/admin",
-              name: "Property List",
-              icon: <FaListAlt size={24} />,
-            },
-          ],
-        },
-        {
-          path: "/admin/listing",
-          name: "Listing",
           icon: (
             <div style={{ position: 'relative', display: 'inline-block', fontSize: '2rem', marginBottom: '-2px' }}>
               <FaFileAlt size={24} style={{ color: '#dfe5e6' }} />
@@ -179,25 +166,12 @@ const SideBar = ({ children }) => {
           exact: true,
           subRoutes: [
             {
-              path: "/admin/listing/list",
-              name: "Listing List",
-              icon: <FaListAlt size={15} />,
+              path: "/admin",
+              name: "Property List",
+              icon: <FaListAlt size={24} />,
             },
           ],
         },
-        // {
-        //   path: "/admin/city",
-        //   name: "City",
-        //   icon: <FaCity size={24} />,
-        //   exact: true,
-        //   subRoutes: [
-        //     {
-        //       path: "/admin/city",
-        //       name: "City List",
-        //       icon: <FaListAlt size={24} />,
-        //     },
-        //   ],
-        // },
         {
           path: "/settings",
           name: "Settings",

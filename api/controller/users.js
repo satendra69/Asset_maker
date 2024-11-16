@@ -34,9 +34,9 @@ const deleteUser = async (req, res, next) => {
   const userId = req.userId;
   const userIdToDelete = Number(req.params.id);
 
-  if (userId !== userIdToDelete) {
-    return next(createError(401, "You can delete only your account!"));
-  }
+  // if (userId !== userIdToDelete) {
+  //   return next(createError(401, "You can delete only your account!"));
+  // }
 
   const deleteUserQuery = `DELETE FROM users WHERE id = ?`;
 
