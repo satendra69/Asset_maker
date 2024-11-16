@@ -29,10 +29,10 @@ const corsOptions = {
 
 // Middleware
 app.use(cors(corsOptions));
-app.use(logger("dev")); // Logging middleware
-app.use(express.json()); // Built-in middleware to parse JSON
-app.use(express.urlencoded({ extended: false })); // Built-in middleware to parse URL-encoded bodies
-app.use(cookieParser()); // Middleware to parse cookies
+app.use(logger("dev"));
+app.use(express.json({ limit: '100mb' }));
+app.use(express.urlencoded({ limit: '100mb', extended: true }));
+app.use(cookieParser());
 
 // Static serving of public folder
 app.use(express.static(path.join(__dirname, "public")));
@@ -54,7 +54,7 @@ app.use("/api/categories", categoriesRouter);
 app.use('/api/regions', regionRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/saved-list', savedListRoutes);
-//app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/blogs', blogRoutes);
 
 // Root endpoint for testing
@@ -68,7 +68,7 @@ app.use(function (err, req, res, next) {
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
-  console.error(`${req.method} request for '${req.url}': ${err.message}`); // Log errors
+  console.error(`${req.method} request for '${req.url}': ${err.message}`);
 
   const statusCode = err.status || 500;
   res.status(statusCode).json({
@@ -77,7 +77,7 @@ app.use(function (err, req, res, next) {
 });
 
 // Start server
-const PORT = 8000;
+const PORT = process.env.PORT || 8000;
 
 app.listen(PORT, async () => {
   console.log(`API server running at http://localhost:${PORT}`);

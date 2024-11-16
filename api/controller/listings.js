@@ -1328,21 +1328,37 @@ const deleteListItem = async (req, res) => {
 
 // Upload files and save information to the database
 const uploadListItem = async (req, res) => {
+  console.log("uploadListItem function started");
+
+  // Get the database connection
+  console.log("Attempting to get database connection...");
   const connection = await db.getConnection();
+  console.log("Database connection established");
+
   try {
+    // Log the incoming request details
     const { listingID } = req.params;
     const { type, auditUser } = req.body;
     const files = req.files;
 
+    console.log(`Received listingID: ${listingID}`);
+    console.log(`Received type: ${type}`);
+    console.log(`Received auditUser: ${auditUser}`);
+    console.log(`Received ${files ? files.length : 0} files`);
+
     if (!files || files.length === 0) {
+      console.log("No files uploaded");
       return res.status(200).json({ status: 'success', message: 'No files uploaded' });
     }
 
     if (!listingID || !type || !auditUser) {
+      console.log("Missing required fields: listingID, type, or auditUser");
       return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
     }
 
+    // Start database transaction
     await connection.beginTransaction();
+    console.log("Transaction started");
 
     const insertQuery = `
       INSERT INTO ltg_ref (ltg_mstRowID, file_name, attachment, type, audit_user, audit_date)
@@ -1354,12 +1370,22 @@ const uploadListItem = async (req, res) => {
       const url = `\\images\\${path.basename(file.path)}`;
       const formattedDate = new Date().toISOString().slice(0, 10);
 
+      console.log(`Preparing to insert file: ${originalName}, URL: ${url}`);
+
       return [listingID, originalName, url, type, auditUser, formattedDate];
     });
 
-    await connection.query(insertQuery, [values]);
-    await connection.commit();
+    // Log the SQL query values before executing
+    console.log("Prepared values for insertion:", values);
 
+    await connection.query(insertQuery, [values]);
+    console.log("Files inserted into the database");
+
+    // Commit the transaction
+    await connection.commit();
+    console.log("Transaction committed");
+
+    // Respond with success
     res.status(200).json({
       message: 'Files uploaded successfully',
       status: 'SUCCESS',
@@ -1367,12 +1393,24 @@ const uploadListItem = async (req, res) => {
       type: type,
       auditUser: auditUser
     });
+    console.log("Response sent: Files uploaded successfully");
+
   } catch (error) {
-    await connection.rollback();
-    console.error('Error uploading files:', error);
+    console.error("Error during file upload:", error);
+
+    // Rollback the transaction in case of an error
+    try {
+      await connection.rollback();
+      console.log("Transaction rolled back");
+    } catch (rollbackError) {
+      console.error("Error during rollback:", rollbackError);
+    }
+
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
+    // Release the connection regardless of success or failure
     connection.release();
+    console.log("Database connection released");
   }
 };
 

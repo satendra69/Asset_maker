@@ -91,9 +91,11 @@ const updateUser = async (req, res, next) => {
   }
 
   if (updatedUserData.avatar) {
+    const cleanAvatarUrl = updatedUserData.avatar.replace(/^"|"$/g, "");
     fields.push("avatar = ?");
-    values.push(updatedUserData.avatar);
+    values.push(cleanAvatarUrl);
   }
+
 
   if (updatedUserData.email) {
     fields.push("email = ?");
@@ -139,18 +141,31 @@ const updateUser = async (req, res, next) => {
 
 // Function to handle forgot password
 const forgotPassword = async (req, res, next) => {
-  const { email } = req.body;
+  const { email, frontendUrl } = req.body;
+
+  if (!email || !/\S+@\S+\.\S+/.test(email)) {
+    return next(createError(400, "Invalid email format"));
+  }
 
   try {
     const [results] = await db.query("SELECT * FROM users WHERE email = ?", [email]);
+    console.log("Query Results:", results);
 
     if (results.length === 0) {
       return next(createError(404, "User with this email does not exist"));
     }
 
+    if (!process.env.JWT_KEY) {
+      return next(createError(500, "JWT secret key is not configured"));
+    }
+
     const user = results[0];
     const token = jwt.sign({ id: user.id }, process.env.JWT_KEY, { expiresIn: "1h" });
-    const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+
+    // Use the frontendUrl sent from the client
+    const resetLink = frontendUrl
+      ? `${frontendUrl}/reset-password?token=${token}`
+      : `${req.protocol}://${req.get('host')}/reset-password?token=${token}`;
 
     const msg = {
       to: email,
@@ -164,8 +179,8 @@ const forgotPassword = async (req, res, next) => {
 
     res.status(200).send("Password reset link has been sent to your email.");
   } catch (error) {
-    console.error("Error sending password reset email:", error);
-    return next(createError(500, "Error processing request"));
+    console.error("SendGrid Error:", error.response ? error.response.body : error);
+    return next(createError(500, "Failed to send the password reset email."));
   }
 };
 
@@ -173,22 +188,35 @@ const forgotPassword = async (req, res, next) => {
 const resetPassword = async (req, res, next) => {
   const { token, newPassword } = req.body;
 
-  if (!token) {
-    return next(createError(400, "Token is required"));
+  if (!token || !newPassword) {
+    return next(createError(400, "Token and new password are required"));
   }
 
   try {
+
+    if (!process.env.JWT_KEY) {
+      return next(createError(500, "JWT secret key is not configured"));
+    }
+
     const payload = jwt.verify(token, process.env.JWT_KEY);
     const userId = payload.id;
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    await db.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
+    const [results] = await db.query("UPDATE users SET password = ? WHERE id = ?", [hashedPassword, userId]);
+
+    if (results.affectedRows === 0) {
+      return next(createError(404, "User not found or no changes made"));
+    }
 
     res.status(200).send("Password has been reset successfully.");
   } catch (error) {
-    return next(createError(500, "Error resetting password"));
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return next(createError(400, "Invalid or expired token"));
+    }
+    console.error("Error resetting password:", error);
+    return next(createError(500, "Internal server error"));
   }
 };
 
