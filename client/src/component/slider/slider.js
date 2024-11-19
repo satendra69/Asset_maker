@@ -5,6 +5,7 @@ import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import CloseIcon from "@mui/icons-material/Close";
 import ZoomInIcon from "@mui/icons-material/ZoomIn";
 import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import { useSwipeable } from "react-swipeable";
 
 function Slider({ images }) {
   const [imageIndex, setImageIndex] = useState(null);
@@ -15,8 +16,6 @@ function Slider({ images }) {
 
   const sliderRef = useRef(null);
   const imageRef = useRef(null);
-
-  console.log(images, "images");
 
   const mainImage = images ? images.filter(item => item.type === "Main") : [];
   const sliderData = images ? images.filter(item => item.type === "Gallery") : [];
@@ -110,6 +109,13 @@ function Slider({ images }) {
     }
   };
 
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => changeSlide("right"),
+    onSwipedRight: () => changeSlide("left"),
+    preventDefaultTouchmoveEvent: true,
+    trackMouse: true,
+  });
+
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     document.addEventListener("keydown", handleKeyDown);
@@ -139,11 +145,12 @@ function Slider({ images }) {
       {imageIndex !== null && (
         <div
           ref={sliderRef}
+          {...swipeHandlers}
           className="fixed inset-0 z-50 flex items-center justify-between bg-black bg-opacity-90"
         >
           <button
             aria-label="Previous Slide"
-            className="absolute z-50 p-3 text-white transition-transform transform -translate-y-1/2 hover:scale-110 focus:outline-none left-4 top-1/2"
+            className="absolute z-50 p-3 text-white transition-transform transform -translate-y-1/2 bg-slate-500 hover:scale-110 focus:outline-none left-4 top-1/2 md:left-6 md:top-1/2"
             onClick={() => changeSlide("left")}
           >
             <ArrowBackIosNewIcon className="w-8 h-8 md:w-10 md:h-10" />
@@ -168,28 +175,30 @@ function Slider({ images }) {
               className="object-contain w-full max-h-[80vh] rounded-lg shadow-lg"
             />
           </div>
+
           <button
             aria-label="Next Slide"
-            className="absolute p-3 text-white transition-transform transform -translate-y-1/2 hover:scale-110 focus:outline-none right-4 top-1/2"
+            className="absolute p-3 text-white transition-transform transform -translate-y-1/2 bg-slate-500 hover:scale-110 focus:outline-none right-4 top-1/2 md:right-6 md:top-1/2"
             onClick={() => changeSlide("right")}
           >
             <ArrowForwardIosIcon className="w-8 h-8 md:w-10 md:h-10" />
           </button>
+
           <div className="absolute flex space-x-4 transform -translate-x-1/2 bottom-10 left-1/2">
             <button
-              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              className="p-3 text-white transition-transform transform bg-gray-700 rounded-full hover:scale-110 focus:outline-none"
               onClick={() => handleZoom("out")}
             >
               <ZoomOutIcon className="w-8 h-8 md:w-10 md:h-10" />
             </button>
             <button
-              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              className="p-3 text-white transition-transform transform bg-gray-700 rounded-full hover:scale-110 focus:outline-none"
               onClick={() => handleZoom("in")}
             >
               <ZoomInIcon className="w-8 h-8 md:w-10 md:h-10" />
             </button>
             <button
-              className="p-3 text-white transition-transform transform hover:scale-110 focus:outline-none"
+              className="p-3 text-white transition-transform transform bg-red-500 rounded-full hover:scale-110 focus:outline-none"
               onClick={() => setImageIndex(null)}
             >
               <CloseIcon className="w-8 h-8 md:w-10 md:h-10" />
@@ -197,6 +206,7 @@ function Slider({ images }) {
           </div>
         </div>
       )}
+
       <div className="flex-1">
         {mainImage && mainImage.length > 0 && mainImage[0].attachment && (
           <img
@@ -207,6 +217,7 @@ function Slider({ images }) {
           />
         )}
       </div>
+
       <div className="flex flex-col overflow-hidden md:flex-row md:max-h-full">
         <div className="grid flex-1 max-h-full grid-cols-3 gap-5 overflow-y-auto md:grid-cols-2">
           {sliderData && sliderData.length > 0 && sliderData[0].attachment && (

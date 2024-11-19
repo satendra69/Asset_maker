@@ -347,8 +347,8 @@ const transformData = (propertyData, propertyImages) => {
               : ''
           },
           { icon: 'rate-icon', label: 'RATE PER SQ-FT', value: data.ltg_det_pmts_rate_per_sq },
-          { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_pmts_bth_rom },
           { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_pmts_bed_rom },
+          { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_pmts_bth_rom },
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_pmts_status },
           { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
         ],
@@ -513,8 +513,8 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'rate-icon', label: 'RATE PER SQ-FT', value: data.ltg_det_pmts_rate_per_sq },
           { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_pmts_bed_rom },
           { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_pmts_bth_rom },
-          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_pmts_status },
+          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_pmts_car_park },
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
@@ -601,8 +601,8 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'rate-icon', label: 'RATE PER SQ-FT', value: data.ltg_det_row_house_pmts_rate_per_sq },
           { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_row_house_pmts_bed_rooms },
           { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_row_house_pmts_bath_rooms },
-          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_row_house_pmts_car_parking },
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_row_house_pmts_status },
+          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_row_house_pmts_car_parking },
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
@@ -688,8 +688,8 @@ const transformData = (propertyData, propertyImages) => {
           { icon: 'rate-icon', label: 'RATE PER SQ-FT', value: data.ltg_det_villaments_pmts_rate_per_sq },
           { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_villaments_pmts_bed_rooms },
           { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_villaments_pmts_bath_rooms },
-          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_villaments_pmts_car_parking },
           { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_villaments_pmts_status },
+          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_villaments_pmts_car_parking },
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
@@ -850,10 +850,10 @@ const transformData = (propertyData, propertyImages) => {
               : ''
           },
           { icon: 'rate-icon', label: 'RATE PER SQ-FT', value: data.ltg_det_penthouses_pmts_rate_per_sq },
-          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_penthouses_pmts_car_parking },
-          { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_penthouses_pmts_status },
           { icon: 'bedroom-icon', label: 'BED ROOMS', value: data.ltg_det_penthouses_pmts_bed_rooms },
           { icon: 'bathroom-icon', label: 'BATH ROOMS', value: data.ltg_det_penthouses_pmts_bath_rooms },
+          { icon: 'status-icon', label: 'STATUS', value: data.ltg_det_penthouses_pmts_status },
+          { icon: 'car-park-icon', label: 'CAR PARKING', value: data.ltg_det_penthouses_pmts_car_parking },
         ],
         otherFacts: filteredOtherFacts,
         // amenities: categorizedAmenities,
@@ -978,10 +978,15 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
   const location = property[0] ? locationMapping[property[0].ltg_type] || { lat: property[0]?.ltg_det_latitude, lng: property[0]?.ltg_det_longitude } : { lat: null, lng: null };
 
+  // const handleFileClick = (pdfUrl) => {
+  //   setModalPdfUrl(pdfUrl);
+  //   setModalIsOpen(true);
+  // };
+
   const handleFileClick = (pdfUrl) => {
-    setModalPdfUrl(pdfUrl);
-    setModalIsOpen(true);
+    window.open(pdfUrl, '_blank');
   };
+
 
   const closeModal = () => {
     setModalIsOpen(false);
@@ -1314,27 +1319,6 @@ const PropertyDetails = ({ property, images, brochure }) => {
             </section>
           )}
         </div>
-
-        {/* PDF Modal */}
-        {modalIsOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="w-full max-w-4xl p-4 bg-white rounded-lg modal-content" style={{ height: '80%', marginTop: '30px' }}>
-              <button
-                onClick={closeModal}
-                className="absolute p-1 text-white bg-red-600 rounded-full shadow-md top-20 right-60"
-              >
-                ×
-              </button>
-              <iframe
-                src={modalPdfUrl}
-                width="100%"
-                height="100%"
-                title="PDF Viewer"
-                frameBorder="0"
-              ></iframe>
-            </div>
-          </div>
-        )}
 
         {/* Image Modals */}
         {selectedMasterPlanImageIndex !== null && (
