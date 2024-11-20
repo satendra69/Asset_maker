@@ -2,12 +2,6 @@ import React from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { FaDirections } from "react-icons/fa";
 
-const containerStyle = {
-    width: "100%",
-    height: "400px",
-    position: "relative",
-};
-
 const cardStyle = {
     position: "absolute",
     top: "10px",
@@ -20,11 +14,15 @@ const cardStyle = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    width: "400px",
+    width: "90%",
+    maxWidth: "400px",
+    flexWrap: "wrap",
 };
 
 const addressStyle = {
     marginRight: "10px",
+    flex: "1 1 70%",
+    wordWrap: "break-word",
 };
 
 const buttonStyle = {
@@ -36,7 +34,26 @@ const buttonStyle = {
     cursor: "pointer",
     display: "flex",
     alignItems: "center",
+    flex: "1 1 25%",
+    justifyContent: "center",
 };
+
+const containerStyle = {
+    width: "100%",
+    height: "400px",
+    position: "relative",
+};
+
+const responsiveStyle = `
+    @media (max-width: 768px) {
+        .address-card {
+            top: 5px;
+            left: 5px;
+            width: 95%;
+            padding: 10px;
+        }
+    }
+`;
 
 function Map({ googleMapsApiKey, lat, lng, address }) {
     const parsedLat = parseFloat(lat);
@@ -57,7 +74,7 @@ function Map({ googleMapsApiKey, lat, lng, address }) {
         >
             <div style={containerStyle}>
                 {/* Address Card */}
-                <div style={cardStyle}>
+                <div className="address-card" style={cardStyle}>
                     <div style={addressStyle}>
                         <strong>{address}</strong>
                     </div>

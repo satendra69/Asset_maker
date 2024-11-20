@@ -48,13 +48,12 @@ function NewListingPage({ action }) {
     const newErrors = {};
 
     if (!listingType) newErrors.listingType = "Property Type is required.";
-    if (!projectName) newErrors.projectName = "Project Name is required.";
+    // if (!projectName) newErrors.projectName = "Project Name is required.";
     if (!title) newErrors.title = "Title is required.";
     if (!selectedOwner) newErrors.selectedOwner = "Property Owner is required.";
 
     setErrors(newErrors);
 
-    // If there are errors, generate an alert
     if (Object.keys(newErrors).length > 0) {
       const errorMessages = Object.values(newErrors).join('\n');
       Swal.fire({
@@ -201,6 +200,7 @@ function NewListingPage({ action }) {
             title: "Oops...",
             text: "File upload failed. Please try again.",
           });
+          navigate('/admin');
           return;
         }
 

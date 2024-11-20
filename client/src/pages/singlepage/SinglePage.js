@@ -304,23 +304,27 @@ function SinglePage() {
 
       {/* Details Section */}
       <div className="p-4 mb-10">
-        <div className="flex items-start justify-between mb-5">
-          <div>
+        <div className="flex flex-col items-start justify-between mb-5 md:flex-row">
+          <div className="mb-4 md:mb-0">
+            {/* Project Name and Title */}
             {singlePageData && singlePageData[0]?.ltg_projectName && singlePageData[0].ltg_projectName !== 'undefined' && (
               <h1 className="text-2xl font-semibold">{singlePageData[0].ltg_projectName}</h1>
             )}
             {singlePageData?.[0]?.ltg_title && (
               <h2 className="text-3xl font-bold">{singlePageData[0].ltg_title}</h2>
             )}
+
+            {/* Location */}
             <div className="flex items-center mt-2 text-gray-600">
               <img src="/pin.png" alt="Location Pin" className="w-5 h-5 mr-2" />
               {address}
             </div>
           </div>
+
           <div className="text-right">
             {/* Price Display */}
             <div className="flex items-center justify-end">
-              <span className="p-2 text-3xl italic text-white shadow-md font-semiboldrounded-lg bg-gradient-to-r from-blue-500 to-teal-500">
+              <span className="p-2 text-3xl italic font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-500">
                 ₹{formattedPrice}
               </span>
 
@@ -331,6 +335,7 @@ function SinglePage() {
               )}
             </div>
 
+            {/* Mortgage Calculator Button */}
             <button
               className="flex items-center gap-2 mt-2 text-blue-600"
               onClick={scrollToCalculator}
@@ -354,7 +359,7 @@ function SinglePage() {
 
       {/* Mortgage Calculator Section */}
       <section id="mortgage-calculator" className="mt-10">
-        <MortgageCalculator price={price} />
+        <MortgageCalculator price={numericPrice} />
       </section>
 
       {/* InquiryForm Section */}

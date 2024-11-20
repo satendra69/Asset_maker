@@ -71,19 +71,24 @@ const MortgageCalculator = ({ price }) => {
     };
 
     useEffect(() => {
-        setTotalAmount(price ? price : 0);
-        setDownPayment(price ? price * 0.3 : 0);
+        if (price) {
+            setTotalAmount(price);
+            setDownPayment(price / 10);
+        }
+    }, [price]);
+
+    useEffect(() => {
         calculateMortgage();
-    }, [price, totalAmount, downPayment, interestRate, amortizationPeriod, paymentPeriod]);
+    }, [totalAmount, downPayment, interestRate, amortizationPeriod, paymentPeriod]);
 
     return (
-        <div className="flex p-4 mt-4 border rounded-lg shadow-lg">
-            <div className="w-1/2 pr-4">
+        <div className="flex flex-col p-4 mt-4 space-y-4 border rounded-lg shadow-lg md:flex-row md:space-y-0">
+            {/* Left side: Inputs */}
+            <div className="w-full pr-4 md:w-1/2">
                 <h2 className="mb-4 text-2xl font-bold">Mortgage Calculator</h2>
-                <label
-                    htmlFor="totalProjectExtent"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                >
+
+                {/* Input fields */}
+                <label htmlFor="totalProjectExtent" className="block text-sm font-semibold leading-6 text-gray-900">
                     Total Amount
                 </label>
                 <div className="relative mb-2">
@@ -96,10 +101,8 @@ const MortgageCalculator = ({ price }) => {
                         className="w-full p-2 pl-6 border rounded"
                     />
                 </div>
-                <label
-                    htmlFor="totalProjectExtent"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                >
+
+                <label htmlFor="downPayment" className="block text-sm font-semibold leading-6 text-gray-900">
                     Down Payment
                 </label>
                 <div className="relative mb-2">
@@ -112,10 +115,8 @@ const MortgageCalculator = ({ price }) => {
                         className="w-full p-2 pl-6 border rounded"
                     />
                 </div>
-                <label
-                    htmlFor="totalProjectExtent"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                >
+
+                <label htmlFor="interestRate" className="block text-sm font-semibold leading-6 text-gray-900">
                     Interest Rate
                 </label>
                 <div className="relative mb-2">
@@ -128,10 +129,8 @@ const MortgageCalculator = ({ price }) => {
                     />
                     <span className="absolute right-2 top-2">%</span>
                 </div>
-                <label
-                    htmlFor="totalProjectExtent"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                >
+
+                <label htmlFor="amortizationPeriod" className="block text-sm font-semibold leading-6 text-gray-900">
                     Amortization Period
                 </label>
                 <div className="relative mb-2">
@@ -144,10 +143,8 @@ const MortgageCalculator = ({ price }) => {
                     />
                     <span className="absolute right-2 top-2">year(s)</span>
                 </div>
-                <label
-                    htmlFor="totalProjectExtent"
-                    className="block text-sm font-semibold leading-6 text-gray-900"
-                >
+
+                <label htmlFor="paymentPeriod" className="block text-sm font-semibold leading-6 text-gray-900">
                     Payment Period
                 </label>
                 <div className="relative mb-2">
@@ -162,6 +159,7 @@ const MortgageCalculator = ({ price }) => {
                         <option value="Weekly">Weekly</option>
                     </select>
                 </div>
+
                 <button
                     onClick={calculateMortgage}
                     className="w-full p-2 text-white bg-blue-500 rounded"
@@ -169,7 +167,9 @@ const MortgageCalculator = ({ price }) => {
                     Calculate
                 </button>
             </div>
-            <div className="w-1/2 pl-4">
+
+            {/* Right side: Results */}
+            <div className="w-full pl-4 md:w-1/2">
                 <div className="flex flex-col space-y-2">
                     <h3 className="text-xl font-bold">Results</h3>
                     <div className="flex justify-between">
@@ -188,11 +188,8 @@ const MortgageCalculator = ({ price }) => {
                         <p>Payment Period :</p>
                         <p>{paymentPeriod}</p>
                     </div>
-                    <div className="flex justify-between">
-                        <p>Mortgage Payment :</p>
-                        <p>₹{monthlyPayment}</p>
-                    </div>
                 </div>
+
                 <div className="mt-4">
                     <h4 className="text-lg font-bold">Loan Balance Chart</h4>
                     <Line

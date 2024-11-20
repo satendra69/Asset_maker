@@ -6,7 +6,6 @@ import { LuScale3D } from "react-icons/lu";
 import { CiLocationOn } from "react-icons/ci";
 
 function PropertyCard({ card }) {
-  // console.log("card", card);
   return (
     <div className="relative p-4 m-2 transition-shadow duration-300 bg-white border rounded-lg shadow-md hover:shadow-lg">
       <Link
@@ -29,21 +28,25 @@ function PropertyCard({ card }) {
         <div className="absolute p-2 bg-white rounded-full opacity-90 top-4 right-4">
           <FaEye className="text-red-600" size={20} />
         </div>
-        <div className="p-4 space-y-2">
+        <div className="p-4">
           <p className="text-lg font-semibold truncate text-slate-900">
             {card.title}
           </p>
-          <div className="flex items-center gap-2 text-sm text-gray-600">
-            <CiLocationOn className="text-red-600" />
-            <p className="truncate">{card.address}</p>
+          <div className="flex items-center gap-2 text-gray-600">
+            <CiLocationOn className="text-5xl text-red-600" />
+            <p className="text-sm truncate">{card.address}</p>
           </div>
           <div className="flex items-center gap-1 text-xl font-medium text-red-600">
-            <FaRupeeSign />
-            {card.price && (
-              <p>{card.price}</p>
+            <p className="p-2 text-xl font-semibold text-white rounded-lg bg-gradient-to-r from-red-500 to-orange-500">
+              ₹{card.price}
+            </p>
+            {card.suffixPrice && (
+              <span className="ml-2 text-lg font-medium text-red-600 line-through">
+                ₹{card.suffixPrice}
+              </span>
             )}
           </div>
-          <div className="flex justify-between text-sm text-gray-600">
+          <div className="flex justify-between mt-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <FaCar className="text-[#727272]" size={16} />
               <p>Parking: {card.parking}</p>

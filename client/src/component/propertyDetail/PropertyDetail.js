@@ -1022,7 +1022,7 @@ const PropertyDetails = ({ property, images, brochure }) => {
           {/* Conditionally render "Details Properties" section */}
           {transformedProperty?.details?.properties.some(fact => fact.value) && (
             <section>
-              <div className="grid grid-cols-3 gap-4 mb-5">
+              <div className="grid grid-cols-1 gap-4 mb-5 sm:grid-cols-2 md:grid-cols-3">
                 {transformedProperty?.details?.properties
                   .filter(fact => fact.value !== undefined && fact.value !== '' && fact.value !== null && fact.value !== 'undefined')
                   .map((fact, index) => (
@@ -1080,10 +1080,10 @@ const PropertyDetails = ({ property, images, brochure }) => {
                 {transformedProperty.details.otherFacts
                   .filter(fact => fact.value !== undefined && fact.value !== '' && fact.value !== null && fact.value !== 'undefined')
                   .map((fact, index) => (
-                    <div key={index} className="flex items-center p-2 border border-gray-200 rounded shadow-sm">
+                    <div key={index} className="flex flex-col items-start p-2 border border-gray-200 rounded shadow-sm">
                       {getIcon(fact.label)}
-                      <span className="ml-1 text-sm text-gray-700">{capitalizeLabel(fact.label)}:</span>
-                      <span className="ml-1 text-sm font-semibold">{fact.value}</span>
+                      <span className="text-sm text-gray-700">{capitalizeLabel(fact.label)}:</span>
+                      <span className="text-sm font-semibold">{fact.value}</span>
                     </div>
                   ))}
               </div>

@@ -11,7 +11,6 @@ function AdminHome() {
   const getProperty = async () => {
     try {
       const res = await httpCommon.get(`/list`);
-      // console.log("Response Data", res.data.data[0]);
       return res.data;
     } catch (error) {
       console.log(error);

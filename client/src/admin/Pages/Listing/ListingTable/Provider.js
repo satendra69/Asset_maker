@@ -5,7 +5,6 @@ import Table from "./Table";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
-import axios from "axios";
 import { queryClient } from "../../../../index";
 import httpCommon from "../../../../http-common";
 

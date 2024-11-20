@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AiFillCaretDown, AiFillPropertySafety } from "react-icons/ai";
 import { FaBuilding, FaHamburger, FaHome } from "react-icons/fa";
@@ -50,6 +50,7 @@ function Header() {
 
   const cityDropdownRef = useRef(null);
   const propDropdownRef = useRef(null);
+  const profileDropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -81,14 +82,17 @@ function Header() {
       cityDropdownRef.current &&
       !cityDropdownRef.current.contains(event.target) &&
       propDropdownRef.current &&
-      !propDropdownRef.current.contains(event.target)
+      !propDropdownRef.current.contains(event.target) &&
+      profileDropdownRef.current &&
+      !profileDropdownRef.current.contains(event.target)
     ) {
       setOpenCities(false);
       setOpenProp(false);
+      setProfile(false);
     }
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
@@ -111,6 +115,11 @@ function Header() {
     setOpenProp(!propOpen);
   };
 
+  const handleProfileDropdownClick = (e) => {
+    e.stopPropagation();
+    setProfile(!profile)
+  };
+
   // Logout
   const handleLogout = () => {
     dispatch(signOutUserSuccess());
@@ -122,7 +131,6 @@ function Header() {
     navigate("/saved-list", { state: { userId: currentUser.id } });
   };
 
-  // Routes to check for dropdown visibility
   const propertyRoutes = [
     "/Property/details"
   ];
@@ -215,8 +223,11 @@ function Header() {
 
           {/* Login/Register and Sell Property for big screens */}
           {currentUser ? (
-            <div onClick={() => setProfile(!profile)} className="relative hidden sm:inline">
-              <div className="flex items-center gap-2">
+            <div className="relative hidden sm:inline">
+              <div
+                onClick={handleProfileDropdownClick}
+                className="flex items-center gap-2 cursor-pointer"
+              >
                 <button className="flex items-center gap-2 px-3 py-2 text-white bg-red-700 rounded-lg">
                   <span>Sell Property</span>
                   <motion.div animate="swing" variants={pendulumVariants}>
@@ -230,7 +241,11 @@ function Header() {
                 />
               </div>
               {profile && (
-                <motion.div className="absolute right-0 p-5 space-y-3 bg-white rounded-lg shadow-md ">
+                <motion.div
+                  ref={profileDropdownRef}
+                  className="absolute right-0 p-5 space-y-3 bg-white rounded-lg shadow-md"
+                  onClick={handleProfileDropdownClick}
+                >
                   {currentUser.admin === 1 && (
                     <a
                       href="/admin"

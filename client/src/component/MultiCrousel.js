@@ -9,9 +9,10 @@ const CustomLeftArrow = ({ onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="absolute left-0 z-20 transform -translate-y-1/2 custom-arrow custom-left-arrow top-1/2"
+      className="absolute left-0 z-20 p-3 ml-4 transition-all duration-300 transform -translate-y-1/2 bg-transparent border-2 border-gray-300 rounded-full top-1/2 hover:bg-gray-200 hover:border-gray-400 custom-arrow custom-left-arrow"
+      style={{ marginRight: "20px" }}
     >
-      <IoIosArrowBack size={24} />
+      <IoIosArrowBack size={24} className="text-gray-600" />
     </button>
   );
 };
@@ -20,13 +21,13 @@ const CustomRightArrow = ({ onClick }) => {
   return (
     <button
       onClick={onClick}
-      className="absolute right-0 z-20 transform -translate-y-1/2 custom-arrow custom-right-arrow top-1/2"
+      className="absolute right-0 z-20 p-3 mr-4 transition-all duration-300 transform -translate-y-1/2 bg-transparent border-2 border-gray-300 rounded-full top-1/2 hover:bg-gray-200 hover:border-gray-400 custom-arrow custom-right-arrow"
+      style={{ marginLeft: "20px" }}
     >
-      <IoIosArrowForward size={24} />
+      <IoIosArrowForward size={24} className="text-gray-600" />
     </button>
   );
 };
-
 
 const responsive = {
   superLargeDesktop: {
@@ -46,38 +47,39 @@ const responsive = {
     items: 1,
   },
 };
-function MultiCrousel({ data, autoplay, details }) {
 
-  // console.log(data, "multicarousel");
+function MultiCrousel({ data, autoplay, details }) {
   return (
-    <Carousel
-      swipeable={true}
-      draggable={true}
-      ssr={true}
-      infinite={true}
-      autoPlay={autoplay ? false : true}
-      autoPlaySpeed={7000}
-      keyBoardControl={true}
-      customTransition="transform 300ms ease-in-out"
-      transitionDuration={300}
-      containerClass="carousel-container"
-      removeArrowOnDeviceType={["tablet", "mobile"]}
-      dotListClass="custom-dot-list-style"
-      itemClass="carousel-item-padding-40-px"
-      responsive={responsive}
-      className="z-10"
-      customLeftArrow={<CustomLeftArrow />}
-      customRightArrow={<CustomRightArrow />}
-    >
-      {data.map(
-        (item) =>
-          details ? (
-            <PropertyCard key={item.id} card={item} />
-          ) : (
-            <TopPropertyCard key={item.id} card={item} />
-          )
-      )}
-    </Carousel>
+    <div className="relative">
+      <Carousel
+        swipeable={true}
+        draggable={true}
+        ssr={true}
+        infinite={true}
+        autoPlay={autoplay ? false : true}
+        autoPlaySpeed={7000}
+        keyBoardControl={true}
+        customTransition="transform 300ms ease-in-out"
+        transitionDuration={300}
+        containerClass="carousel-container"
+        removeArrowOnDeviceType={["tablet", "mobile"]}
+        dotListClass="custom-dot-list-style"
+        itemClass="carousel-item-padding-40-px"
+        responsive={responsive}
+        className="z-10"
+        customLeftArrow={<CustomLeftArrow />}
+        customRightArrow={<CustomRightArrow />}
+      >
+        {data.map(
+          (item) =>
+            details ? (
+              <PropertyCard key={item.id} card={item} />
+            ) : (
+              <TopPropertyCard key={item.id} card={item} />
+            )
+        )}
+      </Carousel>
+    </div>
   );
 }
 

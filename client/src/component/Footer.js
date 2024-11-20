@@ -27,7 +27,7 @@ function Footer() {
               <div className="absolute p-3 text-white bg-red-600 rounded-lg left-1/3 -bottom-7">
                 <div className="flex items-center gap-2">
                   <IoCallOutline className="font-bold" size={22} />|
-                  <span className="font-bold">Contact sellers</span>
+                  <span className="font-bold">Contact</span>
                 </div>
               </div>
             </div>
@@ -67,14 +67,15 @@ function Footer() {
               <p className="text-sm font-bold text-white">
                 #02, Level 5, Dhruti Arcade,<br />
                 Insight Academy Lane,<br />
-                Marathalli, Bengaluru 560103.<br />
+                Marathalli, Bengaluru 560103<br />
+                India.
               </p>
             </div>
             <hr />
           </div>
           {/* div2 */}
           <div className="space-y-5 md:w-1/4">
-            <h2 className="text-base font-bold text-white">Contact Seller</h2>
+            <h2 className="text-base font-bold text-white">Contact</h2>
             <div className="flex items-center gap-2">
               <img
                 src="/india.png"

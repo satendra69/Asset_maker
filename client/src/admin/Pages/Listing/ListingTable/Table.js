@@ -37,7 +37,6 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           salePrice: 'ltg_det_comm_prop_sale_price',
           area: 'ltg_det_comm_prop_pmts_area_dts',
           address: 'ltg_det_comm_prop_address',
-
         };
       case 'PentHouses':
         return {
@@ -223,6 +222,13 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
         id: "ltg_title",
         header: "Property Title",
         accessorKey: "ltg_title",
+        size: 200,
+        Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
+      },
+      {
+        id: "ltg_projectName",
+        header: "Property Name",
+        accessorKey: "ltg_projectName",
         size: 200,
         Cell: ({ cell }) => capitalizeFirstLetter(cell.getValue()),
       },
