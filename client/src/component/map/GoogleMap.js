@@ -69,7 +69,7 @@ function Map({ googleMapsApiKey, lat, lng, address }) {
     return (
         <LoadScript
             googleMapsApiKey={googleMapsApiKey}
-            onLoad={() => console.log('Google Maps API loaded successfully')}
+            // onLoad={() => console.log('Google Maps API loaded successfully')}
             onError={(error) => console.error('Error loading Google Maps API', error)}
         >
             <div style={containerStyle}>

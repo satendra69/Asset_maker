@@ -1,124 +1,252 @@
-@import "../../responsive.scss";
-
 .cardProperty {
   display: flex;
-  gap: 28px;
-  --tw-bg-opacity: 1;
-  background-color: rgb(255 255 255 / var(--tw-bg-opacity)) /* #ffffff */;
-  border-radius: 0.5rem /* 8px */;
-  --tw-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-  --tw-shadow-colored: 0 4px 6px -1px var(--tw-shadow-color),
-    0 2px 4px -2px var(--tw-shadow-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000),
-    var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
-  padding: 1rem /* 16px */;
-  margin-bottom: 1rem /* 16px */;
-  border-width: 1px;
-  --tw-border-opacity: 1;
-  border-color: rgb(209 213 219 / var(--tw-border-opacity)) /* #d1d5db */;
+  flex-direction: row;
+  gap: 20px;
+  background-color: #fff;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #e0e0e0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  }
 
   .cardImageContainer {
-    height: 160px;
-    width: 260px !important;
-
-    @include md {
-      display: none;
-    }
+    width: 270px;
+    height: 200px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-      border-radius: 10px;
+      border-radius: 12px;
+      transition: transform 0.3s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.05);
     }
   }
+
   .cardTextContainer {
-    flex: 3;
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 10px;
-
-    img {
-      width: 16px;
-      height: 16px;
-    }
+    gap: 16px;
 
     .cardProjectName {
-      font-size: 1.4rem;
+      font-size: 1.7rem;
       font-weight: 700;
       color: #2c3e50;
-      margin: 0;
+      margin-bottom: 8px;
+      line-height: 1.2;
     }
 
     .cardTitle {
-      font-size: 20px;
+      font-size: 1.3rem;
       font-weight: 600;
-      color: #444;
-      transition: all 0.4s ease;
-      text-align: left;
+      color: #34495e;
+      transition: color 0.3s ease;
 
       &:hover {
-        color: #000;
-        scale: 1.02;
+        color: #1abc9c;
       }
     }
 
     .cardAddress {
-      font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 8px;
+      font-size: 14px;
       color: #888;
+      margin-top: 4px;
+
+      img {
+        width: 16px;
+        height: 16px;
+      }
     }
 
-    .price {
-      font-size: 20px;
-      font-weight: 300;
-      padding: 5px;
-      border-radius: 5px;
-      background-color: rgba(254, 205, 81, 0.438);
-      width: max-content;
+    .card-pricing {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      font-size: 18px;
+      font-weight: 600;
+      color: #e74c3c;
+
+      .current-price {
+        color: #e74c3c;
+      }
+
+      .suffix-price {
+        font-size: 14px;
+        color: #999;
+        text-decoration: line-through;
+      }
     }
 
     .bottom {
       display: flex;
       justify-content: space-between;
-      gap: 10px;
+      gap: 24px;
+      flex-wrap: wrap;
 
       .features {
         display: flex;
-        gap: 20px;
+        gap: 16px;
+        flex-wrap: wrap;
         font-size: 14px;
+        color: #555;
+        flex: 1;
+        justify-content: flex-start;
 
         .feature {
           display: flex;
           align-items: center;
-          gap: 5px;
-          background-color: whitesmoke;
-          padding: 5px;
-          border-radius: 5px;
+          gap: 8px;
+          background-color: #f5f5f5;
+          padding: 8px 16px;
+          border-radius: 25px;
+          font-size: 16px; /* Increase font size */
+          font-weight: 500; /* Make font weight bolder */
+          color: #34495e; /* Darker, more visible color */
+          transition: background-color 0.3s ease, transform 0.3s ease;
+
+          &:hover {
+            background-color: #ecf0f1;
+            transform: scale(1.05); /* Slight zoom effect on hover */
+          }
+
+          svg {
+            color: #1abc9c; /* Icon color */
+            font-size: 18px;
+          }
+
+          span {
+            font-size: 16px; /* Increase font size for better readability */
+            color: #34495e;
+          }
         }
       }
 
       .icons {
         display: flex;
-        gap: 20px;
+        gap: 24px;
+        justify-content: space-between;
+        flex-shrink: 0;
+        margin-top: auto;
 
         .icon {
-          border: 1px solid #999;
-          padding: 2px 5px;
-          border-radius: 5px;
+          padding: 12px;
+          border: 2px solid #ddd;
+          border-radius: 50%;
           cursor: pointer;
           display: flex;
           align-items: center;
           justify-content: center;
+          transition: background-color 0.3s ease, border 0.3s ease;
 
           &:hover {
-            background-color: lightgray;
+            background-color: #ecf0f1;
+            border-color: #1abc9c;
           }
         }
       }
+    }
+  }
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 16px;
+    align-items: stretch;
+
+    .cardImageContainer {
+      width: 100%;
+      height: 220px;
+      margin-bottom: 16px;
+    }
+
+    .cardTextContainer {
+      gap: 12px;
+    }
+
+    .cardProjectName {
+      font-size: 1.5rem;
+    }
+
+    .cardTitle {
+      font-size: 1.2rem;
+    }
+
+    .cardAddress {
+      font-size: 12px;
+    }
+
+    .card-pricing {
+      font-size: 16px;
+      gap: 8px;
+    }
+
+    .features {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .icons {
+      gap: 16px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 12px;
+
+    .cardImageContainer {
+      width: 100%;
+      height: 200px;
+      margin-bottom: 12px;
+    }
+
+    .cardTextContainer {
+      gap: 10px;
+    }
+
+    .cardProjectName {
+      font-size: 1.4rem;
+    }
+
+    .cardTitle {
+      font-size: 1.1rem;
+    }
+
+    .cardAddress {
+      font-size: 12px;
+    }
+
+    .card-pricing {
+      font-size: 14px;
+      gap: 6px;
+    }
+
+    .features {
+      gap: 8px;
+      grid-template-columns: 1fr 1fr;
+      justify-content: flex-start;
+    }
+
+    .icons {
+      gap: 8px;
     }
   }
 }

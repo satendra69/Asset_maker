@@ -13,103 +13,75 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
     const imageRef = useRef(null);
 
     useEffect(() => {
-        if (modalRef.current) {
-            modalRef.current.focus();
-        }
-
+        modalRef.current?.focus();
         return () => {
-            if (images[currentImageIndex] && typeof images[currentImageIndex] === 'object') {
-                URL.revokeObjectURL(images[currentImageIndex]);
-            }
+            images.forEach(image => {
+                if (typeof image === 'object' && image.attachment) {
+                    URL.revokeObjectURL(image);
+                }
+            });
         };
-    }, [currentImageIndex, images]);
+    }, [images]);
 
     useEffect(() => {
-        // Reset the position when zoom level is set back to 1 (original zoom)
-        if (zoomLevel === 1) {
-            setTranslate({ x: 0, y: 0 });
-        }
+        if (zoomLevel === 1) setTranslate({ x: 0, y: 0 });
     }, [zoomLevel]);
 
-    const closeModal = () => {
-        onClose();
-    };
+    const closeModal = () => onClose();
 
     const handlePrev = () => {
-        setCurrentImageIndex(prevIndex => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
+        setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1));
         resetZoom();
     };
 
     const handleNext = () => {
-        setCurrentImageIndex(prevIndex => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
+        setCurrentImageIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1));
         resetZoom();
     };
 
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-        if (event.key === 'ArrowLeft') {
-            handlePrev();
-        }
-        if (event.key === 'ArrowRight') {
-            handleNext();
-        }
+    const handleKeyDown = (e) => {
+        if (e.key === 'Escape') closeModal();
+        if (e.key === 'ArrowLeft') handlePrev();
+        if (e.key === 'ArrowRight') handleNext();
     };
 
     const getImageUrl = (image) => {
-        if (image instanceof File) {
-            return URL.createObjectURL(image);
-        }
+        if (image instanceof File) return URL.createObjectURL(image);
         if (typeof image === 'object' && image.attachment) {
-            return httpCommon.defaults.baseURL + image.attachment;
+            return `${httpCommon.defaults.baseURL}${image.attachment}`;
         }
         return '';
     };
 
     const imageUrl = getImageUrl(images[currentImageIndex]);
 
-    const zoomIn = () => {
-        setZoomLevel(prevZoom => Math.min(prevZoom + 0.3, 10));
-    };
-
-    const zoomOut = () => {
-        setZoomLevel(prevZoom => Math.max(prevZoom - 0.3, 1));
-    };
+    const zoomIn = () => setZoomLevel((prev) => Math.min(prev + 0.2, 10));
+    const zoomOut = () => setZoomLevel((prev) => Math.max(prev - 0.2, 1));
 
     const resetZoom = () => {
         setZoomLevel(1);
-        setTranslate({ x: 0, y: 0 });  // Reset the image position to center
+        setTranslate({ x: 0, y: 0 });
     };
 
     const handleWheel = (e) => {
         e.preventDefault();
-        if (e.deltaY < 0) {
-            zoomIn();
-        } else {
-            zoomOut();
-        }
+        e.deltaY < 0 ? zoomIn() : zoomOut();
     };
 
     const startDragging = (e) => {
         if (zoomLevel > 1) {
             setIsDragging(true);
-            setDragStart({
-                x: e.clientX - translate.x,
-                y: e.clientY - translate.y
-            });
+            setDragStart({ x: e.clientX - translate.x, y: e.clientY - translate.y });
         }
     };
 
-    const stopDragging = () => {
-        setIsDragging(false);
-    };
+    const stopDragging = () => setIsDragging(false);
 
     const handleDragging = (e) => {
         if (isDragging && zoomLevel > 1) {
             const newTranslate = {
                 x: e.clientX - dragStart.x,
-                y: e.clientY - dragStart.y
+                y: e.clientY - dragStart.y,
             };
             setTranslate(newTranslate);
         }
@@ -117,17 +89,11 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
 
     const toggleFullScreen = () => {
         if (!isFullScreen) {
-            modalRef.current.requestFullscreen().catch(console.error);
+            modalRef.current.requestFullscreen?.().catch(console.error);
         } else {
-            document.exitFullscreen().catch(console.error);
+            document.exitFullscreen?.().catch(console.error);
         }
         setIsFullScreen(!isFullScreen);
-    };
-
-    const handleOverlayClick = (e) => {
-        if (e.target === modalRef.current) {
-            closeModal();
-        }
     };
 
     return (
@@ -135,94 +101,77 @@ const ImageModal = ({ images, currentIndex, onClose }) => {
             className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
             role="dialog"
             aria-modal="true"
-            aria-labelledby="image-modal-title"
             onKeyDown={handleKeyDown}
-            onClick={handleOverlayClick}
             tabIndex={-1}
             ref={modalRef}
         >
             <div
-                className={`relative mx-4 overflow-hidden bg-white rounded-lg shadow-lg modal-container max-w-7xl sm:max-w-3xl md:mx-auto ${isFullScreen ? 'w-full h-full' : ''
-                    }`}
+                className={`relative bg-white rounded-lg shadow-lg max-w-7xl w-full ${isFullScreen ? 'h-screen' : ''}`}
             >
+                {/* Close Button */}
                 <button
-                    className="absolute top-0 right-0 z-50 p-2 m-4 text-2xl text-white bg-black rounded-full hover:bg-opacity-75"
+                    className="absolute z-50 p-2 text-white bg-red-600 bg-opacity-75 rounded-full top-4 right-4 hover:bg-opacity-90"
                     onClick={closeModal}
-                    aria-label="Close modal"
+                    aria-label="Close Modal"
                 >
-                    <FiX />
-                </button>
-                <button
-                    className="absolute top-0 left-0 z-50 p-2 m-4 text-2xl text-white bg-black rounded-full hover:bg-opacity-75"
-                    onClick={toggleFullScreen}
-                    aria-label="Toggle full screen"
-                >
-                    {isFullScreen ? <FiMinimize2 /> : <FiMaximize2 />}
+                    <FiX className="text-xl" />
                 </button>
 
+                {/* Full-Screen Toggle */}
+                <button
+                    className="absolute z-50 p-2 text-white bg-black bg-opacity-75 rounded-full top-4 left-4 hover:bg-opacity-90"
+                    onClick={toggleFullScreen}
+                    aria-label="Toggle Full Screen"
+                >
+                    {isFullScreen ? <FiMinimize2 className="text-xl" /> : <FiMaximize2 className="text-xl" />}
+                </button>
+
+                {/* Image Display */}
                 <div
-                    className={`relative flex items-center justify-center p-4 bg-gray-800 ${isFullScreen ? 'w-full h-full' : ''
-                        }`}
+                    className="relative flex items-center justify-center w-full h-full"
                     onMouseDown={startDragging}
                     onMouseMove={handleDragging}
                     onMouseUp={stopDragging}
                     onMouseLeave={stopDragging}
                     onWheel={handleWheel}
                 >
-                    <div className="slide active">
-                        {imageUrl && (
-                            <img
-                                src={imageUrl}
-                                alt={`${currentImageIndex + 1}`}
-                                className="object-contain transition-transform duration-300"
-                                style={{
-                                    transform: `scale(${zoomLevel}) translate(${translate.x}px, ${translate.y}px)`,
-                                    maxHeight: isFullScreen ? '100vh' : '80vh',
-                                    maxWidth: isFullScreen ? '100vw' : '100%',
-                                    cursor: zoomLevel > 1 ? 'grab' : 'auto',
-                                }}
-                                ref={imageRef}
-                                onDragStart={(e) => e.preventDefault()}
-                            />
-                        )}
-                    </div>
-
-                    <button
-                        className="absolute z-50 p-3 text-2xl text-white transform -translate-y-1/2 bg-black bg-opacity-75 rounded-full shadow-lg top-1/2 left-4 hover:bg-opacity-90"
-                        onClick={handlePrev}
-                        aria-label="Previous image"
-                    >
-                        <FiChevronLeft />
-                    </button>
-                    <button
-                        className="absolute z-50 p-3 text-2xl text-white transform -translate-y-1/2 bg-black bg-opacity-75 rounded-full shadow-lg top-1/2 right-4 hover:bg-opacity-90"
-                        onClick={handleNext}
-                        aria-label="Next image"
-                    >
-                        <FiChevronRight />
-                    </button>
+                    <img
+                        src={imageUrl}
+                        alt={`Image ${currentImageIndex + 1}`}
+                        className="transition-transform duration-300"
+                        style={{
+                            transform: `scale(${zoomLevel}) translate(${translate.x}px, ${translate.y}px)`,
+                            cursor: zoomLevel > 1 ? 'grab' : 'auto',
+                            maxHeight: '90vh',
+                            maxWidth: '90vw',
+                        }}
+                        ref={imageRef}
+                        onDragStart={(e) => e.preventDefault()}
+                    />
                 </div>
 
-                <div className="absolute flex space-x-4 bottom-20 right-4">
-                    <button
-                        className="flex items-center justify-center w-12 h-12 text-xl text-white bg-black bg-opacity-75 rounded-full shadow-lg hover:bg-opacity-90"
-                        onClick={zoomOut}
-                        aria-label="Zoom out"
-                    >
+                {/* Navigation Buttons */}
+                <button className="absolute z-50 transform -translate-y-1/2 left-4 top-1/2" onClick={handlePrev}>
+                    <FiChevronLeft className="text-2xl text-white" />
+                </button>
+                <button className="absolute z-50 transform -translate-y-1/2 right-4 top-1/2" onClick={handleNext}>
+                    <FiChevronRight className="text-2xl text-white" />
+                </button>
+
+                {/* Zoom Controls */}
+                <div className="absolute z-50 flex space-x-2 bottom-4 left-4">
+                    <button className="p-2 text-white bg-gray-800 rounded-full" onClick={zoomOut}>
                         <FiZoomOut />
                     </button>
-                    <button
-                        className="flex items-center justify-center w-12 h-12 text-xl text-white bg-black bg-opacity-75 rounded-full shadow-lg hover:bg-opacity-90"
-                        onClick={zoomIn}
-                        aria-label="Zoom in"
-                    >
+                    <button className="p-2 text-white bg-gray-800 rounded-full" onClick={zoomIn}>
                         <FiZoomIn />
                     </button>
                 </div>
 
-                {images[currentImageIndex] && (
-                    <div className="absolute bottom-0 w-full py-4 text-center text-white bg-gray-900 bg-opacity-75 modal-caption" id="image-modal-title">
-                        {images[currentImageIndex].name || images[currentImageIndex].file_name}
+                {/* Caption */}
+                {images[currentImageIndex]?.name && (
+                    <div className="absolute bottom-0 z-50 w-full py-2 text-center text-white bg-black bg-opacity-50">
+                        {images[currentImageIndex].name}
                     </div>
                 )}
             </div>

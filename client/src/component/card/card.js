@@ -217,13 +217,6 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const status = item ? statusMapping[item.ltg_type] || item.ltg_det_pmts_status : "Status not available";
 
-  // function formatIndianNumber(num) {
-  //   let str = num.toString();
-  //   let [intPart, decimalPart] = str.split('.');
-  //   intPart = intPart.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,').replace(/(\d+),(\d{2})$/, '$1$2');
-  //   return decimalPart ? `${intPart}.${decimalPart}` : intPart;
-  // }
-
   function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
       return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };

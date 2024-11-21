@@ -1168,24 +1168,35 @@ const PropertyDetails = ({ property, images, brochure }) => {
 
         <div className="mt-16">
           {/* Conditionally render "Property Video" section */}
-          {transformedProperty?.details?.propertyVideo && (
-            <section>
-              <h2 className="mb-4 text-2xl font-bold">Property Video</h2>
-              <div className="max-w-full mx-auto mb-4">
-                <iframe
-                  width="100%"
-                  height="315"
-                  src={`https://www.youtube.com/embed/${transformedProperty?.details.propertyVideo.split('v=')[1]}`}
-                  title="Property Video"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="rounded-lg"
-                ></iframe>
-              </div>
-            </section>
-          )}
+          {transformedProperty?.details?.propertyVideo && (() => {
+            const videoUrl = transformedProperty?.details?.propertyVideo;
+            const videoId = videoUrl.match(/(?:v=|\/)([a-zA-Z0-9_-]{11})/)?.[1];
+
+            if (!videoId) {
+              console.error("Invalid or missing YouTube video ID.");
+              return <p>Unable to load video. Please check the video link.</p>;
+            }
+
+            return (
+              <section>
+                <h2 className="mb-4 text-2xl font-bold">Property Video</h2>
+                <div className="max-w-full mx-auto mb-4">
+                  <iframe
+                    width="100%"
+                    height="315"
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    title="Property Video"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    className="rounded-lg"
+                  ></iframe>
+                </div>
+              </section>
+            );
+          })()}
         </div>
+
 
         <div className="mt-16">
           {/* Conditionally render "Master Plan" section */}
