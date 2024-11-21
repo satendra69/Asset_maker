@@ -260,6 +260,8 @@ function NewListingPage({ action }) {
           formData.append("attachments", files[i]);
         }
 
+        console.log("formData", formData);
+
         try {
           const uploadResponse = await httpCommon.post(`/list/upload/${listingID}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
@@ -273,7 +275,7 @@ function NewListingPage({ action }) {
             return false;
           }
         } catch (error) {
-          console.error(`Error uploading ${fileType.type} files:`, error);
+          console.error(`Error uploading ${fileType.type} files:`, error.response?.data || error.message);
           return false;
         }
       }

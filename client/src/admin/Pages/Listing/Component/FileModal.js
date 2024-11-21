@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import httpCommon from "../../../../http-common";
 
 const FileModal = ({ documents = [], currentIndex, isStored, onClose, modalPdfUrl }) => {
-    const [currentDocumentIndex, setCurrentDocumentIndex] = useState(currentIndex);
     const [pdfLoaded, setPdfLoaded] = useState(true);
     const modalRef = useRef(null);
 
@@ -10,54 +9,35 @@ const FileModal = ({ documents = [], currentIndex, isStored, onClose, modalPdfUr
         if (modalRef.current) {
             modalRef.current.focus();
         }
-        setCurrentDocumentIndex(currentIndex);
-    }, [currentIndex]);
+    }, []);
 
     const closeModal = () => {
         onClose();
     };
 
-    const handlePrev = () => {
-        setCurrentDocumentIndex(prevIndex => (prevIndex === 0 ? documents.length - 1 : prevIndex - 1));
-    };
-
-    const handleNext = () => {
-        setCurrentDocumentIndex(prevIndex => (prevIndex === documents.length - 1 ? 0 : prevIndex + 1));
-    };
-
-    const handleKeyDown = (event) => {
-        if (event.key === 'Escape') {
-            closeModal();
-        }
-        if (event.key === 'ArrowLeft') {
-            handlePrev();
-        }
-        if (event.key === 'ArrowRight') {
-            handleNext();
-        }
-    };
-
-    const currentDocument = documents[currentDocumentIndex];
+    const currentDocument = documents[currentIndex];
     const documentUrl = isStored && currentDocument
         ? httpCommon.defaults.baseURL + currentDocument.attachment.replace(/\\/g, '/')
         : modalPdfUrl.replace(/\\/g, '/');
 
-    // Function to handle PDF load errors
+    // Handle PDF load error
     const handleObjectError = () => {
         setPdfLoaded(false);
     };
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-10 overflow-auto">
-            <div className="fixed inset-0 bg-gray-500 opacity-50 modal-overlay" onClick={closeModal}></div>
+            <div className="fixed inset-0 transition-all duration-300 bg-gray-800 opacity-75 modal-overlay" onClick={closeModal}></div>
             <div
-                className="relative w-full h-full max-w-4xl overflow-hidden bg-white rounded-md modal-container"
+                className="relative w-full h-full max-w-4xl transition-transform duration-300 ease-in-out transform bg-white rounded-md shadow-lg modal-container"
                 tabIndex={-1}
                 ref={modalRef}
-                onKeyDown={handleKeyDown}
+                onKeyDown={(event) => {
+                    if (event.key === 'Escape') closeModal();
+                }}
             >
                 <button
-                    className="absolute z-50 text-3xl font-bold text-white cursor-pointer top-2 right-28 modal-close"
+                    className="absolute z-50 text-3xl font-bold text-red-500 transition-colors duration-200 cursor-pointer top-3 right-2 modal-close hover:text-red-700"
                     onClick={closeModal}
                     aria-label="Close modal"
                 >
@@ -73,14 +53,15 @@ const FileModal = ({ documents = [], currentIndex, isStored, onClose, modalPdfUr
                             height="100%"
                             aria-label="PDF Viewer"
                             onError={handleObjectError}
+                            className="rounded-md"
                         >
                             <div className="flex items-center justify-center w-full h-full">
-                                <p>Your browser does not support PDFs. <a href={documentUrl} target="_blank" rel="noopener noreferrer">Download the PDF</a>.</p>
+                                <p>Your browser does not support PDFs. <a href={documentUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">Download the PDF</a>.</p>
                             </div>
                         </object>
                     ) : (
                         <div className="flex items-center justify-center w-full h-full">
-                            <p>Your browser does not support PDFs. <a href={documentUrl} target="_blank" rel="noopener noreferrer">Download the PDF</a>.</p>
+                            <p className="text-xl text-gray-700">Sorry, we couldn't load the PDF. <a href={documentUrl} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700">Download the PDF</a>.</p>
                         </div>
                     )}
                 </div>

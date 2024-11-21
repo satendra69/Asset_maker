@@ -1326,7 +1326,6 @@ const deleteListItem = async (req, res) => {
   }
 };
 
-// Upload files and save information to the database
 const uploadListItem = async (req, res) => {
   console.log("uploadListItem function started");
 
@@ -1348,7 +1347,7 @@ const uploadListItem = async (req, res) => {
 
     if (!files || files.length === 0) {
       console.log("No files uploaded");
-      return res.status(200).json({ status: 'success', message: 'No files uploaded' });
+      return res.status(400).json({ status: 'FAILURE', message: 'No files uploaded or watermarking failed.' });
     }
 
     if (!listingID || !type || !auditUser) {
@@ -1396,14 +1395,14 @@ const uploadListItem = async (req, res) => {
     console.log("Response sent: Files uploaded successfully");
 
   } catch (error) {
-    console.error("Error during file upload:", error);
+    console.error("Error during file upload:", error.message);
 
     // Rollback the transaction in case of an error
     try {
       await connection.rollback();
       console.log("Transaction rolled back");
     } catch (rollbackError) {
-      console.error("Error during rollback:", rollbackError);
+      console.error("Error during rollback:", rollbackError.message);
     }
 
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
@@ -1413,6 +1412,7 @@ const uploadListItem = async (req, res) => {
     console.log("Database connection released");
   }
 };
+
 
 // Delete Images
 const deleteListImage = (req, res) => {
