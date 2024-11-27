@@ -25,10 +25,10 @@ function Footer() {
                 for the dream home.
               </p>
               <div className="absolute p-3 text-white bg-red-600 rounded-lg left-1/3 -bottom-7">
-                <div className="flex items-center gap-2">
-                  <IoCallOutline className="font-bold" size={22} />|
+                <Link to="/contact-us" className="flex items-center gap-2">
+                  <IoCallOutline className="font-bold" size={22} />
                   <span className="font-bold">Contact</span>
-                </div>
+                </Link>
               </div>
             </div>
           </div>
@@ -160,7 +160,7 @@ function Footer() {
           </div>
         </Container>
         <p className="flex justify-center mb-10 text-white md:mb-0 md:mt-2">
-          &copy; 2024 Your Company Name. All rights reserved.
+          &copy; 2024 Asset Makers. All rights reserved.
         </p>
       </div>
     </div>

@@ -2,22 +2,21 @@ import React from "react";
 
 function ExploreDream() {
   return (
-    <div className="bg-white flex flex-col md:flex-row w-full overflow-hidden">
+    <div className="flex flex-col w-full overflow-hidden bg-white md:flex-row">
       <img src="/exploreleft.jpg" alt="exolreleft" className="w-full md:w-1/2" />
       <div className="bg-[#EFB0B0] py-12 p-4 flex flex-col justify-center md:w-1/2">
-        <h2 className="font-bold text-4xl leading-10 mb-6">
+        <h2 className="mb-6 text-4xl font-bold leading-10">
           Explore Your Dream Home or
           <br /> Boost Your Investment Portfolio
           <br /> Today - Your Future Awaits!
         </h2>
         <p className="text-sm">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed
-          tristique metus
+          Discover properties tailored to your lifestyle and goals. Whether you're searching for a cozy family retreat or a lucrative investment, we're here to guide you every step of the way.
         </p>
         <div className="flex flex-wrap gap-5 mt-10 md:flex-nowrap">
-          <div className="card bg-white h-max shadow-md pb-5 w-full md:w-60 rounded-lg">
-            <div className="h-1/2 w-full">
-              <img src="/pp2.jpg" alt="pp2" className="h-full object-cover rounded-t-lg" />
+          <div className="w-full pb-5 bg-white rounded-lg shadow-md card h-max md:w-60">
+            <div className="w-full h-1/2">
+              <img src="/pp1.jpg" alt="pp2" className="object-cover h-full rounded-t-lg" />
             </div>
             <div className="p-3">
               <h4>Darlene Robertson</h4>
@@ -25,22 +24,22 @@ function ExploreDream() {
               <h3>Contact seller</h3>
             </div>
           </div>
-          <div className="card bg-white h-max shadow-md pb-5 w-full md:w-60 rounded-lg mt-5 md:mt-0">
-            <div className="h-1/2 w-full">
-              <img src="/pp2.png" alt="pp2" className="h-full object-cover rounded-t-lg" />
+          <div className="w-full pb-5 mt-5 bg-white rounded-lg shadow-md card h-max md:w-60 md:mt-0">
+            <div className="w-full h-1/2">
+              <img src="/pp2.png" alt="pp2" className="object-cover h-full rounded-t-lg" />
             </div>
             <div className="p-3">
-              <h4>Darlene Robertson</h4>
+              <h4>Ethan Parker</h4>
               <p>Realtor</p>
               <h3>Contact seller</h3>
             </div>
           </div>
-          <div className="card bg-white h-max shadow-md pb-5 w-full md:w-60 rounded-lg mt-5 md:mt-0">
-            <div className="h-1/2 w-full">
-              <img src="/pp2.png" alt="pp2" className="h-full object-cover rounded-t-lg" />
+          <div className="w-full pb-5 mt-5 bg-white rounded-lg shadow-md card h-max md:w-60 md:mt-0">
+            <div className="w-full h-1/2">
+              <img src="/pp3.jpg" alt="pp2" className="object-cover h-full rounded-t-lg" />
             </div>
             <div className="p-3">
-              <h4>Darlene Robertson</h4>
+              <h4>Liam Hayes</h4>
               <p>Realtor</p>
               <h3>Contact seller</h3>
             </div>

@@ -236,75 +236,63 @@ function Hero() {
         </Container>
       </section>
 
-      <section className="my-10 top-cities ">
-        <Container className={"space-y-3"}>
-          <h2>Top Cities In India</h2>
-          <p>Best places to live in India</p>
+      <section className="my-10 top-cities">
+        <Container className="space-y-3">
+          <h2 className="text-xl font-semibold md:text-2xl">Top Cities In India</h2>
+          <p className="text-sm md:text-base">Best places to live in India</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
 
-          <div className="grid items-center justify-center grid-cols-2 gap-1 mx-auto places py-7 md:flex md:flex-row md:justify-between md:gap-5">
+          <div className="grid items-center justify-center grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 py-7">
             <a href="/Cities/Bengaluru" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img
-                  src="/bengaluru.png"
-                  alt="Bengaluru"
-                  className="object-cover w-full h-[60%] "
-                />
-                <h3 className="text-center">Bengaluru</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.Bengaluru} properties</p>
+              <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+                <img src="/bengaluru.png" alt="Bengaluru" className="object-cover w-full h-24 rounded-md md:h-32" />
+                <h3 className="mt-2 text-sm text-center md:text-base">Bengaluru</h3>
+                <p className="text-xs font-light text-center md:text-sm">{propertyCounts.Bengaluru} properties</p>
               </div>
             </a>
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img src="/delhi.png" alt="delhi" className="object-cover w-full h-[60%] " />
-              <h3 className="text-center">Delhi</h3>
-              <p className="text-xs font-light text-center">0 properties</p>
+
+            <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+              <img src="/delhi.png" alt="Delhi" className="object-cover w-full h-24 rounded-md md:h-32" />
+              <h3 className="mt-2 text-sm text-center md:text-base">Delhi</h3>
+              <p className="text-xs font-light text-center md:text-sm">0 properties</p>
             </div>
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img src="/pune.png" alt="pune" className="object-cover w-full h-[60%] " />
-              <h3 className="text-center">Pune</h3>
-              <p className="text-xs font-light text-center">0 properties</p>
+
+            <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+              <img src="/pune.png" alt="Pune" className="object-cover w-full h-24 rounded-md md:h-32" />
+              <h3 className="mt-2 text-sm text-center md:text-base">Pune</h3>
+              <p className="text-xs font-light text-center md:text-sm">0 properties</p>
             </div>
+
             <a href="/Cities/Hyderabad" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img
-                  src="/hyderabad.png"
-                  alt="Hyderabad"
-                  className="object-cover w-full h-[60%] "
-                />
-                <h3 className="text-center">Hyderabad</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.Hyderabad} properties</p>
+              <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+                <img src="/hyderabad.png" alt="Hyderabad" className="object-cover w-full h-24 rounded-md md:h-32" />
+                <h3 className="mt-2 text-sm text-center md:text-base">Hyderabad</h3>
+                <p className="text-xs font-light text-center md:text-sm">{propertyCounts.Hyderabad} properties</p>
               </div>
             </a>
-            <a href="Cities/Tirupati" className="place-link">
-              <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-                <img
-                  src="/tirupati.jpg"
-                  alt="Tirupati"
-                  className="object-cover w-full h-[60%] "
-                />
-                <h3 className="text-center">Tirupati</h3>
-                <p className="text-xs font-light text-center">{propertyCounts.Tirupati} properties</p>
+
+            <a href="/Cities/Tirupati" className="place-link">
+              <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+                <img src="/tirupati.jpg" alt="Tirupati" className="object-cover w-full h-24 rounded-md md:h-32" />
+                <h3 className="mt-2 text-sm text-center md:text-base">Tirupati</h3>
+                <p className="text-xs font-light text-center md:text-sm">{propertyCounts.Tirupati} properties</p>
               </div>
             </a>
-            <div className="px-4 mx-auto mb-5 bg-white border rounded-md shadow-md w-max md:px-8 md:h-40 h-28 md:mx-0 md:mb-0">
-              <img
-                src="/ahmedabad.jpg"
-                alt="ahmedabad"
-                className="object-cover w-full h-[60%] "
-              />
-              <h3 className="text-center">Ahmedabad</h3>
-              <p className="text-xs font-light text-center">0 properties</p>
+
+            <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
+              <img src="/ahmedabad.jpg" alt="Ahmedabad" className="object-cover w-full h-24 rounded-md md:h-32" />
+              <h3 className="mt-2 text-sm text-center md:text-base">Ahmedabad</h3>
+              <p className="text-xs font-light text-center md:text-sm">0 properties</p>
             </div>
           </div>
         </Container>
-      </section >
+      </section>
 
       <section className="py-5 my-2 bg-white feature-collection md:my-10">
         <Container className={"space-y-3"}>
           <h2>Featured Collection in Top Cities</h2>
           <p>Curated & Handpicked Properties</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
-
           <div className="items-center collection md:flex md:gap-5">
             {['Bengaluru', 'Hyderabad', 'Tirupati'].map((region, index) => {
               const imageSrcMap = {
