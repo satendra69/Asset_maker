@@ -9,8 +9,7 @@ function PropertyCard({ card }) {
   return (
     <div className="relative p-4 m-2 transition-shadow duration-300 bg-white border rounded-lg shadow-md hover:shadow-lg">
       <Link
-        to={`/Property/details`}
-        state={{ id: card.RowID, ltg_type: card.type }}
+        to={`/Property/${card.propertyUrl}`}
       >
         <div className="relative h-48 md:h-56">
           <img

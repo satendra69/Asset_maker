@@ -204,6 +204,7 @@ function Hero() {
       return {
         key: item.ltg_det_mstRowID,
         title: item.ltg_title,
+        propertyUrl: item.propertyUrl,
         imgUrl: imgUrl,
         ...details,
       };

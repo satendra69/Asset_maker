@@ -39,8 +39,18 @@ function AdminMessages() {
     queryFn: fetchPropertyList,
   });
 
-  console.log("PropertyList", properties);
-  console.log("MessageList", messages);
+  // console.log("PropertyList", properties);
+  // console.log("MessageList", messages);
+
+  // Function to format the title
+  const formatTitleForUrl = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
 
   if (isMessagesLoading || isPropertiesLoading) {
     return <span>Loading...</span>;
@@ -60,15 +70,16 @@ function AdminMessages() {
 
   const enrichedMessages = messages.map((message) => {
     const matchedProperty = properties.find(property => Number(property.RowID) === Number(message.propertyId));
-    console.log("matchedProperty", matchedProperty);
+    // console.log("matchedProperty", matchedProperty);
     return {
       ...message,
       propertyImage: matchedProperty ? getMainImageUrl(matchedProperty.attachments) : null,
       propertyTitle: matchedProperty ? matchedProperty.ltg_title : null,
+      propertyUrl: matchedProperty ? formatTitleForUrl(matchedProperty.ltg_title) : null
     };
   });
 
-  console.log("Merged Data", enrichedMessages);
+  // console.log("Merged Data", enrichedMessages);
 
   return (
     <Container className={"space-y-5"}>

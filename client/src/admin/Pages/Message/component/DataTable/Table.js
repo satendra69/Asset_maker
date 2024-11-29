@@ -9,9 +9,6 @@ import { useMutation } from "@tanstack/react-query";
 import { Delete, Web } from "@mui/icons-material";
 
 function Table({ data }) {
-
-  console.log("data", data);
-  // Function to capitalize the first letter
   const capitalizeFirstLetter = (string) => {
     if (!string) return "";
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -146,8 +143,7 @@ function Table({ data }) {
           <Web />
         </ListItemIcon>
         <Link
-          to={`/Property/details`}
-          state={{ id: row.original.propertyId, ltg_type: row.original.listingType }}
+          to={`/Property/${row.original.propertyUrl}`}
         >
           Property Details
         </Link>
