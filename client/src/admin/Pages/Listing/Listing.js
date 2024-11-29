@@ -43,6 +43,7 @@ function NewListingPage({ action }) {
   const [VillamentData, setVillament] = useState({});
   const [PentHouseData, setPentHouse] = useState({});
   const [errors, setErrors] = useState({});
+  const [resultMessage, setResultMessage] = useState('');
 
   const validateForm = () => {
     const newErrors = {};
@@ -90,7 +91,7 @@ function NewListingPage({ action }) {
 
   const fetchProperty = async (listingId, regionsData, categoriesData) => {
     try {
-      const response = await httpCommon.get(`/list/${listingId}`);
+      const response = await httpCommon.get(`/list/listItem/${listingId}`);
       const listingData = response.data.data[0];
 
       setTitle(listingData.ltg_title);
@@ -130,13 +131,41 @@ function NewListingPage({ action }) {
     setSelectedCategories(event.target.value);
   };
 
+  const normalizeTitleForUrl = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
+
+  const checkPropertyExists = async (propertyUrl, title) => {
+    try {
+      const response = await httpCommon.get(`/list/checkProperty`, {
+        params: { propertyUrl, title },
+      });
+
+      if (response.data.exists) {
+        // console.log('Property exists:', response.data);
+        return { exists: true, message: response.data.message };
+      } else {
+        // console.log('Property does not exist:', response.data);
+        return { exists: false, message: response.data.message };
+      }
+    } catch (error) {
+      console.error('Error checking property existence:', error.response?.data || error.message);
+      return { exists: null, message: 'Error checking property existence' };
+    }
+  };
+
   const publishBtn = (e) => {
     e.preventDefault();
     if (!validateForm()) {
       return;
     }
 
-    console.log("Form submitted successfully");
+    // console.log("Form submitted successfully");
     formDataSubmit();
   };
 
@@ -153,8 +182,12 @@ function NewListingPage({ action }) {
       PentHouses: PentHouseData,
     };
 
+    // Normalize the title for URL-safe version
+    const propertyUrl = normalizeTitleForUrl(title.trim());
+
     const json_ListingInsert = {
       title: title.trim(),
+      propertyUrl: propertyUrl,
       projectName: projectName.trim(),
       selectedOwner: selectedOwner,
       listingType: listingType,
@@ -167,24 +200,49 @@ function NewListingPage({ action }) {
       update: Boolean(listingId && action !== 'clone'),
     };
 
-    console.log("json_ListingInsert_____", json_ListingInsert);
-
+    // console.log("json_ListingInsert_____", json_ListingInsert);
+    // console.log("checkPropertyExists_____", json_ListingInsert.propertyUrl, json_ListingInsert.title);
     try {
+      let result;
+      if (action === 'clone' || !listingId) {
+        result = await checkPropertyExists(json_ListingInsert?.propertyUrl, json_ListingInsert?.title);
+
+        if (result.exists === true) {
+          setResultMessage(`Property exists: ${result.message}`);
+          Swal.fire({
+            icon: 'error',
+            title: 'Property already exists',
+            text: result.message,
+          });
+          return;
+        } else if (result.exists === false) {
+          setResultMessage(`Property does not exist: ${result.message}`);
+        } else {
+          setResultMessage('An error occurred while checking the property.');
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'An error occurred while checking the property existence.',
+          });
+          return;
+        }
+      }
+
       let response;
       if (action === 'clone' && listingId) {
-        console.log("cloning listing");
+        // console.log("cloning listing");
         response = await httpCommon.post("/list", json_ListingInsert);
       } else if (listingId) {
-        console.log("updating listing");
-        response = await httpCommon.patch(`/list/${listingId}`, json_ListingInsert);
+        // console.log("updating listing");
+        response = await httpCommon.patch(`/list/listItem/${listingId}`, json_ListingInsert);
       } else {
-        console.log("creating listing");
+        // console.log("creating listing");
         response = await httpCommon.post("/list", json_ListingInsert);
       }
       const responseData = await response.data;
 
       if (responseData.status === "SUCCESS") {
-        console.log("SUCCESS_____insert__");
+        // console.log("SUCCESS_____insert__");
         const auditUser = "admin";
         const listingId = responseData.RowID;
         const update = json_ListingInsert.update;
@@ -245,12 +303,12 @@ function NewListingPage({ action }) {
       { key: 'combinedBrochure.brochure', type: 'Brochure' },
     ];
 
-    console.log(`Starting file upload for listingType: ${listingType}, listingID: ${listingID}, auditUser: ${auditUser}`);
+    // console.log(`Starting file upload for listingType: ${listingType}, listingID: ${listingID}, auditUser: ${auditUser}`);
 
     for (const fileType of fileTypes) {
       const files = getFileFromListingData(ListingData, fileType.key);
       if (files && files.length > 0) {
-        console.log(`Uploading ${files.length} files for ${fileType.type}`);
+        // console.log(`Uploading ${files.length} files for ${fileType.type}`);
         const formData = new FormData();
         formData.append("type", fileType.type);
         formData.append("auditUser", auditUser);
@@ -260,14 +318,14 @@ function NewListingPage({ action }) {
           formData.append("attachments", files[i]);
         }
 
-        console.log("formData", formData);
+        // console.log("formData", formData);
 
         try {
           const uploadResponse = await httpCommon.post(`/list/upload/${listingID}`, formData, {
             headers: { 'Content-Type': 'multipart/form-data' },
           });
 
-          console.log(`Upload Response (${fileType.type}):`, uploadResponse.data);
+          // console.log(`Upload Response (${fileType.type}):`, uploadResponse.data);
 
           // Check if the upload was unsuccessful
           if (uploadResponse.data.status !== "SUCCESS") {
@@ -281,7 +339,7 @@ function NewListingPage({ action }) {
       }
     }
 
-    console.log('File upload process completed.');
+    // console.log('File upload process completed.');
     return true;
   };
 

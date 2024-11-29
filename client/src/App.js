@@ -120,7 +120,7 @@ const router = createBrowserRouter([
         element: <SavedList />,
       },
       {
-        path: "/Property/details/",
+        path: "/Property/:propertyurl",
         element: <SinglePage />,
       },
       {

@@ -118,14 +118,14 @@ function PentModule({ action, onDataUpdate }) {
   // fetch property
   const fetchProperty = async (listingId, action) => {
     try {
-      const response = await httpCommon.get(`/list/${listingId}/${propertyType}`);
+      const response = await httpCommon.get(`/list/getlistItem/${listingId}/${propertyType}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
 
       if (response.data.status === "success" && action !== 'clone') {
         // Fetch images and brochures
         try {
-          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingId}`);
+          const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingData.propertyUrl}`);
           if (imgResponse.data.status === "success") {
             const imageData = imgResponse.data.data;
 
@@ -706,7 +706,7 @@ function PentModule({ action, onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    console.log("Data to be passed to onDataUpdate:", data);
+    // console.log("Data to be passed to onDataUpdate:", data);
   };
 
   // fetch property

@@ -217,6 +217,16 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const status = item ? statusMapping[item.ltg_type] || item.ltg_det_pmts_status : "Status not available";
 
+  // Function to format the title
+  const formatTitleForUrl = (title) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  };
+
   function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
       return onlyFormatted ? "N/A" : { numeric: 0, formatted: "N/A" };
@@ -253,8 +263,7 @@ function Card({ key, item, onPropertyRemoved }) {
         mutation={mutation}
       />
       <Link
-        to={`/Property/details`}
-        state={{ id: item.RowID, ltg_type: item.ltg_type }}
+        to={`/Property/${formatTitleForUrl(item.ltg_title)}`}
         className="cardPropertyLink"
       >
         <div className="cardProperty">

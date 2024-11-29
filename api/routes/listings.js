@@ -2,7 +2,9 @@ var express = require("express");
 const {
   addListings,
   getListItem,
+  checkPropertyExists,
   getListingbyType,
+  getListItemByPropertyUrl,
   updateListItem,
   deleteListItem,
   uploadListItem,
@@ -21,6 +23,8 @@ var router = express.Router();
 /* get listing */
 router.get("/", getListItem);
 
+router.get("/checkProperty", checkPropertyExists);
+
 /* get listing by type */
 router.get("/listing/:type", getListingbyType);
 
@@ -30,9 +34,6 @@ router.post("/", addListings);
 // get all images
 router.get("/images", getAllImages);
 
-// get All img by listing id
-router.get("/singlePageImg/:listingID", getsinglePageImg);
-
 /* delete images by RowID */
 router.delete("/images/:RowID", deleteImagesByRowID);
 
@@ -40,12 +41,18 @@ router.delete("/images/:RowID", deleteImagesByRowID);
 router.delete("/files/:RowID", deleteBrochureFile);
 
 /* get listItem */
-router.get("/:listingID", getListItemId);
+router.get("/listItem/:listingID", getListItemId);
 router.get('/property/:id', getPropertyItemId);
-router.get("/:listingID/:type", getListItemId);
+router.get("/getlistItem/:listingID/:type", getListItemId);
+
+// get listItem using propertyUrl
+router.get("/singleProperty/:propertyUrl", getListItemByPropertyUrl);
+
+// get All img by listing id
+router.get("/singlePageImg/:propertyUrl", getsinglePageImg);
 
 /* update listItem */
-router.patch("/:listingID", updateListItem);
+router.patch("/listItem/:listingID", updateListItem);
 
 /* delete listItem */
 router.delete("/delete/:listingID", verifyToken, deleteListItem);

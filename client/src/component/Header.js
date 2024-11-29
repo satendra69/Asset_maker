@@ -131,11 +131,20 @@ function Header() {
     navigate("/saved-list", { state: { userId: currentUser.id } });
   };
 
-  const propertyRoutes = [
-    "/Property/details"
+  const staticPropertyRoutes = [
+    "/Property",
+    "/Property/Apartments",
+    "/Property/CommercialProperties",
+    "/Property/PentHouses",
+    "/Property/Plots",
+    "/Property/RowHouses",
+    "/Property/Villas",
+    "/Property/Villaments",
   ];
 
-  const showDropdown = !propertyRoutes.includes(location.pathname);
+  const isPropertyRoute = staticPropertyRoutes.includes(location.pathname);
+  const isDynamicPropertyRoute = /^\/Property\/[^/]+(-[a-z0-9]+)+$/.test(location.pathname);
+
 
   return (
     <>
@@ -411,7 +420,7 @@ function Header() {
           </ul>
         </motion.div>
 
-        {showDropdown && active && (
+        {(isPropertyRoute || !isDynamicPropertyRoute) && active && (
           <motion.div
             className=" shadow-md bg-[#F7F7F8] hidden md:block"
             animate={active ? "open" : "closed"}

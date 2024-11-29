@@ -4,6 +4,7 @@ import { MaterialReactTable, useMaterialReactTable } from "material-react-table"
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Dialog, Tooltip } from "@mui/material";
 import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf } from "@mui/icons-material";
+import Swal from "sweetalert2";
 import httpCommon from "../../../../http-common";
 import CreatePDF from '../Component/CreatePDF';
 
@@ -128,7 +129,22 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
-                  onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
+                  // onClick={() => navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`)}
+                  onClick={() => {
+                    Swal.fire({
+                      title: 'Are you sure?',
+                      text: "You are about to edit this property.",
+                      icon: 'info',
+                      showCancelButton: true,
+                      confirmButtonText: 'Yes, edit it!',
+                      cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        navigate(`/admin/property/edit/${row.original.ltg_det_mstRowID}`);
+                        // Swal.fire('Edited!', 'The property has been edited.', 'success');
+                      }
+                    });
+                  }}
                 >
                   <Edit style={{ fontSize: 15 }} />
                 </Button>
@@ -147,7 +163,22 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}
-                  onClick={() => navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`)}
+                  // onClick={() => navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`)}
+                  onClick={() => {
+                    Swal.fire({
+                      title: 'Are you sure?',
+                      text: "You are about to clone this property.",
+                      icon: 'info',
+                      showCancelButton: true,
+                      confirmButtonText: 'Yes, clone it!',
+                      cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                      if (result.isConfirmed) {
+                        navigate(`/admin/property/clone/${row.original.ltg_det_mstRowID}`);
+                        // Swal.fire('Cloned!', 'The property has been cloned.', 'success');
+                      }
+                    });
+                  }}
                 >
                   <CopyIcon style={{ fontSize: 15 }} />
                 </Button>

@@ -1,4 +1,4 @@
-import { useLocation, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { FaChevronCircleDown } from "react-icons/fa";
 import httpCommon from "../../http-common";
@@ -12,11 +12,9 @@ import MortgageCalculator from "./MortgageCalculator";
 import MultiCrousel from "../../component/MultiCrousel";
 
 function SinglePage() {
-  const location = useLocation();
+  const { propertyurl } = useParams();
   const navigate = useNavigate();
-  const { id: RowID, ltg_type: TypeGet } = location.state || {};
   const [open, setOpen] = useState(false);
-
   const [properties, setProperties] = useState([]);
   const [singlePageData, setSinglePageData] = useState([]);
   const [similarProperties, setSimilarProperties] = useState([]);
@@ -24,26 +22,23 @@ function SinglePage() {
   const [brochureData, setBrochureData] = useState([]);
 
   useEffect(() => {
-    if (!RowID || !TypeGet) {
-      navigate('/Property');
+    if (!propertyurl) {
+      navigate("/Property");
       return;
     }
-    getPropertiesData();
-    getSinglepropertiesData(RowID, TypeGet);
-    singlePageImg(RowID);
-    getBrochureData(RowID);
-  }, [RowID, TypeGet, navigate]);
+    fetchData();
+  }, [propertyurl, navigate]);
 
   useEffect(() => {
     if (properties.length && singlePageData.length) {
       const matchedType = singlePageData[0]?.ltg_type;
       const matchedCategory = singlePageData[0]?.ltg_categories;
-      const matchedRowID = singlePageData[0]?.RowID;
+      const matchedPropertyUrl = singlePageData[0]?.propertyurl;
 
       const similar = properties.filter(property =>
         property.ltg_type === matchedType &&
         property.ltg_categories === matchedCategory &&
-        property.RowID !== matchedRowID
+        property.propertyurl !== matchedPropertyUrl
       );
       setSimilarProperties(similar);
     }
@@ -84,26 +79,42 @@ function SinglePage() {
     try {
       const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
       if (response.data.status === "success") {
-        const filteredData = response.data.data?.filter(item => item.type !== 'Brochure');
-        setSinglePageImgData(filteredData);
+        const imgData = response.data.data?.filter(item => item.type !== 'Brochure');
+        setSinglePageImgData(imgData);
+        const brochureData = response.data.data?.filter(item => item.type === 'Brochure');
+        setBrochureData(brochureData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getBrochureData = async (RowID) => {
+  const fetchData = async () => {
     try {
-      const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
-      if (response.data.status === "success") {
-        const brochureData = response.data.data?.filter(item => item.type === 'Brochure');
+      const [allPropertiesResponse, singlePageResponse, imgResponse] = await Promise.all([
+        httpCommon.get("/list"),
+        httpCommon.get(`/list/singleProperty/${propertyurl}`),
+        httpCommon.get(`/list/singlePageImg/${propertyurl}`),
+      ]);
+
+      if (allPropertiesResponse.data.status === "success") {
+        setProperties(allPropertiesResponse.data.data);
+      }
+      if (singlePageResponse.data.status === "success") {
+        setSinglePageData(singlePageResponse.data.data);
+      }
+      if (imgResponse.data.status === "success") {
+        const filteredData = imgResponse.data.data?.filter(item => item.type !== "Brochure");
+        setSinglePageImgData(filteredData);
+      }
+      if (imgResponse.data.status === "success") {
+        const brochureData = imgResponse.data.data?.filter(item => item.type === "Brochure");
         setBrochureData(brochureData);
       }
     } catch (error) {
-      console.error("Error fetching brochure data:", error);
+      console.error("Error fetching data:", error);
     }
   };
-
 
   function formatPrice(price, onlyFormatted = false) {
     if (price == null) {
@@ -363,9 +374,9 @@ function SinglePage() {
       </section>
 
       {/* InquiryForm Section */}
-      <section className="mt-10">
+      {/* <section className="mt-10">
         <InquiryForm propertyId={RowID} listingType={TypeGet} item={singlePageData} />
-      </section>
+      </section> */}
 
       {/* Social Section */}
       <Social />

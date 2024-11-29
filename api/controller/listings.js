@@ -18,9 +18,10 @@ const addListings = async (req, res) => {
 
   const q =
     `INSERT INTO ltg_mst
-    (ltg_title, ltg_projectName, ltg_owner, ltg_type, ltg_mark_as_featured, ltg_regions, ltg_categories, ltg_labels, ltg_audit_user, ltg_create_date, ltg_update_date)
+    (ltg_title, propertyUrl, ltg_projectName, ltg_owner, ltg_type, ltg_mark_as_featured, ltg_regions, ltg_categories, ltg_labels, ltg_audit_user, ltg_create_date, ltg_update_date)
     VALUES
     ('${req.body.title}',
+    '${req.body.propertyUrl}',
     '${req.body.projectName}',
     '${req.body.selectedOwner}', 
     '${req.body.listingType}', 
@@ -421,6 +422,7 @@ const updateListItem = async (req, res) => {
     `UPDATE ltg_mst 
     SET
       ltg_title = '${req.body.title}',
+      propertyUrl = '${req.body.propertyUrl}',
       ltg_projectName = '${req.body.projectName}',
       ltg_owner = '${req.body.selectedOwner}',
       ltg_type = '${req.body.listingType}',
@@ -790,6 +792,7 @@ SET
 
 };
 
+// get all list items
 const getListItem = async (req, res) => {
   try {
     const mstQuery = `
@@ -884,6 +887,41 @@ const getListItem = async (req, res) => {
   } catch (error) {
     console.error('Error fetching all listing records:', error);
     return res.status(500).json({ message: 'Internal server error, Error fetching all listing records', status: 'error' });
+  }
+};
+
+// Check if propertyUrl or title exists
+const checkPropertyExists = async (req, res) => {
+  const { propertyUrl, title } = req.query;
+
+  if (!propertyUrl && !title) {
+    return res.status(400).json({
+      message: "Either 'propertyUrl' or 'title' must be provided.",
+      status: 'error'
+    });
+  }
+
+  try {
+    const checkQuery = `
+      SELECT 1 
+      FROM ltg_mst 
+      WHERE propertyUrl = ? OR ltg_title = ? 
+      LIMIT 1;
+    `;
+    const [results] = await db.query(checkQuery, [propertyUrl, title]);
+    const exists = results.length > 0;
+
+    return res.status(200).json({
+      exists,
+      message: exists ? 'Property exists' : 'Property does not exist',
+      status: 'success'
+    });
+  } catch (error) {
+    console.error('Error checking property existence:', error);
+    return res.status(500).json({
+      message: 'Internal server error, unable to check property existence',
+      status: 'error'
+    });
   }
 };
 
@@ -1150,26 +1188,49 @@ const getAllImages = async (req, res) => {
   }
 };
 
-// get all images by listingID
 const getsinglePageImg = async (req, res) => {
-  const { listingID } = req.params;
-
-  const query = `
-    SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
-  `;
+  const { propertyUrl } = req.params;
 
   try {
-    const [results] = await db.query(query, [listingID]);
+    // Step 1: Fetch RowID from ltg_mst using propertyUrl
+    const fetchRowIDQuery = `
+      SELECT RowID FROM ltg_mst WHERE propertyUrl = ?
+    `;
+    const [rowIDResults] = await db.query(fetchRowIDQuery, [propertyUrl]);
 
-    if (results.length === 0) {
-      res.status(404).json({ message: "No properties found", status: "not_found" });
-      return;
+    if (rowIDResults.length === 0) {
+      return res.status(404).json({
+        message: "Property URL not found",
+        status: "not_found"
+      });
     }
 
-    res.json({ data: results, message: "Properties Image fetched successfully", status: "success" });
+    const { RowID: listingID } = rowIDResults[0];
+
+    // Step 2: Fetch images from ltg_ref using the retrieved RowID
+    const fetchImagesQuery = `
+      SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
+    `;
+    const [imageResults] = await db.query(fetchImagesQuery, [listingID]);
+
+    if (imageResults.length === 0) {
+      return res.status(404).json({
+        message: "No properties found",
+        status: "not_found"
+      });
+    }
+
+    res.json({
+      data: imageResults,
+      message: "Properties Image fetched successfully",
+      status: "success"
+    });
   } catch (error) {
     console.error("Error fetching properties:", error.stack);
-    res.status(500).json({ message: "Error fetching properties", status: "error" });
+    res.status(500).json({
+      message: "Error fetching properties",
+      status: "error"
+    });
   }
 };
 
@@ -1449,10 +1510,96 @@ const updateListImage = (req, res) => {
   });
 };
 
+// Get SingleList Item by Property URL
+const getListItemByPropertyUrl = async (req, res) => {
+  console.log("url started");
+  const { propertyUrl } = req.params;
+  console.log("Received propertyUrl:", propertyUrl);
+
+  try {
+    // Step 1: Fetch the ltg_type from ltg_mst based on propertyUrl
+    const typeQuery = `
+      SELECT ltg_type, RowID
+      FROM ltg_mst
+      WHERE propertyurl = ?;
+    `;
+    const [typeResults] = await db.query(typeQuery, [propertyUrl]);
+
+    if (typeResults.length === 0) {
+      return res.status(404).json({ message: 'Property URL not found', status: 'error' });
+    }
+
+    const { ltg_type: type, RowID: listingID } = typeResults[0];
+
+    // Determine the details table based on type
+    let detailsTable;
+    switch (type) {
+      case 'Plots':
+        detailsTable = 'ltg_det_plots';
+        break;
+      case 'RowHouses':
+        detailsTable = 'ltg_det_row_houses';
+        break;
+      case 'Villaments':
+        detailsTable = 'ltg_det_villaments';
+        break;
+      case 'CommercialProperties':
+        detailsTable = 'ltg_det_commercial_properties';
+        break;
+      case 'PentHouses':
+        detailsTable = 'ltg_det_penthouses';
+        break;
+      default:
+        detailsTable = 'ltg_det';
+    }
+
+    console.log("detailsTable", detailsTable);
+
+    // Step 2: Fetch detailed data using the RowID
+    const detailQuery = `
+      SELECT
+        ltg_mst.*,
+        ltg_det.*,
+        ltg_ref.file_names,
+        ltg_ref.audit_user,
+        ltg_ref.audit_date
+      FROM
+        ltg_mst
+      LEFT JOIN
+        ${detailsTable} AS ltg_det ON ltg_mst.RowID = ltg_det.ltg_det_mstRowID
+      LEFT JOIN (
+        SELECT
+          ltg_mstRowID,
+          GROUP_CONCAT(file_name ORDER BY file_name ASC SEPARATOR ', ') AS file_names,
+          audit_user,
+          MAX(audit_date) AS audit_date
+        FROM
+          asset_makers.ltg_ref
+        GROUP BY
+          ltg_mstRowID, audit_user
+      ) AS ltg_ref ON ltg_mst.RowID = ltg_ref.ltg_mstRowID
+      WHERE
+        ltg_mst.RowID = ?;
+    `;
+    const [detailResults] = await db.query(detailQuery, [listingID]);
+
+    if (detailResults.length > 0) {
+      res.json({ data: detailResults, message: "Data fetched successfully", status: "success" });
+    } else {
+      res.status(404).json({ message: 'Details not found for the provided Property URL', status: 'error' });
+    }
+  } catch (error) {
+    console.error("Error fetching data by Property URL: " + error.stack);
+    res.status(500).json({ message: "Error fetching data", status: "error" });
+  }
+};
+
 module.exports = {
   addListings,
   getListItem,
+  checkPropertyExists,
   getListingbyType,
+  getListItemByPropertyUrl,
   updateListItem,
   deleteListItem,
   uploadListItem,

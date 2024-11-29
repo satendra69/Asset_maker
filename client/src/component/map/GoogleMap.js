@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import { FaDirections } from "react-icons/fa";
 
@@ -44,18 +44,10 @@ const containerStyle = {
     position: "relative",
 };
 
-const responsiveStyle = `
-    @media (max-width: 768px) {
-        .address-card {
-            top: 5px;
-            left: 5px;
-            width: 95%;
-            padding: 10px;
-        }
-    }
-`;
-
 function Map({ googleMapsApiKey, lat, lng, address }) {
+    const [isApiLoaded, setIsApiLoaded] = useState(false);
+    const [hasError, setHasError] = useState(false);
+
     const parsedLat = parseFloat(lat);
     const parsedLng = parseFloat(lng);
 
@@ -66,40 +58,61 @@ function Map({ googleMapsApiKey, lat, lng, address }) {
 
     const getDirectionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${parsedLat},${parsedLng}`;
 
-    return (
-        <LoadScript
-            googleMapsApiKey={googleMapsApiKey}
-            // onLoad={() => console.log('Google Maps API loaded successfully')}
-            onError={(error) => console.error('Error loading Google Maps API', error)}
-        >
-            <div style={containerStyle}>
-                {/* Address Card */}
-                <div className="address-card" style={cardStyle}>
-                    <div style={addressStyle}>
-                        <strong>{address}</strong>
-                    </div>
-                    <a
-                        href={getDirectionsUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                    >
-                        <button style={buttonStyle}>
-                            <FaDirections style={{ marginRight: "8px" }} />
-                            Directions
-                        </button>
-                    </a>
-                </div>
+    const handleApiLoad = () => {
+        // console.log('Google Maps API loaded successfully');
+        setIsApiLoaded(true);
+        setHasError(false);
+    };
 
-                {/* Google Map */}
-                <GoogleMap
-                    mapContainerStyle={{ width: "100%", height: "100%" }}
-                    center={center}
-                    zoom={12}
-                >
-                    {lat && lng && <Marker position={center} />}
-                </GoogleMap>
-            </div>
-        </LoadScript>
+    const handleApiError = (error) => {
+        console.error('Error loading Google Maps API', error);
+        setHasError(true);
+        setIsApiLoaded(false);
+    };
+
+    return (
+        <div style={containerStyle}>
+            <LoadScript
+                googleMapsApiKey={googleMapsApiKey}
+                onLoad={handleApiLoad}
+                onError={handleApiError}
+            >
+                {/* Show loading or error message */}
+                {!isApiLoaded && !hasError && <div>Loading map...</div>}
+                {hasError && <div>Error loading map. Please try again later.</div>}
+
+                {/* Google Map and Address Card */}
+                {isApiLoaded && !hasError && (
+                    <div>
+                        <div className="address-card" style={cardStyle}>
+                            <div style={addressStyle}>
+                                <strong>{address}</strong>
+                            </div>
+                            <a
+                                href={getDirectionsUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                <button style={buttonStyle}>
+                                    <FaDirections style={{ marginRight: "8px" }} />
+                                    Directions
+                                </button>
+                            </a>
+                        </div>
+
+                        {/* Google Map */}
+                        <GoogleMap
+                            mapContainerStyle={{ width: "100%", height: "400px" }}
+                            center={center}
+                            zoom={12}
+                        >
+                            {lat && lng && <Marker position={center} />}
+                        </GoogleMap>
+
+                    </div>
+                )}
+            </LoadScript>
+        </div>
     );
 }
 
