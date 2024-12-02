@@ -21,7 +21,7 @@ var app = express();
 
 // Configure CORS
 const corsOptions = {
-  origin: ["http://142.93.213.221:8004", "http://localhost:3000"],
+  origin: ["http://142.93.213.221:8004", "http://localhost:3000", "http://assetmakers.com"],
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,

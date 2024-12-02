@@ -1,11 +1,10 @@
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from "react-router-dom";
 import { EditorState, convertToRaw, ContentState, convertFromHTML } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import draftToHtml from 'draftjs-to-html';
-//import { stateFromHTML } from 'draft-js-import-html';
 import { toast } from 'sonner';
 import MapGoogle from "./MapGoogle";
 import inwords from './toIndianNumberingWords';
@@ -15,10 +14,8 @@ import httpCommon from "../../../../http-common";
 import Select from "react-select";
 
 function ApartmentModule({ action, onDataUpdate }) {
-
   const { listingId } = useParams();
   const navigate = useNavigate();
-
   const [salePrice, setSalePrice] = useState("");
   const [displaySalePrice, setDisplaySalePrice] = useState("");
   const [salePriceWords, setSalePriceWords] = useState("");
@@ -101,7 +98,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     masterPlan: [],
     floorAreaPlan: []
   });
-
   const [deletedFiles, setDeletedFiles] = useState({
     brochure: [],
   });
@@ -111,22 +107,17 @@ function ApartmentModule({ action, onDataUpdate }) {
       const response = await httpCommon.get(`/list/listItem/${listingId}`);
       const listingData = response.data.data[0];
 
-      // Fetch images and brochures
       if (response.data.status === "success" && action !== 'clone') {
-        // console.log("cloning");
         try {
           const imgResponse = await httpCommon.get(`/list/singlePageImg/${listingData.propertyUrl}`);
           if (imgResponse.data.status === "success") {
             const imageData = imgResponse.data.data;
-
-            // Separate images and brochure data
             const mainImageData = imageData?.filter(item => item.type === "Main");
             const galleryData = imageData?.filter(item => item.type === "Gallery");
             const masterPlanData = imageData?.filter(item => item.type === "MasterPlan");
             const floorAreaPlanData = imageData?.filter(item => item.type === "FloorAreaPlan");
             const brochureData = imageData?.filter(item => item.type === "Brochure");
 
-            // Set images and brochures
             setStoredMainImage(mainImageData);
             setStoredGalleryImages(galleryData);
             setStoredMasterPlanImages(masterPlanData);
@@ -134,7 +125,6 @@ function ApartmentModule({ action, onDataUpdate }) {
             setStoredBrochure(brochureData);
           } else {
             console.error("Error fetching image data: Response status not successful");
-            // Handle the non-success status appropriately here
           }
         } catch (error) {
           console.error("Error fetching image data:", error);
@@ -196,9 +186,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }
   };
 
-  // console.log("storedMainImage", storedMainImage); // Log the storedMainImage
-
-  // format number to en-IN
   const formatNumber = (number) => {
     if (!number) return "";
     return new Intl.NumberFormat('en-IN').format(number);
@@ -333,7 +320,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }
   };
 
-  // Function to open modal with selected image index
   const openMainImageModal = (index) => {
     setSelectedMainImageIndex(index);
   };
@@ -350,7 +336,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     setSelectedFloorAreaPlanImageIndex(index);
   };
 
-  // Function to close modal
   const closeImageModal = () => {
     setSelectedMainImageIndex(null);
     setSelectedGalleryImageIndex(null);
@@ -369,7 +354,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }
   };
 
-  // Function for deleting stored gallery images
   const handleDeleteStoredGalleryImages = () => {
     setStoredGalleryImages([]);
     setDeletedImages(prevState => ({
@@ -378,7 +362,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-  // Function for deleting uploaded gallery images
   const handleDeleteUploadedGalleryImages = () => {
     setGalleryImages([]);
     setDeletedImages(prevState => ({
@@ -387,7 +370,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-  // Function to handle confirmation of deletion
   const confirmMasterPlanDeletion = (type) => {
     const isConfirmed = window.confirm(`Are you sure you want to delete all ${type} master plan images?`);
     if (isConfirmed) {
@@ -399,7 +381,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }
   };
 
-  // Function for deleting stored master plan images
   const handleDeleteStoredMasterPlanImages = () => {
     setStoredMasterPlanImages([]);
     setDeletedImages(prevState => ({
@@ -408,7 +389,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-  // Function for deleting uploaded master plan images
   const handleDeleteUploadedMasterPlanImages = () => {
     setMasterPlanImages([]);
     setDeletedImages(prevState => ({
@@ -417,7 +397,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-  // Function to handle confirmation of deletion
   const confirmFloorAreaPlanDeletion = (type) => {
     const isConfirmed = window.confirm(`Are you sure you want to delete all ${type} floor plan images?`);
     if (isConfirmed) {
@@ -429,7 +408,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }
   };
 
-  // Function for deleting stored floor plan images
   const handleDeleteStoredFloorAreaPlanImages = () => {
     setStoredFloorAreaPlanImages([]);
     setDeletedImages(prevState => ({
@@ -438,7 +416,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-  // Function for deleting uploaded floor plan images
   const handleDeleteUploadedFloorAreaPlanImages = () => {
     setFloorAreaPlanImages([]);
     setDeletedImages(prevState => ({
@@ -447,13 +424,10 @@ function ApartmentModule({ action, onDataUpdate }) {
     }));
   };
 
-
-  // Function to handle drag over
   const handleDragOver = (e) => {
     e.preventDefault();
   };
 
-  // Function to handle drop
   const handleDrop = (e, setFunction) => {
     e.preventDefault();
     const files = Array.from(e.dataTransfer.files);
@@ -498,7 +472,6 @@ function ApartmentModule({ action, onDataUpdate }) {
 
   const advantagesAsString = otherAdvantages?.join(', ');
 
-  // List of amenities
   const amenityCategories = {
     "Basic Amenities": [
       "24 Hrs Backup",
@@ -567,7 +540,6 @@ function ApartmentModule({ action, onDataUpdate }) {
     ],
   };
 
-  // Function to handle selection of amenities
   const handleAmenitySelection = (e) => {
     const amenity = e.target.value;
     setSelectedAmenities((prev) =>
@@ -577,19 +549,15 @@ function ApartmentModule({ action, onDataUpdate }) {
     );
   };
 
-  // Check if all basic amenities are selected
   const areAllBasicAmenitiesSelected = amenityCategories[
     "Basic Amenities"
   ].every((amenity) => selectedAmenities.includes(amenity));
 
-  // Handle "Select All" for Basic Amenities
   const toggleBasicAmenities = (e) => {
     const basicAmenities = amenityCategories["Basic Amenities"];
     if (e.target.checked) {
-      // Select all basic amenities if not already selected
       setSelectedAmenities((prev) => [...new Set([...prev, ...basicAmenities])]);
     } else {
-      // Remove all basic amenities from the selection
       setSelectedAmenities((prev) =>
         prev.filter((item) => !basicAmenities.includes(item))
       );
@@ -611,10 +579,8 @@ function ApartmentModule({ action, onDataUpdate }) {
 
   const handlePositionChange = (position) => {
     setLocationData(position);
-    // console.log('Initial Position:', position);
   };
 
-  // Call the handleDataUpdate function
   const handleDataUpdate = () => {
     const combinedImages = {
       mainImage,
@@ -670,10 +636,8 @@ function ApartmentModule({ action, onDataUpdate }) {
       type: propertyType,
     };
     onDataUpdate(data);
-    // console.log("Data to be passed to onDataUpdate:", data);
   };
 
-  // fetch property
   useEffect(() => {
     if (listingId) {
       if (action !== 'clone') {
@@ -719,7 +683,7 @@ function ApartmentModule({ action, onDataUpdate }) {
         {/* Price Section */}
         <hr className="my-8 border-gray-400" />
         <h2 className="text-xl font-semibold">Price</h2>
-        <div className="flex flex-wrap items-start mt-4"> {/* Use items-start to align items at the top */}
+        <div className="flex flex-wrap items-start mt-4">
           {/* Sale Price */}
           <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label htmlFor="salePrice" className="block text-sm font-semibold leading-6 text-gray-900">
