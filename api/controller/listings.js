@@ -1205,6 +1205,7 @@ const getsinglePageImg = async (req, res) => {
       });
     }
 
+    console.log("rowIDResults", rowIDResults);
     const { RowID: listingID } = rowIDResults[0];
 
     // Step 2: Fetch images from ltg_ref using the retrieved RowID
@@ -1552,8 +1553,6 @@ const getListItemByPropertyUrl = async (req, res) => {
       default:
         detailsTable = 'ltg_det';
     }
-
-    console.log("detailsTable", detailsTable);
 
     // Step 2: Fetch detailed data using the RowID
     const detailQuery = `

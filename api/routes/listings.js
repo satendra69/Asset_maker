@@ -3,7 +3,6 @@ const {
   addListings,
   getListItem,
   checkPropertyExists,
-  getListingbyType,
   getListItemByPropertyUrl,
   updateListItem,
   deleteListItem,
@@ -15,47 +14,31 @@ const {
   deleteImagesByRowID,
   deleteBrochureFile,
 } = require("../controller/listings");
-const verifyToken = require("../middleware/jwt");
 
+const verifyToken = require("../middleware/jwt");
 const { upload, addWatermark } = require("../middleware/multer.js");
+
 var router = express.Router();
 
-/* get listing */
+/* Listings Routes */
 router.get("/", getListItem);
-
-router.get("/checkProperty", checkPropertyExists);
-
-/* get listing by type */
-router.get("/listing/:type", getListingbyType);
-
-/* post listing */
 router.post("/", addListings);
-
-// get all images
-router.get("/images", getAllImages);
-
-/* delete images by RowID */
-router.delete("/images/:RowID", deleteImagesByRowID);
-
-/* delete files by RowID */
-router.delete("/files/:RowID", deleteBrochureFile);
-
-/* get listItem */
 router.get("/listItem/:listingID", getListItemId);
-router.get('/property/:id', getPropertyItemId);
-router.get("/getlistItem/:listingID/:type", getListItemId);
+router.patch("/listItem/:listingID", updateListItem);
+router.delete("/delete/:listingID", verifyToken, deleteListItem);
 
-// get listItem using propertyUrl
+/* Property Routes */
+router.get("/checkProperty", checkPropertyExists);
+router.get('/property/:id', getPropertyItemId);
 router.get("/singleProperty/:propertyUrl", getListItemByPropertyUrl);
 
-// get All img by listing id
+/* Image Routes */
+router.get("/images", getAllImages);
 router.get("/singlePageImg/:propertyUrl", getsinglePageImg);
+router.delete("/images/:RowID", deleteImagesByRowID);
 
-/* update listItem */
-router.patch("/listItem/:listingID", updateListItem);
-
-/* delete listItem */
-router.delete("/delete/:listingID", verifyToken, deleteListItem);
+/* File Routes */
+router.delete("/files/:RowID", deleteBrochureFile);
 
 /* upload images and files */
 router.post('/upload/:listingID', upload.array('attachments'), addWatermark, (req, res) => {

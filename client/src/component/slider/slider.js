@@ -208,14 +208,16 @@ function Slider({ images }) {
       )}
 
       <div className="flex-1">
-        {mainImage && mainImage.length > 0 && mainImage[0].attachment && (
-          <img
-            src={httpCommon.defaults.baseURL + mainImage[0].attachment}
-            alt=""
-            onClick={() => setImageIndex(0)}
-            className="object-contain w-full h-full transition-transform transform rounded-lg shadow-lg cursor-pointer hover:scale-105"
-          />
-        )}
+        <img
+          src={
+            mainImage && mainImage.length > 0 && mainImage[0].attachment
+              ? httpCommon.defaults.baseURL + mainImage[0].attachment
+              : httpCommon.defaults.baseURL + "\\images\\defaultasset.jpg"
+          }
+          alt="Main"
+          onClick={() => mainImage && mainImage.length > 0 && setImageIndex(0)}
+          className="object-contain w-full h-full transition-transform transform rounded-lg shadow-lg cursor-pointer hover:scale-105"
+        />
       </div>
 
       <div className="flex flex-col overflow-hidden md:flex-row md:max-h-full">

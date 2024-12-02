@@ -118,7 +118,7 @@ function PentModule({ action, onDataUpdate }) {
   // fetch property
   const fetchProperty = async (listingId, action) => {
     try {
-      const response = await httpCommon.get(`/list/getlistItem/${listingId}/${propertyType}`);
+      const response = await httpCommon.get(`/list/listItem/${listingId}`);
       const listingData = response.data.data[0];
       console.log("listingData", listingData);
 

@@ -91,28 +91,40 @@ function SinglePage() {
 
   const fetchData = async () => {
     try {
-      const [allPropertiesResponse, singlePageResponse, imgResponse] = await Promise.all([
+      // Fetch properties and single property data concurrently
+      const [allPropertiesResponse, singlePageResponse] = await Promise.all([
         httpCommon.get("/list"),
-        httpCommon.get(`/list/singleProperty/${propertyurl}`),
-        httpCommon.get(`/list/singlePageImg/${propertyurl}`),
+        httpCommon.get(`/list/singleProperty/${propertyurl}`)
       ]);
 
+      // Process properties data
       if (allPropertiesResponse.data.status === "success") {
         setProperties(allPropertiesResponse.data.data);
       }
+
+      // Process single property data
       if (singlePageResponse.data.status === "success") {
         setSinglePageData(singlePageResponse.data.data);
       }
-      if (imgResponse.data.status === "success") {
-        const filteredData = imgResponse.data.data?.filter(item => item.type !== "Brochure");
-        setSinglePageImgData(filteredData);
-      }
-      if (imgResponse.data.status === "success") {
-        const brochureData = imgResponse.data.data?.filter(item => item.type === "Brochure");
-        setBrochureData(brochureData);
+
+      // Fetch single page image data separately with a try-catch for fallback
+      try {
+        const imgResponse = await httpCommon.get(`/list/singlePageImg/${propertyurl}`);
+        if (imgResponse.data.status === "success") {
+          const filteredData = imgResponse.data.data?.filter(item => item.type !== "Brochure");
+          setSinglePageImgData(filteredData);
+
+          const brochureData = imgResponse.data.data?.filter(item => item.type === "Brochure");
+          setBrochureData(brochureData);
+        }
+      } catch (imgError) {
+        console.warn("Failed to fetch single page image data:", imgError.message);
+        // Leave singlePageImgData and brochureData as their default empty state
+        setSinglePageImgData([]);
+        setBrochureData([]);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      console.error("Error fetching data:", error.message);
     }
   };
 
