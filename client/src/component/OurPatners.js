@@ -3,22 +3,9 @@ import Container from "../component/Container";
 import React from "react";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import c1 from "../public/220px-Brigade_Group_Official_Logo-150x150.jpeg";
-import c2 from "../public/925597855s-150x150.png";
-import c3 from "../public/dlf-g1-150x150.jpg";
-import c4 from "../public/Embassy_Group_Logo-150x150.png";
-import c5 from "../public/Godrej-Logo-Design-150x150.jpg";
-import c6 from "../public/hirajan152021lkjghty_pAPYvXO-150x150.jpg";
-import c7 from "../public/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png";
-import c8 from "../public/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png";
-import { FaSellsy } from "react-icons/fa6";
-import { MdAddHome } from "react-icons/md";
-import { IoMdHappy } from "react-icons/io";
-import { FaRegHandshake } from "react-icons/fa";
 
 const responsive = {
   superLargeDesktop: {
-    // the naming can be any, depends on you.
     breakpoint: { max: 4000, min: 3000 },
     items: 6,
   },
@@ -37,34 +24,34 @@ const responsive = {
 };
 const data = [
   {
-    img: c1,
+    img: "/220px-Brigade_Group_Official_Logo-150x150.jpeg",
   },
   {
-    img: c2,
+    img: "/sattvaLogo.jpg",
   },
   {
-    img: c3,
+    img: "/dlf-g1-150x150.jpg",
   },
   {
-    img: c4,
+    img: "/Embassy_Group_Logo-150x150.png",
   },
   {
-    img: c5,
+    img: "/Godrej-Logo-Design-150x150.jpg",
   },
   {
-    img: c6,
+    img: "/hirajan152021lkjghty_pAPYvXO-150x150.jpg",
   },
   {
-    img: c7,
+    img: "/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png",
   },
   {
-    img: c8,
+    img: "/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png",
   },
 ];
 
 function Patners() {
   return (
-    <section className="clients bg-white -mt-5 padingm ">
+    <section className="-mt-5 bg-white clients padingm ">
       <Container className={" md:py-20 space-y-5"}>
         <h2>Featured Builders In India</h2>
         <p>The most reputed builders in India</p>
@@ -73,7 +60,7 @@ function Patners() {
           swipeable={true}
           draggable={true}
           responsive={responsive}
-          ssr={true} // means to render carousel on server-side.
+          ssr={true}
           infinite={true}
           autoPlay={true}
           autoPlaySpeed={2000}
@@ -84,24 +71,24 @@ function Patners() {
           removeArrowOnDeviceType={["tablet", "mobile"]}
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-50-px"
-          className="py-10 z-10"
+          className="z-10 py-10"
         >
           {data.map((item) => (
             <div
-              className="card space-y-5 ml-5 p-4 shadow-inner  bg-white rounded-md"
+              className="p-4 ml-5 space-y-5 bg-white rounded-md shadow-inner card"
               key={item.id}
             >
-              <img src={item.img} />
+              <img src={item.img} alt="partners" />
               <p>{item.message}</p>
             </div>
           ))}
         </Carousel>
       </Container>
       {/* required */}
-      {/* <section className="footerPatner  bg-black ">
+      {/* <section className="bg-black footerPatner ">
         <Container className={"py-20 flex items-center justify-between"}>
-          <div className="left space-y-5 w-1/2">
-            <h2 className="text-white font-bold text-4xl whitespace-nowrap">
+          <div className="w-1/2 space-y-5 left">
+            <h2 className="text-4xl font-bold text-white whitespace-nowrap">
               More than 10 Years of Experience
             </h2>
             <hr className="w-20 h-1 bg-blue-600" />
@@ -111,29 +98,29 @@ function Patners() {
               put you a step closer to your dream home.
             </p>
           </div>
-          <div className="right grid md:grid-cols-2 grid-cols-1 gap-7">
-            <div className="1 flex items-center gap-5">
+          <div className="grid grid-cols-1 right md:grid-cols-2 gap-7">
+            <div className="flex items-center gap-5 1">
               <FaSellsy className="text-white" size={42} />
               <div>
                 <h2 className="price">2000 +</h2>
                 <p className="description">Properties Sold</p>
               </div>
             </div>
-            <div className="2 flex items-center gap-5">
+            <div className="flex items-center gap-5 2">
               <MdAddHome className="text-white" size={42} />
               <div>
                 <h2 className="price">80 +</h2>
                 <p className="description">Projects Handled</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <IoMdHappy className="text-white" size={42} />
               <div>
                 <h2 className="price">400 +</h2>
                 <p className="description">NRI Clientele Served</p>
               </div>
             </div>
-            <div className="3 flex items-center gap-5">
+            <div className="flex items-center gap-5 3">
               <FaRegHandshake className="text-white" size={42} />
               <div>
                 <h2 className="price">150 +</h2>

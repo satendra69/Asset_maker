@@ -216,14 +216,14 @@ function Hero() {
 
   return (
     <>
-      <section className="relative h-5 bg-white featured-listings padingm">
-        <Container>
+      <section className="relative bg-white featured-listings padingm">
+        <div className="max-w-4xl mx-auto">
           <Lottie
             animationData={cloufLottie}
             loop={true}
             className="absolute top-0 left-0 right-0"
           />
-        </Container>
+        </div>
       </section>
 
       <section className="relative featured-listings">
@@ -297,9 +297,9 @@ function Hero() {
           <div className="items-center collection md:flex md:gap-5">
             {['Bengaluru', 'Hyderabad', 'Tirupati'].map((region, index) => {
               const imageSrcMap = {
-                Bengaluru: "https://images.moneycontrol.com/static-mcnews/2023/10/BeFunky-collage-2023-10-19T142541.707.jpg",
-                Hyderabad: "https://qph.cf2.quoracdn.net/main-qimg-761eda8931ce2b553ae7618ae8424087.webp",
-                Tirupati: "https://homebazaar-blog.s3.ap-south-1.amazonaws.com/knowledge/wp-content/uploads/2023/05/11104405/FeatureImage_Top-10-Cheapest-Cities-In-India-20231-732x375.jpg"
+                Bengaluru: "/BeFunky-collage-2023-10-19T142541.707.jpg",
+                Hyderabad: "/mumbai_tall_buildings.jpg",
+                Tirupati: "/FeatureImage_Top-10-Cheapest-Cities-In-India-20231-732x375.jpg"
               };
 
               const capitalizedRegion = region.charAt(0).toUpperCase() + region.slice(1);

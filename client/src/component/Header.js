@@ -47,6 +47,7 @@ function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [active, setActive] = useState(false);
   const [profile, setProfile] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const cityDropdownRef = useRef(null);
   const propDropdownRef = useRef(null);
@@ -118,6 +119,10 @@ function Header() {
   const handleProfileDropdownClick = (e) => {
     e.stopPropagation();
     setProfile(!profile)
+  };
+
+  const toggleMenu = () => {
+    setIsMenuVisible((prev) => !prev);
   };
 
   // Logout
@@ -312,105 +317,181 @@ function Header() {
           initial={false}
           animate={menuOpen ? "open" : "closed"}
           variants={variants}
-          className={`absolute top-20 right-0  w-3/5 sm:hidden  bg-[#F7F7F8]  text-slate-900 p-4 rounded-l-3xl  `}
+          className={`absolute top-20 right-0 w-3/5 sm:hidden bg-[#F7F7F8] text-slate-900 p-4 rounded-l-3xl`}
         >
           <ul className="space-y-4">
             <li>
-              <Link to={"/"} className="hover:underline" onClick={() => setMenuOpen(false)}>
+              <Link
+                to={"/"}
+                className="hover:underline"
+                onClick={() => setMenuOpen(false)}
+              >
                 HOME
               </Link>
             </li>
             <li>
-              <Link to={"/about-us"} className="hover:underline" onClick={() => setMenuOpen(false)}>
+              <Link
+                to={"/about-us"}
+                className="hover:underline"
+                onClick={() => setMenuOpen(false)}
+              >
                 ABOUT US
               </Link>
             </li>
             <li>
-              <Link to={"/contact-us"} className="hover:underline" onClick={() => setMenuOpen(false)}>
+              <Link
+                to={"/contact-us"}
+                className="hover:underline"
+                onClick={() => setMenuOpen(false)}
+              >
                 CONTACT US
               </Link>
             </li>
             <li>
               <button
-                onClick={toggleCityDropdown}
+                onClick={() => {
+                  toggleCityDropdown();
+                  setMenuOpen(true);
+                }}
                 className="flex items-center justify-between w-full hover:underline focus:outline-none"
               >
                 <span>CITIES</span> <AiFillCaretDown />
               </button>
               <div
-                className={`${cityOpenMobile ? "block" : "hidden"
-                  } transition-all text-left duration-1000 mt-2`}
+                className={`${cityOpenMobile ? "block" : "hidden"} mt-2`}
               >
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bengaluru")}>Bengaluru</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCityClick("Bengaluru");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Bengaluru
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCityClick("Hyderabad");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Hyderabad
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCityClick("Tirupati");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Tirupati
+                </p>
               </div>
             </li>
             <li>
               <button
-                onClick={togglePropDropdown}
+                onClick={() => {
+                  togglePropDropdown();
+                  setMenuOpen(true);
+                }}
                 className="flex items-center justify-between w-full hover:underline focus:outline-none"
               >
                 <span>PROPERTIES</span> <AiFillCaretDown />
               </button>
               <div
-                className={`${propOpenMobile ? "block" : "hidden"
-                  } transition-all text-left duration-1000 mt-2`}
+                className={`${propOpenMobile ? "block" : "hidden"} mt-2`}
               >
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Apartments")}>Apartments</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villas")}>Villas</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Plots")}>Plots</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("RowHouses")}>Row Houses</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("Villaments")}>Villaments</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("CommercialProperties")}>Commercial Properties</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCategoryClick("PentHouses")}>Pent Houses</p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("Apartments");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Apartments
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("Villas");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Villas
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("Plots");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Plots
+                </p>
               </div>
             </li>
             {currentUser ? (
-              <>
-                <li>
-                  <button
-                    onClick={() => setProfile(!profile)}
-                    className="flex items-center justify-between w-full hover:underline focus:outline-none"
-                  >
-                    <span>Profile</span> <AiFillCaretDown />
-                  </button>
-                  {profile && (
-                    <motion.div
-                      className={`${profile ? "block" : "hidden"} transition-all text-left duration-1000 mt-2`}
+              <li>
+                <button
+                  className="flex items-center justify-between w-full hover:underline focus:outline-none"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMenu();
+                  }}
+                >
+                  Profile
+                </button>
+                <motion.div
+                  className={`${isMenuVisible ? "block" : "hidden"} mt-2`}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {currentUser.admin === 1 && (
+                    <a
+                      href="/admin"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setMenuOpen(false);
+                      }}
                     >
-                      {currentUser.admin === 1 && (
-                        <a
-                          href="/admin"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                        >
-                          <MdOutlineAdminPanelSettings size={32} />
-                          Admin Panel
-                        </a>
-                      )}
-                      <div
-                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                        onClick={goToSavedList}
-                      >
-                        <CiSaveDown2 size={32} />
-                        Saved List
-                      </div>
-                      <button
-                        onClick={handleLogout}
-                        className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
-                      >
-                        <IoMdLogOut size={32} />
-                        Logout
-                      </button>
-                    </motion.div>
+                      <MdOutlineAdminPanelSettings size={32} />
+                      Admin Panel
+                    </a>
                   )}
-                </li>
-              </>
+                  <div
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      goToSavedList();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <CiSaveDown2 size={32} />
+                    Saved List
+                  </div>
+                  <button
+                    className="flex items-center gap-2 text-slate-900 whitespace-nowrap"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLogout();
+                      setMenuOpen(false);
+                    }}
+                  >
+                    <IoMdLogOut size={32} />
+                    Logout
+                  </button>
+                </motion.div>
+              </li>
             ) : (
               <li>
-                <Link to={"/sign-in"} className="hover:underline" onClick={() => setMenuOpen(false)}>
+                <Link
+                  to={"/sign-in"}
+                  className="hover:underline"
+                  onClick={() => setMenuOpen(false)}
+                >
                   <div className="flex items-center gap-2">
                     <span>Login/Register</span> <CiLogin size={26} />
                   </div>

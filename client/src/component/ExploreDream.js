@@ -16,7 +16,7 @@ function ExploreDream() {
         <div className="flex flex-wrap gap-5 mt-10 md:flex-nowrap">
           <div className="w-full pb-5 bg-white rounded-lg shadow-md card h-max md:w-60">
             <div className="w-full h-1/2">
-              <img src="/pp1.jpg" alt="pp2" className="object-cover h-full rounded-t-lg" />
+              <img src="/pp1.jpg" alt="pp2" className="object-cover w-full h-32 rounded-t-lg" />
             </div>
             <div className="p-3">
               <h4>Darlene Robertson</h4>
@@ -26,7 +26,7 @@ function ExploreDream() {
           </div>
           <div className="w-full pb-5 mt-5 bg-white rounded-lg shadow-md card h-max md:w-60 md:mt-0">
             <div className="w-full h-1/2">
-              <img src="/pp2.png" alt="pp2" className="object-cover h-full rounded-t-lg" />
+              <img src="/pp2.png" alt="pp2" className="object-cover w-full h-32 rounded-t-lg" />
             </div>
             <div className="p-3">
               <h4>Ethan Parker</h4>
@@ -36,7 +36,7 @@ function ExploreDream() {
           </div>
           <div className="w-full pb-5 mt-5 bg-white rounded-lg shadow-md card h-max md:w-60 md:mt-0">
             <div className="w-full h-1/2">
-              <img src="/pp3.jpg" alt="pp2" className="object-cover h-full rounded-t-lg" />
+              <img src="/pp3.jpg" alt="pp2" className="object-cover w-full h-32 rounded-t-lg" />
             </div>
             <div className="p-3">
               <h4>Liam Hayes</h4>
