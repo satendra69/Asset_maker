@@ -1,10 +1,16 @@
 import React from "react";
 
 function TopPropertyCard({ card }) {
- // console.log(card, "cafrd");
   return (
-    <div className="border h-80 rounded-md shadow-md relative overflow-hidden md:ml-3 ">
-      <img src={card.imgUrl} className="object-cover h-full w-full " />
+    <div className="relative overflow-hidden border rounded-md shadow-md h-80 md:ml-3 ">
+      <img
+        src={card.imgUrl}
+        className="object-cover w-full h-full"
+        alt="Property"
+        style={{
+          minHeight: "100%",
+        }}
+      />
     </div>
   );
 }

@@ -57,7 +57,7 @@ function TopCities() {
   return (
     <div>
       <Container className={"md:flex justify-between md:py-20 gap-5 padingm "}>
-        <div className="left space-y-5 mt-4">
+        <div className="mt-4 space-y-5 left">
           <h2>Properties In Top Cities</h2>
           <p>
             Find the home of your dreams at the finest cities of India with the
