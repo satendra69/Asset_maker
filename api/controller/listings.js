@@ -3,14 +3,6 @@ const moment = require("moment");
 const path = require('path');
 
 const addListings = async (req, res) => {
-
-  // const customLabels = JSON.stringify(req.body.CustomLabel);
-
-  // console.log("Request received:", req.method, req.url);
-  // console.log("Headers:", req.headers);
-  // console.log("Raw body:", req.body);
-
-  // Check if ListingData exists
   if (!req.body || !req.body.ListingData) {
     console.error("ListingData is not provided.");
     return res.status(400).json({ error: "ListingData is required." });
@@ -36,7 +28,6 @@ const addListings = async (req, res) => {
   try {
     const [results] = await db.query(q);
     const lastInsertId = results.insertId;
-    // Insert Data ltg_det
     if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
       const q_det =
         `INSERT INTO ltg_det
@@ -44,6 +35,7 @@ const addListings = async (req, res) => {
     ltg_det_mstRowID = '${lastInsertId}', 
     ltg_det_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_desc = '${req.body.ListingData.content}', 
     ltg_det_location = '${req.body.ListingData.locationData.location}',
     ltg_det_address = '${req.body.ListingData.locationData.address}', 
@@ -111,6 +103,7 @@ SET
     ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_plot_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_plot_desc = '${req.body.ListingData.content}', 
     ltg_det_plot_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_plot_address = '${req.body.ListingData.locationData.address}', 
@@ -161,6 +154,7 @@ SET
     ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_row_house_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
     ltg_det_row_house_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_row_house_address = '${req.body.ListingData.locationData.address}', 
@@ -206,7 +200,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 `;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det successfully");
@@ -223,6 +216,7 @@ SET
     ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_comm_prop_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
     ltg_det_comm_prop_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_comm_prop_address = '${req.body.ListingData.locationData.address}', 
@@ -262,7 +256,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 `;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det successfully");
@@ -279,6 +272,7 @@ SET
     ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_villaments_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
     ltg_det_villaments_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_villaments_address = '${req.body.ListingData.locationData.address}', 
@@ -340,6 +334,7 @@ SET
     ltg_det_mstRowID = '${lastInsertId}',
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_penthouses_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
     ltg_det_penthouses_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_penthouses_address = '${req.body.ListingData.locationData.address}', 
@@ -388,7 +383,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 `;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det successfully");
@@ -410,9 +404,6 @@ const updateListItem = async (req, res) => {
   const listingID = req.params.listingID;
   const customLabels = JSON.stringify(req.body.CustomLabel);
 
-  // console.log("Raw body:", req.body);
-
-  // Check if ListingData exists
   if (!req.body || !req.body.ListingData) {
     console.error("ListingData is not provided.");
     return res.status(400).json({ error: "ListingData is required." });
@@ -436,14 +427,13 @@ const updateListItem = async (req, res) => {
 
   try {
     await db.query(q);
-
-    // Update Data ltg_det based on listingType
     if (req.body.listingType == "Apartments" || req.body.listingType == "Villas") {
       const q_det =
         `UPDATE ltg_det 
         SET
           ltg_det_sale_price = '${req.body.ListingData.salePrice}',
           ltg_det_suffix_price = '${req.body.ListingData.suffixPrice}',
+          ltg_det_call_for_price = '${req.body.ListingData.callForPrice}',
           ltg_det_desc = '${req.body.ListingData.content}',
           ltg_det_location = '${req.body.ListingData.locationData.location}',
           ltg_det_address = '${req.body.ListingData.locationData.address}',
@@ -508,6 +498,7 @@ const updateListItem = async (req, res) => {
         SET
             ltg_det_plot_sale_price = '${req.body.ListingData.salePrice}', 
             ltg_det_plot_suffix_price = '${req.body.ListingData.suffixPrice}',
+            ltg_det_plot_call_for_price = '${req.body.ListingData.callForPrice}',
             ltg_det_plot_desc = '${req.body.ListingData.content}', 
             ltg_det_plot_location = '${req.body.ListingData.locationData.location}', 
             ltg_det_plot_address = '${req.body.ListingData.locationData.address}', 
@@ -555,6 +546,7 @@ const updateListItem = async (req, res) => {
 SET
     ltg_det_row_house_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_row_house_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_row_house_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_row_house_desc = '${req.body.ListingData.content}', 
     ltg_det_row_house_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_row_house_address = '${req.body.ListingData.locationData.address}', 
@@ -599,7 +591,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det_row_house successfully");
@@ -615,6 +606,7 @@ SET
 SET
     ltg_det_comm_prop_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_comm_prop_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_comm_prop_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_comm_prop_desc = '${req.body.ListingData.content}', 
     ltg_det_comm_prop_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_comm_prop_address = '${req.body.ListingData.locationData.address}', 
@@ -653,7 +645,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det_comm_prop_property successfully");
@@ -669,6 +660,7 @@ SET
 SET 
     ltg_det_villaments_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_villaments_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_villaments_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_villaments_desc = '${req.body.ListingData.content}', 
     ltg_det_villaments_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_villaments_address = '${req.body.ListingData.locationData.address}', 
@@ -728,6 +720,7 @@ SET
 SET
     ltg_det_penthouses_sale_price = '${req.body.ListingData.salePrice}', 
     ltg_det_penthouses_suffix_price = '${req.body.ListingData.suffixPrice}', 
+    ltg_det_penthouses_call_for_price = '${req.body.ListingData.callForPrice}',
     ltg_det_penthouses_desc = '${req.body.ListingData.content}', 
     ltg_det_penthouses_location = '${req.body.ListingData.locationData.location}', 
     ltg_det_penthouses_address = '${req.body.ListingData.locationData.address}', 
@@ -775,7 +768,6 @@ SET
     ltg_det_update_date = '${moment(Date.now()).format("YYYY-MM-DD HH:mm:ss")}'
 	WHERE ltg_det_mstRowID = '${listingID}'`;
 
-
       try {
         const [results_det] = await db.query(q_det);
         console.log("Data inserted into ltg_det_penthouses successfully");
@@ -789,10 +781,8 @@ SET
     console.error("Error updating listing:", error.stack);
     res.status(500).json({ message: "Error updating listing", status: "error" });
   }
-
 };
 
-// get all list items
 const getListItem = async (req, res) => {
   try {
     const mstQuery = `
@@ -806,11 +796,9 @@ const getListItem = async (req, res) => {
       return res.status(200).json({ message: 'No records found', status: 'success', data: [] });
     }
 
-    // Prepare an array of promises to fetch details for each property type
     const detailPromises = mstResults.map(async (record) => {
       const { RowID, ltg_type } = record;
 
-      // Determine the details table based on type
       let detailsTable;
       switch (ltg_type) {
         case 'Plots':
@@ -835,7 +823,6 @@ const getListItem = async (req, res) => {
           detailsTable = 'ltg_det';
       }
 
-      // Update the query to directly join ltg_ref and the details table
       const detailQuery = `
         SELECT 
           mst.*, 
@@ -853,25 +840,19 @@ const getListItem = async (req, res) => {
           mst.RowID = ?;
       `;
 
-      // Execute the detail query
       const [detailResults] = await db.query(detailQuery, [RowID]);
 
       if (detailResults.length > 0) {
         const detailResult = detailResults[0];
-
-        // Separate the attachment rows from the rest of the result
         const attachments = detailResults.map(item => ({
           file_name: item.file_name,
           attachment: item.attachment,
           type: item.attachment_type
         }));
 
-        // Remove attachment fields from the main detail result to avoid duplication
         delete detailResult.file_name;
         delete detailResult.attachment;
         delete detailResult.attachment_type;
-
-        // Add the attachments array to the result
         detailResult.attachments = attachments;
 
         return detailResult;
@@ -880,9 +861,7 @@ const getListItem = async (req, res) => {
       }
     });
 
-    // Wait for all detail queries to complete
     const detailedResults = await Promise.all(detailPromises);
-
     return res.status(200).json({ message: 'All listing records fetched successfully', status: 'success', data: detailedResults });
   } catch (error) {
     console.error('Error fetching all listing records:', error);
@@ -890,7 +869,6 @@ const getListItem = async (req, res) => {
   }
 };
 
-// Check if propertyUrl or title exists
 const checkPropertyExists = async (req, res) => {
   const { propertyUrl, title } = req.query;
 
@@ -925,7 +903,6 @@ const checkPropertyExists = async (req, res) => {
   }
 };
 
-// get Property by type
 const getListingbyType = async (req, res) => {
   const { type } = req.params;
 
@@ -971,9 +948,7 @@ const getListingbyType = async (req, res) => {
     detailsTable = "ltg_det";
   }
 
-  // Replace the placeholder with the actual table name
   query = query.replace(/detailsTable/g, detailsTable);
-  // console.log(query);
 
   try {
     const [results, fields] = await db.query(query, [type]);
@@ -989,7 +964,6 @@ const getPropertyItemId = async (req, res) => {
   const propertyId = req.params.id;
 
   try {
-    // First, fetch the property type and basic info from `ltg_mst`
     const mstQuery = `
       SELECT RowID, ltg_type
       FROM ltg_mst
@@ -1003,7 +977,6 @@ const getPropertyItemId = async (req, res) => {
 
     const { RowID, ltg_type } = mstResults[0];
 
-    // Determine the details table based on type
     let detailsTable;
     switch (ltg_type) {
       case 'Plots':
@@ -1022,13 +995,12 @@ const getPropertyItemId = async (req, res) => {
         detailsTable = 'ltg_det_penthouses';
         break;
       case 'Apartment':
-        detailsTable = 'ltg_det'; // Specific for apartments
+        detailsTable = 'ltg_det';
         break;
       default:
-        detailsTable = 'ltg_det'; // Default to the generic table if type is not matched
+        detailsTable = 'ltg_det';
     }
 
-    // Construct the query dynamically based on the determined details table
     const detailQuery = `
       SELECT 
           mst.*,
@@ -1055,7 +1027,6 @@ const getPropertyItemId = async (req, res) => {
           mst.RowID = ?;
     `;
 
-    // Execute the detail query
     const [detailResults] = await db.query(detailQuery, [RowID]);
 
     if (detailResults.length > 0) {
@@ -1064,14 +1035,12 @@ const getPropertyItemId = async (req, res) => {
       if (detailResult.attachments) {
         const attachmentsArray = detailResult.attachments.split(', ');
         const attachmentTypesArray = detailResult.attachment_types.split(', ');
-
         detailResult.attachments = attachmentsArray.map((attachment, index) => ({
           file_name: detailResult.file_names.split(', ')[index],
           attachment: attachment,
           type: attachmentTypesArray[index]
         }));
 
-        // Remove unnecessary properties
         delete detailResult.attachment_types;
         delete detailResult.file_names;
       } else {
@@ -1088,13 +1057,10 @@ const getPropertyItemId = async (req, res) => {
   }
 };
 
-
-// get SingleList Item by ID
 const getListItemId = async (req, res) => {
   const { listingID } = req.params;
 
   try {
-    // Step 1: Fetch the ltg_type from ltg_mst
     const typeQuery = `
       SELECT ltg_type
       FROM ltg_mst
@@ -1107,8 +1073,6 @@ const getListItemId = async (req, res) => {
     }
 
     const type = typeResults[0].ltg_type;
-
-    // Determine the details table based on type
     let detailsTable;
     switch (type) {
       case 'Plots':
@@ -1168,7 +1132,6 @@ const getListItemId = async (req, res) => {
   }
 };
 
-// get all images
 const getAllImages = async (req, res) => {
 
   const query = `SELECT * FROM ltg_ref`;
@@ -1180,7 +1143,6 @@ const getAllImages = async (req, res) => {
       res.status(404).json({ message: "No properties found", status: "not_found" });
       return;
     }
-
     res.json({ data: results, message: "Properties Image fetched successfully", status: "success" });
   } catch (error) {
     console.error("Error fetching properties:", error.stack);
@@ -1192,7 +1154,6 @@ const getsinglePageImg = async (req, res) => {
   const { propertyUrl } = req.params;
 
   try {
-    // Step 1: Fetch RowID from ltg_mst using propertyUrl
     const fetchRowIDQuery = `
       SELECT RowID FROM ltg_mst WHERE propertyUrl = ?
     `;
@@ -1207,8 +1168,6 @@ const getsinglePageImg = async (req, res) => {
 
     console.log("rowIDResults", rowIDResults);
     const { RowID: listingID } = rowIDResults[0];
-
-    // Step 2: Fetch images from ltg_ref using the retrieved RowID
     const fetchImagesQuery = `
       SELECT * FROM ltg_ref WHERE ltg_mstRowID = ?
     `;
@@ -1237,19 +1196,14 @@ const getsinglePageImg = async (req, res) => {
 
 const deleteImagesByRowID = async (req, res) => {
   const { RowID } = req.params;
-
-  // Query to find the file_name for the given RowID
   const findQuery = `
     SELECT file_name FROM ltg_ref WHERE RowID = ?
   `;
-
-  // Query to delete the image for the given RowID
   const deleteQuery = `
     DELETE FROM ltg_ref WHERE RowID = ?
   `;
 
   try {
-    // Find the file_name for the given RowID
     const [findResults] = await db.query(findQuery, [RowID]);
     if (findResults.length === 0) {
       res.status(404).json({ message: "No image found to delete", status: "not_found" });
@@ -1257,8 +1211,6 @@ const deleteImagesByRowID = async (req, res) => {
     }
 
     const fileName = findResults[0].file_name;
-
-    // Delete the image
     const [deleteResults] = await db.query(deleteQuery, [RowID]);
 
     if (deleteResults.affectedRows === 0) {
@@ -1273,23 +1225,16 @@ const deleteImagesByRowID = async (req, res) => {
   }
 };
 
-
-/* delete image by RowID */
 const deleteBrochureFile = async (req, res) => {
   const { RowID } = req.params;
-
-  // Query to find the file_name for the given RowID
   const findQuery = `
     SELECT file_name FROM ltg_ref WHERE RowID = ?
   `;
-
-  // Query to delete both the PDF and its corresponding thumbnail
   const deleteQuery = `
     DELETE FROM ltg_ref WHERE RowID = ? OR (file_name = ? OR file_name = ?)
   `;
 
   try {
-    // Find the file_name for the given RowID
     const [findResults] = await db.query(findQuery, [RowID]);
     if (findResults.length === 0) {
       res.status(404).json({ message: "No brochure found to delete", status: "not_found" });
@@ -1298,8 +1243,6 @@ const deleteBrochureFile = async (req, res) => {
 
     const fileName = findResults[0].file_name;
     const thumbnailFileName = fileName.replace('.pdf', '-thumbnail.png');
-
-    // Delete both the PDF and its corresponding thumbnail
     const [deleteResults] = await db.query(deleteQuery, [RowID, fileName, thumbnailFileName]);
 
     if (deleteResults.affectedRows === 0) {
@@ -1319,13 +1262,9 @@ const deleteListItem = async (req, res) => {
   const listingID = req.params.listingID;
   const { type } = req.body;
 
-  // console.log("ID: ", listingID);
-  // console.log("Type: ", type);
-
   let connection;
 
   try {
-    // Determine the details table based on type
     let detailsTable;
     switch (type) {
       case 'Plots':
@@ -1347,39 +1286,30 @@ const deleteListItem = async (req, res) => {
         detailsTable = 'ltg_det';
     }
 
-    // Get a connection from the pool
     connection = await db.getConnection();
-
-    // Start a transaction
     await connection.beginTransaction();
 
-    // Delete from the details table
     const deleteDetailQuery = `
       DELETE FROM ${detailsTable}
       WHERE ltg_det_mstRowID = ?;
     `;
     await connection.query(deleteDetailQuery, [listingID]);
 
-    // Delete from the master table
     const deleteMasterQuery = `
       DELETE FROM ltg_mst
       WHERE RowID = ?;
     `;
     await connection.query(deleteMasterQuery, [listingID]);
 
-    // Delete all rows from the reference table with the same ltg_mstRowID
     const deleteRefQuery = `
       DELETE FROM ltg_ref
       WHERE ltg_mstRowID = ?;
     `;
     await connection.query(deleteRefQuery, [listingID]);
-
-    // Commit the transaction
     await connection.commit();
 
     res.status(200).json({ message: 'Property deleted successfully', status: 'success' });
   } catch (error) {
-    // Rollback the transaction in case of an error
     if (connection) await connection.rollback();
     console.error("Error deleting property: " + error.stack);
     res.status(500).json({ message: "Error deleting property", status: "error" });
@@ -1390,14 +1320,11 @@ const deleteListItem = async (req, res) => {
 
 const uploadListItem = async (req, res) => {
   console.log("uploadListItem function started");
-
-  // Get the database connection
   console.log("Attempting to get database connection...");
   const connection = await db.getConnection();
   console.log("Database connection established");
 
   try {
-    // Log the incoming request details
     const { listingID } = req.params;
     const { type, auditUser } = req.body;
     const files = req.files;
@@ -1417,7 +1344,6 @@ const uploadListItem = async (req, res) => {
       return res.status(400).json({ status: 'FAILURE', message: 'Missing required fields' });
     }
 
-    // Start database transaction
     await connection.beginTransaction();
     console.log("Transaction started");
 
@@ -1436,17 +1362,11 @@ const uploadListItem = async (req, res) => {
       return [listingID, originalName, url, type, auditUser, formattedDate];
     });
 
-    // Log the SQL query values before executing
     console.log("Prepared values for insertion:", values);
-
     await connection.query(insertQuery, [values]);
     console.log("Files inserted into the database");
-
-    // Commit the transaction
     await connection.commit();
     console.log("Transaction committed");
-
-    // Respond with success
     res.status(200).json({
       message: 'Files uploaded successfully',
       status: 'SUCCESS',
@@ -1459,7 +1379,6 @@ const uploadListItem = async (req, res) => {
   } catch (error) {
     console.error("Error during file upload:", error.message);
 
-    // Rollback the transaction in case of an error
     try {
       await connection.rollback();
       console.log("Transaction rolled back");
@@ -1469,7 +1388,6 @@ const uploadListItem = async (req, res) => {
 
     res.status(500).json({ status: 'FAILURE', message: 'Error uploading files', error: error.message });
   } finally {
-    // Release the connection regardless of success or failure
     connection.release();
     console.log("Database connection released");
   }
@@ -1479,7 +1397,6 @@ const uploadListItem = async (req, res) => {
 // Delete Images
 const deleteListImage = (req, res) => {
   const listingID = req.params.listingID;
-
   const deleteQuery = "DELETE FROM listingimages WHERE id = ?";
 
   db.query(deleteQuery, [listingID], (err, results) => {
@@ -1494,9 +1411,7 @@ const deleteListImage = (req, res) => {
 // Update List Image
 const updateListImage = (req, res) => {
   const imageId = req.params.listingID;
-
   const updateQuery = "UPDATE listingimages SET `imageUrl` = ? WHERE id = ?";
-
   const imageUrl = `${process.env.apiUrl}${req.file.path.replace(
     "public",
     ""
@@ -1518,7 +1433,6 @@ const getListItemByPropertyUrl = async (req, res) => {
   console.log("Received propertyUrl:", propertyUrl);
 
   try {
-    // Step 1: Fetch the ltg_type from ltg_mst based on propertyUrl
     const typeQuery = `
       SELECT ltg_type, RowID
       FROM ltg_mst
@@ -1531,8 +1445,6 @@ const getListItemByPropertyUrl = async (req, res) => {
     }
 
     const { ltg_type: type, RowID: listingID } = typeResults[0];
-
-    // Determine the details table based on type
     let detailsTable;
     switch (type) {
       case 'Plots':
@@ -1554,7 +1466,6 @@ const getListItemByPropertyUrl = async (req, res) => {
         detailsTable = 'ltg_det';
     }
 
-    // Step 2: Fetch detailed data using the RowID
     const detailQuery = `
       SELECT
         ltg_mst.*,

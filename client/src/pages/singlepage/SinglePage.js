@@ -201,6 +201,18 @@ function SinglePage() {
   const suffixPrice = suffixPriceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_suffix_price;
   const { numeric: numericSuffixPrice, formatted: formattedSuffixPrice } = formatPrice(suffixPrice != null ? suffixPrice.toLocaleString('en-IN') : '0');
 
+  const callForPriceMapping = {
+    Plots: singlePageData?.[0]?.ltg_det_plot_call_for_price,
+    Villas: singlePageData?.[0]?.ltg_det_call_for_price,
+    Apartments: singlePageData?.[0]?.ltg_det_call_for_price,
+    RowHouses: singlePageData?.[0]?.ltg_det_row_house_call_for_price,
+    CommercialProperties: singlePageData?.[0]?.ltg_det_comm_prop_call_for_price,
+    Villaments: singlePageData?.[0]?.ltg_det_villaments_call_for_price,
+    PentHouses: singlePageData?.[0]?.ltg_det_penthouses_call_for_price,
+  };
+
+  const callForPrice = callForPriceMapping[singlePageData?.[0]?.ltg_type] || singlePageData?.[0]?.ltg_det_call_for_price;
+
   const getPropertyDetails = (type, item) => {
     switch (type) {
       case 'CommercialProperties':
@@ -300,7 +312,6 @@ function SinglePage() {
         ? httpCommon.defaults.baseURL + mainImage[0].attachment
         : httpCommon.defaults.baseURL + '\\images\\defaultasset.jpg';
 
-      // Get the property details based on the type
       const details = getPropertyDetails(item.ltg_type, item);
 
       return {
@@ -347,13 +358,20 @@ function SinglePage() {
           <div className="text-right">
             {/* Price Display */}
             <div className="flex items-center justify-end">
-              <span className="p-2 text-3xl italic font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-500">
-                ₹{formattedPrice}
-              </span>
-
-              {numericSuffixPrice > 0 && (
-                <span className="relative ml-4 text-xl font-semibold text-red-600 line-through">
-                  ₹{formattedSuffixPrice}
+              {numericPrice > 0 ? (
+                <>
+                  <span className="p-2 text-3xl italic font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-500">
+                    ₹{formattedPrice}
+                  </span>
+                  {numericSuffixPrice > 0 && (
+                    <span className="relative ml-4 text-xl font-semibold text-red-600 line-through">
+                      ₹{formattedSuffixPrice}
+                    </span>
+                  )}
+                </>
+              ) : (
+                <span className="p-2 text-3xl italic font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-gray-500 to-gray-700">
+                  {callForPrice || "Call for Price"}
                 </span>
               )}
             </div>

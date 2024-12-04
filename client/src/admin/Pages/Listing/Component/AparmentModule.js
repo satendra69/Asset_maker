@@ -24,6 +24,7 @@ function ApartmentModule({ action, onDataUpdate }) {
   const [displaySuffixPrice, setDisplaySuffixPrice] = useState("");
   const [suffixPriceWords, setSuffixPriceWords] = useState("");
   const [isSuffixPriceExceeded, setIsSuffixPriceExceeded] = useState(false);
+  const [callForPrice, setCallForPrice] = useState("");
   const [areaDetails, setAreaDetails] = useState("");
   const [ratePerSqFt, setRatePerSqFt] = useState("");
   const [content, setContent] = useState('');
@@ -134,6 +135,7 @@ function ApartmentModule({ action, onDataUpdate }) {
       if (response.data.status === "success") {
         setDisplaySalePrice(listingData.ltg_det_sale_price);
         setDisplaySuffixPrice(listingData.ltg_det_suffix_price);
+        setCallForPrice(listingData.ltg_det_call_for_price);
         setContent(listingData.ltg_det_desc);
         const blocksFromHTML = convertFromHTML(listingData.ltg_det_desc || '');
         const contentState = ContentState.createFromBlockArray(blocksFromHTML.contentBlocks, blocksFromHTML.entityMap);
@@ -599,6 +601,7 @@ function ApartmentModule({ action, onDataUpdate }) {
     const data = {
       salePrice,
       suffixPrice,
+      callForPrice,
       content,
       locationData,
       areaDetails,
@@ -668,7 +671,7 @@ function ApartmentModule({ action, onDataUpdate }) {
 
   useEffect(() => {
     handleDataUpdate();
-  }, [salePrice, suffixPrice, content, locationData, areaDetails, deletedImages, deletedFiles,
+  }, [salePrice, suffixPrice, callForPrice, content, locationData, areaDetails, deletedImages, deletedFiles,
     ratePerSqFt, selectedStatus, selectedBedRooms, selectedBathRooms, selectedCarParking,
     yearBuilt, totalFloors, flatOnFloor, liftsInTheTower, mainDoorFacing, propertyFlooring,
     balconies, approachingRoadWidth, furnishing, stampDutyAndRegistrationCharges,
@@ -700,9 +703,8 @@ function ApartmentModule({ action, onDataUpdate }) {
                 onBlur={handleDataUpdate}
                 className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              {/* Conditional rendering of limit exceeded or salePriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSalePriceExceeded ? "Limit exceeded" : (salePriceWords)}
+                {isSalePriceExceeded ? "Limit exceeded" : salePriceWords}
               </div>
             </div>
           </div>
@@ -723,10 +725,27 @@ function ApartmentModule({ action, onDataUpdate }) {
                 onBlur={handleDataUpdate}
                 className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              {/* Conditional rendering of limit exceeded or suffixPriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSuffixPriceExceeded ? "Limit exceeded" : (suffixPriceWords)}
+                {isSuffixPriceExceeded ? "Limit exceeded" : suffixPriceWords}
               </div>
+            </div>
+          </div>
+
+          {/* Call For Price */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label htmlFor="callForPrice" className="block text-sm font-semibold leading-6 text-gray-900">
+              Call For Price
+            </label>
+            <div className="mt-2.5 relative">
+              <input
+                type="text"
+                id="callForPrice"
+                value={callForPrice}
+                placeholder="Enter Call For Price"
+                onChange={(e) => setCallForPrice(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full py-2 pl-2 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
             </div>
           </div>
         </div>
@@ -753,7 +772,6 @@ function ApartmentModule({ action, onDataUpdate }) {
       </div>
 
       {/* Location Details */}
-      {/* <MapComponent onPositionChange={handleLocationChange} initialPosition={initialPosition} /> */}
       <MapGoogle
         googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
         initialPosition={locationData}

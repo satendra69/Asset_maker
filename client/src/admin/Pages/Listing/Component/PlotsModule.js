@@ -25,6 +25,7 @@ function PlotsModule({ action, onDataUpdate }) {
   const [displaySuffixPrice, setDisplaySuffixPrice] = useState("");
   const [suffixPriceWords, setSuffixPriceWords] = useState("");
   const [isSuffixPriceExceeded, setIsSuffixPriceExceeded] = useState(false);
+  const [callForPrice, setCallForPrice] = useState("");
   const [propertyAddressDetails, setPropertyAddressDetails] = useState("");
   const [areaDetails, setAreaDetails] = useState("");
   const [ratePerSqFt, setRatePerSqFt] = useState("");
@@ -129,6 +130,7 @@ function PlotsModule({ action, onDataUpdate }) {
         // Update state with fetched data
         setDisplaySalePrice(listingData.ltg_det_plot_sale_price);
         setDisplaySuffixPrice(listingData.ltg_det_plot_suffix_price);
+        setCallForPrice(listingData.ltg_det_plot_call_for_price);
 
         // content update
         setContent(listingData.ltg_det_plot_desc);
@@ -643,6 +645,7 @@ function PlotsModule({ action, onDataUpdate }) {
     const data = {
       salePrice,
       suffixPrice,
+      callForPrice,
       areaDetails,
       ratePerSqFt,
       content,
@@ -708,7 +711,7 @@ function PlotsModule({ action, onDataUpdate }) {
 
   useEffect(() => {
     handleDataUpdate();
-  }, [salePrice, suffixPrice, locationData, areaDetails, ratePerSqFt, content, selectedStatus,
+  }, [salePrice, suffixPrice, callForPrice, locationData, areaDetails, ratePerSqFt, content, selectedStatus,
     propertyAddressDetails, floorsAllowedForConstruction, amenitiesAsString, videoUrl, cornerPlot,
     yearBuilt, plotDimensions, noOfOpenSides, plotFacing, boundaryWallMade, deletedImages,
     plotApprovalAuthority, approachingRoadWidth, isInGatedCommunity, transactionType,
@@ -722,7 +725,7 @@ function PlotsModule({ action, onDataUpdate }) {
         {/* Price Section */}
         <hr className="my-8 border-gray-400" />
         <h2 className="text-xl font-semibold">Price</h2>
-        <div className="flex flex-wrap items-start mt-4"> {/* Use items-start to align items at the top */}
+        <div className="flex flex-wrap items-start mt-4">
           {/* Sale Price */}
           <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
             <label htmlFor="salePrice" className="block text-sm font-semibold leading-6 text-gray-900">
@@ -739,9 +742,8 @@ function PlotsModule({ action, onDataUpdate }) {
                 onBlur={handleDataUpdate}
                 className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              {/* Conditional rendering of limit exceeded or salePriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSalePriceExceeded ? "Limit exceeded" : (salePriceWords)}
+                {isSalePriceExceeded ? "Limit exceeded" : salePriceWords}
               </div>
             </div>
           </div>
@@ -762,10 +764,27 @@ function PlotsModule({ action, onDataUpdate }) {
                 onBlur={handleDataUpdate}
                 className="block w-full py-2 pl-6 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
-              {/* Conditional rendering of limit exceeded or suffixPriceWords */}
               <div className="mt-1 text-sm text-blue-500">
-                {isSuffixPriceExceeded ? "Limit exceeded" : (suffixPriceWords)}
+                {isSuffixPriceExceeded ? "Limit exceeded" : suffixPriceWords}
               </div>
+            </div>
+          </div>
+
+          {/* Call For Price */}
+          <div className="w-full pr-4 mb-4 sm:w-1/2 lg:w-1/3 sm:mb-0">
+            <label htmlFor="callForPrice" className="block text-sm font-semibold leading-6 text-gray-900">
+              Call For Price
+            </label>
+            <div className="mt-2.5 relative">
+              <input
+                type="text"
+                id="callForPrice"
+                value={callForPrice}
+                placeholder="Enter Call For Price"
+                onChange={(e) => setCallForPrice(e.target.value)}
+                onBlur={handleDataUpdate}
+                className="block w-full py-2 pl-2 pr-2 text-gray-900 border-0 rounded-md shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              />
             </div>
           </div>
         </div>
