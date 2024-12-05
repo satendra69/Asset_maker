@@ -36,13 +36,21 @@ function PropertyCard({ card }) {
             <p className="text-sm truncate">{card.address}</p>
           </div>
           <div className="flex items-center gap-1 text-xl font-medium text-red-600">
-            <p className="p-2 text-xl font-semibold text-white rounded-lg bg-gradient-to-r from-red-500 to-orange-500">
-              ₹{card.price}
-            </p>
-            {card.suffixPrice && (
-              <span className="ml-2 text-lg font-medium text-red-600 line-through">
-                ₹{card.suffixPrice}
-              </span>
+            {card.callForPrice ? (
+              <p className="p-2 text-xl font-semibold text-white rounded-lg bg-gradient-to-r from-gray-400 to-gray-600">
+                {card.callForPrice}
+              </p>
+            ) : (
+              <>
+                <p className="p-2 text-xl font-semibold text-white rounded-lg bg-gradient-to-r from-red-500 to-orange-500">
+                  ₹{card.price}
+                </p>
+                {card.suffixPrice && (
+                  <span className="ml-2 text-lg font-medium text-red-600 line-through">
+                    ₹{card.suffixPrice}
+                  </span>
+                )}
+              </>
             )}
           </div>
           <div className="flex justify-between mt-2 text-sm text-gray-600">

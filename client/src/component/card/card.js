@@ -217,6 +217,18 @@ function Card({ key, item, onPropertyRemoved }) {
 
   const status = item ? statusMapping[item.ltg_type] || item.ltg_det_pmts_status : "Status not available";
 
+  const callForPriceMapping = {
+    Plots: item?.ltg_det_plot_call_for_price,
+    Villas: item?.ltg_det_call_for_price,
+    Apartments: item?.ltg_det_call_for_price,
+    RowHouses: item?.ltg_det_row_house_call_for_price,
+    CommercialProperties: item?.ltg_det_comm_prop_call_for_price,
+    Villaments: item?.ltg_det_villaments_call_for_price,
+    PentHouses: item?.ltg_det_penthouses_call_for_price,
+  };
+
+  const callForPrice = callForPriceMapping[item?.ltg_type] || item?.ltg_det_call_for_price;
+
   // Function to format the title
   const formatTitleForUrl = (title) => {
     return title
@@ -293,13 +305,27 @@ function Card({ key, item, onPropertyRemoved }) {
               <span>{address}</span>
             </p>
             <div className="card-pricing">
-              <span className="current-price">₹ {formattedPrice}</span>
-              {numericSuffixPrice > 0 && (
-                <span className="suffix-price" style={{ textDecoration: 'line-through', color: 'red', marginLeft: '10px' }}>
-                  ₹ {formattedSuffixPrice}
-                </span>
+              {callForPrice ? (
+                <span className="call-for-price">{callForPrice}</span>
+              ) : (
+                <>
+                  <span className="current-price">₹ {formattedPrice}</span>
+                  {numericSuffixPrice > 0 && (
+                    <span
+                      className="suffix-price"
+                      style={{
+                        textDecoration: 'line-through',
+                        color: 'red',
+                        marginLeft: '10px',
+                      }}
+                    >
+                      ₹ {formattedSuffixPrice}
+                    </span>
+                  )}
+                </>
               )}
             </div>
+
             <div className="bottom">
               <div className="features">
                 {item.ltg_type === "Plots" || item.ltg_type === "CommercialProperties" ? (

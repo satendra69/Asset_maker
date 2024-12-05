@@ -105,6 +105,7 @@ function Hero() {
           description: item.ltg_det_comm_prop_desc,
           price: formatPrice(item.ltg_det_comm_prop_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price, true),
+          callForPrice: item?.ltg_det_comm_prop_call_for_price,
           bedroom: '', // empty for CommercialProperties
           bathroom: '', // empty for CommercialProperties
           parking: item.ltg_det_comm_prop_pmts_car_parking,
@@ -119,6 +120,7 @@ function Hero() {
           description: item.ltg_det_penthouses_desc,
           price: formatPrice(item.ltg_det_penthouses_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price, true),
+          callForPrice: item?.ltg_det_penthouses_call_for_price,
           bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
           bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
           parking: item.ltg_det_penthouses_pmts_car_parking,
@@ -133,6 +135,7 @@ function Hero() {
           description: item.ltg_det_plot_desc,
           price: formatPrice(item.ltg_det_plot_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_plot_suffix_price, true),
+          callForPrice: item?.ltg_det_plot_call_for_price,
           bedroom: '', // empty for Plots
           bathroom: '', // empty for Plots
           parking: '', // empty for Plots
@@ -147,6 +150,7 @@ function Hero() {
           description: item.ltg_det_row_house_desc,
           price: formatPrice(item.ltg_det_row_house_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price, true),
+          callForPrice: item?.ltg_det_row_house_call_for_price,
           bedroom: item.ltg_det_row_house_pmts_bed_rooms,
           bathroom: item.ltg_det_row_house_pmts_bath_rooms,
           parking: item.ltg_det_row_house_pmts_car_parking,
@@ -161,6 +165,7 @@ function Hero() {
           description: item.ltg_det_villaments_desc,
           price: formatPrice(item.ltg_det_villaments_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price, true),
+          callForPrice: item?.ltg_det_villaments_call_for_price,
           bedroom: item.ltg_det_villaments_pmts_bed_rooms,
           bathroom: item.ltg_det_villaments_pmts_bath_rooms,
           parking: item.ltg_det_villaments_pmts_car_parking,
@@ -175,6 +180,7 @@ function Hero() {
           description: item.ltg_det_desc,
           price: formatPrice(item.ltg_det_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_suffix_price, true),
+          callForPrice: item?.ltg_det_call_for_price,
           bedroom: item.ltg_det_pmts_bed_rom,
           bathroom: item.ltg_det_pmts_bth_rom,
           parking: item.ltg_det_pmts_car_park,

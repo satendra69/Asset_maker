@@ -33,81 +33,35 @@ function SinglePage() {
     if (properties.length && singlePageData.length) {
       const matchedType = singlePageData[0]?.ltg_type;
       const matchedCategory = singlePageData[0]?.ltg_categories;
-      const matchedPropertyUrl = singlePageData[0]?.propertyurl;
 
       const similar = properties.filter(property =>
         property.ltg_type === matchedType &&
-        property.ltg_categories === matchedCategory &&
-        property.propertyurl !== matchedPropertyUrl
+        property.ltg_categories === matchedCategory
       );
       setSimilarProperties(similar);
     }
   }, [properties, singlePageData]);
-
-  // console.log(similarProperties, "similarProperties");
 
   const handleClose = () => {
     setOpen(false);
   };
 
   // Fetch properties data
-  const getPropertiesData = async () => {
-    try {
-      const response = await httpCommon.get("/list");
-      if (response.data.status === "success") {
-        const allProperties = response.data.data;
-        setProperties(allProperties);
-        // console.log("allProperties", allProperties);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getSinglepropertiesData = async (RowID, TypeGet) => {
-    try {
-      const response = await httpCommon.get(`/list/${RowID}/${TypeGet}`);
-      if (response.data.status === "success") {
-        setSinglePageData(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const singlePageImg = async (RowID) => {
-    try {
-      const response = await httpCommon.get(`/list/singlePageImg/${RowID}`);
-      if (response.data.status === "success") {
-        const imgData = response.data.data?.filter(item => item.type !== 'Brochure');
-        setSinglePageImgData(imgData);
-        const brochureData = response.data.data?.filter(item => item.type === 'Brochure');
-        setBrochureData(brochureData);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   const fetchData = async () => {
     try {
-      // Fetch properties and single property data concurrently
       const [allPropertiesResponse, singlePageResponse] = await Promise.all([
         httpCommon.get("/list"),
         httpCommon.get(`/list/singleProperty/${propertyurl}`)
       ]);
 
-      // Process properties data
       if (allPropertiesResponse.data.status === "success") {
         setProperties(allPropertiesResponse.data.data);
       }
 
-      // Process single property data
       if (singlePageResponse.data.status === "success") {
         setSinglePageData(singlePageResponse.data.data);
       }
 
-      // Fetch single page image data separately with a try-catch for fallback
       try {
         const imgResponse = await httpCommon.get(`/list/singlePageImg/${propertyurl}`);
         if (imgResponse.data.status === "success") {
@@ -119,7 +73,6 @@ function SinglePage() {
         }
       } catch (imgError) {
         console.warn("Failed to fetch single page image data:", imgError.message);
-        // Leave singlePageImgData and brochureData as their default empty state
         setSinglePageImgData([]);
         setBrochureData([]);
       }
@@ -220,6 +173,7 @@ function SinglePage() {
           description: item.ltg_det_comm_prop_desc,
           price: formatPrice(item.ltg_det_comm_prop_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_comm_prop_suffix_price, true),
+          callForPrice: item?.ltg_det_comm_prop_call_for_price,
           bedroom: '', // empty for CommercialProperties
           bathroom: '', // empty for CommercialProperties
           parking: item.ltg_det_comm_prop_pmts_car_parking,
@@ -234,6 +188,7 @@ function SinglePage() {
           description: item.ltg_det_penthouses_desc,
           price: formatPrice(item.ltg_det_penthouses_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_penthouses_suffix_price, true),
+          callForPrice: item?.ltg_det_penthouses_call_for_price,
           bedroom: item.ltg_det_penthouses_pmts_bed_rooms,
           bathroom: item.ltg_det_penthouses_pmts_bath_rooms,
           parking: item.ltg_det_penthouses_pmts_car_parking,
@@ -248,6 +203,7 @@ function SinglePage() {
           description: item.ltg_det_plot_desc,
           price: formatPrice(item.ltg_det_plot_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_plot_suffix_price, true),
+          callForPrice: item?.ltg_det_plot_call_for_price,
           bedroom: '', // empty for Plots
           bathroom: '', // empty for Plots
           parking: '', // empty for Plots
@@ -262,6 +218,7 @@ function SinglePage() {
           description: item.ltg_det_row_house_desc,
           price: formatPrice(item.ltg_det_row_house_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_row_house_suffix_price, true),
+          callForPrice: item?.ltg_det_row_house_call_for_price,
           bedroom: item.ltg_det_row_house_pmts_bed_rooms,
           bathroom: item.ltg_det_row_house_pmts_bath_rooms,
           parking: item.ltg_det_row_house_pmts_car_parking,
@@ -276,6 +233,7 @@ function SinglePage() {
           description: item.ltg_det_villaments_desc,
           price: formatPrice(item.ltg_det_villaments_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_villaments_suffix_price, true),
+          callForPrice: item?.ltg_det_villaments_call_for_price,
           bedroom: item.ltg_det_villaments_pmts_bed_rooms,
           bathroom: item.ltg_det_villaments_pmts_bath_rooms,
           parking: item.ltg_det_villaments_pmts_car_parking,
@@ -290,6 +248,7 @@ function SinglePage() {
           description: item.ltg_det_desc,
           price: formatPrice(item.ltg_det_sale_price, true),
           suffixPrice: formatPrice(item.ltg_det_suffix_price, true),
+          callForPrice: item?.ltg_det_call_for_price,
           bedroom: item.ltg_det_pmts_bed_rom,
           bathroom: item.ltg_det_pmts_bth_rom,
           parking: item.ltg_det_pmts_car_park,
@@ -321,6 +280,9 @@ function SinglePage() {
         ...details,
       };
     });
+
+  const singleRowID = singlePageData?.[0]?.ltg_det_mstRowID;
+  const singleType = singlePageData?.[0]?.ltg_type;
 
   return (
     <Container className="py-10">
@@ -404,9 +366,9 @@ function SinglePage() {
       </section>
 
       {/* InquiryForm Section */}
-      {/* <section className="mt-10">
-        <InquiryForm propertyId={RowID} listingType={TypeGet} item={singlePageData} />
-      </section> */}
+      <section className="mt-10">
+        <InquiryForm propertyId={singleRowID} listingType={singleType} item={singlePageData} />
+      </section>
 
       {/* Social Section */}
       <Social />
