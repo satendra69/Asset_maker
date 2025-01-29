@@ -9,6 +9,8 @@ import DialogProperty from "./DialogProperty";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast, Toaster } from "sonner";
 import httpCommon from "../../http-common";
+import starsImage from './asset_makers_stars.png';
+
 import { queryClient } from "../..";
 import "./card.scss";
 
@@ -278,7 +280,7 @@ function Card({ key, item, onPropertyRemoved }) {
         to={`/Property/${formatTitleForUrl(item.ltg_title)}`}
         className="cardPropertyLink"
       >
-        <div className="cardProperty">
+        <div className="cardProperty" style={{ display: "flex", position: "relative" }}>
           <div className="cardImageContainer">
             {imageAttachments.length > 0 ? (
               <img
@@ -293,13 +295,27 @@ function Card({ key, item, onPropertyRemoved }) {
               <img src={defaultImage} alt="default attachment" />
             )}
           </div>
-          <div className="cardTextContainer">
+          <div className="cardTextContainer" style={{ flex: 1, position: "relative" }}>
             {item.ltg_projectName && (
               <h3 className="cardProjectName">{item.ltg_projectName}</h3>
+              
             )}
+          
             <h2 className="cardTitle">
               {item.ltg_title}
             </h2>
+        
+           
+            {Number(item?.ltg_det_sold_type || 0) === 1 && (
+              <div className="sold-status" style={{
+                position: "absolute",
+                top: "10px", // Adjust the vertical placement
+                right: "20px", // Adjust the horizontal placement
+                zIndex: 10,
+              }}>
+              <img src={starsImage} alt="Sold Out" style={{width:"10%",float:"right"}} />
+              </div>
+              )}
             <p className="cardAddress">
               <img src="/pin.png" alt="" />
               <span>{address}</span>
@@ -325,6 +341,7 @@ function Card({ key, item, onPropertyRemoved }) {
                 </>
               )}
             </div>
+            
 
             <div className="bottom">
               <div className="features">

@@ -215,14 +215,14 @@ function AboutUs() {
             <div className="1 flex items-center gap-5">
               <FaSellsy className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">2,000 +</h2>
+                <h2 className="price text-white">3500  +</h2>
                 <p className="description text-white">Properties Sold</p>
               </div>
             </div>
             <div className="2 flex items-center gap-5">
               <MdAddHome className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">80 +</h2>
+                <h2 className="price text-white">230 +</h2>
                 <p className="description text-white">Projects Handled</p>
               </div>
             </div>
@@ -230,14 +230,14 @@ function AboutUs() {
               <IoMdHappy className="text-blue-700" size={42} />
               <div>
                 <h2 className="price text-white">400 +</h2>
-                <p className="description text-white">NRI Clientele Served</p>
+                <p className="description text-white">NRI Clients Served </p>
               </div>
             </div>
             <div className="3 flex items-center gap-5">
               <FaRegHandshake className="text-blue-700" size={42} />
               <div>
-                <h2 className="price text-white">150 +</h2>
-                <p className="description text-white">Satisfied Builders</p>
+                <h2 className="price text-white">40 +</h2>
+                <p className="description text-white">Builders, Marketing Partners</p>
               </div>
             </div>
           </div>

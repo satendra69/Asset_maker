@@ -1,7 +1,12 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaChevronCircleDown } from "react-icons/fa";
+import { FaChevronCircleDown  } from "react-icons/fa";
+import { FaShare, FaShareSquare } from "react-icons/fa";
+import { IoShareOutline } from "react-icons/io5";
+import { IconName } from "react-icons/bi";
+
 import httpCommon from "../../http-common";
+import axios from "axios";
 import Slider from "../../component/slider/slider";
 import Container from "../../component/Container";
 import InquiryForm from './InquiryForm';
@@ -284,6 +289,59 @@ function SinglePage() {
   const singleRowID = singlePageData?.[0]?.ltg_det_mstRowID;
   const singleType = singlePageData?.[0]?.ltg_type;
 
+  useEffect(() => {
+    if (singlePageData?.[0]) {
+      const projectName = singlePageData[0].ltg_projectName || "Property Name";
+      const projectTitle = singlePageData[0].ltg_title || "Property Title";
+      const imageUrl = singlePageData[0].ltg_imageUrl || "https://assetmakers.com/api/images/WhatsApp%20Image%202025-01-02%20at%205.29.45%20PM.jpeg";
+
+      // Update Open Graph meta tags
+      document.querySelector("meta[property='og:title']")?.setAttribute("content", projectName);
+      document.querySelector("meta[property='og:description']")?.setAttribute("content", projectTitle);
+      document.querySelector("meta[property='og:image']")?.setAttribute("content", imageUrl);
+      document.querySelector("meta[property='og:url']")?.setAttribute("content", window.location.href);
+    }
+  }, [singlePageData]);
+
+  const handleShareClick = async() => {
+    if (singlePageData?.[0]) {
+      const projectName = singlePageData[0].ltg_projectName || "Property Name";
+      const projectTitle = singlePageData[0].ltg_title || "Property Title";
+      const currentPageUrl = window.location.href;
+      const imageUrl = singlePageData[0].ltg_imageUrl || "https://assetmakers.com/api/images/WhatsApp%20Image%202025-01-02%20at%205.29.45%20PM.jpeg";
+  
+      // const message = encodeURIComponent(
+      //   `${projectName}\n${projectTitle}\n\nCheck this property: ${currentPageUrl}`
+      // );
+  
+      // const whatsappUrl = `https://wa.me/?text=${message}`;
+      // window.open(whatsappUrl, "_blank");
+   // Backend API request
+   try {
+    const response = await axios.post("https://assetmakers.com/api/send-whatsapp-message", {
+      recipientPhone: "917986949597", // Replace with recipient's WhatsApp number
+      projectName,
+      projectTitle,
+      imageUrl,
+      pageUrl: currentPageUrl,
+      
+    });
+
+    if (response.data.success) {
+   //   alert("Message sent successfully!");
+    } else {
+   //   alert("Failed to send the message.");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+   // alert("An error occurred while sending the message.");
+  }
+      
+    } else {
+      console.error("No data available for sharing.");
+    }
+  };
+
   return (
     <Container className="py-10">
       <DialogProperty
@@ -320,6 +378,12 @@ function SinglePage() {
           <div className="text-right">
             {/* Price Display */}
             <div className="flex items-center justify-end">
+            <IoShareOutline
+              className="text-xl text-gray-500 mr-2 cursor-pointer hover:text-green-500"
+              title="Share"
+              style={{fontSize:"28px"}}
+              onClick={handleShareClick}
+            />
               {numericPrice > 0 ? (
                 <>
                   <span className="p-2 text-3xl italic font-semibold text-white rounded-lg shadow-md bg-gradient-to-r from-blue-500 to-teal-500">

@@ -10,9 +10,9 @@ const CustomLeftArrow = ({ onClick }) => {
     <button
       onClick={onClick}
       className="absolute left-0 z-20 p-3 ml-4 transition-all duration-300 transform -translate-y-1/2 bg-transparent border-2 border-gray-300 rounded-full top-1/2 hover:bg-gray-200 hover:border-gray-400 custom-arrow custom-left-arrow"
-      style={{ marginRight: "20px" }}
+      style={{ marginRight: "0px",backgroundColor:"#0f172ad4",marginLeft:"0px",color:"#fff" }}
     >
-      <IoIosArrowBack size={24} className="text-gray-600" />
+      <IoIosArrowBack size={24}  />
     </button>
   );
 };
@@ -22,9 +22,9 @@ const CustomRightArrow = ({ onClick }) => {
     <button
       onClick={onClick}
       className="absolute right-0 z-20 p-3 mr-4 transition-all duration-300 transform -translate-y-1/2 bg-transparent border-2 border-gray-300 rounded-full top-1/2 hover:bg-gray-200 hover:border-gray-400 custom-arrow custom-right-arrow"
-      style={{ marginLeft: "20px" }}
+      style={{ marginRight: "20px",backgroundColor:"#0f172ad4",marginLeft:"0px",color:"#fff" }}
     >
-      <IoIosArrowForward size={24} className="text-gray-600" />
+      <IoIosArrowForward size={24}  />
     </button>
   );
 };

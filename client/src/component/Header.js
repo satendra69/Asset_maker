@@ -1,7 +1,8 @@
 import { useRef, useEffect, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { AiFillCaretDown, AiFillPropertySafety } from "react-icons/ai";
-import { FaBuilding, FaHamburger, FaHome } from "react-icons/fa";
+import { FaBuilding, FaHome } from "react-icons/fa";
+import { IoMdMenu } from "react-icons/io";
 import { motion } from "framer-motion";
 import { IoMdLogOut } from "react-icons/io";
 import { CiLogin, CiSaveDown2 } from "react-icons/ci";
@@ -172,7 +173,7 @@ function Header() {
           </Link>
 
           {/* Navigation Links */}
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center gap-4 customeMenu">
             <li className="hidden sm:inline">
               <Link to={"/"}>HOME</Link>
             </li>
@@ -305,9 +306,9 @@ function Header() {
           )}
 
           {/* HAMBURGER MENU */}
-          <div className="sm:hidden">
+          <div className="sm:hidden ">
             <button onClick={() => setMenuOpen(!menuOpen)} className="focus:outline-none">
-              <FaHamburger size={28} />
+              <IoMdMenu size={28} />
             </button>
           </div>
         </div>
@@ -429,6 +430,43 @@ function Header() {
                 >
                   Plots
                 </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("RowHouses");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Row Houses
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("Villaments");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Villaments
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("CommercialProperties");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Commercial Properties
+                </p>
+                <p
+                  className="cursor-pointer hover:font-bold hover:text-black"
+                  onClick={() => {
+                    handleCategoryClick("PentHouses");
+                    setMenuOpen(false);
+                  }}
+                >
+                  Pent Houses
+                </p>
+
               </div>
             </li>
             {currentUser ? (

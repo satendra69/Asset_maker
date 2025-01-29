@@ -13,7 +13,7 @@ function ExploreDream() {
         <p className="text-sm">
           Discover properties tailored to your lifestyle and goals. Whether you're searching for a cozy family retreat or a lucrative investment, we're here to guide you every step of the way.
         </p>
-        <div className="flex flex-wrap gap-5 mt-10 md:flex-nowrap">
+        {/* <div className="flex flex-wrap gap-5 mt-10 md:flex-nowrap">
           <div className="w-full pb-5 bg-white rounded-lg shadow-md card h-max md:w-60">
             <div className="w-full h-1/2">
               <img src="/pp1.jpg" alt="pp2" className="object-cover w-full h-32 rounded-t-lg" />
@@ -44,7 +44,7 @@ function ExploreDream() {
               <h3>Contact seller</h3>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="flex items-center mt-5">
           <hr className="h-1.5 w-10 bg-red-600/50 rounded-xl mr-2" />
           <hr className="h-1.5 w-10 bg-red-600 rounded-xl mr-2" />

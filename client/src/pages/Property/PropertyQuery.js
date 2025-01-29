@@ -20,19 +20,38 @@ function PropertyQuery() {
     const location = useLocation();
     const query = location.state?.query || "";
 
-    console.log("httpCommon", httpCommon);
-
+   // console.log("filterParams____query",query);
     const fetchAllProperties = async (filterParams = {}) => {
         setLoading(true);
         setError(null);
+      //  console.log("filterParams____",filterParams);
         try {
             const response = await httpCommon.get(`/list`, {
                 params: filterParams
             });
-            console.log("response____AllProperties", response);
+          //  console.log("filterParams____res",response);
 
             if (response.data.status === "success") {
                 const properties = response.data.data;
+                let filteredProperties = properties;
+                if (query.city || query.typetitle) {
+                    filteredProperties = properties.filter((property) => {
+                      const matchesCity =
+                        query.city &&
+                        property.ltg_regions &&
+                        property.ltg_regions.toLowerCase() === query.city.toLowerCase();
+            
+                      const matchesTypetitle =
+                        query.typetitle &&
+                        (property.ltg_projectName?.toLowerCase() === query.typetitle.toLowerCase() ||
+                          property.ltg_title?.toLowerCase() === query.typetitle.toLowerCase() || property.ltg_det_property_address_details?.toLowerCase() === query.typetitle.toLowerCase() ||
+                          property.ltg_det_address?.toLowerCase().includes(query.typetitle.toLowerCase()));
+            
+                      return matchesCity || matchesTypetitle;
+                    });
+                  }
+            //  console.log("filteredProperties____",filteredProperties);
+                setAllProperties(filteredProperties);
                 setOriginalProperties(properties);
             }
         } catch (error) {
@@ -237,10 +256,11 @@ function PropertyQuery() {
         fetchAllProperties(query);
     }, []);
 
-    useEffect(() => {
-        handleFilterChange(query);
-    }, [originalProperties, query]);
+    // useEffect(() => {
+    //     handleFilterChange(query);
+    // }, [originalProperties, query]);
 
+   // console.log("allProperties____",allProperties);
     return (
         <>
             <Container>
@@ -276,14 +296,14 @@ function PropertyQuery() {
                         <div className="flex items-center gap-5 1">
                             <FaSellsy className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">2,000 +</h2>
+                                <h2 className="text-white price">3500 +</h2>
                                 <p className="text-white description">Properties Sold</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5 2">
                             <MdAddHome className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">80 +</h2>
+                                <h2 className="text-white price">230 +</h2>
                                 <p className="text-white description">Projects Handled</p>
                             </div>
                         </div>
@@ -291,14 +311,14 @@ function PropertyQuery() {
                             <IoMdHappy className="text-blue-700" size={42} />
                             <div>
                                 <h2 className="text-white price">400 +</h2>
-                                <p className="text-white description">NRI Clientele Served</p>
+                                <p className="text-white description">NRI Clients Served</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5 3">
                             <FaRegHandshake className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">150 +</h2>
-                                <p className="text-white description">Satisfied Builders</p>
+                                <h2 className="text-white price">40 +</h2>
+                                <p className="text-white description">Builders, Marketing Partners</p>
                             </div>
                         </div>
                     </div>

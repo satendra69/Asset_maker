@@ -44,7 +44,7 @@ const SectionCount = ({ numbers }) => {
           <div>
             <h2>{counts[index].toLocaleString()}+</h2>
 
-            <h3 className="whitespace-nowrap">{number.text}</h3>
+            <h3 className="whitespace-nowrap" style={{color:"rgb(0 0 0 / 69%)"}}>{number.text}</h3>
           </div>
         </motion.span>
       ))}

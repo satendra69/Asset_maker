@@ -11,23 +11,24 @@ import {
 function TopCities() {
   const sectionCounts = [
     {
-      num: 2000,
+      num: 3500,
       text: "Properties Sold",
+      color:"red",
       Icon: <FcBullish size={42} />,
     },
     {
-      num: 80,
+      num: 230,
       text: "Projects Handled",
       Icon: <FcDepartment size={42} />,
     },
     {
       num: 400,
-      text: "NRI Clientele Served",
+      text: "NRI Clients Served",
       Icon: <FcOnlineSupport size={42} />,
     },
     {
-      num: 150,
-      text: "Satisfied Builders",
+      num: 40,
+      text: "Builders, Marketing Partners",
       Icon: <FcInspection size={42} />,
     },
   ];
@@ -66,7 +67,7 @@ function TopCities() {
           </p>
           <SectionCount numbers={sectionCounts} />
         </div>
-        <div className="shadow-md   md:w-[60%] mt-3 md:mt-0">
+        <div className="shadow-md   md:w-[52%] mt-3 md:mt-0">
           <MultiCrousel data={Featured} autoplay={true} />
         </div>
       </Container>

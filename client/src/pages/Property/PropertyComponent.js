@@ -290,14 +290,14 @@ function PropertyComponent({ defaultType }) {
                         <div className="flex items-center gap-5 1">
                             <FaSellsy className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">2,000 +</h2>
+                                <h2 className="text-white price">3500 +</h2>
                                 <p className="text-white description">Properties Sold</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5 2">
                             <MdAddHome className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">80 +</h2>
+                                <h2 className="text-white price">230 +</h2>
                                 <p className="text-white description">Projects Handled</p>
                             </div>
                         </div>
@@ -305,14 +305,14 @@ function PropertyComponent({ defaultType }) {
                             <IoMdHappy className="text-blue-700" size={42} />
                             <div>
                                 <h2 className="text-white price">400 +</h2>
-                                <p className="text-white description">NRI Clientele Served</p>
+                                <p className="text-white description">NRI Clients Served</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-5 3">
                             <FaRegHandshake className="text-blue-700" size={42} />
                             <div>
-                                <h2 className="text-white price">150 +</h2>
-                                <p className="text-white description">Satisfied Builders</p>
+                                <h2 className="text-white price">40 +</h2>
+                                <p className="text-white description">Builders, Marketing Partners</p>
                             </div>
                         </div>
                     </div>

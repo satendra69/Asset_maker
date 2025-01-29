@@ -84,7 +84,7 @@ const CitiesBengaluru = () => {
 
       {/* <Exploretypes /> */}
       <section className="my-10 top-cities ">
-        <Container className={"space-y-3"}>
+        {/* <Container className={"space-y-3"}>
           <h2>Browse by Property Type</h2>
           <p>Best places to live in India</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
@@ -184,7 +184,34 @@ const CitiesBengaluru = () => {
               </div>
             </a>
           </div>
+        </Container> */}
+        <Container className="space-y-3">
+          <h2 className="text-lg font-semibold text-center md:text-left">Browse by Property Type</h2>
+          <p className="text-center md:text-left">Best places to live in India</p>
+          <hr className="bg-[#FECE51] w-32 h-1 mx-auto md:mx-0" />
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto py-7">
+            {[
+              { img: "/apartment.png", title: "Apartments" },
+              { img: "/villas.png", title: "Villas" },
+              { img: "/villaments.png", title: "Villaments" },
+              { img: "/row.png", title: "Row Houses" },
+              { img: "/commercial.png", title: "Commercial Properties" },
+              { img: "/plots.png", title: "Plots" },
+              { img: "/pent.png", title: "Pent Houses" },
+            ].map(({ img, title }, index) => (
+              <a href="#" key={index} className="place-link">
+                <div className="bg-white border rounded-md shadow-md max-w-xs w-full mx-auto p-3 h-40 flex flex-col items-center">
+                  <img src={img} className="object-cover w-full h-[60%]" alt={title}  style={{ objectFit: "contain", width: "100%", height: "60%" }}  />
+                  
+                  <h3 className="text-center text-sm md:text-base">{title}</h3>
+                  <p className="text-xs font-light text-center">1000+ properties</p>
+                </div>
+              </a>
+            ))}
+          </div>
         </Container>
+
       </section>
       <Apart />
       <EnquiryChoose />
@@ -210,14 +237,14 @@ const CitiesBengaluru = () => {
             <div className="flex items-center gap-5 1">
               <FaSellsy className="text-blue-700" size={42} />
               <div>
-                <h2 className="text-white price">2,000 +</h2>
+                <h2 className="text-white price">3500 +</h2>
                 <p className="text-white description">Properties Sold</p>
               </div>
             </div>
             <div className="flex items-center gap-5 2">
               <MdAddHome className="text-blue-700" size={42} />
               <div>
-                <h2 className="text-white price">80 +</h2>
+                <h2 className="text-white price">230 +</h2>
                 <p className="text-white description">Projects Handled</p>
               </div>
             </div>
@@ -225,14 +252,14 @@ const CitiesBengaluru = () => {
               <IoMdHappy className="text-blue-700" size={42} />
               <div>
                 <h2 className="text-white price">400 +</h2>
-                <p className="text-white description">NRI Clientele Served</p>
+                <p className="text-white description">NRI Clients Served</p>
               </div>
             </div>
             <div className="flex items-center gap-5 3">
               <FaRegHandshake className="text-blue-700" size={42} />
               <div>
-                <h2 className="text-white price">150 +</h2>
-                <p className="text-white description">Satisfied Builders</p>
+                <h2 className="text-white price">40 +</h2>
+                <p className="text-white description">Builders, Marketing Partners</p>
               </div>
             </div>
           </div>

@@ -19,7 +19,7 @@ function Footer() {
               className="rounded-md md:w-1/3 md:mr-5"
             />
             <div className="space-y-2">
-              <h2 className="font-bold">You need a house</h2>
+              <h2 className="font-bold">You need a Property</h2>
               <p>
                 Tell us your needs, we will give you thousands of suggestions
                 for the dream home.
@@ -39,7 +39,7 @@ function Footer() {
               className="rounded-md md:w-1/3 md:mr-5"
             />
             <div className="space-y-2">
-              <h2 className="font-bold">Sell your house</h2>
+              <h2 className="font-bold">Sell your Property</h2>
               <p>
                 We will connect you to thousands of people who need to buy a
                 home.

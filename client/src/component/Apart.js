@@ -21,7 +21,7 @@ function Apart() {
               <FcDonate size={52} />
               <div className="">
                 <h2 className="text-smc">What sets us apart?</h2>
-                <p className="text-smc">Go from browing to buying</p>
+                <p className="text-smc">Go from  Borrowing to buying</p>
               </div>
             </div>
             <button

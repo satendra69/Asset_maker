@@ -76,10 +76,10 @@
       }
 
       @include sm {
-        width: auto;
+        width: 100% !important;
         &:nth-child(2),
         &:nth-child(3) {
-          width: auto;
+          width: 100% !important;
         }
         padding: 20px;
         border: 1px solid #999;
@@ -107,10 +107,10 @@
       }
 
       @include sm {
-        width: auto;
+        width: 100%;
         &:nth-child(2),
         &:nth-child(3) {
-          width: auto;
+          width: 100%;
         }
         padding: 20px;
         border: 1px solid #999;
@@ -118,3 +118,5 @@
     }
   }
 }
+
+

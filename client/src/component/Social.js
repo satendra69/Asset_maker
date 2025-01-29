@@ -23,7 +23,7 @@ function Social() {
           ></path>
         </svg>
       </a>
-      <a
+      {/* <a
         className="flex items-center justify-center bg-blue-400 rounded-md w-10 h-10 text-white"
         href="/#twitter"
         title="Twitter"
@@ -62,7 +62,7 @@ function Social() {
             d="M27 21.775v-9.9s-10.01 6.985-10.982 7.348C15.058 18.878 5 11.875 5 11.875v9.9c0 1.375.293 1.65 1.65 1.65h18.7c1.393 0 1.65-.242 1.65-1.65m-.017-11.841c0-1.002-.291-1.359-1.633-1.359H6.65c-1.38 0-1.65.429-1.65 1.43l.016.154s9.939 6.842 11 7.216C17.14 16.941 27 10.005 27 10.005z"
           ></path>
         </svg>
-      </a>
+      </a> */}
       <a
         className="flex items-center justify-center bg-green-500 rounded-md w-10 h-10 text-white"
         href="https://wa.me/919243024730"

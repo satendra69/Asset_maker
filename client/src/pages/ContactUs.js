@@ -162,7 +162,7 @@ function ContactUs() {
               <h1 className="text-2xl">RERA License Certification Number</h1>
               <p>PRM/KA/RERA/1251/446/AG/230427/003604</p>
             </div>
-            <iframe
+            {/* <iframe
               src="https://www.google.com/maps/embed?pb=!1m16!1m12!1m3!1d3888.4656838973183!2d77.69882092507596!3d12.942025937370644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!2m1!1s%2302%2C%20Level%205%2C%20Dhruti%20Arcade%2C%20Insight%20Academy%20Lane%2C%20Marathalli%2C%20Bangalore%2C%20560103!5e0!3m2!1sen!2sin!4v1710156581285!5m2!1sen!2sin"
               allowfullscreen=""
               loading="lazy"
@@ -172,7 +172,7 @@ function ContactUs() {
                 height: "250px",
                 marginTop: "20px",
               }}
-            ></iframe>
+            ></iframe> */}
           </div>
         </div>
 

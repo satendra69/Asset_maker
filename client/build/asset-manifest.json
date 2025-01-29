@@ -1,22 +1,23 @@
 {
   "files": {
-    "main.css": "http://142.93.213.221:8004/static/css/main.3bbab9da.css",
-    "main.js": "http://142.93.213.221:8004/static/js/main.3526ecb7.js",
-    "static/js/453.3f732b94.chunk.js": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js",
-    "static/media/hero2.jpg": "http://142.93.213.221:8004/static/media/hero2.78297e832f2beabde0c8.jpg",
-    "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
-    "static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png": "http://142.93.213.221:8004/static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.721e5e6bc445cc990452.png",
-    "static/media/revicons.eot": "http://142.93.213.221:8004/static/media/revicons.a77de540a38981833f9e.eot",
-    "static/media/revicons.ttf": "http://142.93.213.221:8004/static/media/revicons.57fd05d4ae650374c8de.ttf",
-    "static/media/Godrej-Logo-Design-150x150.jpg": "http://142.93.213.221:8004/static/media/Godrej-Logo-Design-150x150.615aaae34cb82398cc61.jpg",
-    "static/media/revicons.woff": "http://142.93.213.221:8004/static/media/revicons.e8746a624ed098489406.woff",
-    "index.html": "http://142.93.213.221:8004/index.html",
-    "main.3bbab9da.css.map": "http://142.93.213.221:8004/static/css/main.3bbab9da.css.map",
-    "main.3526ecb7.js.map": "http://142.93.213.221:8004/static/js/main.3526ecb7.js.map",
-    "453.3f732b94.chunk.js.map": "http://142.93.213.221:8004/static/js/453.3f732b94.chunk.js.map"
+    "main.css": "https://assetmakers.com/static/css/main.94b90ebf.css",
+    "main.js": "https://assetmakers.com/static/js/main.9e350f2f.js",
+    "static/js/453.3f732b94.chunk.js": "https://assetmakers.com/static/js/453.3f732b94.chunk.js",
+    "static/media/hero2.jpg": "https://assetmakers.com/static/media/hero2.78297e832f2beabde0c8.jpg",
+    "static/media/asset_makers_stars.png": "https://assetmakers.com/static/media/asset_makers_stars.7fc50c2e6f9e0a48a372.png",
+    "static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.png": "https://assetmakers.com/static/media/sobha-developers-logo-A13E8BA5BA-seeklogo.com_-150x150.21c7dab3920ee8e3cd39.png",
+    "static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.png": "https://assetmakers.com/static/media/prestige-logo-C58DC32DC3-seeklogo.com_-150x150.721e5e6bc445cc990452.png",
+    "static/media/revicons.eot": "https://assetmakers.com/static/media/revicons.a77de540a38981833f9e.eot",
+    "static/media/revicons.ttf": "https://assetmakers.com/static/media/revicons.57fd05d4ae650374c8de.ttf",
+    "static/media/Godrej-Logo-Design-150x150.jpg": "https://assetmakers.com/static/media/Godrej-Logo-Design-150x150.615aaae34cb82398cc61.jpg",
+    "static/media/revicons.woff": "https://assetmakers.com/static/media/revicons.e8746a624ed098489406.woff",
+    "index.html": "https://assetmakers.com/index.html",
+    "main.94b90ebf.css.map": "https://assetmakers.com/static/css/main.94b90ebf.css.map",
+    "main.9e350f2f.js.map": "https://assetmakers.com/static/js/main.9e350f2f.js.map",
+    "453.3f732b94.chunk.js.map": "https://assetmakers.com/static/js/453.3f732b94.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3bbab9da.css",
-    "static/js/main.3526ecb7.js"
+    "static/css/main.94b90ebf.css",
+    "static/js/main.9e350f2f.js"
   ]
 }

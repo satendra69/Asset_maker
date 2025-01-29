@@ -222,18 +222,19 @@ function Hero() {
 
   return (
     <>
-      <section className="relative bg-white featured-listings padingm">
+      {/* <section className="relative bg-white featured-listings padingm" >
         <div className="max-w-4xl mx-auto">
           <Lottie
             animationData={cloufLottie}
             loop={true}
-            className="absolute top-0 left-0 right-0"
+           
+            className="absolute customAnimation top-0 left-0 right-0"
           />
         </div>
-      </section>
+      </section> */}
 
       <section className="relative featured-listings">
-        <Container className={"space-y-5  md:pt-80 pt-20"}>
+        <Container >
           <h2 className="text-center ">Discover Our Featured Listings</h2>
           <p className="text-center ">
             A few properties you can buy with your eyes closed. Properties that
@@ -243,7 +244,7 @@ function Hero() {
         </Container>
       </section>
 
-      <section className="my-10 top-cities">
+      {/* <section className="my-10 top-cities">
         <Container className="space-y-3">
           <h2 className="text-xl font-semibold md:text-2xl">Top Cities In India</h2>
           <p className="text-sm md:text-base">Best places to live in India</p>
@@ -274,7 +275,7 @@ function Hero() {
               <div className="h-auto p-3 bg-white border rounded-md shadow-md md:p-5">
                 <img src="/hyderabad.png" alt="Hyderabad" className="object-cover w-full h-24 rounded-md md:h-32" />
                 <h3 className="mt-2 text-sm text-center md:text-base">Hyderabad</h3>
-                <p className="text-xs font-light text-center md:text-sm">{propertyCounts.Hyderabad} properties</p>
+                 <p className="text-xs font-light text-center md:text-sm">{propertyCounts.Hyderabad} properties</p> 
               </div>
             </a>
 
@@ -293,7 +294,7 @@ function Hero() {
             </div>
           </div>
         </Container>
-      </section>
+      </section> */}
 
       <section className="py-5 my-2 bg-white feature-collection md:my-10">
         <Container className={"space-y-3"}>
@@ -301,7 +302,7 @@ function Hero() {
           <p>Curated & Handpicked Properties</p>
           <hr className="bg-[#FECE51] w-32 h-1" />
           <div className="items-center collection md:flex md:gap-5">
-            {['Bengaluru', 'Hyderabad', 'Tirupati'].map((region, index) => {
+            {['Bengaluru', 'Hyderabad'].map((region, index) => {
               const imageSrcMap = {
                 Bengaluru: "/BeFunky-collage-2023-10-19T142541.707.jpg",
                 Hyderabad: "/mumbai_tall_buildings.jpg",
@@ -319,9 +320,9 @@ function Hero() {
                   />
                   <div className="absolute bottom-5 w-[91%] p-4 bg-black opacity-55 group-hover:bg-transparent">
                     <h3 className="text-center text-white">{capitalizedRegion}</h3>
-                    <p className="text-xs text-center text-white">
+                    {/* <p className="text-xs text-center text-white">
                       {featuredPropertyCounts[region]} properties
-                    </p>
+                    </p> */}
                   </div>
                 </a>
               );

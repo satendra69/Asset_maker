@@ -116,16 +116,23 @@ h3 {
   .padingm {
     padding: 0 10px 0 10px;
   }
+  .searchBar form input {
+    width: 100% !important;
+  }
 }
 
 /* Large devices (tablets, 768px and up) */
-@media (min-width: 768px) and (max-width: 991.98px) {
+@media (min-width: 768px) and (max-width: 1024px) {
   h2 {
     font-size: 26px;
   }
   .padingm {
     padding: 0 10px 0 10px;
   }
+  ul.flex.items-center.gap-4.customeMenu {
+    gap: 5px;
+}
+
 }
 
 @layer utilities {

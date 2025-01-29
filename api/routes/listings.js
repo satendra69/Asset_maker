@@ -49,5 +49,30 @@ router.post('/upload/:listingID', upload.array('attachments'), addWatermark, (re
   }
 });
 
+// Update sold-out status
+router.post("/list_sold_out_update", async (req, res) => {
+  const { id, soldStatus } = req.body;
+
+  if (!id || soldStatus === undefined) {
+    return res.status(400).json({ error: "Invalid request data" });
+  }
+
+  try {
+    // Update the sold-out status in the database
+    const query = "UPDATE listings SET sold_status = ? WHERE id = ?";
+    const values = [soldStatus, id];
+    const [result] = await db.promise().execute(query, values);
+
+    if (result.affectedRows > 0) {
+      res.status(200).json({ message: "Sold-out status updated successfully" });
+    } else {
+      res.status(404).json({ error: "Listing not found" });
+    }
+  } catch (error) {
+    console.error("Error updating sold-out status:", error);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 module.exports = router;
 

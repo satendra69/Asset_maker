@@ -31,6 +31,7 @@ function HomePage() {
   ];
 
   const handleSearch = (query) => {
+   // console.log("query___eeeee",query);
     navigate('/Property', { state: { query } });
   };
 
@@ -39,6 +40,9 @@ function HomePage() {
     <div className="homePage padingm ">
       <div className="textContainer">
         <div className="wrapper">
+        <div className="hidden md:block">
+            <SearchBar onFilterChange={handleSearch} />
+          </div>
           <h1 className="title">
             {/* Find Real Estate & Get Your Dream Place */}
             <span>Find</span>
@@ -59,9 +63,7 @@ function HomePage() {
             verdant landscapes, inviting you to unwind in unparalleled comfort
             and style.
           </p>
-          <div className="hidden md:block">
-            <SearchBar onFilterChange={handleSearch} />
-          </div>
+         
         </div>
       </div>
 

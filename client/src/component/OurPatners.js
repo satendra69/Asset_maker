@@ -124,7 +124,7 @@ function Patners() {
               <FaRegHandshake className="text-white" size={42} />
               <div>
                 <h2 className="price">150 +</h2>
-                <p className="description">Satisfied Builders</p>
+                <p className="description">Marketing Projects</p>
               </div>
             </div>
           </div>

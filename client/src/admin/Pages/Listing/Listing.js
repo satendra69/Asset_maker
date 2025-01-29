@@ -168,6 +168,9 @@ function NewListingPage({ action }) {
     // console.log("Form submitted successfully");
     formDataSubmit();
   };
+  const cancelBtn = () =>{
+    navigate('/admin');
+  }
 
   const formDataSubmit = async (e) => {
     setIsLoading(true);
@@ -424,6 +427,7 @@ function NewListingPage({ action }) {
               <p>{listing.description}</p>
               <hr className="bg-[#FECE51] w-32 h-1" />
             </div>
+            <div className="flex space-x-2">
             <button
               className="px-4 py-2 font-semibold text-white bg-indigo-500 rounded hover:bg-indigo-600"
               onClick={publishBtn}
@@ -440,6 +444,13 @@ function NewListingPage({ action }) {
                 listing.button
               )}
             </button>
+            <button
+              className="px-4 py-2 font-semibold text-white bg-red-500 rounded hover:bg-red-600"
+              onClick={cancelBtn} // Add your cancel button handler here
+              >
+              Cancel
+            </button>
+            </div>
           </div>
         </div>
         <div className="full-data">

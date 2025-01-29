@@ -1,9 +1,11 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState ,useEffect} from "react";
 import dayjs from 'dayjs';
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
+import { MenuItem, Select } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Dialog, Tooltip } from "@mui/material";
-import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf } from "@mui/icons-material";
+import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf,Sell  } from "@mui/icons-material";
+
 import Swal from "sweetalert2";
 import httpCommon from "../../../../http-common";
 import CreatePDF from '../Component/CreatePDF';
@@ -12,8 +14,31 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedId, setSelectedId] = useState(null);
   const [selectedType, setSelectedType] = useState(null);
   const [pdfData, setPdfData] = useState(null);
+  const [soldData, setSoldData] = useState(null);
   const [openPdfDialog, setOpenPdfDialog] = useState(false);
   const navigate = useNavigate();
+  const [dropdownValue, setDropdownValue] = useState("");
+  const [uniqueTypes, setUniqueTypes] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+
+
+  useEffect(() => {
+    // Extract unique `ltg_type` values
+    const unique = Array.from(new Set(data.map((item) => item.ltg_type)));
+    setUniqueTypes(unique);
+    setFilteredData(data);
+  }, [data]);
+
+  const handleDropdownChange = (event) => {
+    const selectedType = event.target.value;
+    setDropdownValue(selectedType);
+    const filtered = selectedType
+    ? data.filter((item) => item.ltg_type === selectedType)
+    : data;
+
+  setFilteredData(filtered);
+    console.log("Selected value:", event.target.value); // Perform any logic based on the dropdown selection
+  };
 
   const getMainImageUrl = (attachments) => {
     if (!attachments || !Array.isArray(attachments)) {
@@ -216,8 +241,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
                   size="small"
                   sx={{
                     minWidth: 0,
-                    width: 30,
-                    height: 30,
+                    width: 25,
+                    height: 25,
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -227,10 +252,101 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
                     setOpenPdfDialog(true);
                   }}
                 >
-                  <PictureAsPdf style={{ fontSize: 22 }} />
+                  <PictureAsPdf style={{ fontSize: 15 }} />
+                </Button>
+              </Tooltip>
+
+              <Tooltip title="SOLD Property">
+                <Button
+                  variant="contained"
+                  color="success"
+                  size="small"
+                  sx={{
+                    minWidth: 0,
+                    width: 25,
+                    height: 25,
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginLeft:"5px"
+                  }}
+                  onClick={async () => {
+                  // console.log("row.original____",row.original.ltg_type);
+                    const isSoldChecked = row.original.ltg_det_sold_type === "1";
+                    const isAvailableChecked = row.original.ltg_det_sold_type === "0";
+                    const { value: formValues } = await Swal.fire({
+                      title: "Are you sure?",
+                      html: `
+                      <p>Choose the status of the property:</p>
+                      <div style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 10px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                          <input 
+                            type="checkbox" 
+                            id="availableCheckbox" 
+                            name="statusCheckbox" 
+                            ${isAvailableChecked ? "checked" : ""} 
+                            onchange="document.getElementById('soldCheckbox').checked = false;"
+                          />
+                          <label for="availableCheckbox" style="margin-left: 5px;">Available</label>
+                        </div>
+                        <div style="display: flex; align-items: center;">
+                          <input 
+                            type="checkbox" 
+                            id="soldCheckbox" 
+                            name="statusCheckbox" 
+                            ${isSoldChecked ? "checked" : ""} 
+                            onchange="document.getElementById('availableCheckbox').checked = false;"
+                          />
+                          <label for="soldCheckbox" style="margin-left: 5px;">Mark as Sold</label>
+                        </div>
+                      </div>
+                    `,
+                      icon: "warning",
+                      showCancelButton: true,
+                      confirmButtonText: "Yes",
+                      cancelButtonText: "Cancel",
+                      preConfirm: () => {
+                        const availableCheckbox = document.getElementById("availableCheckbox");
+                        const soldCheckbox = document.getElementById("soldCheckbox");
+                
+                        if (availableCheckbox.checked) {
+                          return { soldStatus: "0" };
+                        }
+                        if (soldCheckbox.checked) {
+                          return { soldStatus: "1" };
+                        }
+                
+                        // Return null if neither checkbox is selected
+                        Swal.showValidationMessage("Please select a status.");
+                        return null;
+                      },
+                    });
+                
+                    if (formValues) {
+                     // console.log("Sold Status:", formValues.soldStatus);
+                      try {
+                        const response = await httpCommon.post("/list/list_sold_out_update", {
+                          id: row.original.ltg_det_mstRowID, // ID of the listing to update
+                          soldStatus: formValues.soldStatus,
+                          ltg_type: row.original.ltg_type,
+                        });
+                        console.log(response.data.message);
+                        //setSoldData({ ...row.original, ltg_det_chekBox: formValues.soldStatus });
+                        Swal.fire("Update!", "The property has been Updated.", "success");
+                        window.location.reload();
+                      } catch (error) {
+                        console.error("Error updating property:", error);
+                        Swal.fire("Error!", "There was an issue editing the property.", "error");
+                      }
+                    }
+                  }}
+               
+                >
+                  <Sell  style={{ fontSize: 15 }} />
                 </Button>
               </Tooltip>
             </Box>
+            
           </Box>
         ),
       },
@@ -377,11 +493,14 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
       },
     ], [navigate, setOpen]);
 
-  const tableData = useMemo(() => (data || []).map((item, index) => ({
-    ...item,
-    RowID: index + 1
-  })), [data]);
+ 
 
+  const tableData = useMemo(() => {
+    return (filteredData || []).map((item, index) => ({
+      ...item,
+      RowID: index + 1,
+    }));
+  }, [filteredData]);
   const table = useMaterialReactTable({
     columns,
     data: tableData,
@@ -422,6 +541,28 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     muiTableHeadCellProps: {
       sx: { fontSize: '1rem' },
     },
+    renderTopToolbarCustomActions: () => (
+      <Box sx={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        {/* Custom Dropdown */}
+        <Select
+          value={dropdownValue}
+          onChange={handleDropdownChange}
+          displayEmpty
+          size="small"
+          variant="outlined"
+          sx={{ minWidth: 200 }}
+        >
+          <MenuItem value="">
+          <em>Select Property Type</em>
+        </MenuItem>
+        {uniqueTypes.map((type, index) => (
+          <MenuItem key={index} value={type}>
+            {type}
+          </MenuItem>
+        ))}
+        </Select>
+      </Box>
+    ),
   });
 
   return (

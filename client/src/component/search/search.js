@@ -232,7 +232,7 @@ function SearchForm({ onFilterChange, defaultProperty, query }) {
                   onChange={handleChange}
                   onFocus={handleFocus}
                   className="w-full h-12 py-4 pl-12 pr-40 bg-gray-100 border border-gray-100 rounded-md shadow-sm outline-none cursor-text focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                  placeholder="Search by name, type, manufacturer, etc"
+                  placeholder="Search by name, type, etc"
                 />
               </div>
               {!showFields && (

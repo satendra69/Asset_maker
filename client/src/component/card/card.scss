@@ -5,19 +5,19 @@
   background-color: #fff;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-  padding: 24px;
-  margin-bottom: 24px;
+  padding: 15px;
+  margin-bottom: 15px;
   border: 1px solid #e0e0e0;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 
   &:hover {
-    transform: translateY(-5px);
+   
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   }
 
   .cardImageContainer {
-    width: 270px;
-    height: 200px;
+    width: 250px;
+    height: 170px;
     border-radius: 12px;
     overflow: hidden;
     flex-shrink: 0;
@@ -43,11 +43,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 16px;
+    gap: 5px;
 
     .cardProjectName {
-      font-size: 1.3rem;
-      font-weight: 800;
+      font-size: 1.2rem;
+      font-weight: 700;
       color: #5c6b72;
       text-transform: uppercase;
       letter-spacing: 0.05em;
@@ -64,12 +64,12 @@
     }
 
     .cardTitle {
-      font-size: 1.9rem;
+      font-size: 20px;
       font-weight: 700;
       color: #273d2f;
       line-height: 1.3;
       letter-spacing: -0.02em;
-      background: linear-gradient(90deg, #4e9f7b, #3b806f);
+      background: linear-gradient(90deg, #000, #3b806f);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.12);
