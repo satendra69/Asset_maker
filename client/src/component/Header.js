@@ -55,6 +55,7 @@ function Header() {
   const profileDropdownRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
+  const menuRef = useRef(null);
 
   const isActive = () => {
     window.scrollY > 0 ? setActive(true) : setActive(false);
@@ -151,6 +152,29 @@ function Header() {
   const isPropertyRoute = staticPropertyRoutes.includes(location.pathname);
   const isDynamicPropertyRoute = /^\/Property\/[^/]+(-[a-z0-9]+)+$/.test(location.pathname);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (menuRef.current && !menuRef.current.contains(event.target)) {
+        setMenuOpen(false);
+      }
+    };
+    const handleScroll = () => {
+      setMenuOpen(false);
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener("scroll", handleScroll);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("scroll", handleScroll);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("scroll", handleScroll);
+    };
+  }, [menuOpen, setMenuOpen]);
 
   return (
     <>
@@ -197,7 +221,7 @@ function Header() {
               >
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Bengaluru")}>Bengaluru</p>
                 <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Hyderabad")}>Hyderabad</p>
-                <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p>
+                {/* <p className="cursor-pointer hover:font-bold hover:text-black" onClick={() => handleCityClick("Tirupati")}>Tirupati</p> */}
               </div>
             </button>
 
@@ -315,6 +339,7 @@ function Header() {
 
         {/* Mobile Menu */}
         <motion.div
+         ref={menuRef}
           initial={false}
           animate={menuOpen ? "open" : "closed"}
           variants={variants}
@@ -379,7 +404,7 @@ function Header() {
                 >
                   Hyderabad
                 </p>
-                <p
+                {/* <p
                   className="cursor-pointer hover:font-bold hover:text-black"
                   onClick={() => {
                     handleCityClick("Tirupati");
@@ -387,7 +412,7 @@ function Header() {
                   }}
                 >
                   Tirupati
-                </p>
+                </p> */}
               </div>
             </li>
             <li>
