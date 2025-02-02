@@ -232,7 +232,9 @@ function Card({ key, item, onPropertyRemoved }) {
   const callForPrice = callForPriceMapping[item?.ltg_type] || item?.ltg_det_call_for_price;
 
   // Function to format the title
+  
   const formatTitleForUrl = (title) => {
+    if (!title) return "untitled";
     return title
       .toLowerCase()
       .replace(/[^a-z0-9\s-]/g, '')
@@ -277,7 +279,8 @@ function Card({ key, item, onPropertyRemoved }) {
         mutation={mutation}
       />
       <Link
-        to={`/Property/${formatTitleForUrl(item.ltg_title)}`}
+       // to={`/Property/${formatTitleForUrl(item.ltg_title)}`}
+        to={`/Property/${item?.ltg_title ? formatTitleForUrl(item.ltg_title) : "untitled"}`}
         className="cardPropertyLink"
       >
         <div className="cardProperty" style={{ display: "flex", position: "relative" }}>
