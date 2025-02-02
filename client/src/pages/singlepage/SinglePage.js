@@ -310,32 +310,32 @@ function SinglePage() {
       const currentPageUrl = window.location.href;
       const imageUrl = singlePageData[0].ltg_imageUrl || "https://assetmakers.com/api/images/WhatsApp%20Image%202025-01-02%20at%205.29.45%20PM.jpeg";
   
-      // const message = encodeURIComponent(
-      //   `${projectName}\n${projectTitle}\n\nCheck this property: ${currentPageUrl}`
-      // );
+      const message = encodeURIComponent(
+        `${projectName}\n${projectTitle}\n\nCheck this property: ${currentPageUrl}`
+      );
   
-      // const whatsappUrl = `https://wa.me/?text=${message}`;
-      // window.open(whatsappUrl, "_blank");
+      const whatsappUrl = `https://wa.me/?text=${message}`;
+      window.open(whatsappUrl, "_blank");
    // Backend API request
-   try {
-    const response = await axios.post("https://assetmakers.com/api/send-whatsapp-message", {
-      recipientPhone: "917986949597", // Replace with recipient's WhatsApp number
-      projectName,
-      projectTitle,
-      imageUrl,
-      pageUrl: currentPageUrl,
+  //  try {
+  //   const response = await axios.post("https://assetmakers.com/api/send-whatsapp-message", {
+  //     recipientPhone: "917986949597", // Replace with recipient's WhatsApp number
+  //     projectName,
+  //     projectTitle,
+  //     imageUrl,
+  //     pageUrl: currentPageUrl,
       
-    });
+  //   });
 
-    if (response.data.success) {
-   //   alert("Message sent successfully!");
-    } else {
-   //   alert("Failed to send the message.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-   // alert("An error occurred while sending the message.");
-  }
+  //   if (response.data.success) {
+  //  //   alert("Message sent successfully!");
+  //   } else {
+  //  //   alert("Failed to send the message.");
+  //   }
+  // } catch (error) {
+  //   console.error("Error:", error);
+  //  // alert("An error occurred while sending the message.");
+  // }
       
     } else {
       console.error("No data available for sharing.");
