@@ -143,7 +143,7 @@ function NewListingPage({ action }) {
   const checkPropertyExists = async (propertyUrl, title) => {
     try {
       const response = await httpCommon.get(`/list/checkProperty`, {
-        params: { propertyUrl, title },
+        params: { propertyUrl },
       });
 
       if (response.data.exists) {
@@ -186,7 +186,10 @@ function NewListingPage({ action }) {
     };
 
     // Normalize the title for URL-safe version
-    const propertyUrl = normalizeTitleForUrl(title.trim());
+    //const propertyUrl = normalizeTitleForUrl(title.trim());
+    //const propertyUrl = `${normalizeTitleForUrl(title.trim())}_${Math.floor(Math.random() * 10000)}`;
+    const propertyUrl = `${normalizeTitleForUrl(title.trim())}_${Math.floor(Math.random() * 9) + 1}`;
+
 
     const json_ListingInsert = {
       title: title.trim(),
@@ -203,12 +206,12 @@ function NewListingPage({ action }) {
       update: Boolean(listingId && action !== 'clone'),
     };
 
-    // console.log("json_ListingInsert_____", json_ListingInsert);
+     console.log("json_ListingInsert_____", json_ListingInsert);
     // console.log("checkPropertyExists_____", json_ListingInsert.propertyUrl, json_ListingInsert.title);
     try {
       let result;
       if (action === 'clone' || !listingId) {
-        result = await checkPropertyExists(json_ListingInsert?.propertyUrl, json_ListingInsert?.title);
+        result = await checkPropertyExists(json_ListingInsert?.propertyUrl);
 
         if (result.exists === true) {
           setResultMessage(`Property exists: ${result.message}`);

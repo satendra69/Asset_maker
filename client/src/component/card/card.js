@@ -237,9 +237,6 @@ function Card({ key, item, onPropertyRemoved }) {
     if (!title) return "untitled";
     return title
       .toLowerCase()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
       .trim();
   };
 
@@ -280,7 +277,7 @@ function Card({ key, item, onPropertyRemoved }) {
       />
       <Link
        // to={`/Property/${formatTitleForUrl(item.ltg_title)}`}
-        to={`/Property/${item?.ltg_title ? formatTitleForUrl(item.ltg_title) : "untitled"}`}
+        to={`/Property/${item?.propertyUrl ? formatTitleForUrl(item.propertyUrl) : "untitled"}`}
         className="cardPropertyLink"
       >
         <div className="cardProperty" style={{ display: "flex", position: "relative" }}>

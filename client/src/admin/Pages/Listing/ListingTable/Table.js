@@ -1,7 +1,9 @@
 import { useMemo, useState ,useEffect} from "react";
+import * as XLSX from "xlsx";
 import dayjs from 'dayjs';
 import { MaterialReactTable, useMaterialReactTable } from "material-react-table";
 import { MenuItem, Select } from "@mui/material";
+
 import { useNavigate } from "react-router-dom";
 import { Box, Button, Dialog, Tooltip } from "@mui/material";
 import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf,Sell  } from "@mui/icons-material";
@@ -9,6 +11,7 @@ import { Edit, Delete, FileCopy as CopyIcon, PictureAsPdf,Sell  } from "@mui/ico
 import Swal from "sweetalert2";
 import httpCommon from "../../../../http-common";
 import CreatePDF from '../Component/CreatePDF';
+import ExportToExcel from "../ExcelFile/ExportToExcel";
 
 function Table({ data, handleClose, open, setOpen, mutation }) {
   const [selectedId, setSelectedId] = useState(null);
@@ -494,7 +497,11 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     ], [navigate, setOpen]);
 
  
-
+    const handleExportClick = () => {
+      console.log("click by admin___");
+      ExportToExcel(tableData); // Pass tableData to export module
+    };
+    
   const tableData = useMemo(() => {
     return (filteredData || []).map((item, index) => ({
       ...item,
@@ -561,6 +568,14 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
           </MenuItem>
         ))}
         </Select>
+        {/* Export to Excel Button */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleExportClick}
+      >
+        Export to Excel
+      </Button>
       </Box>
     ),
   });

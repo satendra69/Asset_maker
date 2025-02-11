@@ -60,10 +60,12 @@ function SinglePage() {
       ]);
 
       if (allPropertiesResponse.data.status === "success") {
+       // console.log("test___",allPropertiesResponse.data.data);
         setProperties(allPropertiesResponse.data.data);
       }
 
       if (singlePageResponse.data.status === "success") {
+       // console.log("test___22",singlePageResponse.data.data);
         setSinglePageData(singlePageResponse.data.data);
       }
 
