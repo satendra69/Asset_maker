@@ -206,7 +206,7 @@ function NewListingPage({ action }) {
       update: Boolean(listingId && action !== 'clone'),
     };
 
-     console.log("json_ListingInsert_____", json_ListingInsert);
+    // console.log("json_ListingInsert_____", json_ListingInsert);
     // console.log("checkPropertyExists_____", json_ListingInsert.propertyUrl, json_ListingInsert.title);
     try {
       let result;

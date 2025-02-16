@@ -40,7 +40,7 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
     : data;
 
   setFilteredData(filtered);
-    console.log("Selected value:", event.target.value); // Perform any logic based on the dropdown selection
+   // console.log("Selected value:", event.target.value); // Perform any logic based on the dropdown selection
   };
 
   const getMainImageUrl = (attachments) => {
@@ -498,8 +498,8 @@ function Table({ data, handleClose, open, setOpen, mutation }) {
 
  
     const handleExportClick = () => {
-      console.log("click by admin___");
-      ExportToExcel(tableData); // Pass tableData to export module
+      
+      ExportToExcel(tableData,dropdownValue); // Pass tableData to export module
     };
     
   const tableData = useMemo(() => {
